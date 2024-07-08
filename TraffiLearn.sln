@@ -3,9 +3,28 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{153C3EC4-AE72-41AB-AAA1-FCF6375D4CDD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{23904BBD-0071-49EB-A723-9524FB67C422}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TraffiLearn.Domain", "TraffiLearn.Domain\TraffiLearn.Domain.csproj", "{266CB284-0354-4C8C-8FF8-CCD4829FAC1F}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{266CB284-0354-4C8C-8FF8-CCD4829FAC1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{266CB284-0354-4C8C-8FF8-CCD4829FAC1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{266CB284-0354-4C8C-8FF8-CCD4829FAC1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{266CB284-0354-4C8C-8FF8-CCD4829FAC1F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{266CB284-0354-4C8C-8FF8-CCD4829FAC1F} = {153C3EC4-AE72-41AB-AAA1-FCF6375D4CDD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F8404DBE-3C98-4ADC-81FF-D1AE134AAFDF}
