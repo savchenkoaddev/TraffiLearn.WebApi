@@ -1,5 +1,9 @@
-﻿using TraffiLearn.Application.ServiceContracts;
-using TraffiLearn.Domain.Entities;
+﻿using TraffiLearn.Application.DTO.Questions.Request;
+using TraffiLearn.Application.DTO.Questions.Response;
+using TraffiLearn.Application.ServiceContracts;
+using TraffiLearn.Application.Services.Helpers;
+using TraffiLearn.Application.Services.Mappers;
+using TraffiLearn.Domain.Exceptions;
 using TraffiLearn.Domain.RepositoryContracts;
 
 namespace TraffiLearn.Application.Services
@@ -7,45 +11,68 @@ namespace TraffiLearn.Application.Services
     public class QuestionsService : IQuestionsService
     {
         private readonly IQuestionsRepository _questionsRepository;
+        private readonly QuestionsMapper _questionsMapper;
 
         public QuestionsService(IQuestionsRepository questionsRepository)
         {
             _questionsRepository = questionsRepository;
+            _questionsMapper = new QuestionsMapper();
         }
 
-        public Task AddAsync(Question item)
+        public async Task AddAsync(QuestionAddRequest? item)
         {
+            await ValidationHelper.ValidateObjects(item);
 
+            await _questionsRepository.AddAsync(_questionsMapper.ToEntity(item));
         }
 
-        public Task DeleteAsync(Guid questionId)
+        public async Task DeleteAsync(QuestionDeleteRequest? request)
         {
-            throw new NotImplementedException();
+            await ValidationHelper.ValidateObjects(request);
+
+            var question = await GetByIdAsync(request!.Id!.Value);
+
+            await _questionsRepository.DeleteAsync(request.Id.Value);
         }
 
-        public Task<bool> ExistsAsync(Guid questionId)
+        public async Task<IEnumerable<QuestionResponse>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return _questionsMapper.ToResponse(await _questionsRepository.GetAllAsync());
         }
 
-        public Task<IEnumerable<Question>> GetAllAsync()
+        public async Task<QuestionResponse> GetByIdAsync(Guid? questionId)
         {
-            throw new NotImplementedException();
+            await ValidationHelper.ValidateObjects(questionId);
+
+            var question = await _questionsRepository.GetByIdAsync(questionId!.Value);
+
+            if (question is null)
+            {
+                throw new QuestionNotFoundException(questionId.Value);
+            }
+
+            return _questionsMapper.ToResponse(question);
         }
 
-        public Task<Question> GetByIdAsync(Guid questionId)
+        public async Task<QuestionResponse> GetRandomQuestionAsync()
         {
-            throw new NotImplementedException();
+            var question = await _questionsRepository.GetRandomQuestionAsync();
+
+            if (question is null)
+            {
+                throw new InvalidOperationException("Can't get random question because the storage is empty.");
+            }
+
+            return _questionsMapper.ToResponse(question);
         }
 
-        public Task<Question> GetRandomQuestionAsync()
+        public async Task UpdateAsync(Guid? questionId, QuestionUpdateRequest? item)
         {
-            throw new NotImplementedException();
-        }
+            await ValidationHelper.ValidateObjects(questionId, item);
 
-        public Task UpdateAsync(Guid questionId, Question item)
-        {
-            throw new NotImplementedException();
+            var question = await GetByIdAsync(questionId);
+
+            await _questionsRepository.UpdateAsync(questionId!.Value, _questionsMapper.ToEntity(item!));
         }
     }
 }

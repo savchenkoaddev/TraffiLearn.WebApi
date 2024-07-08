@@ -9,8 +9,6 @@ namespace TraffiLearn.Application.ServiceContracts
 
         Task<IEnumerable<QuestionResponse>> GetAllAsync();
 
-        Task<bool> ExistsAsync(Guid? questionId);
-
         Task AddAsync(QuestionAddRequest? item);
 
         Task UpdateAsync(Guid? questionId, QuestionUpdateRequest? item);
