@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TraffiLearn.Domain.Entities
 {
@@ -17,5 +18,6 @@ namespace TraffiLearn.Domain.Entities
         public QuestionNumberDetails NumberDetails { get; set; }
     }
 
+    [ComplexType]
     public sealed record QuestionNumberDetails(int TickerNumber, int QuestionNumber);
 }

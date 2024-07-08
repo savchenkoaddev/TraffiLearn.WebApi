@@ -15,6 +15,8 @@ namespace TraffiLearn.Infrastructure.Database
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Question>().ComplexProperty(b => b.NumberDetails);
+
             //Seed data
         }
     }
