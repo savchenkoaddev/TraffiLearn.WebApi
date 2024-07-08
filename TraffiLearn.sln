@@ -9,6 +9,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{23904BBD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TraffiLearn.Domain", "TraffiLearn.Domain\TraffiLearn.Domain.csproj", "{266CB284-0354-4C8C-8FF8-CCD4829FAC1F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TraffiLearn.Application", "TraffiLearn.Application\TraffiLearn.Application.csproj", "{DE6144ED-B6BD-402B-A3E2-024821202E3D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TraffiLearn.Infrastructure", "TraffiLearn.Infrastructure\TraffiLearn.Infrastructure.csproj", "{FC47C713-7884-454C-8522-0BD303348F4E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,12 +23,22 @@ Global
 		{266CB284-0354-4C8C-8FF8-CCD4829FAC1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{266CB284-0354-4C8C-8FF8-CCD4829FAC1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{266CB284-0354-4C8C-8FF8-CCD4829FAC1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE6144ED-B6BD-402B-A3E2-024821202E3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE6144ED-B6BD-402B-A3E2-024821202E3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE6144ED-B6BD-402B-A3E2-024821202E3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE6144ED-B6BD-402B-A3E2-024821202E3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC47C713-7884-454C-8522-0BD303348F4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC47C713-7884-454C-8522-0BD303348F4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC47C713-7884-454C-8522-0BD303348F4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC47C713-7884-454C-8522-0BD303348F4E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{266CB284-0354-4C8C-8FF8-CCD4829FAC1F} = {153C3EC4-AE72-41AB-AAA1-FCF6375D4CDD}
+		{DE6144ED-B6BD-402B-A3E2-024821202E3D} = {153C3EC4-AE72-41AB-AAA1-FCF6375D4CDD}
+		{FC47C713-7884-454C-8522-0BD303348F4E} = {153C3EC4-AE72-41AB-AAA1-FCF6375D4CDD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F8404DBE-3C98-4ADC-81FF-D1AE134AAFDF}
