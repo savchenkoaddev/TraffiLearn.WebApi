@@ -1,4 +1,3 @@
-
 using Microsoft.EntityFrameworkCore;
 using TraffiLearn.Application.ServiceContracts;
 using TraffiLearn.Application.Services;
@@ -38,7 +37,7 @@ namespace TraffiLearn.WebAPI
             }
 
             app.UseHttpsRedirection();
-
+            app.UseRouting();
             app.UseAuthorization();
 
 

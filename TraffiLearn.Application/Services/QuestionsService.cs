@@ -3,6 +3,7 @@ using TraffiLearn.Application.DTO.Questions.Response;
 using TraffiLearn.Application.ServiceContracts;
 using TraffiLearn.Application.Services.Helpers;
 using TraffiLearn.Application.Services.Mappers;
+using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Exceptions;
 using TraffiLearn.Domain.RepositoryContracts;
 
@@ -22,8 +23,11 @@ namespace TraffiLearn.Application.Services
         public async Task AddAsync(QuestionAddRequest? item)
         {
             await ValidationHelper.ValidateObjects(item);
+            var entity = _questionsMapper.ToEntity(item);
 
-            await _questionsRepository.AddAsync(_questionsMapper.ToEntity(item));
+            entity.NumberDetails = new QuestionNumberDetails(item.TicketNumber.Value, item.QuestionNumber.Value);
+
+            await _questionsRepository.AddAsync(entity);
         }
 
         public async Task DeleteAsync(QuestionDeleteRequest? request)
@@ -71,8 +75,12 @@ namespace TraffiLearn.Application.Services
             await ValidationHelper.ValidateObjects(questionId, item);
 
             var question = await GetByIdAsync(questionId);
+            var entity = _questionsMapper.ToEntity(item!);
 
-            await _questionsRepository.UpdateAsync(questionId!.Value, _questionsMapper.ToEntity(item!));
+            entity.NumberDetails = new QuestionNumberDetails(item.TicketNumber.Value, item.QuestionNumber.Value);
+            entity.Id = question.Id;
+
+            await _questionsRepository.UpdateAsync(questionId!.Value, entity);
         }
     }
 }

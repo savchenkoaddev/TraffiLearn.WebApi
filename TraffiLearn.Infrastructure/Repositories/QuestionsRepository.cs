@@ -17,6 +17,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         public async Task AddAsync(Question item)
         {
             await _dbContext.Questions.AddAsync(item);
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Guid key)

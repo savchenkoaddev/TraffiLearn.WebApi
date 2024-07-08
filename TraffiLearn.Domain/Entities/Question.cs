@@ -6,7 +6,7 @@ namespace TraffiLearn.Domain.Entities
     public sealed class Question
     {
         [Key]
-        public Guid Id { get; set; } 
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [StringLength(500)]
         public string Text { get; set; }
