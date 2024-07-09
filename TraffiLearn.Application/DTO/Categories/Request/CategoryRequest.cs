@@ -6,10 +6,10 @@ namespace TraffiLearn.Application.DTO.Categories.Request
     {
         [StringLength(20)]
         [Required]
-        public string Code { get; set; }
+        public string? Code { get; set; }
 
         [StringLength(100)]
         [Required]
-        public string Description { get; set; }
+        public string? Description { get; set; }
     }
 }

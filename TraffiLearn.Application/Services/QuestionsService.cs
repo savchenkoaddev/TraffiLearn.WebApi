@@ -34,7 +34,7 @@ namespace TraffiLearn.Application.Services
         {
             await ValidationHelper.ValidateObjects(request);
 
-            var question = await GetByIdAsync(request!.Id!.Value);
+            await GetByIdAsync(request!.Id!.Value);
 
             await _questionsRepository.DeleteAsync(request.Id.Value);
         }

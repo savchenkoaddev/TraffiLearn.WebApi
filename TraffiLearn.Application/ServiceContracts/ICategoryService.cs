@@ -1,23 +1,26 @@
-﻿using TraffiLearn.Domain.Entities;
+﻿using TraffiLearn.Application.DTO.Categories.Request;
+using TraffiLearn.Application.DTO.Categories.Response;
+using TraffiLearn.Application.DTO.Questions.Response;
+using TraffiLearn.Domain.Entities;
 
 namespace TraffiLearn.Application.ServiceContracts
 {
     public interface ICategoryService
     {
-        Task AddAsync(DrivingCategory item);
+        Task AddAsync(CategoryRequest? item);
 
         Task DeleteAsync(Guid? key);
 
-        Task UpdateAsync(Guid? key, DrivingCategory? item);
+        Task UpdateAsync(Guid? key, CategoryRequest? item);
 
-        Task<IEnumerable<DrivingCategory>> GetAllAsync();
+        Task<IEnumerable<CategoryResponse>> GetAllAsync();
 
-        Task<DrivingCategory> GetByIdAsync(Guid? key);
+        Task<CategoryResponse> GetByIdAsync(Guid? key);
 
-        Task<IEnumerable<Question>> GetQuestionsForCategory(Guid? categoryId);
+        Task<IEnumerable<QuestionResponse>> GetQuestionsForCategory(Guid? categoryId);
 
-        Task<Question?> GetRandomQuestionForCategory(Guid? categoryId);
+        Task<QuestionResponse?> GetRandomQuestionForCategory(Guid? categoryId);
 
-        Task<IEnumerable<Question>> GetTheoryTestForCategory(Guid? categoryId);
+        Task<IEnumerable<QuestionResponse>> GetTheoryTestForCategory(Guid? categoryId);
     }
 }
