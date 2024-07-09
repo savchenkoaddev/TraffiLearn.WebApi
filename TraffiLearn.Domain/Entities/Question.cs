@@ -16,8 +16,10 @@ namespace TraffiLearn.Domain.Entities
         public List<string> CorrectAnswears { get; set; }
 
         public QuestionNumberDetails NumberDetails { get; set; }
+
+        public ICollection<DrivingCategory> DrivingCategories { get; set; }
     }
 
     [ComplexType]
-    public sealed record QuestionNumberDetails(int TickerNumber, int QuestionNumber);
+    public sealed record QuestionNumberDetails(int TicketNumber, int QuestionNumber);
 }
