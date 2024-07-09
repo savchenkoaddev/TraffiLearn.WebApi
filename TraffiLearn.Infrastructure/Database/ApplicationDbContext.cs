@@ -10,6 +10,7 @@ namespace TraffiLearn.Infrastructure.Database
         { }
 
         public DbSet<Question> Questions { get; set; }
+        public DbSet<DrivingCategory> DrivingCategories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

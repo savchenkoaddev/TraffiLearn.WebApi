@@ -5,7 +5,7 @@ using TraffiLearn.Infrastructure.Database;
 
 namespace TraffiLearn.Infrastructure.Repositories
 {
-    public class QuestionsRepository : IQuestionsRepository
+    public sealed class QuestionsRepository : IQuestionsRepository
     {
         private readonly ApplicationDbContext _dbContext;
 
