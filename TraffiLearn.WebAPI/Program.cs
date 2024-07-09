@@ -21,6 +21,9 @@ namespace TraffiLearn.WebAPI
             builder.Services.AddScoped<IQuestionsRepository, QuestionsRepository>();
             builder.Services.AddScoped<IQuestionsService, QuestionsService>();
 
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+
             var sqlServerSettings = builder.Configuration.GetSection(SqlServerSettings.CONFIG_KEY).Get<SqlServerSettings>();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
