@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.ValueObjects;
 
 namespace TraffiLearn.Application.DTO.Questions.Request
 {
@@ -16,11 +16,9 @@ namespace TraffiLearn.Application.DTO.Questions.Request
         public List<string>? CorrectAnswears { get; set; }
 
         [Required]
-        [Range(1, int.MaxValue)]
-        public int? TicketNumber { get; set; }
+        public QuestionNumberDetails? NumberDetails { get; set; }
 
-        [Required]
-        [Range(1, int.MaxValue)]
-        public int? QuestionNumber { get; set; }
+        //[Required]
+        //public List<Guid>? CategoriesIds { get; set; }
     }
 }

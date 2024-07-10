@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using TraffiLearn.Domain.ValueObjects;
 
 namespace TraffiLearn.Domain.Entities
 {
@@ -19,7 +19,4 @@ namespace TraffiLearn.Domain.Entities
 
         public ICollection<DrivingCategory> DrivingCategories { get; set; }
     }
-
-    [ComplexType]
-    public sealed record QuestionNumberDetails(int TicketNumber, int QuestionNumber);
 }

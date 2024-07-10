@@ -5,14 +5,17 @@ using TraffiLearn.Infrastructure.Database;
 
 namespace TraffiLearn.Infrastructure.Repositories
 {
-    public sealed class QuestionsRepository : IQuestionsRepository
+    public sealed class QuestionRepository : IQuestionRepository
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public QuestionsRepository(ApplicationDbContext dbContext)
+        public QuestionRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
+
+        #region Generic Methods
+
 
         public async Task AddAsync(Question item)
         {
@@ -43,26 +46,29 @@ namespace TraffiLearn.Infrastructure.Repositories
             return await _dbContext.Questions.FindAsync(key);
         }
 
-        public async Task<Question?> GetRandomQuestionAsync()
-        {
-            var count = await _dbContext.Questions.CountAsync();
-
-            if (count == 0)
-            {
-                return null;
-            }
-
-            var randomIndex = new Random().Next(0, count);
-
-            return await _dbContext.Questions.Skip(randomIndex).FirstOrDefaultAsync();
-        }
-
         public async Task UpdateAsync(Guid key, Question item)
         {
             var found = await GetByIdAsync(key);
 
             _dbContext.Entry(found).CurrentValues.SetValues(item);
             await _dbContext.SaveChangesAsync();
+        }
+
+
+        #endregion
+
+        public async Task<Question?> GetRandomQuestionAsync()
+        {
+            int count = await _dbContext.Questions.CountAsync();
+
+            if (count == 0)
+            {
+                return null;
+            }
+
+            int index = new Random().Next(count);
+
+            return await _dbContext.Questions.Skip(index).Take(1).FirstOrDefaultAsync();
         }
     }
 }

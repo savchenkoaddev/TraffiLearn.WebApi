@@ -1,4 +1,6 @@
-﻿using TraffiLearn.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+using TraffiLearn.Application.DTO.Categories.Response;
+using TraffiLearn.Domain.ValueObjects;
 
 namespace TraffiLearn.Application.DTO.Questions.Response
 {

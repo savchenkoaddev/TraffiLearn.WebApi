@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using TraffiLearn.Domain.Entities;
-
-namespace TraffiLearn.Application.DTO.Categories.Response
+﻿namespace TraffiLearn.Application.DTO.Categories.Response
 {
     public sealed class CategoryResponse
     {

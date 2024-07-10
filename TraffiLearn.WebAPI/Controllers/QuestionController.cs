@@ -6,11 +6,11 @@ namespace TraffiLearn.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class QuestionsController : ControllerBase
+    public class QuestionController : ControllerBase
     {
-        private readonly IQuestionsService _questionService;
+        private readonly IQuestionService _questionService;
 
-        public QuestionsController(IQuestionsService questionService)
+        public QuestionController(IQuestionService questionService)
         {
             _questionService = questionService;
         }
@@ -30,9 +30,15 @@ namespace TraffiLearn.WebAPI.Controllers
         [HttpGet("[action]/{id:guid}")]
         public async Task<IActionResult> Remove(Guid? id)
         {
-            await _questionService.DeleteAsync(new QuestionDeleteRequest() { Id = id });
+            await _questionService.DeleteAsync(id);
 
             return NoContent();
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> RandomOne()
+        {
+            return Ok(await _questionService.GetRandomQuestionAsync());
         }
 
         [HttpPost("[action]")]

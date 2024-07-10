@@ -4,6 +4,7 @@ using TraffiLearn.Application.DTO.Questions.Response;
 using TraffiLearn.Application.ServiceContracts;
 using TraffiLearn.Application.Services.Helpers;
 using TraffiLearn.Application.Services.Mappers;
+using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Exceptions;
 using TraffiLearn.Domain.RepositoryContracts;
 
@@ -13,7 +14,7 @@ namespace TraffiLearn.Application.Services
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly CategoryMapper _categoryMapper = new();
-        private readonly QuestionsMapper _questionMapper = new();
+        private readonly QuestionMapper _questionMapper = new();
 
         public CategoryService(ICategoryRepository categoryRepository)
         {
@@ -95,9 +96,12 @@ namespace TraffiLearn.Application.Services
         {
             await ValidationHelper.ValidateObjects(key, item);
 
-            await ThrowIfCategoryNotFound(key.Value);
+            var question = await GetByIdAsync(key);
+            var entity = _categoryMapper.ToEntity(item!);
 
-            await _categoryRepository.UpdateAsync(key.Value, _categoryMapper.ToEntity(item));
+            entity.Id = question.Id;
+
+            await _categoryRepository.UpdateAsync(key!.Value, entity);
         }
 
         private async Task ThrowIfCategoryNotFound(Guid categoryId)

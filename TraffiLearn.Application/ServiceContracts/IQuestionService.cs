@@ -3,17 +3,17 @@ using TraffiLearn.Application.DTO.Questions.Response;
 
 namespace TraffiLearn.Application.ServiceContracts
 {
-    public interface IQuestionsService
+    public interface IQuestionService
     {
         Task<QuestionResponse> GetByIdAsync(Guid? questionId);
 
         Task<IEnumerable<QuestionResponse>> GetAllAsync();
 
-        Task AddAsync(QuestionAddRequest? item);
+        Task AddAsync(QuestionAddRequest? request);
 
-        Task UpdateAsync(Guid? questionId, QuestionUpdateRequest? item);
+        Task UpdateAsync(Guid? questionId, QuestionUpdateRequest? request);
 
-        Task DeleteAsync(QuestionDeleteRequest? request);
+        Task DeleteAsync(Guid? questionId);
 
         Task<QuestionResponse> GetRandomQuestionAsync();
     }
