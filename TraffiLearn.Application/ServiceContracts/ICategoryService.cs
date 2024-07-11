@@ -5,14 +5,14 @@ namespace TraffiLearn.Application.ServiceContracts
 {
     public interface ICategoryService
     {
-        Task AddAsync(CategoryRequest? item);
+        Task AddAsync(CategoryRequest? request);
 
-        Task DeleteAsync(Guid? key);
+        Task DeleteAsync(Guid? categoryId);
 
-        Task UpdateAsync(Guid? key, CategoryRequest? item);
+        Task UpdateAsync(Guid? categoryId, CategoryRequest? request);
 
         Task<IEnumerable<CategoryResponse>> GetAllAsync();
 
-        Task<CategoryResponse> GetByIdAsync(Guid? key);
+        Task<CategoryResponse> GetByIdAsync(Guid? categoryId);
     }
 }

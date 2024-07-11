@@ -6,11 +6,11 @@ namespace TraffiLearn.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class QuestionController : ControllerBase
+    public class QuestionsController : ControllerBase
     {
         private readonly IQuestionService _questionService;
 
-        public QuestionController(IQuestionService questionService)
+        public QuestionsController(IQuestionService questionService)
         {
             _questionService = questionService;
         }
@@ -38,7 +38,25 @@ namespace TraffiLearn.WebAPI.Controllers
         [HttpGet("[action]")]
         public async Task<IActionResult> RandomOne()
         {
-            return Ok(await _questionService.GetRandomQuestionAsync());
+            return Ok(await _questionService.GetRandomQuestion());
+        }
+
+        [HttpGet("[action]/{id:guid}")]
+        public async Task<IActionResult> RandomOneForCategory(Guid? id)
+        {
+            return Ok(await _questionService.GetRandomQuestionForCategory(id));
+        }
+
+        [HttpGet("[action]/{id:guid}")]
+        public async Task<IActionResult> ForCategory(Guid? id)
+        {
+            return Ok(await _questionService.GetQuestionsForCategory(id));
+        }
+
+        [HttpGet("[action]/{id:guid}")]
+        public async Task<IActionResult> TheoryTestForCategory(Guid? id)
+        {
+            return Ok(await _questionService.GetTheoryTestForCategory(id));
         }
 
         [HttpPost("[action]")]

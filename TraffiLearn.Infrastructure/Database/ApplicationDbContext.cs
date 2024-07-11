@@ -17,6 +17,7 @@ namespace TraffiLearn.Infrastructure.Database
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Question>().ComplexProperty(b => b.NumberDetails);
+            modelBuilder.Entity<Question>().Navigation(q => q.DrivingCategories).AutoInclude();
 
             //Seed data
         }

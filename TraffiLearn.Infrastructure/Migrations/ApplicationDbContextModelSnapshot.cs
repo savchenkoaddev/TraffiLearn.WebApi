@@ -82,10 +82,12 @@ namespace TraffiLearn.Infrastructure.Migrations
                         {
                             b1.IsRequired();
 
-                            b1.Property<int>("QuestionNumber")
+                            b1.Property<int?>("QuestionNumber")
+                                .IsRequired()
                                 .HasColumnType("int");
 
-                            b1.Property<int>("TicketNumber")
+                            b1.Property<int?>("TicketNumber")
+                                .IsRequired()
                                 .HasColumnType("int");
                         });
 

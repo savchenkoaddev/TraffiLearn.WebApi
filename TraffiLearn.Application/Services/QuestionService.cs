@@ -49,7 +49,6 @@ namespace TraffiLearn.Application.Services
             }
 
             var entity = _questionsMapper.ToEntity(request);
-            entity.NumberDetails = request.NumberDetails;
             entity.DrivingCategories = categoriesToAdd;
 
             await _questionRepository.AddAsync(entity);
@@ -65,7 +64,9 @@ namespace TraffiLearn.Application.Services
 
         public async Task<IEnumerable<QuestionResponse>> GetAllAsync()
         {
-            return _questionsMapper.ToResponse(await _questionRepository.GetAllAsync());
+            var all = await _questionRepository.GetAllAsync();
+
+            return _questionsMapper.ToResponse(all);
         }
 
         public async Task<QuestionResponse> GetByIdAsync(Guid? questionId)
@@ -101,7 +102,7 @@ namespace TraffiLearn.Application.Services
 
         #endregion
 
-        public async Task<QuestionResponse> GetRandomQuestionAsync()
+        public async Task<QuestionResponse> GetRandomQuestion()
         {
             var question = await _questionRepository.GetRandomQuestion();
 
@@ -141,6 +142,8 @@ namespace TraffiLearn.Application.Services
         public async Task<IEnumerable<QuestionResponse>> GetTheoryTestForCategory(Guid? categoryId)
         {
             await ValidationHelper.ValidateObjects(categoryId);
+
+            await ThrowIfCategoryNotFound(categoryId.Value);
 
             //NOT EFFECTIVE
             //TO DO: OPTIMIZE
