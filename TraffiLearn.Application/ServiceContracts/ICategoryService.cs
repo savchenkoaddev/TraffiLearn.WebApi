@@ -1,7 +1,5 @@
 ﻿using TraffiLearn.Application.DTO.Categories.Request;
 using TraffiLearn.Application.DTO.Categories.Response;
-using TraffiLearn.Application.DTO.Questions.Response;
-using TraffiLearn.Domain.Entities;
 
 namespace TraffiLearn.Application.ServiceContracts
 {
@@ -16,11 +14,5 @@ namespace TraffiLearn.Application.ServiceContracts
         Task<IEnumerable<CategoryResponse>> GetAllAsync();
 
         Task<CategoryResponse> GetByIdAsync(Guid? key);
-
-        Task<IEnumerable<QuestionResponse>> GetQuestionsForCategory(Guid? categoryId);
-
-        Task<QuestionResponse?> GetRandomQuestionForCategory(Guid? categoryId);
-
-        Task<IEnumerable<QuestionResponse>> GetTheoryTestForCategory(Guid? categoryId);
     }
 }

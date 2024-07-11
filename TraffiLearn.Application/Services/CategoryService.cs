@@ -14,7 +14,6 @@ namespace TraffiLearn.Application.Services
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly CategoryMapper _categoryMapper = new();
-        private readonly QuestionMapper _questionMapper = new();
 
         public CategoryService(ICategoryRepository categoryRepository)
         {
@@ -56,40 +55,6 @@ namespace TraffiLearn.Application.Services
             }
 
             return _categoryMapper.ToResponse(found);
-        }
-
-        public async Task<IEnumerable<QuestionResponse>> GetQuestionsForCategory(Guid? categoryId)
-        {
-            await ValidationHelper.ValidateObjects(categoryId);
-
-            await ThrowIfCategoryNotFound(categoryId.Value);
-
-            return _questionMapper.ToResponse(await _categoryRepository.GetQuestionsForCategory(categoryId.Value));
-        }
-
-        public async Task<QuestionResponse?> GetRandomQuestionForCategory(Guid? categoryId)
-        {
-            await ValidationHelper.ValidateObjects(categoryId);
-
-            await ThrowIfCategoryNotFound(categoryId.Value);
-
-            var question = await _categoryRepository.GetRandomQuestionForCategory(categoryId.Value);
-
-            if (question is null)
-            {
-                throw new InvalidOperationException("Cannot get random question for the category because the category does not have any questions.");
-            }
-
-            return _questionMapper.ToResponse(question);
-        }
-
-        public async Task<IEnumerable<QuestionResponse>> GetTheoryTestForCategory(Guid? categoryId)
-        {
-            await ValidationHelper.ValidateObjects(categoryId);
-
-            await ThrowIfCategoryNotFound(categoryId.Value);
-
-            return _questionMapper.ToResponse(await _categoryRepository.GetTheoryTestForCategory(categoryId.Value));
         }
 
         public async Task UpdateAsync(Guid? key, CategoryRequest? item)

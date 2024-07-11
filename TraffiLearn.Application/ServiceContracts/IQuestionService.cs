@@ -16,5 +16,11 @@ namespace TraffiLearn.Application.ServiceContracts
         Task DeleteAsync(Guid? questionId);
 
         Task<QuestionResponse> GetRandomQuestionAsync();
+
+        Task<IEnumerable<QuestionResponse>> GetQuestionsForCategory(Guid? categoryId);
+
+        Task<QuestionResponse> GetRandomQuestionForCategory(Guid? categoryId);
+
+        Task<IEnumerable<QuestionResponse>> GetTheoryTestForCategory(Guid? categoryId);
     }
 }

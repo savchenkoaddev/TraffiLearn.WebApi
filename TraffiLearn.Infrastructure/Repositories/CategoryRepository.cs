@@ -14,6 +14,9 @@ namespace TraffiLearn.Infrastructure.Repositories
             _dbContext = context;
         }
 
+        #region Generic Methods
+
+
         public async Task AddAsync(DrivingCategory item)
         {
             await _dbContext.DrivingCategories.AddAsync(item);
@@ -43,46 +46,6 @@ namespace TraffiLearn.Infrastructure.Repositories
             return await _dbContext.DrivingCategories.FindAsync(key);
         }
 
-        public async Task<IEnumerable<Question>> GetQuestionsForCategory(Guid categoryId)
-        {
-            return (await _dbContext.DrivingCategories.FindAsync(categoryId)).Questions;
-        }
-
-        public async Task<Question?> GetRandomQuestionForCategory(Guid categoryId)
-        {
-            var questions = await _dbContext.DrivingCategories
-                .Where(c => c.Id == categoryId)
-                .SelectMany(c => c.Questions)
-                .ToListAsync();
-
-            if (questions.Any())
-            {
-                var random = new Random();
-                int index = random.Next(questions.Count);
-                return questions[index];
-            }
-
-            return null;
-        }
-
-        public async Task<IEnumerable<Question>> GetTheoryTestForCategory(Guid categoryId)
-        {
-            var questions = await _dbContext.DrivingCategories
-                .Where(c => c.Id == categoryId)
-                .SelectMany(c => c.Questions)
-                .ToListAsync();
-
-            if (questions.Any())
-            {
-                var random = new Random();
-                var shuffledQuestions = questions.OrderBy(q => random.Next()).ToList();
-
-                return shuffledQuestions.Take(20);
-            }
-
-            return Enumerable.Empty<Question>();
-        }
-
         public async Task UpdateAsync(Guid key, DrivingCategory item)
         {
             var found = await GetByIdAsync(key);
@@ -90,5 +53,8 @@ namespace TraffiLearn.Infrastructure.Repositories
             _dbContext.Entry(found).CurrentValues.SetValues(item);
             await _dbContext.SaveChangesAsync();
         }
+
+
+        #endregion
     }
 }

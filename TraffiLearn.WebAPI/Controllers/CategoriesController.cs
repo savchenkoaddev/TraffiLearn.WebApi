@@ -35,23 +35,23 @@ namespace TraffiLearn.WebAPI.Controllers
             return NoContent();
         }
 
-        [HttpGet("{id:guid}/[action]")]
-        public async Task<IActionResult> Questions(Guid? id)
-        {
-            return Ok(await _categoryService.GetQuestionsForCategory(id));
-        }
+        //[HttpGet("{id:guid}/[action]")]
+        //public async Task<IActionResult> Questions(Guid? id)
+        //{
+        //    return Ok(await _categoryService.GetQuestionsForCategory(id));
+        //}
 
-        [HttpGet("{id:guid}/[action]")]
-        public async Task<IActionResult> RandomQuestion(Guid? id)
-        {
-            return Ok(await _categoryService.GetRandomQuestionForCategory(id));
-        }
+        //[HttpGet("{id:guid}/[action]")]
+        //public async Task<IActionResult> RandomQuestion(Guid? id)
+        //{
+        //    return Ok(await _categoryService.GetRandomQuestionForCategory(id));
+        //}
 
-        [HttpGet("{id:guid}/[action]")]
-        public async Task<IActionResult> TheoryTest(Guid? id)
-        {
-            return Ok(await _categoryService.GetTheoryTestForCategory(id));
-        }
+        //[HttpGet("{id:guid}/[action]")]
+        //public async Task<IActionResult> TheoryTest(Guid? id)
+        //{
+        //    return Ok(await _categoryService.GetTheoryTestForCategory(id));
+        //}
 
         [HttpPost("[action]")]
         public async Task<IActionResult> Add(CategoryRequest? request)

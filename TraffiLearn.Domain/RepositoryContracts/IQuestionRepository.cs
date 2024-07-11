@@ -5,12 +5,10 @@ namespace TraffiLearn.Domain.RepositoryContracts
 {
     public interface IQuestionRepository : IRepository<Question, Guid>
     {
-        Task<Question?> GetRandomQuestionAsync();
+        Task<Question?> GetRandomQuestion();
 
         Task<Question?> GetRandomQuestionForCategory(Guid categoryId);
 
         Task<IEnumerable<Question>> GetQuestionsForCategory(Guid categoryId);
-
-        Task<IEnumerable<Question>> GetTheoryTestForCategory(Guid categoryId);
     }
 }

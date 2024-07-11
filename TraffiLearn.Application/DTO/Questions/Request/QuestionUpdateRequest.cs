@@ -17,8 +17,5 @@ namespace TraffiLearn.Application.DTO.Questions.Request
 
         [Required]
         public QuestionNumberDetails? NumberDetails { get; set; }
-
-        //[Required]
-        //public List<Guid>? CategoriesIds { get; set; }
     }
 }
