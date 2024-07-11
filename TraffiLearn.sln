@@ -7,13 +7,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{153C3EC4-AE7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{23904BBD-0071-49EB-A723-9524FB67C422}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TraffiLearn.Domain", "TraffiLearn.Domain\TraffiLearn.Domain.csproj", "{266CB284-0354-4C8C-8FF8-CCD4829FAC1F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TraffiLearn.Domain", "TraffiLearn.Domain\TraffiLearn.Domain.csproj", "{266CB284-0354-4C8C-8FF8-CCD4829FAC1F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TraffiLearn.Application", "TraffiLearn.Application\TraffiLearn.Application.csproj", "{DE6144ED-B6BD-402B-A3E2-024821202E3D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TraffiLearn.Application", "TraffiLearn.Application\TraffiLearn.Application.csproj", "{DE6144ED-B6BD-402B-A3E2-024821202E3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TraffiLearn.Infrastructure", "TraffiLearn.Infrastructure\TraffiLearn.Infrastructure.csproj", "{FC47C713-7884-454C-8522-0BD303348F4E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TraffiLearn.Infrastructure", "TraffiLearn.Infrastructure\TraffiLearn.Infrastructure.csproj", "{FC47C713-7884-454C-8522-0BD303348F4E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TraffiLearn.WebAPI", "TraffiLearn.WebAPI\TraffiLearn.WebAPI.csproj", "{8654B2FD-FE4D-45FC-9435-6110E6F09379}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TraffiLearn.WebAPI", "TraffiLearn.WebAPI\TraffiLearn.WebAPI.csproj", "{8654B2FD-FE4D-45FC-9435-6110E6F09379}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -6,7 +6,7 @@ using TraffiLearn.Domain.Entities;
 namespace TraffiLearn.Application.Services.Mappers
 {
     [Mapper]
-    public partial class QuestionsMapper
+    public partial class QuestionMapper
     {
         public partial Question ToEntity(QuestionAddRequest request);
 

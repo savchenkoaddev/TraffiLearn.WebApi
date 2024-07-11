@@ -3,8 +3,6 @@ using TraffiLearn.Domain.RepositoryContracts.Abstractions;
 
 namespace TraffiLearn.Domain.RepositoryContracts
 {
-    public interface IQuestionsRepository : IRepository<Question, Guid>
-    {
-        Task<Question?> GetRandomQuestionAsync();
-    }
+    public interface ICategoryRepository : IRepository<DrivingCategory, Guid>
+    { }
 }

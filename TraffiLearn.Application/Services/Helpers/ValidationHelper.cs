@@ -8,14 +8,14 @@ namespace TraffiLearn.Application.Services.Helpers
         {
             if (objects is null)
             {
-                throw new ValidationException(nameof(objects));
+                throw new ArgumentNullException(nameof(objects));
             }
 
             foreach (var obj in objects)
             {
                 if (obj is null)
                 {
-                    throw new ValidationException(nameof(obj));
+                    throw new ArgumentNullException(nameof(obj));
                 }
 
                 ValidationContext validationContext = new ValidationContext(obj);

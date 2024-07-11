@@ -8,9 +8,9 @@ namespace TraffiLearn.WebAPI.Controllers
     [ApiController]
     public class QuestionsController : ControllerBase
     {
-        private readonly IQuestionsService _questionService;
+        private readonly IQuestionService _questionService;
 
-        public QuestionsController(IQuestionsService questionService)
+        public QuestionsController(IQuestionService questionService)
         {
             _questionService = questionService;
         }
@@ -30,9 +30,33 @@ namespace TraffiLearn.WebAPI.Controllers
         [HttpGet("[action]/{id:guid}")]
         public async Task<IActionResult> Remove(Guid? id)
         {
-            await _questionService.DeleteAsync(new QuestionDeleteRequest() { Id = id });
+            await _questionService.DeleteAsync(id);
 
             return NoContent();
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> RandomOne()
+        {
+            return Ok(await _questionService.GetRandomQuestion());
+        }
+
+        [HttpGet("[action]/{id:guid}")]
+        public async Task<IActionResult> RandomOneForCategory(Guid? id)
+        {
+            return Ok(await _questionService.GetRandomQuestionForCategory(id));
+        }
+
+        [HttpGet("[action]/{id:guid}")]
+        public async Task<IActionResult> ForCategory(Guid? id)
+        {
+            return Ok(await _questionService.GetQuestionsForCategory(id));
+        }
+
+        [HttpGet("[action]/{id:guid}")]
+        public async Task<IActionResult> TheoryTestForCategory(Guid? id)
+        {
+            return Ok(await _questionService.GetTheoryTestForCategory(id));
         }
 
         [HttpPost("[action]")]
