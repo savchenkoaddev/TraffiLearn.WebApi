@@ -3,6 +3,6 @@ using TraffiLearn.Domain.RepositoryContracts.Abstractions;
 
 namespace TraffiLearn.Domain.RepositoryContracts
 {
-    public interface IQuestionRepository : IRepository<Question, Guid>
+    public interface IAnswerRepository : IRepository<Answer, Guid>
     { }
 }
