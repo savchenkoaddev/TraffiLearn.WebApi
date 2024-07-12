@@ -22,6 +22,6 @@ namespace TraffiLearn.Domain.Entities
 
         public ICollection<Answer> Answers { get; set; } = [];
 
-        public QuestionTitleDetails? TitleDetails { get; set; }
+        public QuestionTitleDetails TitleDetails { get; set; }
     }
 }

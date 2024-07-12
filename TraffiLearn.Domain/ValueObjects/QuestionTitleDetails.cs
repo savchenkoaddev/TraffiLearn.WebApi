@@ -7,9 +7,9 @@ namespace TraffiLearn.Domain.ValueObjects
     public sealed record QuestionTitleDetails
     {
         [Range(1, int.MaxValue)]
-        public int TicketNumber { get; init; }
+        public int? TicketNumber { get; init; }
 
         [Range(1, int.MaxValue)]
-        public int QuestionNumber { get; init; }
+        public int? QuestionNumber { get; init; }
     };
 }

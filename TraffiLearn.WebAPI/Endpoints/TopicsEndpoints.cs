@@ -19,13 +19,13 @@ namespace TraffiLearn.WebAPI.Endpoints
 
             group.MapGet("", GetAllTopics);
 
-            group.MapGet("{id:guid}", GetTopicById);
+            group.MapGet("{topicId:guid}", GetTopicById);
 
             group.MapPost("", CreateTopic);
 
             group.MapDelete("", DeleteTopic);
 
-            group.MapPut("{id:guid}", UpdateTopic);
+            group.MapPut("{topicId:guid}", UpdateTopic);
         }
 
         public static async Task<Ok> CreateTopic(
