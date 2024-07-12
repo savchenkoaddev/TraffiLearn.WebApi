@@ -16,6 +16,6 @@ namespace TraffiLearn.Application.DTO.Questions.Request
         public List<string>? CorrectAnswears { get; set; }
 
         [Required]
-        public QuestionNumberDetails? NumberDetails { get; set; }
+        public QuestionTitleDetails? NumberDetails { get; set; }
     }
 }

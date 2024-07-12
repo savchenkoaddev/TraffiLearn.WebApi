@@ -5,18 +5,23 @@ namespace TraffiLearn.Domain.Entities
 {
     public sealed class Question
     {
-        [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        [StringLength(500)]
-        public string Text { get; set; }
+        [StringLength(2000)]
+        public string Content { get; set; }
 
-        public List<string> PossibleAnswears { get; set; }
+        public string Explanation { get; set; }
 
-        public List<string> CorrectAnswears { get; set; }
+        [Range(0, int.MaxValue)]
+        public int LikesCount { get; set; }
 
-        public QuestionNumberDetails NumberDetails { get; set; }
+        [Range(0, int.MaxValue)]
+        public int DislikesCount { get; set; }
 
-        public ICollection<DrivingCategory> DrivingCategories { get; set; }
+        public ICollection<Topic> Topics { get; set; }
+
+        public ICollection<Answer> Answers { get; set; }
+
+        public QuestionTitleDetails? TitleDetails { get; set; }
     }
 }

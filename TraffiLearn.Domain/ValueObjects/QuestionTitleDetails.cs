@@ -4,14 +4,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace TraffiLearn.Domain.ValueObjects
 {
     [ComplexType]
-    public sealed record QuestionNumberDetails
+    public sealed record QuestionTitleDetails
     {
-        [Required]
         [Range(1, int.MaxValue)]
-        public int? TicketNumber { get; init; }
+        public int TicketNumber { get; init; }
 
-        [Required]
         [Range(1, int.MaxValue)]
-        public int? QuestionNumber { get; init; }
+        public int QuestionNumber { get; init; }
     };
 }
