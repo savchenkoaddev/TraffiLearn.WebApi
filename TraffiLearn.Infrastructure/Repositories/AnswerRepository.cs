@@ -5,21 +5,21 @@ using TraffiLearn.Infrastructure.Database;
 
 namespace TraffiLearn.Infrastructure.Repositories
 {
-    public sealed class QuestionRepository : IQuestionRepository
+    public sealed class AnswerRepository : IAnswerRepository
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public QuestionRepository(ApplicationDbContext dbContext)
+        public AnswerRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public async Task AddAsync(Question entity)
+        public async Task AddAsync(Answer entity)
         {
-            await _dbContext.Questions.AddAsync(entity);
+            await _dbContext.Answers.AddAsync(entity);
         }
 
-        public async Task DeleteAsync(Question entity)
+        public async Task DeleteAsync(Answer entity)
         {
             _dbContext.Remove(entity);
 
@@ -28,20 +28,20 @@ namespace TraffiLearn.Infrastructure.Repositories
 
         public async Task<bool> ExistsAsync(Guid key)
         {
-            return (await _dbContext.Questions.FindAsync(key)) is not null;
+            return (await _dbContext.Answers.FindAsync(key)) is not null;
         }
 
-        public async Task<IEnumerable<Question>> GetAllAsync()
+        public async Task<IEnumerable<Answer>> GetAllAsync()
         {
-            return await _dbContext.Questions.ToListAsync();
+            return await _dbContext.Answers.ToListAsync();
         }
 
-        public async Task<Question?> GetByIdAsync(Guid key)
+        public async Task<Answer?> GetByIdAsync(Guid key)
         {
-            return await _dbContext.Questions.FindAsync(key);
+            return await _dbContext.Answers.FindAsync(key);
         }
 
-        public async Task UpdateAsync(Question oldEntity, Question newEntity)
+        public async Task UpdateAsync(Answer oldEntity, Answer newEntity)
         {
             _dbContext.Entry(oldEntity).CurrentValues.SetValues(newEntity);
 

@@ -8,10 +8,10 @@
 
         Task<bool> ExistsAsync(TKey key);
 
-        Task AddAsync(TEntity item);
+        Task AddAsync(TEntity entity);
 
-        Task UpdateAsync(TKey key, TEntity item);
+        Task UpdateAsync(TEntity oldEntity, TEntity newEntity);
 
-        Task DeleteAsync(TKey key);
+        Task DeleteAsync(TEntity entity);
     }
 }
