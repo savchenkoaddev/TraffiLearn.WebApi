@@ -10,7 +10,7 @@ namespace TraffiLearn.Domain.Entities
         [StringLength(2000)]
         public string Content { get; set; }
 
-        public string Explanation { get; set; }
+        public string Explanation { get; set; } 
 
         [Range(0, int.MaxValue)]
         public int LikesCount { get; set; }

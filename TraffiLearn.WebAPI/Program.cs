@@ -31,7 +31,6 @@ namespace TraffiLearn.WebAPI
             app.UseRouting();
             app.UseAuthorization();
 
-
             app.MapControllers();
             app.MapCarter();
 
