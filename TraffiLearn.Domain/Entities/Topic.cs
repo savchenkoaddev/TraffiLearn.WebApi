@@ -11,6 +11,6 @@ namespace TraffiLearn.Domain.Entities
         [StringLength(300)]
         public string Title { get; set; }
 
-        public ICollection<Question> Questions { get; set; }
+        public ICollection<Question> Questions { get; set; } = [];
     }
 }

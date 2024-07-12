@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.RepositoryContracts.Abstractions;
+using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Infrastructure.Database;
 
 namespace TraffiLearn.Infrastructure.Repositories
 {
-    public sealed class TopicRepository : IRepository<Topic, Guid>
+    public sealed class TopicRepository : ITopicRepository
     {
         private readonly ApplicationDbContext _dbContext;
 
@@ -17,13 +17,13 @@ namespace TraffiLearn.Infrastructure.Repositories
         public async Task AddAsync(Topic entity)
         {
             await _dbContext.Topics.AddAsync(entity);
-            await _dbContext.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Topic entity)
         {
             _dbContext.Remove(entity);
-            await _dbContext.SaveChangesAsync();
+
+            await Task.CompletedTask;
         }
 
         public async Task<bool> ExistsAsync(Guid key)
@@ -44,7 +44,8 @@ namespace TraffiLearn.Infrastructure.Repositories
         public async Task UpdateAsync(Topic oldEntity, Topic newEntity)
         {
             _dbContext.Entry(oldEntity).CurrentValues.SetValues(newEntity);
-            await _dbContext.SaveChangesAsync();
+
+            await Task.CompletedTask;
         }
     }
 }

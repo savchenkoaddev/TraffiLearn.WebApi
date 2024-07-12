@@ -7,11 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.2" />
+    <PackageReference Include="MediatR" Version="12.3.0" />
     <PackageReference Include="Riok.Mapperly" Version="3.6.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TraffiLearn.Domain\TraffiLearn.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Answers\Commands\" />
+    <Folder Include="Answers\Queries\" />
+    <Folder Include="DTO\Questions\Request\" />
+    <Folder Include="DTO\Questions\Response\" />
+    <Folder Include="Questions\Commands\" />
+    <Folder Include="Questions\Queries\" />
   </ItemGroup>
 
 </Project>

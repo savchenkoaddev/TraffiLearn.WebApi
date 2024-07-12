@@ -17,13 +17,13 @@ namespace TraffiLearn.Infrastructure.Repositories
         public async Task AddAsync(Question entity)
         {
             await _dbContext.Questions.AddAsync(entity);
-            await _dbContext.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Question entity)
         {
             _dbContext.Remove(entity);
-            await _dbContext.SaveChangesAsync();
+
+            await Task.CompletedTask;
         }
 
         public async Task<bool> ExistsAsync(Guid key)
@@ -44,7 +44,8 @@ namespace TraffiLearn.Infrastructure.Repositories
         public async Task UpdateAsync(Question oldEntity, Question newEntity)
         {
             _dbContext.Entry(oldEntity).CurrentValues.SetValues(newEntity);
-            await _dbContext.SaveChangesAsync();
+
+            await Task.CompletedTask;
         }
     }
 }

@@ -18,9 +18,9 @@ namespace TraffiLearn.Domain.Entities
         [Range(0, int.MaxValue)]
         public int DislikesCount { get; set; }
 
-        public ICollection<Topic> Topics { get; set; }
+        public ICollection<Topic> Topics { get; set; } = [];
 
-        public ICollection<Answer> Answers { get; set; }
+        public ICollection<Answer> Answers { get; set; } = [];
 
         public QuestionTitleDetails? TitleDetails { get; set; }
     }

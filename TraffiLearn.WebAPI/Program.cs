@@ -1,10 +1,5 @@
-using Microsoft.EntityFrameworkCore;
-using TraffiLearn.Application.ServiceContracts;
-using TraffiLearn.Application.Services;
-using TraffiLearn.Domain.RepositoryContracts;
-using TraffiLearn.Infrastructure.Database;
-using TraffiLearn.Infrastructure.Options;
-using TraffiLearn.Infrastructure.Repositories;
+using TraffiLearn.Application;
+using TraffiLearn.Infrastructure;
 
 namespace TraffiLearn.WebAPI
 {
@@ -18,18 +13,8 @@ namespace TraffiLearn.WebAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
-            builder.Services.AddScoped<IQuestionService, QuestionService>();
-
-            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-            builder.Services.AddScoped<ICategoryService, CategoryService>();
-
-            var sqlServerSettings = builder.Configuration.GetSection(SqlServerSettings.CONFIG_KEY).Get<SqlServerSettings>();
-
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            {
-                options.UseSqlServer(sqlServerSettings.ConnectionString);
-            });
+            builder.Services.AddApplication();
+            builder.Services.AddInfrastructure(builder.Configuration);
 
             var app = builder.Build();
 
