@@ -7,7 +7,7 @@ namespace TraffiLearn.Application.Questions.Commands.UpdateQuestion
         public UpdateQuestionCommandValidator()
         {
             RuleFor(x => x.RequestObject)
-                .NotNull();
+                .NotEmpty();
 
             RuleFor(x => x.QuestionId)
                 .NotEmpty();

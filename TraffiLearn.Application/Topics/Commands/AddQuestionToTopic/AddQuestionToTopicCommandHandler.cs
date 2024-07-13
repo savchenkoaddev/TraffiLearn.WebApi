@@ -30,7 +30,9 @@ namespace TraffiLearn.Application.Topics.Commands.AddQuestionToTopic
                 throw new QuestionNotFoundException(request.QuestionId.Value);
             }
 
-            var topic = await _topicRepository.GetByIdAsync(request.TopicId.Value);
+            var topic = await _topicRepository.GetByIdAsync(
+                request.TopicId.Value, 
+                includeExpression: x => x.Questions);
 
             if (topic is null)
             {

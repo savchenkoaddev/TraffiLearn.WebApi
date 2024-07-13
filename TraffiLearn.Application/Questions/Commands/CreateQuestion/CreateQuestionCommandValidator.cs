@@ -7,7 +7,7 @@ namespace TraffiLearn.Application.Questions.Commands.CreateQuestion
         public CreateQuestionCommandValidator()
         {
             RuleFor(x => x.RequestObject)
-                .NotNull();
+                .NotEmpty();
 
             RuleFor(x => x.RequestObject.Explanation)
                 .NotEmpty()
@@ -29,7 +29,7 @@ namespace TraffiLearn.Application.Questions.Commands.CreateQuestion
                .When(x => x.RequestObject is not null);
 
             RuleFor(x => x.RequestObject.TopicsIds)
-                .NotNull()
+                .NotEmpty()
                 .When(x => x.RequestObject is not null);
 
             RuleForEach(x => x.RequestObject.TopicsIds)

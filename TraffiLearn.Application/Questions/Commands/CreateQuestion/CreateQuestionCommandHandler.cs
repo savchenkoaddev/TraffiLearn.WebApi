@@ -35,7 +35,7 @@ namespace TraffiLearn.Application.Questions.Commands.CreateQuestion
                     throw new TopicNotFoundException(topicId.Value);
                 }
 
-                topic.Questions.Add(entity);
+                entity.Topics.Add(topic);
             }
 
             await _questionRepository.AddAsync(entity);

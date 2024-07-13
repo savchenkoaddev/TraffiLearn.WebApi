@@ -29,7 +29,7 @@ namespace TraffiLearn.WebAPI.Endpoints
 
             group.MapPost("", CreateTopic);
 
-            group.MapPost("addquestion", AddQuestionToTopic);
+            group.MapPut("addquestion", AddQuestionToTopic);
 
             group.MapPut("{topicId:guid}", UpdateTopic);
 
@@ -37,6 +37,9 @@ namespace TraffiLearn.WebAPI.Endpoints
 
             group.MapDelete("{topicId:guid}/removequestion/{questionId:guid}", RemoveQuestionForTopic);
         }
+
+        #region Commands
+
 
         public static async Task<Ok> CreateTopic(
             TopicRequest? request,
@@ -66,6 +69,37 @@ namespace TraffiLearn.WebAPI.Endpoints
             return TypedResults.NoContent();
         }
 
+
+        public static async Task<Ok> AddQuestionToTopic(
+            Guid? QuestionId,
+            Guid? TopicId,
+            ISender sender)
+        {
+            var command = new AddQuestionToTopicCommand(QuestionId, TopicId);
+
+            await sender.Send(command);
+
+            return TypedResults.Ok();
+        }
+
+        public static async Task<NoContent> RemoveQuestionForTopic(
+            Guid? QuestionId,
+            Guid? TopicId,
+            ISender sender)
+        {
+            var command = new RemoveQuestionForTopicCommand(QuestionId, TopicId);
+
+            await sender.Send(command);
+
+            return TypedResults.NoContent();
+        }
+
+
+        #endregion
+
+        #region Queries
+
+
         public static async Task<Ok<IEnumerable<TopicResponse>>> GetAllTopics(
             ISender sender)
         {
@@ -92,28 +126,7 @@ namespace TraffiLearn.WebAPI.Endpoints
             return TypedResults.Ok(questions);
         }
 
-        public static async Task<Ok> AddQuestionToTopic(
-            Guid? QuestionId,
-            Guid? TopicId,
-            ISender sender)
-        {
-            var command = new AddQuestionToTopicCommand(QuestionId, TopicId);
 
-            await sender.Send(command);
-
-            return TypedResults.Ok();
-        }
-
-        public static async Task<NoContent> RemoveQuestionForTopic(
-            Guid? QuestionId,
-            Guid? TopicId,
-            ISender sender)
-        {
-            var command = new RemoveQuestionForTopicCommand(QuestionId, TopicId);
-
-            await sender.Send(command);
-
-            return TypedResults.NoContent();
-        }
+        #endregion
     }
 }

@@ -30,7 +30,9 @@ namespace TraffiLearn.Application.Questions.Commands.RemoveTopicForQuestion
                 throw new TopicNotFoundException(request.TopicId.Value);
             }
 
-            var question = await _questionRepository.GetByIdAsync(request.QuestionId.Value);
+            var question = await _questionRepository.GetByIdAsync(
+                request.QuestionId.Value,
+                includeExpression: x => x.Topics);
 
             if (question is null)
             {

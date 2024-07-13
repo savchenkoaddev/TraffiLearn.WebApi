@@ -24,18 +24,20 @@ namespace TraffiLearn.Application.Topics.Commands.RemoveQuestionForTopic
 
         public async Task Handle(RemoveQuestionForTopicCommand request, CancellationToken cancellationToken)
         {
-            var topic = await _topicRepository.GetByIdAsync(request.TopicId.Value);
-
-            if (topic is null)
-            {
-                throw new TopicNotFoundException(request.TopicId.Value);
-            }
-
             var question = await _questionRepository.GetByIdAsync(request.QuestionId.Value);
 
             if (question is null)
             {
                 throw new QuestionNotFoundException(request.QuestionId.Value);
+            }
+
+            var topic = await _topicRepository.GetByIdAsync(
+                request.TopicId.Value, 
+                includeExpression: x => x.Questions);
+
+            if (topic is null)
+            {
+                throw new TopicNotFoundException(request.TopicId.Value);
             }
 
             if (!topic.Questions.Any(x => x.Id == question.Id))

@@ -1,8 +1,10 @@
-﻿namespace TraffiLearn.Domain.RepositoryContracts.Abstractions
+﻿using System.Linq.Expressions;
+
+namespace TraffiLearn.Domain.RepositoryContracts.Abstractions
 {
     public interface IRepository<TEntity, TKey>
     {
-        Task<TEntity?> GetByIdAsync(TKey key);
+        Task<TEntity?> GetByIdAsync(TKey key, Expression<Func<TEntity, object>> includeExpression = null);
 
         Task<IEnumerable<TEntity>> GetAllAsync();
 

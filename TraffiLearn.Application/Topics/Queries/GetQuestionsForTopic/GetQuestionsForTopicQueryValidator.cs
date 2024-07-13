@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FluentValidation;
 
 namespace TraffiLearn.Application.Topics.Queries.GetQuestionsForTopic
 {
-    internal class GetQuestionsForTopicQueryValidator
+    public sealed class GetQuestionsForTopicQueryValidator : AbstractValidator<GetQuestionsForTopicQuery>
     {
+        public GetQuestionsForTopicQueryValidator()
+        {
+            RuleFor(x => x.TopicId)
+                .NotEmpty();
+        }
     }
 }
