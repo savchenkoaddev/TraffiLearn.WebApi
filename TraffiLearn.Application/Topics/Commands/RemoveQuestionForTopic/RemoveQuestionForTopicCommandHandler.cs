@@ -1,17 +1,18 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Data;
+using TraffiLearn.Application.Questions.Commands.RemoveTopicForQuestion;
 using TraffiLearn.Domain.Exceptions;
 using TraffiLearn.Domain.RepositoryContracts;
 
-namespace TraffiLearn.Application.Questions.Commands.RemoveTopicForQuestion
+namespace TraffiLearn.Application.Topics.Commands.RemoveQuestionForTopic
 {
-    public sealed class RemoveTopicForQuestionCommandHandler : IRequestHandler<RemoveTopicForQuestionCommand>
+    public sealed class RemoveQuestionForTopicCommandHandler : IRequestHandler<RemoveQuestionForTopicCommand>
     {
         private readonly IQuestionRepository _questionRepository;
         private readonly ITopicRepository _topicRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public RemoveTopicForQuestionCommandHandler(
+        public RemoveQuestionForTopicCommandHandler(
             IQuestionRepository questionRepository,
             ITopicRepository topicRepository,
             IUnitOfWork unitOfWork)
@@ -21,7 +22,7 @@ namespace TraffiLearn.Application.Questions.Commands.RemoveTopicForQuestion
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Handle(RemoveTopicForQuestionCommand request, CancellationToken cancellationToken)
+        public async Task Handle(RemoveQuestionForTopicCommand request, CancellationToken cancellationToken)
         {
             var topic = await _topicRepository.GetByIdAsync(request.TopicId.Value);
 
@@ -37,14 +38,14 @@ namespace TraffiLearn.Application.Questions.Commands.RemoveTopicForQuestion
                 throw new QuestionNotFoundException(request.QuestionId.Value);
             }
 
-            if (!question.Topics.Any(x => x.Id == topic.Id))
+            if (!topic.Questions.Any(x => x.Id == question.Id))
             {
-                throw new TopicAlreadyRemovedFromQuestionException(
-                    topicId: topic.Id, 
+                throw new QuestionAlreadyRemovedFromTopicException(
+                    topicId: topic.Id,
                     questionId: question.Id);
             }
 
-            question.Topics.Remove(topic);
+            topic.Questions.Remove(question);
             await _unitOfWork.SaveChangesAsync();
         }
     }

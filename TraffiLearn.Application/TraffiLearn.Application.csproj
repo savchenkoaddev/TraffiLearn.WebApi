@@ -20,8 +20,6 @@
   <ItemGroup>
     <Folder Include="Answers\Commands\" />
     <Folder Include="Answers\Queries\" />
-    <Folder Include="Topics\Commands\AddQuestionToTopic\" />
-    <Folder Include="Topics\Commands\RemoveQuestionForTopic\" />
   </ItemGroup>
 
 </Project>

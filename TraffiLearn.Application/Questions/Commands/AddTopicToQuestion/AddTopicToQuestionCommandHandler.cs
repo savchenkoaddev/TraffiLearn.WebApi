@@ -39,7 +39,9 @@ namespace TraffiLearn.Application.Questions.Commands.AddTopicToQuestion
 
             if (question.Topics.Any(x => x.Id == topic.Id))
             {
-                throw new TopicAlreadyInQuestionException(topic.Id, question.Id);
+                throw new TopicAlreadyInQuestionException(
+                    topicId: topic.Id, 
+                    questionId: question.Id);
             }
 
             question.Topics.Add(topic);
