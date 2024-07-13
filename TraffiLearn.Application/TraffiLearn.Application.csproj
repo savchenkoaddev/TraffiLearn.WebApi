@@ -20,10 +20,6 @@
   <ItemGroup>
     <Folder Include="Answers\Commands\" />
     <Folder Include="Answers\Queries\" />
-    <Folder Include="DTO\Questions\Request\" />
-    <Folder Include="DTO\Questions\Response\" />
-    <Folder Include="Questions\Commands\" />
-    <Folder Include="Questions\Queries\" />
   </ItemGroup>
 
 </Project>

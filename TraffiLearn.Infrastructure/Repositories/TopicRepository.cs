@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Infrastructure.Database;
@@ -36,8 +37,15 @@ namespace TraffiLearn.Infrastructure.Repositories
             return await _dbContext.Topics.ToListAsync();
         }
 
-        public async Task<Topic?> GetByIdAsync(Guid key)
+        public async Task<Topic?> GetByIdAsync(Guid key, Expression<Func<Topic, object>> includeExpression = null)
         {
+            if (includeExpression is not null)
+            {
+                return await _dbContext.Topics
+                    .Include(includeExpression)
+                    .FirstOrDefaultAsync(t => t.Id == key);
+            }
+
             return await _dbContext.Topics.FindAsync(key);
         }
 

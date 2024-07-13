@@ -6,13 +6,22 @@ namespace TraffiLearn.Application.Topics.Commands.UpdateTopic
     {
         public UpdateTopicCommandValidator()
         {
+            RuleFor(x => x.RequestObject)
+                .NotEmpty();
+
+            RuleFor(x => x.TopicId)
+                .NotEmpty()
+                .When(x => x.RequestObject is not null);
+
             RuleFor(x => x.RequestObject.Number)
                 .NotEmpty()
-                .GreaterThanOrEqualTo(1);
+                .GreaterThanOrEqualTo(1)
+                .When(x => x.RequestObject is not null);
 
             RuleFor(x => x.RequestObject.Title)
                 .NotEmpty()
-                .MaximumLength(300);
+                .MaximumLength(300)
+                .When(x => x.RequestObject is not null);
         }
     }
 }

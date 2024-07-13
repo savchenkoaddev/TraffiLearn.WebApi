@@ -12,6 +12,6 @@ namespace TraffiLearn.Application.Topics
 
         public partial TopicResponse ToResponse(Topic topic);
 
-        public partial IEnumerable<TopicResponse> ToResponse(IEnumerable<Topic> questions);
+        public partial IEnumerable<TopicResponse> ToResponse(IEnumerable<Topic> topics);
     }
 }
