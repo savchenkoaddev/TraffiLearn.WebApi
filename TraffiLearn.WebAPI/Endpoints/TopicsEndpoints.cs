@@ -1,13 +1,17 @@
 ﻿using Carter;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
+using TraffiLearn.Application.DTO.Questions.Response;
 using TraffiLearn.Application.DTO.Topics.Request;
 using TraffiLearn.Application.DTO.Topics.Response;
+using TraffiLearn.Application.Topics.Commands.AddQuestionToTopic;
 using TraffiLearn.Application.Topics.Commands.CreateTopic;
 using TraffiLearn.Application.Topics.Commands.DeleteTopic;
+using TraffiLearn.Application.Topics.Commands.RemoveQuestionForTopic;
 using TraffiLearn.Application.Topics.Commands.UpdateTopic;
 using TraffiLearn.Application.Topics.Queries.GetAll;
 using TraffiLearn.Application.Topics.Queries.GetById;
+using TraffiLearn.Application.Topics.Queries.GetQuestionsForTopic;
 
 namespace TraffiLearn.WebAPI.Endpoints
 {
@@ -23,7 +27,11 @@ namespace TraffiLearn.WebAPI.Endpoints
 
             group.MapPost("", CreateTopic);
 
+            group.MapPost("addquestion", AddQuestionToTopic);
+
             group.MapDelete("", DeleteTopic);
+
+            group.MapDelete("removequestion", RemoveQuestionForTopic);
 
             group.MapPut("{topicId:guid}", UpdateTopic);
         }
@@ -71,6 +79,39 @@ namespace TraffiLearn.WebAPI.Endpoints
             var topic = await sender.Send(new GetTopicByIdQuery(topicId));
 
             return TypedResults.Ok(topic);
+        }
+
+        public static async Task<Ok<IEnumerable<QuestionResponse>>> GetQuestionsForTopic(
+            Guid? topicId,
+            ISender sender)
+        {
+            var questions = await sender.Send(new GetQuestionsForTopicQuery(topicId));
+
+            return TypedResults.Ok(questions);
+        }
+
+        public static async Task<Ok> AddQuestionToTopic(
+            Guid? QuestionId,
+            Guid? TopicId,
+            ISender sender)
+        {
+            var command = new AddQuestionToTopicCommand(QuestionId, TopicId);
+
+            await sender.Send(command);
+
+            return TypedResults.Ok();
+        }
+
+        public static async Task<NoContent> RemoveQuestionForTopic(
+            Guid? QuestionId,
+            Guid? TopicId,
+            ISender sender)
+        {
+            var command = new RemoveQuestionForTopicCommand(QuestionId, TopicId);
+
+            await sender.Send(command);
+
+            return TypedResults.NoContent();
         }
     }
 }
