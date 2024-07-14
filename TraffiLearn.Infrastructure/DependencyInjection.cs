@@ -27,7 +27,6 @@ namespace TraffiLearn.Infrastructure
 
             services.AddScoped<ITopicRepository, TopicRepository>();
             services.AddScoped<IQuestionRepository, QuestionRepository>();
-            services.AddScoped<IAnswerRepository, AnswerRepository>();
 
             return services;
         }

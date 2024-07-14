@@ -29,7 +29,7 @@ namespace TraffiLearn.WebAPI.Endpoints
 
             group.MapPost("", CreateTopic);
 
-            group.MapPut("addquestion", AddQuestionToTopic);
+            group.MapPut("{topicId:guid}/addquestion/{questionId:guid}", AddQuestionToTopic);
 
             group.MapPut("{topicId:guid}", UpdateTopic);
 

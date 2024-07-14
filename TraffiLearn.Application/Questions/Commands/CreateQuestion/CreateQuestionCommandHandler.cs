@@ -24,6 +24,11 @@ namespace TraffiLearn.Application.Questions.Commands.CreateQuestion
 
         public async Task Handle(CreateQuestionCommand request, CancellationToken cancellationToken)
         {
+            if (request.RequestObject.Answers.All(a => a.IsCorrect == false))
+            {
+                throw new AllAnswersAreIncorrectException();
+            }
+
             var entity = _questionMapper.ToEntity(request.RequestObject);
 
             foreach (var topicId in request.RequestObject.TopicsIds)

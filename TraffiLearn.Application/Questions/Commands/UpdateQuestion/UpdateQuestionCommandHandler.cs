@@ -21,6 +21,11 @@ namespace TraffiLearn.Application.Questions.Commands.UpdateQuestion
 
         public async Task Handle(UpdateQuestionCommand request, CancellationToken cancellationToken)
         {
+            if (request.RequestObject.Answers.All(a => a.IsCorrect == false))
+            {
+                throw new AllAnswersAreIncorrectException();
+            }
+
             var oldEntityObject = await _questionRepository.GetByIdAsync(request.QuestionId.Value);
 
             if (oldEntityObject is null)
@@ -30,6 +35,8 @@ namespace TraffiLearn.Application.Questions.Commands.UpdateQuestion
 
             var newEntityObject = _questionMapper.ToEntity(request.RequestObject);
             newEntityObject.Id = oldEntityObject.Id;
+
+            oldEntityObject.Answers = newEntityObject.Answers;
 
             await _questionRepository.UpdateAsync(oldEntityObject, newEntityObject);
             await _unitOfWork.SaveChangesAsync();
