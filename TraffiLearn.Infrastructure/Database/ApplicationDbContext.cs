@@ -14,13 +14,17 @@ namespace TraffiLearn.Infrastructure.Database
 
         public DbSet<Topic> Topics { get; set; }
 
-        public DbSet<Answer> Answers { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Question>().ComplexProperty(q => q.TitleDetails);
+
+            modelBuilder.Entity<Question>().OwnsMany(
+                question => question.Answers, ownedNavigationBuilder =>
+                {
+                    ownedNavigationBuilder.ToJson();
+                });
         }
     }
 }

@@ -20,7 +20,7 @@ namespace TraffiLearn.Domain.Entities
 
         public ICollection<Topic> Topics { get; set; } = [];
 
-        public ICollection<Answer> Answers { get; set; } = [];
+        public List<Answer> Answers { get; set; } = [];
 
         public QuestionTitleDetails TitleDetails { get; set; }
     }

@@ -1,5 +1,6 @@
 ﻿using Carter;
 using MediatR;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.HttpResults;
 using TraffiLearn.Application.DTO.Questions.Request;
 using TraffiLearn.Application.DTO.Questions.Response;
@@ -25,11 +26,11 @@ namespace TraffiLearn.WebAPI.Endpoints
 
             group.MapGet("{questionId:guid}", GetQuestionById);
 
-            group.MapGet("{questionId}/topics", GetTopicsForQuestion);
+            group.MapGet("{questionId:guid}/topics", GetTopicsForQuestion);
 
             group.MapPost("", CreateQuestion);
 
-            group.MapPut("addtopic", AddTopicToQuestion);
+            group.MapPut("{questionId:guid}/addtopic/{topicId:guid}", AddTopicToQuestion);
 
             group.MapPut("{questionId:guid}", UpdateQuestion);
 
