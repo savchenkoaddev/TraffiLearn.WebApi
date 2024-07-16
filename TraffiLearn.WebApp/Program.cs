@@ -1,3 +1,6 @@
+using TraffiLearn.Application;
+using TraffiLearn.Infrastructure;
+
 namespace TraffiLearn.WebApp
 {
     public class Program
@@ -7,6 +10,9 @@ namespace TraffiLearn.WebApp
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddApplication();
+            builder.Services.AddInfrastructure(builder.Configuration);
 
             var app = builder.Build();
 
