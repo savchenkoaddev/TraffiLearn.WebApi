@@ -3,5 +3,5 @@ using TraffiLearn.Application.DTO.Topics.Response;
 
 namespace TraffiLearn.Application.Topics.Queries.GetAll
 {
-    public sealed record GetAllTopicsQuery : IRequest<IEnumerable<TopicResponse>>;
+    public sealed record GetAllSortedTopicsQuery : IRequest<IEnumerable<TopicResponse>>;
 }

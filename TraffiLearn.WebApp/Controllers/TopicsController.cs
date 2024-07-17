@@ -17,7 +17,7 @@ namespace TraffiLearn.WebApp.Controllers
         [HttpGet("/topics")]
         public async Task<IActionResult> AllTopics()
         {
-            var topics = await _sender.Send(new GetAllTopicsQuery());
+            var topics = await _sender.Send(new GetAllSortedTopicsQuery());
 
             return View(topics);
         }
