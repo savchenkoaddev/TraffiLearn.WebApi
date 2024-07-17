@@ -103,7 +103,7 @@ namespace TraffiLearn.WebAPI.Endpoints
         public static async Task<Ok<IEnumerable<TopicResponse>>> GetAllTopics(
             ISender sender)
         {
-            var topics = await sender.Send(new GetAllTopicsQuery());
+            var topics = await sender.Send(new GetAllSortedTopicsQuery());
 
             return TypedResults.Ok(topics);
         }

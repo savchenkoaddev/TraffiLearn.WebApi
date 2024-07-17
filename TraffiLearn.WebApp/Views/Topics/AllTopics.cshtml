@@ -1,0 +1,17 @@
+﻿@model IEnumerable<TopicResponse>
+
+<link rel="stylesheet" href="~/css/AllTopics.css" />
+
+<div id="topics" class="container py-5 d-flex flex-column align-items-center">
+    <div class="text-center mb-4 col-12">
+        <h1 style="font-weight:700; font-size: 2.5rem; color: #343a40;">Список доступних тем</h1>
+        <p style="font-size: 1.2rem; color: #6c757d;">Оберіть тему для початку тестування</p>
+    </div>
+
+    @foreach (var topic in Model)
+    {
+        <a href="~/topic/@topic.Id/questions" class="topic-link shadow-sm col-10 col-md-8 col-lg-8 btn btn-light mb-3 text-center">
+            <span style="font-size: 1.2rem; ">@topic.Number. @topic.Title</span>
+        </a>
+    }
+</div>
