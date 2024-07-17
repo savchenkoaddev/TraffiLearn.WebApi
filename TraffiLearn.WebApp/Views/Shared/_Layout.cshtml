@@ -9,6 +9,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <style>
+        .footer {
+            background-color: #353839;
+            color: #ffffff;
+            padding: 1px 0;
+            width: 100%;
+            bottom: 0;
+        }
+
         .left-panel {
             position: -webkit-sticky; /* For Safari */
             position: sticky;
@@ -22,12 +30,13 @@
             font-family: "Raleway", sans-serif;
         }
 
-        h1, h2, h3 {
+        h1, h2, h3, h4 {
             font-family: "Raleway", sans-serif;
         }
 
-        .content-top-margin {
-            margin-top: 70px;
+        .content-area {
+            padding-top: 1.3rem;
+            background: linear-gradient(to right, #D4F1F4, #ADD8E6);
         }
 
         .btn {
@@ -91,7 +100,7 @@
         </div>
 
         <!-- Main Content Area -->
-        <div class="content-area content-top-margin ps-lg-5 mt-lg-4 col-md-9 col-xl-10 col-12">
+        <div class="content-area col-md-9 col-xl-10 col-12">
             @RenderBody()
         </div>
     </div>
