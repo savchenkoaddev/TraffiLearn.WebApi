@@ -1,0 +1,23 @@
+﻿.topic-link {
+    border: 0;
+    border-radius: 15px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    padding: 20px;
+}
+
+.topic-link:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    background-color: #e9ecef;
+}
+
+.topic-link span {
+    font-weight: 500;
+    color: #495057;
+    transition-duration: 100ms;
+}
+
+.topic-link:hover span {
+    color: #0E1111;
+    font-weight: 500;
+}

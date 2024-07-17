@@ -8,41 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <style>
-        .footer {
-            background-color: #353839;
-            color: #ffffff;
-            padding: 1px 0;
-            width: 100%;
-            bottom: 0;
-        }
-
-        .left-panel {
-            position: -webkit-sticky; /* For Safari */
-            position: sticky;
-            top: 0; /* Stick to the top of the viewport */  
-            height: 100vh; /* Full height of viewport */
-            overflow-y: auto; /* Adds scroll to the left panel if needed */
-            padding: 1.5rem;
-        }
-
-        p {
-            font-family: "Raleway", sans-serif;
-        }
-
-        h1, h2, h3, h4 {
-            font-family: "Raleway", sans-serif;
-        }
-
-        .content-area {
-            padding-top: 1.3rem;
-            background: linear-gradient(to right, #D4F1F4, #ADD8E6);
-        }
-
-        .btn {
-            font-family: "Raleway", sans-serif;
-        }
-    </style>
+    <link rel="stylesheet" href="~/css/Layout.css" />
 </head>
 <body>
     <nav class="navbar navbar-dark bg-dark fixed-top d-md-none">
@@ -53,7 +19,6 @@
         </div>
     </nav>
 
-    <!-- Offcanvas for Small Screens -->
     <div class="offcanvas offcanvas-start text-bg-dark d-md-none" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel" data-bs-backdrop="false">
         <div class="offcanvas-header">
             <h1 class="offcanvas-title mt-3 ps-3" id="offcanvasDarkNavbarLabel">TraffiLearn</h1>
@@ -77,7 +42,6 @@
     </div>
 
     <div class="d-flex">
-        <!-- Left Panel for Larger Screens -->
         <div class="left-panel d-none d-md-block col-lg-2 bg-dark text-white">
             <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                 <li>
@@ -99,7 +63,6 @@
             </ul>
         </div>
 
-        <!-- Main Content Area -->
         <div class="content-area col-md-9 col-xl-10 col-12">
             @RenderBody()
         </div>
