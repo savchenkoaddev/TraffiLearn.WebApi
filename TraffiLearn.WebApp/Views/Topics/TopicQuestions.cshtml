@@ -1,5 +1,160 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿<div id="questions" class="container py-5 d-flex flex-column align-items-center">
+    <div class="text-center mb-4 col-12">
+        <h1 style="font-weight:700; font-size: 2.5rem; color: #343a40;">Питання на тему "@ViewBag.TopicTitle"</h1>
+    </div>
+
+    @foreach (var question in Model)
+    {
+        <div class="question-container shadow-sm col-10 col-md-8 col-lg-8 btn btn-light mb-5 text-center">
+            <div class="question-content">
+                <div class="question-details mb-3" style="font-size: 1.2rem;">
+                    <div>Білет №@question.TitleDetails.TicketNumber. Питання №@question.TitleDetails.QuestionNumber.</div>
+                </div>
+                <div class="question-text mb-4" style="font-size: 1.2rem;">
+                    @question.Content
+                </div>
+                <div class="answers mt-3">
+                    @foreach (var answer in question.Answers)
+                    {
+                        <button type="button" class="answer btn btn-outline-dark mt-3" data-correct="@answer.IsCorrect">
+                            @answer.Text
+                        </button>
+                    }
+                </div>
+                <p class="feedback mt-2" style="display:none; font-weight: bold;"></p>
+
+                <button class="btn btn-secondary mt-3 explanation-btn" type="button" data-bs-toggle="collapse" data-bs-target="#explanation-@question.Id" aria-expanded="false" aria-controls="explanation-@question.Id" disabled>
+                    Пояснення
+                </button>
+                <div class="collapse mt-2" id="explanation-@question.Id">
+                    <div class="card card-body">
+                        @question.Explanation
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            @if (ViewBag.CurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("TopicQuestions", new { topicId = ViewBag.TopicId, page = ViewBag.CurrentPage - 1 })">Попередня</a>
+                </li>
+            }
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <li class="page-item @(ViewBag.CurrentPage == i ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("TopicQuestions", new { topicId = ViewBag.TopicId, page = i })">@i</a>
+                </li>
+            }
+            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("TopicQuestions", new { topicId = ViewBag.TopicId, page = ViewBag.CurrentPage + 1 })">Наступна</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
+
+<style>
+    .question-container {
+        border: 0;
+        border-radius: 15px;
+        padding: 20px;
+        text-decoration: none;
+        background-color: #f8f9fa;
+        outline: none;
+    }
+
+        .question-container:hover {
+            background-color: #f8f9fa;
+        }
+
+    .question-content {
+        position: relative;
+    }
+
+    .question-details {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+
+    .question-text {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+    }
+
+    .answer {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        margin-bottom: 10px;
+        transition: background-color 0.3s, box-shadow 0.3s;
+        text-align: left;
+    }
+
+        .answer:hover {
+            background-color: #e2e6ea;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            color: black;
+        }
+
+        .answer.correct {
+            background-color: lightgreen;
+        }
+
+        .answer.incorrect {
+            background-color: lightcoral;
+        }
+
+    .feedback {
+        margin: 0;
+        padding-top: 10px;
+        font-weight: bold;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var answers = document.querySelectorAll(".answer");
+
+        answers.forEach(function (answer) {
+            answer.addEventListener("click", function () {
+                var questionContainer = this.closest('.question-container');
+                var allAnswers = questionContainer.querySelectorAll('.answer');
+
+                allAnswers.forEach(a => {
+                    a.classList.remove('correct', 'incorrect', 'selected');
+                });
+
+                this.classList.add('selected');
+
+                var feedback = questionContainer.querySelector('.feedback');
+                feedback.style.display = "block";
+
+                var selectedAnswerIsCorrect = this.getAttribute("data-correct") === "True";
+                feedback.textContent = selectedAnswerIsCorrect ? "Правильна відповідь!" : "Неправильна відповідь!";
+                feedback.style.color = selectedAnswerIsCorrect ? "green" : "red";
+
+                if (selectedAnswerIsCorrect) {
+                    allAnswers.forEach(function (ans) {
+                        if (ans.getAttribute("data-correct") === "True") {
+                            ans.classList.add('correct');
+                        }
+                    });
+                } else {
+                    this.classList.add('incorrect');
+                }
+
+                var explanationBtn = questionContainer.querySelector('.explanation-btn');
+                explanationBtn.disabled = false;
+            });
+        });
+    });
+</script>

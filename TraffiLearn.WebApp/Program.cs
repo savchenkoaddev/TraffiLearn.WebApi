@@ -1,5 +1,6 @@
 using TraffiLearn.Application;
 using TraffiLearn.Infrastructure;
+using TraffiLearn.WebApp.Options;
 
 namespace TraffiLearn.WebApp
 {
@@ -13,6 +14,8 @@ namespace TraffiLearn.WebApp
 
             builder.Services.AddApplication();
             builder.Services.AddInfrastructure(builder.Configuration);
+
+            builder.Services.Configure<PaginationSettings>(builder.Configuration.GetSection(PaginationSettings.CONFIG_KEY));
 
             var app = builder.Build();
 

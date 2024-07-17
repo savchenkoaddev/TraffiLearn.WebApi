@@ -1,17 +1,26 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using TraffiLearn.Application.DTO.Questions.Response;
 using TraffiLearn.Application.Topics.Queries.GetAll;
+using TraffiLearn.Application.Topics.Queries.GetById;
 using TraffiLearn.Application.Topics.Queries.GetQuestionsForTopic;
+using TraffiLearn.WebApp.Helpers;
+using TraffiLearn.WebApp.Options;
 
 namespace TraffiLearn.WebApp.Controllers
 {
     public class TopicsController : Controller
     {
         private readonly ISender _sender;
+        private readonly PaginationSettings _paginationSettings;
 
-        public TopicsController(ISender sender)
+        public TopicsController(
+            ISender sender,
+            IOptions<PaginationSettings> paginationSettings)
         {
             _sender = sender;
+            _paginationSettings = paginationSettings.Value;
         }
 
         [HttpGet("/topics")]
@@ -23,11 +32,19 @@ namespace TraffiLearn.WebApp.Controllers
         }
 
         [HttpGet("/topic/{topicId:guid}/questions")]
-        public async Task<IActionResult> TopicQuestions(Guid? topicId)
+        public async Task<IActionResult> TopicQuestions(Guid? topicId, int page = 1)
         {
-            var questions = await _sender.Send(new GetQuestionsForTopicQuery(topicId));
+            var questions = await _sender.Send(new GetQuestionsForTopicQuery(topicId.Value));
 
-            return View(questions);
+            var paginationHelper = new PaginationHelper<QuestionResponse>(questions.Count(), _paginationSettings.PageSize.Value);
+            var paginatedQuestions = paginationHelper.GetPaginatedData(questions, page);
+
+            ViewBag.TopicTitle = (await _sender.Send(new GetTopicByIdQuery(topicId.Value))).Title;
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = paginationHelper.TotalPages;
+            ViewBag.TopicId = topicId;
+
+            return View(paginatedQuestions);
         }
     }
 }
