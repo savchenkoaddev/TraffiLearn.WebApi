@@ -1,4 +1,5 @@
-﻿using TraffiLearn.Application.DTO.Answers.Request;
+﻿using Microsoft.AspNetCore.Http;
+using TraffiLearn.Application.DTO.Answers.Request;
 using TraffiLearn.Domain.ValueObjects;
 
 namespace TraffiLearn.Application.DTO.Questions.Request
@@ -7,5 +8,6 @@ namespace TraffiLearn.Application.DTO.Questions.Request
         string? Content,
         string? Explanation,
         QuestionTitleDetails? TitleDetails,
-        IEnumerable<AnswerRequest?>? Answers);
+        IEnumerable<AnswerRequest?>? Answers,
+        IFormFile? Image);
 }

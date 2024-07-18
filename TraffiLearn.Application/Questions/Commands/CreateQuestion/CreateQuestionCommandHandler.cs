@@ -1,5 +1,7 @@
 ﻿using MediatR;
+using System.IO;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Abstractions.Storage;
 using TraffiLearn.Domain.Exceptions;
 using TraffiLearn.Domain.RepositoryContracts;
 
@@ -11,15 +13,18 @@ namespace TraffiLearn.Application.Questions.Commands.CreateQuestion
         private readonly ITopicRepository _topicRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly QuestionMapper _questionMapper = new();
+        private readonly IBlobService _blobService;
 
         public CreateQuestionCommandHandler(
             IQuestionRepository questionRepository,
             ITopicRepository topicRepository,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            IBlobService blobService)
         {
             _questionRepository = questionRepository;
             _topicRepository = topicRepository;
             _unitOfWork = unitOfWork;
+            _blobService = blobService;
         }
 
         public async Task Handle(CreateQuestionCommand request, CancellationToken cancellationToken)
@@ -41,6 +46,20 @@ namespace TraffiLearn.Application.Questions.Commands.CreateQuestion
                 }
 
                 entity.Topics.Add(topic);
+            }
+
+            var image = request.RequestObject.Image;
+
+            if (image is not null)
+            {
+                using Stream stream = image.OpenReadStream();
+
+                var imageName = await _blobService.UploadAsync(
+                    stream,
+                    image.ContentType, 
+                    cancellationToken);
+
+                entity.ImageName = imageName;
             }
 
             await _questionRepository.AddAsync(entity);
