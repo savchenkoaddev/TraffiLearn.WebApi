@@ -2,8 +2,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Abstractions.Storage;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Infrastructure.Database;
+using TraffiLearn.Infrastructure.External;
 using TraffiLearn.Infrastructure.Options;
 using TraffiLearn.Infrastructure.Repositories;
 
@@ -22,8 +24,13 @@ namespace TraffiLearn.Infrastructure
                 options.UseSqlServer(sqlServerSettings.ConnectionString);
             });
 
+            services.Configure<AzureBlobStorageSettings>(
+                configuration.GetRequiredSection(AzureBlobStorageSettings.CONFIG_KEY));
+
             services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
             services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
+
+            services.AddSingleton<IBlobService, AzureBlobService>();
 
             services.AddScoped<ITopicRepository, TopicRepository>();
             services.AddScoped<IQuestionRepository, QuestionRepository>();
