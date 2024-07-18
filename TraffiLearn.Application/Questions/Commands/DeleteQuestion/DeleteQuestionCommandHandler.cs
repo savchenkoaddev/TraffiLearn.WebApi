@@ -31,10 +31,10 @@ namespace TraffiLearn.Application.Questions.Commands.DeleteQuestion
                 throw new QuestionNotFoundException(request.QuestionId.Value);
             }
 
-            if (found.ImageName is not null)
+            if (found.ImageUri is not null)
             {
                 await _blobService.DeleteAsync(
-                    found.ImageName,
+                    found.ImageUri,
                     cancellationToken);
             }
 

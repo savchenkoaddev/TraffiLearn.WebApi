@@ -7,7 +7,7 @@ namespace TraffiLearn.Application.DTO.Questions.Response
         Guid Id,
         string Content,
         string Explanation,
-        string? ImageName,
+        string? ImageUri,
         int LikesCount,
         int DislikesCount,
         QuestionTitleDetails TitleDetails,

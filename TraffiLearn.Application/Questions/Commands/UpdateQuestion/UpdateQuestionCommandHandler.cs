@@ -42,25 +42,34 @@ namespace TraffiLearn.Application.Questions.Commands.UpdateQuestion
 
             oldEntityObject.Answers = newEntityObject.Answers;
 
-            var image = request.RequestObject.Image;
+            var image = request.Image;
 
             if (image is not null)
             {
-                if (oldEntityObject.ImageName is not null)
+                if (oldEntityObject.ImageUri is not null)
                 {
                     await _blobService.DeleteAsync(
-                        oldEntityObject.ImageName,
+                        oldEntityObject.ImageUri,
                         cancellationToken);
                 }
 
                 using Stream stream = image.OpenReadStream();
 
-                var imageName = await _blobService.UploadAsync(
+                var uploadResponse = await _blobService.UploadAsync(
                     stream,
                     image.ContentType,
                     cancellationToken);
 
-                newEntityObject.ImageName = imageName;
+                newEntityObject.ImageUri = uploadResponse.BlobUri;
+            }
+            else
+            {
+                if (oldEntityObject.ImageUri is not null)
+                {
+                    await _blobService.DeleteAsync(
+                        oldEntityObject.ImageUri,
+                        cancellationToken);
+                }
             }
 
             await _questionRepository.UpdateAsync(oldEntityObject, newEntityObject);

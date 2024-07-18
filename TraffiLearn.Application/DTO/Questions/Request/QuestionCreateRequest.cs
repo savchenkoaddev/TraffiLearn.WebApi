@@ -9,6 +9,5 @@ namespace TraffiLearn.Application.DTO.Questions.Request
         string? Explanation,
         QuestionTitleDetails? TitleDetails,
         IEnumerable<Guid?>? TopicsIds,
-        IEnumerable<AnswerRequest?>? Answers,
-        IFormFile? Image);
+        IEnumerable<AnswerRequest?>? Answers);
 }

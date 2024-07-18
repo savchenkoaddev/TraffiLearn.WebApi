@@ -2,6 +2,7 @@
 using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Storage;
+using TraffiLearn.Application.DTO.Blobs.Response;
 using TraffiLearn.Infrastructure.Exceptions;
 using TraffiLearn.Infrastructure.Options;
 
@@ -14,7 +15,7 @@ namespace TraffiLearn.Infrastructure.External
         private readonly BlobContainerClient _containerClient;
 
         public AzureBlobService(
-            BlobServiceClient blobClient, 
+            BlobServiceClient blobClient,
             IOptions<AzureBlobStorageSettings> storageSettings)
         {
             _blobClient = blobClient;
@@ -24,10 +25,12 @@ namespace TraffiLearn.Infrastructure.External
                 _storageSettings.ContainerName);
         }
 
-        public async Task DeleteAsync(string fileName, CancellationToken cancellationToken = default)
+        public async Task DeleteAsync(string blobUri, CancellationToken cancellationToken = default)
         {
+            var blobName = blobUri.Split('/', '\\').Last();
+
             var succeeded = await _containerClient.DeleteBlobIfExistsAsync(
-                fileName,
+                blobName,
                 cancellationToken: cancellationToken);
 
             if (!succeeded)
@@ -36,25 +39,25 @@ namespace TraffiLearn.Infrastructure.External
             }
         }
 
-        public async Task<FileResponse> DownloadAsync(string fileName, CancellationToken cancellationToken = default)
+        public async Task<BlobResponse> DownloadAsync(string blobName, CancellationToken cancellationToken = default)
         {
-            BlobClient blobClient = _containerClient.GetBlobClient(fileName);
+            BlobClient blobClient = _containerClient.GetBlobClient(blobName);
 
             var blobExists = await blobClient.ExistsAsync(cancellationToken);
 
             if (!blobExists)
             {
-                throw new BlobNotFoundException(fileName);
+                throw new BlobNotFoundException(blobName);
             }
 
             var response = await blobClient.DownloadContentAsync(cancellationToken);
 
-            return new FileResponse(
+            return new BlobResponse(
                 response.Value.Content.ToStream(),
                 response.Value.Details.ContentType);
         }
 
-        public async Task<string> UploadAsync(Stream stream, string contentType, CancellationToken cancellationToken = default)
+        public async Task<UploadBlobResponse> UploadAsync(Stream stream, string contentType, CancellationToken cancellationToken = default)
         {
             var blobName = Guid.NewGuid()
                                .ToString();
@@ -69,7 +72,9 @@ namespace TraffiLearn.Infrastructure.External
                 },
                 cancellationToken: cancellationToken);
 
-            return blobName;
+            return new UploadBlobResponse(
+                _containerClient.Uri,
+                blobName);
         }
     }
 }

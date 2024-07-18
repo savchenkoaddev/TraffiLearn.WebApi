@@ -48,18 +48,18 @@ namespace TraffiLearn.Application.Questions.Commands.CreateQuestion
                 entity.Topics.Add(topic);
             }
 
-            var image = request.RequestObject.Image;
+            var image = request.Image;
 
             if (image is not null)
             {
                 using Stream stream = image.OpenReadStream();
 
-                var imageName = await _blobService.UploadAsync(
+                var uploadResponse = await _blobService.UploadAsync(
                     stream,
                     image.ContentType, 
                     cancellationToken);
 
-                entity.ImageName = imageName;
+                entity.ImageUri = uploadResponse.BlobUri;
             }
 
             await _questionRepository.AddAsync(entity);
