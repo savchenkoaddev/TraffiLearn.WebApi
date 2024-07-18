@@ -23,5 +23,7 @@ namespace TraffiLearn.Domain.Entities
         public List<Answer> Answers { get; set; } = [];
 
         public QuestionTitleDetails TitleDetails { get; set; }
+
+        public string? ImageName { get; set; }
     }
 }
