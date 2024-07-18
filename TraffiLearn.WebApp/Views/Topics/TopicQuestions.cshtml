@@ -1,4 +1,6 @@
-﻿<link rel="stylesheet" href="~/css/TopicQuestions.css" />
+﻿@model IEnumerable<QuestionResponse>
+
+<link rel="stylesheet" href="~/css/TopicQuestions.css" />
 
 <div id="questions" class="container py-5 d-flex flex-column align-items-center">
     <div class="text-center mb-4 col-12">
@@ -9,16 +11,22 @@
     {
         <div class="question-container shadow-sm col-10 col-md-8 col-lg-8 btn btn-light mb-5 text-center">
             <div class="question-content">
-                <div class="question-details mb-3" style="font-size: 1.2rem;">
+                <div class="question-details mb-3" style="font-size: 1.2rem; font-weight: 600;">
                     <div>Білет №@question.TitleDetails.TicketNumber. Питання №@question.TitleDetails.QuestionNumber.</div>
                 </div>
-                <div class="question-text mb-4" style="font-size: 1.2rem;">
+                <div class="question-text" style="font-size: 1.2rem;">
                     @question.Content
                 </div>
+
+                @if (question.ImageUri is not null)
+                {
+                    <img src="@question.ImageUri" alt="Question Image" class="img-fluid mb-3" style="max-width: 95%; height: auto;">
+                }
+
                 <div class="answers mt-3">
                     @foreach (var answer in question.Answers)
                     {
-                        <button type="button" class="answer btn btn-outline-dark mt-3" data-correct="@answer.IsCorrect">
+                        <button style="font-weight: 500;" type="button" class="answer btn btn-outline-dark mt-3" data-correct="@answer.IsCorrect">
                             @answer.Text
                         </button>
                     }
