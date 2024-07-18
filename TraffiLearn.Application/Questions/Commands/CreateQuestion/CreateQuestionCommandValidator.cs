@@ -23,11 +23,13 @@ namespace TraffiLearn.Application.Questions.Commands.CreateQuestion
 
             RuleFor(x => x.RequestObject.TitleDetails.QuestionNumber)
                 .NotEmpty()
+                .GreaterThan(0)
                 .When(x => x.RequestObject.TitleDetails.TicketNumber is not null)
                 .When(x => x.RequestObject is not null);
 
             RuleFor(x => x.RequestObject.TitleDetails.TicketNumber)
                .NotEmpty()
+               .GreaterThan(0)
                .When(x => x.RequestObject.TitleDetails.QuestionNumber is not null)
                .When(x => x.RequestObject is not null);
 

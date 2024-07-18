@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using TraffiLearn.Application.DTO.Questions.Request;
 using TraffiLearn.Application.DTO.Questions.Response;
 using TraffiLearn.Application.DTO.Topics.Response;
@@ -28,11 +29,13 @@ namespace TraffiLearn.WebAPI.Endpoints
 
             group.MapGet("{questionId:guid}/topics", GetTopicsForQuestion);
 
-            group.MapPost("", CreateQuestion);
+            group.MapPost("", CreateQuestion)
+                 .DisableAntiforgery();
 
             group.MapPut("{questionId:guid}/addtopic/{topicId:guid}", AddTopicToQuestion);
 
-            group.MapPut("{questionId:guid}", UpdateQuestion);
+            group.MapPut("{questionId:guid}", UpdateQuestion)
+                 .DisableAntiforgery();
 
             group.MapDelete("{questionId:guid}", DeleteQuestion);
 
@@ -41,22 +44,23 @@ namespace TraffiLearn.WebAPI.Endpoints
 
         #region Commands
 
-
         public static async Task<Ok> CreateQuestion(
-            QuestionCreateRequest? request,
+            [FromForm] QuestionCreateRequest? request,
+            [FromForm] IFormFile? image,
             ISender sender)
         {
-            await sender.Send(new CreateQuestionCommand(request));
+            await sender.Send(new CreateQuestionCommand(request, image));
 
             return TypedResults.Ok();
         }
 
         public static async Task<NoContent> UpdateQuestion(
             Guid? questionId,
-            QuestionUpdateRequest? request,
+            [FromForm] QuestionUpdateRequest? request,
+            [FromForm] IFormFile? image,
             ISender sender)
         {
-            await sender.Send(new UpdateQuestionCommand(questionId, request));
+            await sender.Send(new UpdateQuestionCommand(questionId, request, image));
 
             return TypedResults.NoContent();
         }

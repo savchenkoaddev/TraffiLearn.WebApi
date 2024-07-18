@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using TraffiLearn.Application.Data;
+using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Domain.RepositoryContracts;
 
 namespace TraffiLearn.Application.Topics.Commands.CreateTopic

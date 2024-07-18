@@ -23,5 +23,8 @@ namespace TraffiLearn.Domain.Entities
         public List<Answer> Answers { get; set; } = [];
 
         public QuestionTitleDetails TitleDetails { get; set; }
+
+        [StringLength(200)]
+        public string? ImageUri { get; set; }
     }
 }

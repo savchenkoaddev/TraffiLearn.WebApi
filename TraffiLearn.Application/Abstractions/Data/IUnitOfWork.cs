@@ -1,4 +1,4 @@
-﻿namespace TraffiLearn.Application.Data
+﻿namespace TraffiLearn.Application.Abstractions.Data
 {
     public interface IUnitOfWork
     {

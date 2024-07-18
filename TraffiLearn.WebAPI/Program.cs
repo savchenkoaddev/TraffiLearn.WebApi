@@ -18,7 +18,7 @@ namespace TraffiLearn.WebAPI
             builder.Services.AddInfrastructure(builder.Configuration);
 
             builder.Services.AddCarter();
-
+            
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
@@ -29,7 +29,6 @@ namespace TraffiLearn.WebAPI
 
             app.UseHttpsRedirection();
             app.UseRouting();
-            app.UseAuthorization();
 
             app.MapControllers();
             app.MapCarter();
