@@ -24,6 +24,7 @@ namespace TraffiLearn.Domain.Entities
 
         public QuestionTitleDetails TitleDetails { get; set; }
 
+        [StringLength(100)]
         public string? ImageName { get; set; }
     }
 }

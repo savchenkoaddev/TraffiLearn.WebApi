@@ -1,5 +1,6 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Storage;
 using TraffiLearn.Infrastructure.Exceptions;
 using TraffiLearn.Infrastructure.Options;
@@ -14,10 +15,10 @@ namespace TraffiLearn.Infrastructure.External
 
         public AzureBlobService(
             BlobServiceClient blobClient, 
-            AzureBlobStorageSettings storageSettings)
+            IOptions<AzureBlobStorageSettings> storageSettings)
         {
             _blobClient = blobClient;
-            _storageSettings = storageSettings;
+            _storageSettings = storageSettings.Value;
 
             _containerClient = _blobClient.GetBlobContainerClient(
                 _storageSettings.ContainerName);
