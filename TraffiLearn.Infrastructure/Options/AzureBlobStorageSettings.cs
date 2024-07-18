@@ -5,5 +5,7 @@
         public const string CONFIG_KEY = "AzureBlobStorageSettings";
 
         public string? ContainerName { get; set; }
+
+        public string? ConnectionString { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Azure.Storage.Blobs;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TraffiLearn.Application.Abstractions.Data;
@@ -17,7 +18,8 @@ namespace TraffiLearn.Infrastructure
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            var sqlServerSettings = configuration.GetSection(SqlServerSettings.CONFIG_KEY).Get<SqlServerSettings>();
+            var sqlServerSettings = configuration.GetRequiredSection(SqlServerSettings.CONFIG_KEY).Get<SqlServerSettings>();
+            var blobStorageSettings = configuration.GetRequiredSection(AzureBlobStorageSettings.CONFIG_KEY).Get<AzureBlobStorageSettings>();
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {
@@ -31,6 +33,7 @@ namespace TraffiLearn.Infrastructure
             services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
 
             services.AddSingleton<IBlobService, AzureBlobService>();
+            services.AddSingleton(_ => new BlobServiceClient(blobStorageSettings.ConnectionString));
 
             services.AddScoped<ITopicRepository, TopicRepository>();
             services.AddScoped<IQuestionRepository, QuestionRepository>();
