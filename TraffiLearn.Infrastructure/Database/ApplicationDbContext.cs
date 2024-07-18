@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TraffiLearn.Application.Data;
+using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Domain.Entities;
 
 namespace TraffiLearn.Infrastructure.Database
