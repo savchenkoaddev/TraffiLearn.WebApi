@@ -1,0 +1,249 @@
+﻿<link rel="stylesheet" href="~/css/AddQuestion.css" />
+
+<div class="container mt-5" style="max-width:85%;">
+    <h1 class="mb-4">Додати нове запитання</h1>
+    <form href="/questions/add" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+        <div class="form-group mb-3">
+            <label for="Content" class="mb-2">Текст запитання:</label>
+            <textarea class="form-control" id="Content" name="Content" rows="3" maxlength="3000" placeholder="Введіть текст запитання" required></textarea>
+            <div class="invalid-feedback" id="ContentFeedback"></div>
+        </div>
+        <div class="form-group mb-3">
+            <label for="Explanation" class="mb-2">Пояснення:</label>
+            <textarea class="form-control" id="Explanation" name="Explanation" rows="3" maxlength="3000" placeholder="Введіть текст пояснення" required></textarea>
+            <div class="invalid-feedback" id="ExplanationFeedback"></div>
+        </div>
+        <div class="form-group mb-3">
+            <label for="TicketNumber" class="mb-2">Номер білету (не обов'язково):</label>
+            <input type="number" class="form-control" id="TicketNumber" name="TitleDetails.TicketNumber" placeholder="Введіть номер білету" min="0">
+            <div class="invalid-feedback" id="TicketNumberFeedback"></div>
+        </div>
+        <div class="form-group mb-3">
+            <label for="QuestionNumber" class="mb-2">Номер запитання (не обов'язково):</label>
+            <input type="number" class="form-control" id="QuestionNumber" name="TitleDetails.QuestionNumber" placeholder="Введіть номер запитання" min="0">
+            <div class="invalid-feedback" id="QuestionNumberFeedback"></div>
+        </div>
+        <div class="form-group mb-4">
+            <label for="TopicsIds" class="mb-2">Тема:</label>
+            <select multiple class="form-control" id="TopicsIds" name="TopicsIds" required>
+                @foreach (var topic in Model)
+                {
+                    <option value="@topic.Id">@topic.Number. @topic.Title</option>
+                }
+            </select>
+            <div class="invalid-feedback">Please select at least one topic.</div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="Image" class="form-label">Малюнок (не обов'язково):</label>
+            <input name="Image" class="form-control custom-file-input" type="file" id="Image">
+        </div>
+
+        <div id="answers" class="mb-3">
+            <div class="form-group answer-item mb-3">
+                <label for="Answer1" class="mb-2">Відповідь:</label>
+                <input type="text" class="form-control" id="Answer1" name="Answers[0].Text" placeholder="Введіть текст відповіді" required>
+                <div class="invalid-feedback"></div>
+                <div class="custom-control custom-checkbox mt-2">
+                    <input type="checkbox" class="custom-control-input" id="IsCorrect1" name="Answers[0].IsCorrect" value="true" checked>
+                    <label class="custom-control-label" for="IsCorrect1">Правильна</label>
+                    <input type="hidden" name="Answers[0].IsCorrect" value="false">
+                </div>
+                <button type="button" class="btn btn-danger btn-sm mt-2 remove-answer" style="display:none;">Видалити</button>
+            </div>
+        </div>
+        <button type="button" class="btn btn-secondary mb-3" id="addAnswer">Додати нову відповідь</button>
+        <br />
+        <button type="submit" class="btn btn-primary col-lg-4 col-md-8 col-12 mb-4">Додати</button>
+    </form>
+</div>
+
+<script>
+
+    (function () {
+        'use strict';
+        window.addEventListener('load', function () {
+            var forms = document.getElementsByClassName('needs-validation');
+            Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    var isValid = true;
+
+                    var contentField = form.querySelector('#Content');
+                    var contentFeedback = form.querySelector('#ContentFeedback');
+                    var explanationField = form.querySelector('#Explanation');
+                    var explanationFeedback = form.querySelector('#ExplanationFeedback');
+                    var ticketNumberField = form.querySelector('#TicketNumber');
+                    var ticketNumberFeedback = form.querySelector('#TicketNumberFeedback');
+                    var questionNumberField = form.querySelector('#QuestionNumber');
+                    var questionNumberFeedback = form.querySelector('#QuestionNumberFeedback');
+                    var topicsSelect = form.querySelector('#TopicsIds');
+                    var topicsFeedback = topicsSelect.nextElementSibling;
+
+                    contentFeedback.textContent = '';
+                    explanationFeedback.textContent = '';
+                    ticketNumberFeedback.textContent = '';
+                    questionNumberFeedback.textContent = '';
+                    topicsFeedback.textContent = '';
+                    contentField.classList.remove('is-invalid', 'is-valid');
+                    explanationField.classList.remove('is-invalid', 'is-valid');
+                    ticketNumberField.classList.remove('is-invalid', 'is-valid');
+                    questionNumberField.classList.remove('is-invalid', 'is-valid');
+                    topicsSelect.classList.remove('is-invalid', 'is-valid');
+                    document.querySelectorAll('.answer-item input[type="text"]').forEach(input => input.classList.remove('is-invalid', 'is-valid'));
+
+                    if (contentField.value.trim() === '') {
+                        contentFeedback.textContent = 'Будь ласка, введіть текст запитання.';
+                        contentField.classList.add('is-invalid');
+                        isValid = false;
+                    } else if (contentField.value.length > 3000) {
+                        contentFeedback.textContent = 'Довжина тексту не повинна перевищувати 3000 символів.';
+                        contentField.classList.add('is-invalid');
+                        isValid = false;
+                    } else {
+                        contentField.classList.add('is-valid');
+                    }
+
+                    if (explanationField.value.trim() === '') {
+                        explanationFeedback.textContent = 'Будь ласка, введіть пояснення.';
+                        explanationField.classList.add('is-invalid');
+                        isValid = false;
+                    } else if (explanationField.value.length > 3000) {
+                        explanationFeedback.textContent = 'Довжина пояснення не повинна перевищувати 3000 символів.';
+                        explanationField.classList.add('is-invalid');
+                        isValid = false;
+                    } else {
+                        explanationField.classList.add('is-valid');
+                    }
+
+                    if (ticketNumberField.value < 0) {
+                        ticketNumberFeedback.textContent = 'Номер білету не може бути від\'ємним.';
+                        ticketNumberField.classList.add('is-invalid');
+                        isValid = false;
+                    } else if (ticketNumberField.value && !questionNumberField.value) {
+                        questionNumberFeedback.textContent = 'Номер питання обов\'язковий, якщо введено номер білету.';
+                        questionNumberField.classList.add('is-invalid');
+                        isValid = false;
+                    } else if (!ticketNumberField.value && questionNumberField.value) {
+                        ticketNumberFeedback.textContent = 'Номер білету обов\'язковий, якщо введено номер питання.';
+                        ticketNumberField.classList.add('is-invalid');
+                        isValid = false;
+                    } else if (questionNumberField.value < 0) {
+                        questionNumberFeedback.textContent = 'Номер запитання не може бути від\'ємним.';
+                        questionNumberField.classList.add('is-invalid');
+                        isValid = false;
+                    } else {
+                        ticketNumberField.classList.add('is-valid');
+                        questionNumberField.classList.add('is-valid');
+                    }
+
+                    if (topicsSelect.selectedOptions.length === 0) {
+                        topicsFeedback.textContent = 'Будь ласка, оберіть хоча б одну тему.';
+                        topicsSelect.classList.add('is-invalid');
+                        isValid = false;
+                    } else {
+                        topicsSelect.classList.add('is-valid');
+                    }
+
+                    document.querySelectorAll('.answer-item').forEach(item => {
+                        let answerInput = item.querySelector('input[type="text"]');
+                        let feedback = item.querySelector('.invalid-feedback');
+                        if (answerInput.value.trim() === '') {
+                            feedback.textContent = 'Будь ласка, введіть текст відповіді.';
+                            answerInput.classList.add('is-invalid');
+                            isValid = false;
+                        } else if (answerInput.value.length > 300) {
+                            feedback.textContent = 'Довжина відповіді не повинна перевищувати 300 символів.';
+                            answerInput.classList.add('is-invalid');
+                            isValid = false;
+                        } else {
+                            feedback.textContent = '';
+                            answerInput.classList.add('is-valid');
+                        }
+                    });
+
+                    let isCorrectChecked = false;
+                    document.querySelectorAll('.answer-item input[type="checkbox"]').forEach(checkbox => {
+                        if (checkbox.checked) {
+                            isCorrectChecked = true;
+                        }
+                    });
+
+                    if (!isCorrectChecked) {
+                        isValid = false;
+                        const firstAnswer = document.querySelector('.answer-item');
+                        const feedback = firstAnswer.querySelector('.invalid-feedback');
+                        feedback.textContent = 'Будь ласка, позначте принаймні одну відповідь як правильну.';
+                        firstAnswer.querySelector('input[type="text"]').classList.add('is-invalid');
+                    }
+
+                    if (!isValid) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+
+    let answerCount = 1;
+    document.getElementById('addAnswer').addEventListener('click', function () {
+        answerCount++;
+        const answerDiv = document.createElement('div');
+        answerDiv.classList.add('form-group', 'answer-item', 'mb-3');
+        answerDiv.innerHTML = `
+                        <label for="Answer${answerCount}" class="mb-2">Відповідь ${answerCount}</label>
+                        <input type="text" class="form-control" id="Answer${answerCount}" name="Answers[${answerCount - 1}].Text" placeholder="Введіть текст відповіді" required>
+                        <div class="invalid-feedback"></div>
+                        <div class="custom-control custom-checkbox mt-2">
+                            <input type="checkbox" class="custom-control-input" id="IsCorrect${answerCount}" name="Answers[${answerCount - 1}].IsCorrect" value="true">
+                            <label class="custom-control-label" for="IsCorrect${answerCount}">Правильна</label>
+                            <input type="hidden" name="Answers[${answerCount - 1}].IsCorrect" value="false">
+                        </div>
+                        <button type="button" class="btn btn-danger btn-sm mt-2 remove-answer">Видалити</button>
+                    `;
+        document.getElementById('answers').appendChild(answerDiv);
+        addRemoveAnswerListener(answerDiv.querySelector('.remove-answer'));
+        reindexAnswers();
+        toggleRemoveButton();
+    });
+
+    function addRemoveAnswerListener(button) {
+        button.addEventListener('click', function () {
+            this.parentElement.remove();
+            reindexAnswers();
+            toggleRemoveButton();
+        });
+    }
+
+    function reindexAnswers() {
+        let answerItems = document.querySelectorAll('.answer-item');
+        answerItems.forEach((item, index) => {
+            item.querySelector('label').setAttribute('for', `Answer${index + 1}`);
+            item.querySelector('label').textContent = `Відповідь ${index + 1}`;
+            item.querySelector('input[type="text"]').setAttribute('id', `Answer${index + 1}`);
+            item.querySelector('input[type="text"]').setAttribute('name', `Answers[${index}].Text`);
+            item.querySelector('input[type="checkbox"]').setAttribute('id', `IsCorrect${index + 1}`);
+            item.querySelector('input[type="checkbox"]').setAttribute('name', `Answers[${index}].IsCorrect`);
+            item.querySelector('label.custom-control-label').setAttribute('for', `IsCorrect${index + 1}`);
+            item.querySelector('input[type="hidden"]').setAttribute('name', `Answers[${index}].IsCorrect`);
+        });
+    }
+
+    function toggleRemoveButton() {
+        let answerItems = document.querySelectorAll('.answer-item');
+        let removeButtons = document.querySelectorAll('.remove-answer');
+        if (answerItems.length === 1) {
+            removeButtons.forEach(button => button.style.display = 'none');
+        } else {
+            removeButtons.forEach(button => button.style.display = 'inline-block');
+        }
+    }
+
+    document.querySelectorAll('.remove-answer').forEach(button => {
+        addRemoveAnswerListener(button);
+    });
+
+    toggleRemoveButton();
+</script>
