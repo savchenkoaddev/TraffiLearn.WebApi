@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/css/Layout.css" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
 </head>
 <body>
     <nav class="navbar navbar-dark bg-dark fixed-top d-md-none">
@@ -27,21 +29,31 @@
         <div class="offcanvas-body">
             <ul class="navbar-nav justify-content-end ps-3 flex-grow-1 pe-3">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/"><p>Головна сторінка</p></a>
+                    <a class="nav-link" aria-current="page" href="/"><p>Головна сторінка</p></a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/questions"><p>Всі запитання</p></a>
+                <li class="nav-item d-flex align-items-center">
+                    <a class="nav-link" style="width: fit-content; display: flex; align-items: center;" aria-current="page" href="/questions">
+                        <p class="mb-0">Всі запитання</p>
+                    </a>
+                    <a href="/questions/add" class="ms-3 link-opacity-75-hover">
+                        <i class="bi bi-plus-circle-dotted"></i>
+                    </a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/topics"><p>Питання по темах</p></a>
+                <li class="nav-item d-flex align-items-center">
+                    <a class="nav-link" style="width: fit-content; display: flex; align-items: center;" aria-current="page" href="/topics">
+                        <p class="mb-0">Теми</p>
+                    </a>
+                    <a href="/topics/add" class="ms-3 link-opacity-75-hover">
+                        <i class="bi bi-plus-circle-dotted"></i>
+                    </a>
                 </li>
             </ul>
         </div>
     </div>
 
-    <div class="d-flex">
+    <div class="d-flex" style="min-height: 100vh;">
         <div class="left-panel d-none d-md-block col-lg-2 bg-dark text-white">
             <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                 <li>
@@ -49,25 +61,37 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/"><p>Головна сторінка</p></a>
+                    <a class="nav-link" aria-current="page" href="/"><p>Головна сторінка</p></a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/questions"><p>Всі запитання</p></a>
+                <li class="nav-item d-flex align-items-center">
+                    <a class="nav-link" style="width: fit-content; display: flex; align-items: center;" aria-current="page" href="/questions">
+                        <p class="mb-0">Всі запитання</p>
+                    </a>
+                    <a href="/questions/add" class="ms-3 link-opacity-75-hover">
+                        <i class="bi bi-plus-circle-dotted"></i>
+                    </a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/topics"><p>Питання по темах</p></a>
+                <li class="nav-item d-flex align-items-center">
+                    <a class="nav-link" style="width: fit-content; display: flex; align-items: center;" aria-current="page" href="/topics">
+                        <p class="mb-0">Теми</p>
+                    </a>
+                    <a href="/topics/add" class="ms-3 link-opacity-75-hover">
+                        <i class="bi bi-plus-circle-dotted"></i>
+                    </a>
                 </li>
 
             </ul>
         </div>
 
-        <div class="content-area col-md-9 col-xl-10 col-12">
+        <div class="content-area mt-lg-0 mt-4 col-md-9 col-xl-10 col-12">
             @RenderBody()
         </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>

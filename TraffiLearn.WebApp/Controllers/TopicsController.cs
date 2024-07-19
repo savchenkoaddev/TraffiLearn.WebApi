@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using TraffiLearn.Application.DTO.Questions.Response;
+using TraffiLearn.Application.DTO.Topics.Request;
+using TraffiLearn.Application.Topics.Commands.CreateTopic;
 using TraffiLearn.Application.Topics.Queries.GetAll;
 using TraffiLearn.Application.Topics.Queries.GetById;
 using TraffiLearn.Application.Topics.Queries.GetQuestionsForTopic;
@@ -45,6 +47,21 @@ namespace TraffiLearn.WebApp.Controllers
             ViewBag.TopicId = topicId;
 
             return View(paginatedQuestions);
+        }
+
+        [HttpGet("/topics/add")]
+        public IActionResult AddTopic()
+        {
+            return View();
+        }
+
+        [HttpPost("/topics/add")]
+        public async Task<IActionResult> AddTopic(
+            TopicRequest? topicRequest)
+        {
+            await _sender.Send(new CreateTopicCommand(topicRequest));
+
+            return RedirectToAction(nameof(AddTopic));
         }
     }
 }

@@ -1,8 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using TraffiLearn.Application.DTO.Questions.Request;
 using TraffiLearn.Application.DTO.Questions.Response;
+using TraffiLearn.Application.Questions.Commands.CreateQuestion;
 using TraffiLearn.Application.Questions.Queries.GetAllQuestions;
+using TraffiLearn.Application.Topics.Queries.GetAll;
 using TraffiLearn.WebApp.Helpers;
 using TraffiLearn.WebApp.Options;
 
@@ -17,6 +20,24 @@ namespace TraffiLearn.WebApp.Controllers
         {
             _sender = sender;
             _paginationSettings = paginationSettings.Value;
+        }
+
+        [HttpGet("/questions/add")]
+        public async Task<IActionResult> AddQuestion()
+        {
+            var topics = await _sender.Send(new GetAllSortedTopicsQuery());
+
+            return View(topics);
+        }
+
+        [HttpPost("/questions/add")]
+        public async Task<IActionResult> AddQuestion(
+            [FromForm] QuestionCreateRequest? request,
+            [FromForm] IFormFile? image)
+        {
+            await _sender.Send(new CreateQuestionCommand(request, image));
+
+            return Redirect("/addquestion");
         }
 
         [HttpGet("/questions")]
