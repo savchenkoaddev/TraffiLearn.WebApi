@@ -7,7 +7,7 @@
 
     @foreach (var question in Model)
     {
-        <div class="question-container shadow-sm col-10 col-md-8 col-lg-8 mb-5 text-center">
+        <div class="question-container shadow-sm col-10 col-md-8 col-lg-8 mb-5 text-center" id="question-@question.Id">
             <div class="question-content">
                 <div class="question-details mb-3" style="font-size: 1.2rem; font-weight: 500;">
                     <p>Білет №@question.TitleDetails.TicketNumber. Питання №@question.TitleDetails.QuestionNumber.</p>
@@ -39,6 +39,7 @@
                         <p>@question.Explanation</p>
                     </div>
                 </div>
+                <button class="btn btn-danger mt-3 delete-btn" data-id="@question.Id">Видалити</button>
             </div>
         </div>
     }
@@ -66,8 +67,34 @@
         </ul>
     </nav>
 </div>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        var deleteButtons = document.querySelectorAll(".delete-btn");
+
+        deleteButtons.forEach(function (button) {
+            button.addEventListener("click", function () {
+                var questionId = this.getAttribute("data-id");
+
+                if (confirm("Are you sure you want to delete this question?")) {
+                    fetch(`/questions/${questionId}`, {
+                        method: "DELETE"
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                document.getElementById(`question-${questionId}`).remove();
+                            } else {
+                                alert("Failed to delete the question.");
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error:", error);
+                            alert("Failed to delete the question.");
+                        });
+                }
+            });
+        });
+
         var answers = document.querySelectorAll(".answer");
 
         answers.forEach(function (answer) {
