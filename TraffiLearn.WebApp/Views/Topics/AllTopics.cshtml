@@ -10,11 +10,17 @@
 
     @foreach (var topic in Model)
     {
-        <a href="~/topic/@topic.Id/questions" class="topic-link shadow-sm col-10 col-md-8 col-lg-8 btn btn-light mb-3 text-center">
-            <span style="font-size: 1.2rem; ">
-                @topic.Number. @topic.Title
-            </span>
-        </a>
+        <div id="topic-@topic.Id" class="topic-item shadow-sm col-10 col-md-8 col-lg-8 mb-3 d-flex align-items-center justify-content-between">
+            <a href="~/topic/@topic.Id/questions" class="topic-link btn btn-light text-center flex-grow-1">
+                <span style="font-size: 1.2rem;">
+                    @topic.Number. @topic.Title
+                </span>
+            </a>
+
+            <button class="btn delete-btn" style="color: red;" data-id="@topic.Id">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
     }
 </div>
 
@@ -44,6 +50,5 @@
                 }
             });
         });
-    }
+    });
 </script>
- 

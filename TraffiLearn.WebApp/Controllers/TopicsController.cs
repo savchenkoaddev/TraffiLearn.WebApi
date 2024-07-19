@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using TraffiLearn.Application.DTO.Questions.Response;
 using TraffiLearn.Application.DTO.Topics.Request;
-using TraffiLearn.Application.Questions.Commands.DeleteQuestion;
 using TraffiLearn.Application.Topics.Commands.CreateTopic;
+using TraffiLearn.Application.Topics.Commands.DeleteTopic;
 using TraffiLearn.Application.Topics.Queries.GetAll;
 using TraffiLearn.Application.Topics.Queries.GetById;
 using TraffiLearn.Application.Topics.Queries.GetQuestionsForTopic;
@@ -66,10 +66,10 @@ namespace TraffiLearn.WebApp.Controllers
         }
 
         [HttpDelete("/topics/{id:guid}")]
-        public async Task<IActionResult> DeleteQuestion(
+        public async Task<IActionResult> DeleteTopic(
            Guid? id)
         {
-            await _sender.Send(new DeleteQuestionCommand(id));
+            await _sender.Send(new DeleteTopicCommand(id));
 
             return NoContent();
         }
