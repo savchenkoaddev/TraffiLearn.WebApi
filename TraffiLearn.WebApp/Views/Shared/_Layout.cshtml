@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/css/Layout.css" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
 </head>
 <body>
     <nav class="navbar navbar-dark bg-dark fixed-top d-md-none">
@@ -28,15 +29,25 @@
         <div class="offcanvas-body">
             <ul class="navbar-nav justify-content-end ps-3 flex-grow-1 pe-3">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/"><p>Головна сторінка</p></a>
+                    <a class="nav-link" aria-current="page" href="/"><p>Головна сторінка</p></a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/questions"><p>Всі запитання</p></a>
+                <li class="nav-item d-flex align-items-center">
+                    <a class="nav-link" style="width: fit-content; display: flex; align-items: center;" aria-current="page" href="/questions">
+                        <p class="mb-0">Всі запитання</p>
+                    </a>
+                    <a href="/questions/add" class="ms-3 link-opacity-75-hover">
+                        <i class="bi bi-plus-circle-dotted"></i>
+                    </a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/topics"><p>Питання по темах</p></a>
+                <li class="nav-item d-flex align-items-center">
+                    <a class="nav-link" style="width: fit-content; display: flex; align-items: center;" aria-current="page" href="/topics">
+                        <p class="mb-0">Теми</p>
+                    </a>
+                    <a href="/topics/add" class="ms-3 link-opacity-75-hover">
+                        <i class="bi bi-plus-circle-dotted"></i>
+                    </a>
                 </li>
             </ul>
         </div>
@@ -50,21 +61,31 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/"><p>Головна сторінка</p></a>
+                    <a class="nav-link" aria-current="page" href="/"><p>Головна сторінка</p></a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/questions"><p>Всі запитання</p></a>
+                <li class="nav-item d-flex align-items-center">
+                    <a class="nav-link" style="width: fit-content; display: flex; align-items: center;" aria-current="page" href="/questions">
+                        <p class="mb-0">Всі запитання</p>
+                    </a>
+                    <a href="/questions/add" class="ms-3 link-opacity-75-hover">
+                        <i class="bi bi-plus-circle-dotted"></i>
+                    </a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/topics"><p>Питання по темах</p></a>
+                <li class="nav-item d-flex align-items-center">
+                    <a class="nav-link" style="width: fit-content; display: flex; align-items: center;" aria-current="page" href="/topics">
+                        <p class="mb-0">Теми</p>
+                    </a>
+                    <a href="/topics/add" class="ms-3 link-opacity-75-hover">
+                        <i class="bi bi-plus-circle-dotted"></i>
+                    </a>
                 </li>
 
             </ul>
         </div>
 
-        <div class="content-area col-md-9 col-xl-10 col-12">
+        <div class="content-area mt-lg-0 mt-4 col-md-9 col-xl-10 col-12">
             @RenderBody()
         </div>
     </div>
