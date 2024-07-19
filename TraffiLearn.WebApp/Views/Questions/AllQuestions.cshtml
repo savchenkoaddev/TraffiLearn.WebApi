@@ -8,41 +8,51 @@
     @foreach (var question in Model)
     {
         <div class="question-container shadow-sm col-10 col-md-8 col-lg-8 mb-5 text-center" id="question-@question.Id">
-            <div class="question-content">
-                <div class="question-details mb-3" style="font-size: 1.2rem; font-weight: 500;">
-                    <p>Білет №@question.TitleDetails.TicketNumber. Питання №@question.TitleDetails.QuestionNumber.</p>
-                </div>
-                <div class="question-text mb-4" style="font-size: 1.2rem;">
-                    <p>@question.Content</p>
+            <div class="d-flex flex-column">
+
+                <div class="d-flex justify-content-end mb-2">
+                    <button class="btn delete-btn" style="color: red;" data-id="@question.Id"><i class="bi bi-x-lg"></i></button>
                 </div>
 
-                @if (question.ImageUri is not null)
-                {
-                    <img src="@question.ImageUri" alt="Question Image" class="img-fluid mb-3" style="max-width: 95%; height: auto;">
-                }
+                <div class="question-content">
+                    <div class="question-details mb-3" style="font-size: 1.2rem; font-weight: 500;">
+                        <p>Білет №@question.TitleDetails.TicketNumber. Питання №@question.TitleDetails.QuestionNumber.</p>
+                    </div>
+                    <div class="question-text mb-4" style="font-size: 1.2rem;">
+                        <p>@question.Content</p>
+                    </div>
 
-                <div class="answers mt-3">
-                    @foreach (var answer in question.Answers)
+                    @if (question.ImageUri is not null)
                     {
-                        <button style="font-weight: 500; font-size: 1.1rem;" type="button" class="answer btn btn-outline-dark mt-3" data-correct="@answer.IsCorrect">
-                            @answer.Text
-                        </button>
+                        <img src="@question.ImageUri" alt="Question Image" class="img-fluid mb-3" style="max-width: 95%; height: auto;">
                     }
-                </div>
-                <p class="feedback mt-2" style="display:none; font-weight: bold;"></p>
 
-                <button class="btn btn-secondary mt-3 explanation-btn" type="button" data-bs-toggle="collapse" data-bs-target="#explanation-@question.Id" aria-expanded="false" aria-controls="explanation-@question.Id" disabled>
-                    Пояснення
-                </button>
-                <div class="collapse mt-2" id="explanation-@question.Id">
-                    <div class="card card-body">
-                        <p>@question.Explanation</p>
+                    <div class="answers mt-3">
+                        @foreach (var answer in question.Answers)
+                        {
+                            <button style="font-weight: 500; font-size: 1.1rem;" type="button" class="answer btn btn-outline-dark mt-3" data-correct="@answer.IsCorrect">
+                                @answer.Text
+                            </button>
+                        }
+                    </div>
+                    <p class="feedback mt-2" style="display:none; font-weight: bold;"></p>
+
+                    <button class="btn btn-secondary mt-3 explanation-btn" type="button" data-bs-toggle="collapse" data-bs-target="#explanation-@question.Id" aria-expanded="false" aria-controls="explanation-@question.Id" disabled>
+                        Пояснення
+                    </button>
+
+                    <div class="collapse mt-2" id="explanation-@question.Id">
+                        <div class="card card-body">
+                            <p>@question.Explanation</p>
+                        </div>
                     </div>
                 </div>
-                <button class="btn btn-danger mt-3 delete-btn" data-id="@question.Id">Видалити</button>
+
             </div>
         </div>
     }
+
+
 
     <nav aria-label="Page navigation">
         <ul class="pagination">

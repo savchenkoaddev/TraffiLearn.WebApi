@@ -11,6 +11,10 @@
     {
         <div class="question-container shadow-sm col-10 col-md-8 col-lg-8 mb-5 text-center" id="question-@question.Id">
             <div class="question-content">
+                <div class="d-flex justify-content-end mb-2">
+                    <button class="btn delete-btn" style="color: red;" data-id="@question.Id"><i class="bi bi-x-lg"></i></button>
+                </div>
+
                 <div class="question-details mb-3" style="font-size: 1.2rem; font-weight: 500;">
                     <p>Білет №@question.TitleDetails.TicketNumber. Питання №@question.TitleDetails.QuestionNumber.</p>
                 </div>
@@ -41,7 +45,6 @@
                         <p>@question.Explanation</p>
                     </div>
                 </div>
-                <button class="btn btn-danger mt-3 delete-btn" data-id="@question.Id">Видалити</button>
             </div>
         </div>
     }
