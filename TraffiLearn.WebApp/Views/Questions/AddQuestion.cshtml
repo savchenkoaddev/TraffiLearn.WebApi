@@ -2,7 +2,7 @@
 
 <div class="container mt-5" style="max-width:85%;">
     <h1 class="mb-4">Додати нове запитання</h1>
-    <form href="/questions/add" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+    <form asp-action="AddQuestion" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
         <div class="form-group mb-3">
             <label for="Content" class="mb-2">Текст запитання:</label>
             <textarea class="form-control" id="Content" name="Content" rows="3" maxlength="3000" placeholder="Введіть текст запитання" required></textarea>

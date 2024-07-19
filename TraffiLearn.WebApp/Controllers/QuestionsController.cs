@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using TraffiLearn.Application.DTO.Questions.Request;
 using TraffiLearn.Application.DTO.Questions.Response;
 using TraffiLearn.Application.Questions.Commands.CreateQuestion;
+using TraffiLearn.Application.Questions.Commands.DeleteQuestion;
 using TraffiLearn.Application.Questions.Queries.GetAllQuestions;
 using TraffiLearn.Application.Topics.Queries.GetAll;
 using TraffiLearn.WebApp.Helpers;
@@ -37,7 +38,7 @@ namespace TraffiLearn.WebApp.Controllers
         {
             await _sender.Send(new CreateQuestionCommand(request, image));
 
-            return Redirect("/addquestion");
+            return RedirectToAction(nameof(AddQuestion));
         }
 
         [HttpGet("/questions")]
@@ -52,6 +53,15 @@ namespace TraffiLearn.WebApp.Controllers
             ViewBag.TotalPages = paginationHelper.TotalPages;
 
             return View(paginatedQuestions);
+        }
+
+        [HttpDelete("/questions/{id:guid}")]
+        public async Task<IActionResult> DeleteQuestion(
+            Guid? id)
+        {
+            await _sender.Send(new DeleteQuestionCommand(id));
+
+            return NoContent();
         }
     }
 }
