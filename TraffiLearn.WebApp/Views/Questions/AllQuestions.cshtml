@@ -12,7 +12,15 @@
 
                 <div class="d-flex justify-content-end mb-2">
                     <button class="btn delete-btn" style="color: red;" data-id="@question.Id"><i class="bi bi-x-lg"></i></button>
+
+                    <a class="btn" style="color: dodgerblue;"
+                       href="/questions/@question.Id/update?returnUrl=@Uri.EscapeDataString(Context.Request.GetEncodedUrl())">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+
+
                 </div>
+
 
                 <div class="question-content">
                     <div class="question-details mb-3" style="font-size: 1.2rem; font-weight: 500;">
