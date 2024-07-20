@@ -22,7 +22,8 @@ namespace TraffiLearn.Application.Questions.Commands.UpdateQuestion
                 .When(x => x.RequestObject is not null);
 
             RuleFor(x => x.RequestObject.TitleDetails)
-                .NotEmpty();
+                .NotEmpty()
+                .When(x => x.RequestObject is not null);
 
             RuleFor(x => x.RequestObject.TitleDetails.QuestionNumber)
                 .NotEmpty()
@@ -37,7 +38,8 @@ namespace TraffiLearn.Application.Questions.Commands.UpdateQuestion
                 .When(x => x.RequestObject is not null);
 
             RuleFor(x => x.RequestObject.Answers)
-                .NotEmpty();
+                .NotEmpty()
+                .When(x => x.RequestObject is not null);
 
             RuleForEach(x => x.RequestObject.Answers)
                 .NotEmpty()
@@ -51,6 +53,15 @@ namespace TraffiLearn.Application.Questions.Commands.UpdateQuestion
                         .MaximumLength(300);
                 })
                 .When(x => x.RequestObject.Answers is not null);
+
+            RuleFor(x => x.RequestObject.TopicsIds)
+                .NotEmpty()
+                .When(x => x.RequestObject is not null);
+
+            RuleForEach(x => x.RequestObject.TopicsIds)
+                .NotEmpty()
+                .When(x => x.RequestObject.TopicsIds is not null)
+                .When(x => x.RequestObject is not null);
         }
     }
 }

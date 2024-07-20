@@ -39,8 +39,8 @@
             <input name="Image" class="form-control custom-file-input" type="file" id="Image">
         </div>
 
-        <div id="answers" class="mb-3">
-            <div class="form-group answer-item mb-3">
+        <div id="answers" class="mt-5 mb-5">
+            <div class="form-group answer-item mb-4">
                 <label for="Answer1" class="mb-2">Відповідь:</label>
                 <input type="text" class="form-control" id="Answer1" name="Answers[0].Text" placeholder="Введіть текст відповіді" required>
                 <div class="invalid-feedback"></div>
@@ -193,7 +193,7 @@
         const answerDiv = document.createElement('div');
         answerDiv.classList.add('form-group', 'answer-item', 'mb-3');
         answerDiv.innerHTML = `
-                        <label for="Answer${answerCount}" class="mb-2">Відповідь ${answerCount}</label>
+                            <label for="Answer${answerCount}" class="mb-4">Відповідь ${answerCount}</label>
                         <input type="text" class="form-control" id="Answer${answerCount}" name="Answers[${answerCount - 1}].Text" placeholder="Введіть текст відповіді" required>
                         <div class="invalid-feedback"></div>
                         <div class="custom-control custom-checkbox mt-2">

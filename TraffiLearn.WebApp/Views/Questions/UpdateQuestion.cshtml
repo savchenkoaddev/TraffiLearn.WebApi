@@ -58,13 +58,22 @@
                 <br />
                 <img src="@Model.ImageUri" alt="Image Preview" style="max-width: 100%; height: auto;" />
             </div>
+
+            <div class="form-group mb-3">
+                <input type="checkbox" class="custom-control-input" name="RemoveOldImageIfNewImageMissing" value="true" checked>
+                <label class="custom-control-label" for="RemoveOldImageIfNewImageMissing">Видалити існуючий малюнок, якщо новий не задано</label>
+                <input type="hidden" name="RemoveOldImageIfNewImageMissing" value="false">
+            </div>
         }
 
-        <div id="answers" class="mb-3">
+       
+        
+
+        <div id="answers" class="mt-5 mb-5">
             @for (int i = 0; i < Model.Answers.Count(); i++)
             {
                 var answer = Model.Answers.ElementAt(i);
-                <div class="form-group answer-item mb-3" data-index="@i">
+                <div class="form-group answer-item mb-4" data-index="@i">
                     <label for="Answer@(i + 1)" class="mb-2">Відповідь @(i + 1)</label>
                     <input type="text" class="form-control" id="Answer@(i + 1)" name="Answers[@i].Text" placeholder="Введіть текст відповіді" required value="@answer.Text">
                     <div class="invalid-feedback"></div>
@@ -209,7 +218,7 @@
             var answerCount = document.querySelectorAll('#answers .answer-item').length;
             var answerContainer = document.getElementById('answers');
             var newAnswerHtml = `
-                    <div class="form-group answer-item mb-3" data-index="${answerCount}">
+                    <div class="form-group answer-item mb-4" data-index="${answerCount}">
                         <label for="Answer${answerCount + 1}" class="mb-2">Відповідь ${answerCount + 1}</label>
                         <input type="text" class="form-control" id="Answer${answerCount + 1}" name="Answers[${answerCount}].Text" placeholder="Введіть текст відповіді" required>
                         <div class="invalid-feedback"></div>
