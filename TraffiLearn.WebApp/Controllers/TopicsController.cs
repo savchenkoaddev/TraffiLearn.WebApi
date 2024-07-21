@@ -5,6 +5,7 @@ using TraffiLearn.Application.DTO.Questions.Response;
 using TraffiLearn.Application.DTO.Topics.Request;
 using TraffiLearn.Application.Topics.Commands.CreateTopic;
 using TraffiLearn.Application.Topics.Commands.DeleteTopic;
+using TraffiLearn.Application.Topics.Commands.UpdateTopic;
 using TraffiLearn.Application.Topics.Queries.GetAll;
 using TraffiLearn.Application.Topics.Queries.GetById;
 using TraffiLearn.Application.Topics.Queries.GetQuestionsForTopic;
@@ -63,6 +64,16 @@ namespace TraffiLearn.WebApp.Controllers
             await _sender.Send(new CreateTopicCommand(topicRequest));
 
             return RedirectToAction(nameof(AddTopic));
+        }
+
+        [HttpPost("/topics/{id:guid}/update")]
+        public async Task<IActionResult> UpdateTopic(
+            Guid? id,
+            [FromBody] TopicRequest? topic)
+        {
+            await _sender.Send(new UpdateTopicCommand(id, topic));
+
+            return NoContent();
         }
 
         [HttpDelete("/topics/{id:guid}")]

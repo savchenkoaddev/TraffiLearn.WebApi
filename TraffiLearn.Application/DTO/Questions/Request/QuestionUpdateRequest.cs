@@ -8,5 +8,7 @@ namespace TraffiLearn.Application.DTO.Questions.Request
         string? Content,
         string? Explanation,
         QuestionTitleDetails? TitleDetails,
-        IEnumerable<AnswerRequest?>? Answers);
+        IEnumerable<AnswerRequest?>? Answers,
+        IEnumerable<Guid?>? TopicsIds,
+        bool RemoveOldImageIfNewImageMissing = true);
 }
