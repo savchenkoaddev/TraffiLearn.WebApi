@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="~/css/AddForm.css" />
 
 <div class="container mt-5" style="max-width:85%;">
-    <h1 class="mb-4">Оновити запитання</h1>
+    <h1 class="mb-4">Оновити дані запитання</h1>
     <form action="/questions/@Model.Id/update?returnUrl=@ViewBag.ReturnUrl" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
         <input type="hidden" name="Id" value="@Model.Id" />
 
