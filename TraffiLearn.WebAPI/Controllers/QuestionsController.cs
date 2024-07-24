@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using TraffiLearn.Application.DTO.Questions.Request;
 using TraffiLearn.Application.Questions.Commands.AddTopicToQuestion;
