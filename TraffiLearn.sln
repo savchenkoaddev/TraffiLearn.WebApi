@@ -15,8 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TraffiLearn.Infrastructure"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TraffiLearn.WebAPI", "TraffiLearn.WebAPI\TraffiLearn.WebAPI.csproj", "{8654B2FD-FE4D-45FC-9435-6110E6F09379}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TraffiLearn.WebApp", "TraffiLearn.WebApp\TraffiLearn.WebApp.csproj", "{62EDBF03-18E4-4C80-BE8C-C07CB65CAEF8}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,10 +37,6 @@ Global
 		{8654B2FD-FE4D-45FC-9435-6110E6F09379}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8654B2FD-FE4D-45FC-9435-6110E6F09379}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8654B2FD-FE4D-45FC-9435-6110E6F09379}.Release|Any CPU.Build.0 = Release|Any CPU
-		{62EDBF03-18E4-4C80-BE8C-C07CB65CAEF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{62EDBF03-18E4-4C80-BE8C-C07CB65CAEF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{62EDBF03-18E4-4C80-BE8C-C07CB65CAEF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{62EDBF03-18E4-4C80-BE8C-C07CB65CAEF8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,7 +46,6 @@ Global
 		{DE6144ED-B6BD-402B-A3E2-024821202E3D} = {153C3EC4-AE72-41AB-AAA1-FCF6375D4CDD}
 		{FC47C713-7884-454C-8522-0BD303348F4E} = {153C3EC4-AE72-41AB-AAA1-FCF6375D4CDD}
 		{8654B2FD-FE4D-45FC-9435-6110E6F09379} = {153C3EC4-AE72-41AB-AAA1-FCF6375D4CDD}
-		{62EDBF03-18E4-4C80-BE8C-C07CB65CAEF8} = {153C3EC4-AE72-41AB-AAA1-FCF6375D4CDD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F8404DBE-3C98-4ADC-81FF-D1AE134AAFDF}
