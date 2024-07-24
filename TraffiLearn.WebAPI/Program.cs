@@ -1,4 +1,3 @@
-using Carter;
 using TraffiLearn.Application;
 using TraffiLearn.Infrastructure;
 
@@ -17,8 +16,6 @@ namespace TraffiLearn.WebAPI
             builder.Services.AddApplication();
             builder.Services.AddInfrastructure(builder.Configuration);
 
-            builder.Services.AddCarter();
-            
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
@@ -31,7 +28,6 @@ namespace TraffiLearn.WebAPI
             app.UseRouting();
 
             app.MapControllers();
-            app.MapCarter();
 
             app.Run();
         }

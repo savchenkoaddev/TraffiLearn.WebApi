@@ -42,7 +42,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return Ok(topic);
         }
 
-        [HttpGet("{topicId:guid}")]
+        [HttpGet("{topicId:guid}/questions")]
         public async Task<IActionResult> GetQuestionsForTopic(Guid? topicId)
         {
             var questions = await _sender.Send(new GetQuestionsForTopicQuery(topicId));
