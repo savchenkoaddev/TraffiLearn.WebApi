@@ -14,8 +14,8 @@ namespace TraffiLearn.Application.Questions.Commands.UpdateQuestion
         private readonly IBlobService _blobService;
         private readonly IQuestionRepository _questionRepository;
         private readonly ITopicRepository _topicRepository;
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper<QuestionUpdateRequest, Question> _questionMapper;
+        private readonly IUnitOfWork _unitOfWork;
 
         public UpdateQuestionCommandHandler(
             IQuestionRepository questionRepository,
@@ -65,14 +65,14 @@ namespace TraffiLearn.Application.Questions.Commands.UpdateQuestion
         }
 
         private void UpdateAnswers(
-            Question oldEntityObject, 
+            Question oldEntityObject,
             Question newEntityObject)
         {
             oldEntityObject.Answers = newEntityObject.Answers;
         }
 
         private async Task UpdateTopics(
-            IEnumerable<Guid?>? topicsIds, 
+            IEnumerable<Guid?>? topicsIds,
             Question oldEntityObject)
         {
             foreach (var topicId in topicsIds)

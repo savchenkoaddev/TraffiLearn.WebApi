@@ -4,7 +4,7 @@ using TraffiLearn.Domain.Entities;
 
 namespace TraffiLearn.Infrastructure.Database
 {
-    public sealed class ApplicationDbContext : DbContext, IApplicationDbContext, IUnitOfWork
+    public sealed class ApplicationDbContext : DbContext, IUnitOfWork
     {
         public ApplicationDbContext(DbContextOptions options)
             : base(options)

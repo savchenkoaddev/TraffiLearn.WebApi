@@ -1,8 +1,8 @@
-﻿using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.RepositoryContracts.Abstractions;
+﻿using TraffiLearn.Domain.Abstractions;
+using TraffiLearn.Domain.Entities;
 
 namespace TraffiLearn.Domain.RepositoryContracts
 {
-    public interface IQuestionRepository : IRepository<Question, Guid>
+    public interface IQuestionRepository : IGenericRepository<Question, Guid>
     { }
 }

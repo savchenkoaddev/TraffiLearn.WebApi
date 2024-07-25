@@ -13,7 +13,7 @@ namespace TraffiLearn.Application.Questions.Queries.GetTopicsForQuestion
         private readonly IMapper<Topic, TopicResponse> _topicMapper;
 
         public GetTopicsForQuestionQueryHandler(
-            IQuestionRepository questionRepository, 
+            IQuestionRepository questionRepository,
             IMapper<Topic, TopicResponse> topicMapper)
         {
             _questionRepository = questionRepository;

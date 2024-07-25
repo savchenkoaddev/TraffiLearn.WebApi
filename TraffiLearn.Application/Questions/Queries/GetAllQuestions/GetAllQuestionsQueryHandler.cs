@@ -10,9 +10,9 @@ namespace TraffiLearn.Application.Questions.Queries.GetAllQuestions
     {
         private readonly IQuestionRepository _questionRepository;
         private readonly IMapper<Question, QuestionResponse> _questionMapper;
-        
+
         public GetAllQuestionsQueryHandler(
-            IQuestionRepository questionRepository, 
+            IQuestionRepository questionRepository,
             IMapper<Question, QuestionResponse> questionMapper)
         {
             _questionRepository = questionRepository;

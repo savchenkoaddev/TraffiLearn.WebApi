@@ -1,6 +1,7 @@
 ﻿using MediatR;
+using TraffiLearn.Application.Abstractions;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Application.Questions.Commands.RemoveTopicForQuestion;
+using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Exceptions;
 using TraffiLearn.Domain.RepositoryContracts;
 
@@ -32,7 +33,7 @@ namespace TraffiLearn.Application.Topics.Commands.RemoveQuestionForTopic
             }
 
             var topic = await _topicRepository.GetByIdAsync(
-                request.TopicId.Value, 
+                request.TopicId.Value,
                 includeExpression: x => x.Questions);
 
             if (topic is null)

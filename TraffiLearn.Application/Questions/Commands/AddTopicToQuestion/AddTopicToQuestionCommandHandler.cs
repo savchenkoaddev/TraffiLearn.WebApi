@@ -1,5 +1,7 @@
 ﻿using MediatR;
+using TraffiLearn.Application.Abstractions;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Exceptions;
 using TraffiLearn.Domain.RepositoryContracts;
 
@@ -42,7 +44,7 @@ namespace TraffiLearn.Application.Questions.Commands.AddTopicToQuestion
             if (question.Topics.Any(x => x.Id == topic.Id))
             {
                 throw new TopicAlreadyInQuestionException(
-                    topicId: topic.Id, 
+                    topicId: topic.Id,
                     questionId: question.Id);
             }
 

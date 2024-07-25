@@ -42,7 +42,7 @@ namespace TraffiLearn.Application.Questions.Commands.RemoveTopicForQuestion
             if (!question.Topics.Any(x => x.Id == topic.Id))
             {
                 throw new TopicAlreadyRemovedFromQuestionException(
-                    topicId: topic.Id, 
+                    topicId: topic.Id,
                     questionId: question.Id);
             }
 

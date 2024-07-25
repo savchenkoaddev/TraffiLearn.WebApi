@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using System.IO;
 using TraffiLearn.Application.Abstractions;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Storage;
@@ -61,7 +60,7 @@ namespace TraffiLearn.Application.Questions.Commands.CreateQuestion
 
                 var uploadResponse = await _blobService.UploadAsync(
                     stream,
-                    image.ContentType, 
+                    image.ContentType,
                     cancellationToken);
 
                 entity.ImageUri = uploadResponse.BlobUri;

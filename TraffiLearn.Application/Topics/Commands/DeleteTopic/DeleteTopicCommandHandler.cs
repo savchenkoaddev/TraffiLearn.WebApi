@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Exceptions;
 using TraffiLearn.Domain.RepositoryContracts;
 
@@ -10,7 +11,9 @@ namespace TraffiLearn.Application.Topics.Commands.DeleteTopic
         private readonly ITopicRepository _topicRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public DeleteTopicCommandHandler(ITopicRepository topicRepository, IUnitOfWork unitOfWork)
+        public DeleteTopicCommandHandler(
+            ITopicRepository topicRepository,
+            IUnitOfWork unitOfWork)
         {
             _topicRepository = topicRepository;
             _unitOfWork = unitOfWork;

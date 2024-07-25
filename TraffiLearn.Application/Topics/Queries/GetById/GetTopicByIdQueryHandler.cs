@@ -13,7 +13,7 @@ namespace TraffiLearn.Application.Topics.Queries.GetById
         private readonly IMapper<Topic, TopicResponse> _topicMapper;
 
         public GetTopicByIdQueryHandler(
-            ITopicRepository topicRepository, 
+            ITopicRepository topicRepository,
             IMapper<Topic, TopicResponse> topicMapper)
         {
             _topicRepository = topicRepository;
