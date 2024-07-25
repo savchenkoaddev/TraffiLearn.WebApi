@@ -2,13 +2,14 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using TraffiLearn.Application.Abstractions;
+using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Storage;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Infrastructure.Database;
 using TraffiLearn.Infrastructure.External;
 using TraffiLearn.Infrastructure.Options;
+using TraffiLearn.Infrastructure.OptionsSetup;
 using TraffiLearn.Infrastructure.Repositories;
 
 namespace TraffiLearn.Infrastructure
@@ -19,21 +20,26 @@ namespace TraffiLearn.Infrastructure
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            var sqlServerSettings = configuration.GetRequiredSection(SqlServerSettings.CONFIG_KEY).Get<SqlServerSettings>();
-            var blobStorageSettings = configuration.GetRequiredSection(AzureBlobStorageSettings.CONFIG_KEY).Get<AzureBlobStorageSettings>();
+            services.ConfigureOptions<SqlServerSettingsSetup>();
+            services.ConfigureOptions<AzureBlobStorageSettingsSetup>();
 
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
             {
+                var sqlServerSettings = serviceProvider.GetRequiredService<IOptions<AzureBlobStorageSettings>>().Value;
+
                 options.UseSqlServer(sqlServerSettings.ConnectionString);
             });
 
-            services.Configure<AzureBlobStorageSettings>(
-                configuration.GetRequiredSection(AzureBlobStorageSettings.CONFIG_KEY));
+            services.AddSingleton((serviceProvider) =>
+            {
+                var blobStorageSettings = serviceProvider.GetRequiredService<IOptions<AzureBlobStorageSettings>>().Value;
+
+                return new BlobServiceClient(blobStorageSettings.ConnectionString);
+            });
 
             services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
 
             services.AddSingleton<IBlobService, AzureBlobService>();
-            services.AddSingleton(_ => new BlobServiceClient(blobStorageSettings.ConnectionString));
 
             services.AddScoped<ITopicRepository, TopicRepository>();
             services.AddScoped<IQuestionRepository, QuestionRepository>();

@@ -39,7 +39,7 @@ namespace TraffiLearn.Infrastructure.External
             }
         }
 
-        public async Task<BlobResponse> DownloadAsync(string blobName, CancellationToken cancellationToken = default)
+        public async Task<DownloadBlobResponse> DownloadAsync(string blobName, CancellationToken cancellationToken = default)
         {
             BlobClient blobClient = _containerClient.GetBlobClient(blobName);
 
@@ -52,7 +52,7 @@ namespace TraffiLearn.Infrastructure.External
 
             var response = await blobClient.DownloadContentAsync(cancellationToken);
 
-            return new BlobResponse(
+            return new DownloadBlobResponse(
                 response.Value.Content.ToStream(),
                 response.Value.Details.ContentType);
         }
