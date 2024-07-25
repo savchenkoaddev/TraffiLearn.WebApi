@@ -1,5 +1,7 @@
 ﻿using MediatR;
+using TraffiLearn.Application.Abstractions;
 using TraffiLearn.Application.DTO.Questions.Response;
+using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Exceptions;
 using TraffiLearn.Domain.RepositoryContracts;
 
@@ -8,11 +10,14 @@ namespace TraffiLearn.Application.Questions.Queries.GetQuestionById
     public sealed class GetQuestionByIdQueryHandler : IRequestHandler<GetQuestionByIdQuery, QuestionResponse>
     {
         private readonly IQuestionRepository _questionRepository;
-        private readonly QuestionMapper _questionMapper = new();
+        private readonly IMapper<Question, QuestionResponse> _questionMapper;
 
-        public GetQuestionByIdQueryHandler(IQuestionRepository questionRepository)
+        public GetQuestionByIdQueryHandler(
+            IQuestionRepository questionRepository, 
+            IMapper<Question, QuestionResponse> questionMapper)
         {
             _questionRepository = questionRepository;
+            _questionMapper = questionMapper;
         }
 
         public async Task<QuestionResponse> Handle(GetQuestionByIdQuery request, CancellationToken cancellationToken)
@@ -24,7 +29,7 @@ namespace TraffiLearn.Application.Questions.Queries.GetQuestionById
                 throw new QuestionNotFoundException(request.QuestionId.Value);
             }
 
-            return _questionMapper.ToResponse(question);
+            return _questionMapper.Map(question);
         }
     }
 }

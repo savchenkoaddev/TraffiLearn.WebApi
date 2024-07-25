@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TraffiLearn.Domain.Primitives;
 
 namespace TraffiLearn.Domain.Entities
 {
-    public sealed class Topic
+    public sealed class Topic : Entity
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Topic(Guid id) : base(id)
+        { }
 
         public int Number { get; set; }
 

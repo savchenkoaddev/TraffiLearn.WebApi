@@ -1,16 +1,18 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.ValueObjects;
 
-namespace TraffiLearn.Domain.Entities
+namespace TraffiLearn.Domain.Entities 
 {
-    public sealed class Question
+    public sealed class Question : Entity
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Question(Guid id) : base(id)
+        { }
 
         [StringLength(2000)]
         public string Content { get; set; }
 
-        public string Explanation { get; set; } 
+        public string Explanation { get; set; }
 
         [Range(0, int.MaxValue)]
         public int LikesCount { get; set; }

@@ -1,6 +1,8 @@
 ﻿using MediatR;
+using TraffiLearn.Application.Abstractions;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Storage;
+using TraffiLearn.Application.DTO.Questions.Request;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Exceptions;
 using TraffiLearn.Domain.RepositoryContracts;
@@ -13,18 +15,20 @@ namespace TraffiLearn.Application.Questions.Commands.UpdateQuestion
         private readonly IQuestionRepository _questionRepository;
         private readonly ITopicRepository _topicRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly QuestionMapper _questionMapper = new();
+        private readonly IMapper<QuestionUpdateRequest, Question> _questionMapper;
 
         public UpdateQuestionCommandHandler(
             IQuestionRepository questionRepository,
             ITopicRepository topicRepository,
             IUnitOfWork unitOfWork,
-            IBlobService blobService)
+            IBlobService blobService,
+            IMapper<QuestionUpdateRequest, Question> questionMapper)
         {
             _questionRepository = questionRepository;
             _topicRepository = topicRepository;
             _unitOfWork = unitOfWork;
             _blobService = blobService;
+            _questionMapper = questionMapper;
         }
 
         public async Task Handle(UpdateQuestionCommand request, CancellationToken cancellationToken)
@@ -36,8 +40,7 @@ namespace TraffiLearn.Application.Questions.Commands.UpdateQuestion
 
             var oldEntityObject = await GetOldEntityObject(request.QuestionId.Value);
 
-            var newEntityObject = _questionMapper.ToEntity(request.RequestObject);
-            newEntityObject.Id = oldEntityObject.Id;
+            var newEntityObject = _questionMapper.Map(request.RequestObject);
 
             UpdateAnswers(oldEntityObject, newEntityObject);
 

@@ -1,7 +1,10 @@
 ﻿using MediatR;
 using System.IO;
+using TraffiLearn.Application.Abstractions;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Storage;
+using TraffiLearn.Application.DTO.Questions.Request;
+using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Exceptions;
 using TraffiLearn.Domain.RepositoryContracts;
 
@@ -12,19 +15,21 @@ namespace TraffiLearn.Application.Questions.Commands.CreateQuestion
         private readonly IQuestionRepository _questionRepository;
         private readonly ITopicRepository _topicRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly QuestionMapper _questionMapper = new();
         private readonly IBlobService _blobService;
+        private readonly IMapper<QuestionCreateRequest, Question> _questionMapper;
 
         public CreateQuestionCommandHandler(
             IQuestionRepository questionRepository,
             ITopicRepository topicRepository,
             IUnitOfWork unitOfWork,
-            IBlobService blobService)
+            IBlobService blobService,
+            IMapper<QuestionCreateRequest, Question> questionMapper)
         {
             _questionRepository = questionRepository;
             _topicRepository = topicRepository;
             _unitOfWork = unitOfWork;
             _blobService = blobService;
+            _questionMapper = questionMapper;
         }
 
         public async Task Handle(CreateQuestionCommand request, CancellationToken cancellationToken)
@@ -34,7 +39,7 @@ namespace TraffiLearn.Application.Questions.Commands.CreateQuestion
                 throw new AllAnswersAreIncorrectException();
             }
 
-            var entity = _questionMapper.ToEntity(request.RequestObject);
+            var entity = _questionMapper.Map(request.RequestObject);
 
             foreach (var topicId in request.RequestObject.TopicsIds)
             {
