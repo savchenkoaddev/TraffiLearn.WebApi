@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using TraffiLearn.Application.Abstractions;
+using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.DTO.Questions.Response;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Exceptions;

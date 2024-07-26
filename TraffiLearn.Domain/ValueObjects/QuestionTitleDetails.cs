@@ -1,15 +1,39 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace TraffiLearn.Domain.ValueObjects
+﻿namespace TraffiLearn.Domain.ValueObjects
 {
-    [ComplexType]
     public sealed record QuestionTitleDetails
     {
-        [Range(1, int.MaxValue)]
-        public int? TicketNumber { get; init; }
+        private QuestionTitleDetails(
+            int ticketNumber,
+            int questionNumber)
+        {
+            TicketNumber = ticketNumber;
+            QuestionNumber = questionNumber;
+        }
 
-        [Range(1, int.MaxValue)]
-        public int? QuestionNumber { get; init; }
+        public int TicketNumber { get; init; }
+
+        public int QuestionNumber { get; init; }
+
+        public static QuestionTitleDetails Create(
+            int? ticketNumber,
+            int? questionNumber)
+        {
+            ArgumentNullException.ThrowIfNull(ticketNumber, nameof(ticketNumber));
+            ArgumentNullException.ThrowIfNull(questionNumber, nameof(questionNumber));
+
+            if (ticketNumber < 1)
+            {
+                throw new ArgumentException("Ticket number cannot be less than one.");
+            }
+
+            if (questionNumber < 1)
+            {
+                throw new ArgumentException("Question number cannot be less than one");
+            }
+
+            return new QuestionTitleDetails(
+                ticketNumber.Value,
+                questionNumber.Value);
+        }
     };
 }

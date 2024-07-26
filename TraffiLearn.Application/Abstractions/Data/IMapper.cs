@@ -1,4 +1,4 @@
-﻿namespace TraffiLearn.Application.Abstractions
+﻿namespace TraffiLearn.Application.Abstractions.Data
 {
     public interface IMapper<TSource, TDestination>
     {
