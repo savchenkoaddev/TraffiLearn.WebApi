@@ -6,50 +6,51 @@ namespace TraffiLearn.Domain.Entities
 {
     public sealed class Question : Entity
     {
-        private const int MaxContentLength = 2000;
-        private const int MaxExplanationLength = 2000;
-        private const int MaxImageUriLength = 300;
-
+        private QuestionContent _content;
+        private QuestionExplanation _explanation;
+        private TicketNumber _ticketNumber;
+        private QuestionNumber _questionNumber;
+        private ImageUri? _imageUri;
+        private List<Answer> _answers = [];
         private readonly List<Topic> _topics = [];
-        private readonly List<Answer> _answers = [];
 
         private Question(
-            Guid id,
-            string content,
-            string explanation,
-            QuestionTitleDetails questionTitleDetails,
+            QuestionId id,
+            QuestionContent content,
+            QuestionExplanation explanation,
+            TicketNumber ticketNumber,
+            QuestionNumber questionNumber,
             List<Answer> answers,
-            List<Topic> topics,
-            string? imageUri) : base(id)
+            ImageUri? imageUri) : base(id.Value)
         {
-            Content = content;
-            Explanation = explanation;
-            TitleDetails = questionTitleDetails;
-            ImageUri = imageUri;
+            _content = content;
+            _explanation = explanation;
+            _ticketNumber = ticketNumber;
+            _questionNumber = questionNumber;
             _answers = answers;
-            _topics = topics;
+            _imageUri = imageUri;
         }
 
-        public string Content { get; private set; }
+        public QuestionContent Content { get; private set; }
 
-        public string Explanation { get; private set; }
+        public QuestionExplanation Explanation { get; private set; }
+
+        public TicketNumber TicketNumber { get; private set; }
+
+        public QuestionNumber QuestionNumber { get; private set; }
+
+        public ImageUri? ImageUri { get; private set; }
 
         public int LikesCount { get; private set; } = 0;
 
         public int DislikesCount { get; private set; } = 0;
 
-        public QuestionTitleDetails TitleDetails { get; private set; }
-
         public IReadOnlyCollection<Topic> Topics => _topics;
 
         public IReadOnlyCollection<Answer> Answers => _answers;
 
-        public string? ImageUri { get; private set; }
-
-        public void AddAnswer(Answer? answer)
+        public void AddAnswer(Answer answer)
         {
-            ArgumentNullException.ThrowIfNull(answer, nameof(answer));
-
             if (_answers.Contains(answer))
             {
                 throw new ArgumentException("The question already contains the answer with the provided text");
@@ -64,10 +65,8 @@ namespace TraffiLearn.Domain.Entities
             _answers.Add(answer);
         }
 
-        public void RemoveAnswer(Answer? answer)
+        public void RemoveAnswer(Answer answer)
         {
-            ArgumentNullException.ThrowIfNull(answer, nameof(answer));
-
             if (!_answers.Contains(answer))
             {
                 throw new ArgumentException("The question does not contain the answer with the provided text.");
@@ -82,10 +81,8 @@ namespace TraffiLearn.Domain.Entities
             _answers.Remove(answer);
         }
 
-        public void AddTopic(Topic? topic)
+        public void AddTopic(Topic topic)
         {
-            ArgumentNullException.ThrowIfNull(topic, nameof(topic));
-
             if (_topics.Contains(topic))
             {
                 throw new ArgumentException("The same topic has already been added.");
@@ -95,93 +92,50 @@ namespace TraffiLearn.Domain.Entities
             topic.AddQuestion(this);
         }
 
-        public void RemoveTopic(Topic? topic)
+        public void RemoveTopic(TopicId topicId)
         {
-            ArgumentNullException.ThrowIfNull(topic, nameof(topic));
+            var topic = _topics.FirstOrDefault(t => t.Id == topicId.Value);
 
-            if (!_topics.Contains(topic))
+            if (topic is null)
             {
                 throw new ArgumentException("The question does not contain the provided topic.");
             }
 
             _topics.Remove(topic);
-            topic.RemoveQuestion(questionId: Id);
+            topic.RemoveQuestion(new QuestionId(Id));
+        }
+
+        public void SetImageUri(ImageUri? imageUri)
+        {
+            ImageUri = imageUri;
         }
 
         public static Question Create(
-            Guid id,
-            string? content,
-            string? explanation,
-            QuestionTitleDetails? questionTitleDetails,
-            List<Answer>? answers,
-            List<Topic>? topics,
-            string? imageUri)
+            QuestionId id,
+            QuestionContent content,
+            QuestionExplanation explanation,
+            TicketNumber ticketNumber,
+            QuestionNumber questionNumber,
+            List<Answer> answers,
+            ImageUri? imageUri)
         {
-            ValidateForCreate(
+            ValidateAnswers(answers);
+
+            return new Question(
+                id,
                 content,
                 explanation,
-                questionTitleDetails,
+                ticketNumber,
+                questionNumber,
                 answers,
-                topics,
                 imageUri);
-
-            var question = new Question(
-                id,
-                content: content,
-                explanation: explanation,
-                questionTitleDetails: questionTitleDetails,
-                answers: answers,
-                topics: topics,
-                imageUri: imageUri);
-
-            foreach (var topic in topics)
-            {
-                topic.AddQuestion(question);
-            }
-
-            return question;
         }
 
-        private static void ValidateForCreate(
-            string? content,
-            string? explanation,
-            QuestionTitleDetails? questionTitleDetails,
-            List<Answer>? answers,
-            List<Topic>? topics,
-            string? imageUri)
+        private static void ValidateAnswers(List<Answer> answers)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(content, nameof(content));
-            ArgumentException.ThrowIfNullOrWhiteSpace(explanation, nameof(explanation));
-
-            ArgumentNullException.ThrowIfNull(questionTitleDetails, nameof(questionTitleDetails));
-            ArgumentNullException.ThrowIfNull(answers, nameof(answers));
-            ArgumentNullException.ThrowIfNull(topics, nameof(topics));
-
             if (answers.Count == 0)
             {
                 throw new ArgumentException("There are no answers in the question.");
-            }
-
-            if (topics.Count == 0)
-            {
-                throw new ArgumentException("There are no topics provided for the question.");
-            }
-
-            if (content.Length > MaxContentLength)
-            {
-                throw new ArgumentException($"The content length must be less than {MaxContentLength} characters.");
-            }
-
-            if (explanation.Length > MaxExplanationLength)
-            {
-                throw new ArgumentException($"The explanation length must be less than {MaxContentLength} characters.");
-            }
-
-            if (imageUri is not null &&
-                (!Uri.IsWellFormedUriString(imageUri, UriKind.Absolute) ||
-                imageUri.Length > MaxImageUriLength))
-            {
-                throw new ArgumentException($"Image uri is in an invalid format or exceeds {MaxImageUriLength} characters.");
             }
 
             if (answers.All(a => a.IsCorrect == false))
@@ -195,13 +149,8 @@ namespace TraffiLearn.Domain.Entities
             {
                 throw new ArgumentException("There are duplicate answers in the provided question");
             }
-
-            var uniqueTopics = new HashSet<Topic>(topics);
-
-            if (uniqueTopics.Count != topics.Count)
-            {
-                throw new ArgumentException("There are duplicate topics in the provided question");
-            }
         }
     }
+
+    public sealed record QuestionId(Guid Value);
 }

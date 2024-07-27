@@ -35,7 +35,7 @@ namespace TraffiLearn.WebAPI.Controllers
         }
 
         [HttpGet("{questionId:guid}")]
-        public async Task<IActionResult> GetQuestionById(Guid? questionId)
+        public async Task<IActionResult> GetQuestionById(Guid questionId)
         {
             var question = await _sender.Send(new GetQuestionByIdQuery(questionId));
 
@@ -43,7 +43,7 @@ namespace TraffiLearn.WebAPI.Controllers
         }
 
         [HttpGet("{questionId:guid}/topics")]
-        public async Task<IActionResult> GetTopicsForQuestion(Guid? questionId)
+        public async Task<IActionResult> GetTopicsForQuestion(Guid questionId)
         {
             var topics = await _sender.Send(new GetTopicsForQuestionQuery(questionId));
 
@@ -67,8 +67,8 @@ namespace TraffiLearn.WebAPI.Controllers
 
         [HttpPut("{questionId:guid}")]
         public async Task<IActionResult> UpdateQuestion(
-            Guid? questionId,
-            [FromForm] QuestionUpdateRequest? request,
+            Guid questionId,
+            [FromForm] QuestionUpdateRequest request,
             [FromForm] IFormFile? image)
         {
             await _sender.Send(new UpdateQuestionCommand(questionId, request, image));
@@ -78,8 +78,8 @@ namespace TraffiLearn.WebAPI.Controllers
 
         [HttpPut("{questionId:guid}/addtopic/{topicId:guid}")]
         public async Task<IActionResult> AddTopicToQuestion(
-            Guid? questionId,
-            Guid? topicId)
+            Guid questionId,
+            Guid topicId)
         {
             await _sender.Send(new AddTopicToQuestionCommand(topicId, questionId));
 
@@ -88,8 +88,8 @@ namespace TraffiLearn.WebAPI.Controllers
 
         [HttpPut("{questionId:guid}/removetopic/{topicId:guid}")]
         public async Task<IActionResult> RemoveTopicForQuestion(
-            Guid? questionId,
-            Guid? topicId,
+            Guid questionId,
+            Guid topicId,
             ISender sender)
         {
             await sender.Send(new RemoveTopicForQuestionCommand(topicId, questionId));
@@ -99,7 +99,7 @@ namespace TraffiLearn.WebAPI.Controllers
 
         [HttpDelete("{questionId:guid}")]
         public async Task<IActionResult> DeleteQuestion(
-            Guid? questionId)
+            Guid questionId)
         {
             await _sender.Send(new DeleteQuestionCommand(questionId));
 

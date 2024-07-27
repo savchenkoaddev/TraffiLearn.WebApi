@@ -23,31 +23,25 @@ namespace TraffiLearn.Application.Questions.Commands.RemoveTopicForQuestion
 
         public async Task Handle(RemoveTopicForQuestionCommand request, CancellationToken cancellationToken)
         {
-            var topic = await _topicRepository.GetByIdAsync(request.TopicId.Value);
+            var topic = await _topicRepository.GetByIdAsync(request.TopicId);
 
             if (topic is null)
             {
-                throw new TopicNotFoundException(request.TopicId.Value);
+                throw new TopicNotFoundException(request.TopicId);
             }
 
             var question = await _questionRepository.GetByIdAsync(
-                request.QuestionId.Value,
+                request.QuestionId,
                 includeExpression: x => x.Topics);
 
             if (question is null)
             {
-                throw new QuestionNotFoundException(request.QuestionId.Value);
+                throw new QuestionNotFoundException(request.QuestionId);
             }
 
-            if (!question.Topics.Any(x => x.Id == topic.Id))
-            {
-                throw new TopicAlreadyRemovedFromQuestionException(
-                    topicId: topic.Id,
-                    questionId: question.Id);
-            }
+            question.RemoveTopic(topic);
 
-            question.Topics.Remove(topic);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 }

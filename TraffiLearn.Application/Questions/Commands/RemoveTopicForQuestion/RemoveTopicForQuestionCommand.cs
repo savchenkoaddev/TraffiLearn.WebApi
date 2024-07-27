@@ -3,6 +3,6 @@
 namespace TraffiLearn.Application.Questions.Commands.RemoveTopicForQuestion
 {
     public sealed record RemoveTopicForQuestionCommand(
-        Guid? TopicId,
-        Guid? QuestionId) : IRequest;
+        Guid TopicId,
+        Guid QuestionId) : IRequest;
 }

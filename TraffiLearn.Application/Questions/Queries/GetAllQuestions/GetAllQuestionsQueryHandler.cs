@@ -9,11 +9,11 @@ namespace TraffiLearn.Application.Questions.Queries.GetAllQuestions
     public sealed class GetAllQuestionsQueryHandler : IRequestHandler<GetAllQuestionsQuery, IEnumerable<QuestionResponse>>
     {
         private readonly IQuestionRepository _questionRepository;
-        private readonly IMapper<Question, QuestionResponse> _questionMapper;
+        private readonly Mapper<Question, QuestionResponse> _questionMapper;
 
         public GetAllQuestionsQueryHandler(
             IQuestionRepository questionRepository,
-            IMapper<Question, QuestionResponse> questionMapper)
+            Mapper<Question, QuestionResponse> questionMapper)
         {
             _questionRepository = questionRepository;
             _questionMapper = questionMapper;

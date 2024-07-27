@@ -3,6 +3,6 @@
 namespace TraffiLearn.Application.Questions.Commands.AddTopicToQuestion
 {
     public sealed record AddTopicToQuestionCommand(
-        Guid? TopicId,
-        Guid? QuestionId) : IRequest;
+        Guid TopicId,
+        Guid QuestionId) : IRequest;
 }

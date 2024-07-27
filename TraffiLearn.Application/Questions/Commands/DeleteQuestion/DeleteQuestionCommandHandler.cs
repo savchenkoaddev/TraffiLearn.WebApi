@@ -24,11 +24,11 @@ namespace TraffiLearn.Application.Questions.Commands.DeleteQuestion
 
         public async Task Handle(DeleteQuestionCommand request, CancellationToken cancellationToken)
         {
-            var found = await _questionRepository.GetByIdAsync(request.QuestionId.Value);
+            var found = await _questionRepository.GetByIdAsync(request.QuestionId);
 
             if (found is null)
             {
-                throw new QuestionNotFoundException(request.QuestionId.Value);
+                throw new QuestionNotFoundException(request.QuestionId);
             }
 
             if (found.ImageUri is not null)

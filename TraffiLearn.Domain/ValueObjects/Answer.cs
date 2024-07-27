@@ -1,6 +1,8 @@
-﻿namespace TraffiLearn.Domain.ValueObjects
+﻿using TraffiLearn.Domain.Primitives;
+
+namespace TraffiLearn.Domain.ValueObjects
 {
-    public sealed record Answer
+    public sealed class Answer : ValueObject
     {
         private const int MaxTextLength = 300;
 
@@ -17,25 +19,28 @@
         public bool IsCorrect { get; init; }
 
         public static Answer Create(
-            string? text,
-            bool? isCorrect)
+            string text,
+            bool isCorrect)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(text, nameof(text));
-            ArgumentNullException.ThrowIfNull(isCorrect, nameof(isCorrect));
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                throw new ArgumentException("Answer text cannot be empty.");
+            }
 
             if (text.Length > MaxTextLength)
             {
-                throw new ArgumentException($"Provided text length exceeds {MaxTextLength} characters");
+                throw new ArgumentException($"Answer text must not exceed {MaxTextLength} characters.");
             }
 
             return new Answer(
                 text,
-                isCorrect.Value);
+                isCorrect);
         }
 
-        public override int GetHashCode()
+        public override IEnumerable<object> GetAtomicValues()
         {
-            return Text.GetHashCode();
+            //Compare answers by text only
+            yield return Text;
         }
     };
 }

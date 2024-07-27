@@ -10,11 +10,11 @@ namespace TraffiLearn.Application.Topics.Queries.GetQuestionsForTopic
     public sealed class GetQuestionsForTopicQueryHandler : IRequestHandler<GetQuestionsForTopicQuery, IEnumerable<QuestionResponse>>
     {
         private readonly ITopicRepository _topicRepository;
-        private readonly IMapper<Question, QuestionResponse> _questionMapper;
+        private readonly Mapper<Question, QuestionResponse> _questionMapper;
 
         public GetQuestionsForTopicQueryHandler(
             ITopicRepository topicRepository,
-            IMapper<Question, QuestionResponse> questionMapper)
+            Mapper<Question, QuestionResponse> questionMapper)
         {
             _topicRepository = topicRepository;
             _questionMapper = questionMapper;
@@ -23,12 +23,12 @@ namespace TraffiLearn.Application.Topics.Queries.GetQuestionsForTopic
         public async Task<IEnumerable<QuestionResponse>> Handle(GetQuestionsForTopicQuery request, CancellationToken cancellationToken)
         {
             var topic = await _topicRepository.GetByIdAsync(
-                request.TopicId.Value,
+                request.TopicId,
                 includeExpression: x => x.Questions);
 
             if (topic is null)
             {
-                throw new TopicNotFoundException(request.TopicId.Value);
+                throw new TopicNotFoundException(request.TopicId);
             }
 
             return _questionMapper.Map(topic.Questions);

@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Text.Json;
 using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.ValueObjects;
 
 namespace TraffiLearn.Infrastructure.Configurations
 {
@@ -15,7 +17,8 @@ namespace TraffiLearn.Infrastructure.Configurations
                     ownedNavigationBuilder.ToJson();
                 });
 
-            builder.ComplexProperty(q => q.TitleDetails);
+
+            builder.OwnsOne(q => q.QuestionTitleDetails);
 
             builder.Property(q => q.Content)
                 .HasMaxLength(2000);

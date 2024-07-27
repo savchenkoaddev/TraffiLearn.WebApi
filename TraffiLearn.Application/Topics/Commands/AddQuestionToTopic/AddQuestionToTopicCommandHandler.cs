@@ -25,30 +25,23 @@ namespace TraffiLearn.Application.Topics.Commands.AddQuestionToTopic
 
         public async Task Handle(AddQuestionToTopicCommand request, CancellationToken cancellationToken)
         {
-            var question = await _questionRepository.GetByIdAsync(request.QuestionId.Value);
+            var question = await _questionRepository.GetByIdAsync(request.QuestionId);
 
             if (question is null)
             {
-                throw new QuestionNotFoundException(request.QuestionId.Value);
+                throw new QuestionNotFoundException(request.QuestionId);
             }
 
             var topic = await _topicRepository.GetByIdAsync(
-                request.TopicId.Value,
+                request.TopicId,
                 includeExpression: x => x.Questions);
 
             if (topic is null)
             {
-                throw new TopicNotFoundException(request.TopicId.Value);
+                throw new TopicNotFoundException(request.TopicId);
             }
 
-            if (topic.Questions.Any(x => x.Id == question.Id))
-            {
-                throw new QuestionAlreadyInTopicException(
-                    questionId: question.Id,
-                    topicId: topic.Id);
-            }
-
-            topic.Questions.Add(question);
+            topic.AddQuestion(question);
             await _unitOfWork.SaveChangesAsync();
         }
     }

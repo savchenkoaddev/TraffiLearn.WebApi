@@ -1,4 +1,5 @@
 ﻿using TraffiLearn.Application.DTO.Answers.Response;
+using TraffiLearn.Application.DTO.QuestionTitleDetails.Response;
 using TraffiLearn.Domain.ValueObjects;
 
 namespace TraffiLearn.Application.DTO.Questions.Response
@@ -10,6 +11,6 @@ namespace TraffiLearn.Application.DTO.Questions.Response
         string? ImageUri,
         int LikesCount,
         int DislikesCount,
-        QuestionTitleDetails TitleDetails,
-        IEnumerable<AnswerResponse> Answers);
+        QuestionTitleDetailsResponse QuestionTitleDetails,
+        List<AnswerResponse> Answers);
 }

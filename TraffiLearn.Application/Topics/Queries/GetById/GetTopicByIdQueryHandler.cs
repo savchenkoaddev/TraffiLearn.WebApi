@@ -10,11 +10,11 @@ namespace TraffiLearn.Application.Topics.Queries.GetById
     public sealed class GetTopicByIdQueryHandler : IRequestHandler<GetTopicByIdQuery, TopicResponse>
     {
         private readonly ITopicRepository _topicRepository;
-        private readonly IMapper<Topic, TopicResponse> _topicMapper;
+        private readonly Mapper<Topic, TopicResponse> _topicMapper;
 
         public GetTopicByIdQueryHandler(
             ITopicRepository topicRepository,
-            IMapper<Topic, TopicResponse> topicMapper)
+            Mapper<Topic, TopicResponse> topicMapper)
         {
             _topicRepository = topicRepository;
             _topicMapper = topicMapper;
@@ -22,11 +22,11 @@ namespace TraffiLearn.Application.Topics.Queries.GetById
 
         public async Task<TopicResponse> Handle(GetTopicByIdQuery request, CancellationToken cancellationToken)
         {
-            var found = await _topicRepository.GetByIdAsync(request.TopicId.Value);
+            var found = await _topicRepository.GetByIdAsync(request.TopicId);
 
             if (found is null)
             {
-                throw new TopicNotFoundException(request.TopicId.Value);
+                throw new TopicNotFoundException(request.TopicId);
             }
 
             return _topicMapper.Map(found);

@@ -1,10 +1,11 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Storage;
-using TraffiLearn.Application.DTO.Questions.Request;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Exceptions;
 using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.ValueObjects;
 
 namespace TraffiLearn.Application.Questions.Commands.UpdateQuestion
 {
@@ -13,116 +14,116 @@ namespace TraffiLearn.Application.Questions.Commands.UpdateQuestion
         private readonly IBlobService _blobService;
         private readonly IQuestionRepository _questionRepository;
         private readonly ITopicRepository _topicRepository;
-        private readonly IMapper<QuestionUpdateRequest, Question> _questionMapper;
         private readonly IUnitOfWork _unitOfWork;
 
         public UpdateQuestionCommandHandler(
             IQuestionRepository questionRepository,
             ITopicRepository topicRepository,
             IUnitOfWork unitOfWork,
-            IBlobService blobService,
-            IMapper<QuestionUpdateRequest, Question> questionMapper)
+            IBlobService blobService)
         {
             _questionRepository = questionRepository;
             _topicRepository = topicRepository;
             _unitOfWork = unitOfWork;
             _blobService = blobService;
-            _questionMapper = questionMapper;
         }
 
         public async Task Handle(UpdateQuestionCommand request, CancellationToken cancellationToken)
         {
-            if (request.RequestObject.Answers.All(a => a.IsCorrect == false))
+            var question = await _questionRepository.GetByIdAsync(
+                request.QuestionId,
+                includeExpression: x => x.Topics);
+
+            if (question is null)
             {
-                throw new AllAnswersAreIncorrectException();
+                throw new QuestionNotFoundException(request.QuestionId);
             }
 
-            var oldEntityObject = await GetOldEntityObject(request.QuestionId.Value);
+            var answers = request.RequestObject.Answers
+                .Select(a => Answer.Create(
+                    a.Text,
+                    a.IsCorrect))
+                .ToList();
 
-            var newEntityObject = _questionMapper.Map(request.RequestObject);
+            question.Update(
+                content: request.RequestObject.Content,
+                explanation: request.RequestObject.Explanation,
+                questionTitleDetails: QuestionTitleDetails.Create(
+                    ticketNumber: request.RequestObject.TitleDetails.TicketNumber,
+                    questionNumber: request.RequestObject.TitleDetails.QuestionNumber),
+                answers: answers);
 
-            UpdateAnswers(oldEntityObject, newEntityObject);
+            await UpdateTopics(
+                topicsIds: request.RequestObject.TopicsIds,
+                question: question);
 
-            await UpdateTopics(request.RequestObject.TopicsIds, oldEntityObject);
+            await HandleImageAsync(
+                image: request.Image,
+                question,
+                removeOldImageIfNewImageMissing: request.RequestObject.RemoveOldImageIfNewImageMissing,
+                cancellationToken);
 
-            await HandleImageAsync(request, oldEntityObject, newEntityObject, cancellationToken);
-
-            await _questionRepository.UpdateAsync(oldEntityObject, newEntityObject);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
-        private async Task<Question> GetOldEntityObject(Guid questionId)
-        {
-            var oldEntityObject = await _questionRepository.GetByIdAsync(questionId, includeExpression: x => x.Topics);
-
-            if (oldEntityObject is null)
-            {
-                throw new QuestionNotFoundException(questionId);
-            }
-
-            return oldEntityObject;
-        }
-
-        private void UpdateAnswers(
-            Question oldEntityObject,
-            Question newEntityObject)
-        {
-            oldEntityObject.Answers = newEntityObject.Answers;
-        }
-
         private async Task UpdateTopics(
-            IEnumerable<Guid?>? topicsIds,
-            Question oldEntityObject)
+            IEnumerable<Guid> topicsIds,
+            Question question)
         {
             foreach (var topicId in topicsIds)
             {
-                var topic = await _topicRepository.GetByIdAsync(topicId.Value);
+                var topic = await _topicRepository.GetByIdAsync(topicId);
 
                 if (topic is null)
                 {
-                    throw new TopicNotFoundException(topicId.Value);
+                    throw new ArgumentException($"Topic with the {topicId} id has not been found.");
                 }
 
-                if (!oldEntityObject.Topics.Any(x => x.Id == topic.Id))
+                if (!question.Topics.Contains(topic))
                 {
-                    oldEntityObject.Topics.Add(topic);
+                    question.AddTopic(topic);
                 }
             }
 
-            oldEntityObject.Topics = oldEntityObject.Topics.IntersectBy(topicsIds, x => x.Id).ToList();
+            foreach (var topic in question.Topics)
+            {
+                if (!topicsIds.Contains(topic.Id))
+                {
+                    question.RemoveTopic(topic);
+                }
+            }
         }
 
         private async Task HandleImageAsync(
-            UpdateQuestionCommand request,
-            Question oldEntityObject,
-            Question newEntityObject,
+            IFormFile? image,
+            Question question,
+            bool removeOldImageIfNewImageMissing,
             CancellationToken cancellationToken)
         {
-            var image = request.Image;
-
-            if (image is not null)
+            if (image is null)
             {
-                if (oldEntityObject.ImageUri is not null)
+                if (question.ImageUri is not null && removeOldImageIfNewImageMissing)
                 {
-                    await _blobService.DeleteAsync(oldEntityObject.ImageUri, cancellationToken);
+                    await _blobService.DeleteAsync(question.ImageUri, cancellationToken);
+
+                    question.SetImageUri(null);
+                }
+            }
+            else
+            {
+                if (question.ImageUri is not null)
+                {
+                    await _blobService.DeleteAsync(question.ImageUri, cancellationToken);
                 }
 
                 using Stream stream = image.OpenReadStream();
 
-                var uploadResponse = await _blobService.UploadAsync(stream, image.ContentType, cancellationToken);
+                var uploadResponse = await _blobService.UploadAsync(
+                    stream,
+                    image.ContentType,
+                    cancellationToken);
 
-                newEntityObject.ImageUri = uploadResponse.BlobUri;
-            }
-            else
-            {
-                if (oldEntityObject.ImageUri is not null && request.RequestObject.RemoveOldImageIfNewImageMissing)
-                {
-                    await _blobService.DeleteAsync(oldEntityObject.ImageUri, cancellationToken);
-                }
-                else if (oldEntityObject.ImageUri is not null)
-                {
-                    newEntityObject.ImageUri = oldEntityObject.ImageUri;
-                }
+                question.SetImageUri(uploadResponse.BlobUri);
             }
         }
     }

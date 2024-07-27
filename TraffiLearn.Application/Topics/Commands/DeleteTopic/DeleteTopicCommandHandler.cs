@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Exceptions;
 using TraffiLearn.Domain.RepositoryContracts;
 
@@ -21,11 +20,11 @@ namespace TraffiLearn.Application.Topics.Commands.DeleteTopic
 
         public async Task Handle(DeleteTopicCommand request, CancellationToken cancellationToken)
         {
-            var found = await _topicRepository.GetByIdAsync(request.TopicId.Value);
+            var found = await _topicRepository.GetByIdAsync(request.TopicId);
 
             if (found is null)
             {
-                throw new TopicNotFoundException(request.TopicId.Value);
+                throw new TopicNotFoundException(request.TopicId);
             }
 
             await _topicRepository.DeleteAsync(found);

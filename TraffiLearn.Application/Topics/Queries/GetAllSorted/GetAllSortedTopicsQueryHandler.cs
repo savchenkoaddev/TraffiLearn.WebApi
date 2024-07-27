@@ -4,16 +4,16 @@ using TraffiLearn.Application.DTO.Topics.Response;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.RepositoryContracts;
 
-namespace TraffiLearn.Application.Topics.Queries.GetAll
+namespace TraffiLearn.Application.Topics.Queries.GetAllSorted
 {
     public sealed class GetAllSortedTopicsQueryHandler : IRequestHandler<GetAllSortedTopicsQuery, IEnumerable<TopicResponse>>
     {
         private readonly ITopicRepository _topicRepository;
-        private readonly IMapper<Topic, TopicResponse> _topicMapper;
+        private readonly Mapper<Topic, TopicResponse> _topicMapper;
 
         public GetAllSortedTopicsQueryHandler(
             ITopicRepository topicRepository,
-            IMapper<Topic, TopicResponse> topicMapper)
+            Mapper<Topic, TopicResponse> topicMapper)
         {
             _topicRepository = topicRepository;
             _topicMapper = topicMapper;

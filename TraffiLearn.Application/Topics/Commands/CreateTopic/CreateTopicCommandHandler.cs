@@ -9,12 +9,12 @@ namespace TraffiLearn.Application.Topics.Commands.CreateTopic
     public sealed class CreateTopicCommandHandler : IRequestHandler<CreateTopicCommand>
     {
         private readonly ITopicRepository _topicRepository;
-        private readonly IMapper<TopicRequest, Topic> _topicMapper;
+        private readonly Mapper<TopicRequest, Topic> _topicMapper;
         private readonly IUnitOfWork _unitOfWork;
 
         public CreateTopicCommandHandler(
             ITopicRepository topicRepository,
-            IMapper<TopicRequest, Topic> topicMapper,
+            Mapper<TopicRequest, Topic> topicMapper,
             IUnitOfWork unitOfWork)
         {
             _topicRepository = topicRepository;

@@ -14,14 +14,14 @@ namespace TraffiLearn.Application.Questions.Commands.CreateQuestion
         private readonly ITopicRepository _topicRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IBlobService _blobService;
-        private readonly IMapper<QuestionCreateRequest, Question> _questionMapper;
+        private readonly Mapper<QuestionCreateRequest, Question> _questionMapper;
 
         public CreateQuestionCommandHandler(
             IQuestionRepository questionRepository,
             ITopicRepository topicRepository,
             IUnitOfWork unitOfWork,
             IBlobService blobService,
-            IMapper<QuestionCreateRequest, Question> questionMapper)
+            Mapper<QuestionCreateRequest, Question> questionMapper)
         {
             _questionRepository = questionRepository;
             _topicRepository = topicRepository;
@@ -32,23 +32,18 @@ namespace TraffiLearn.Application.Questions.Commands.CreateQuestion
 
         public async Task Handle(CreateQuestionCommand request, CancellationToken cancellationToken)
         {
-            if (request.RequestObject.Answers.All(a => a.IsCorrect == false))
-            {
-                throw new AllAnswersAreIncorrectException();
-            }
-
-            var entity = _questionMapper.Map(request.RequestObject);
+            var question = _questionMapper.Map(request.RequestObject);
 
             foreach (var topicId in request.RequestObject.TopicsIds)
             {
-                var topic = await _topicRepository.GetByIdAsync(topicId.Value);
+                var topic = await _topicRepository.GetByIdAsync(topicId);
 
                 if (topic is null)
                 {
-                    throw new TopicNotFoundException(topicId.Value);
+                    throw new TopicNotFoundException(topicId);
                 }
 
-                entity.Topics.Add(topic);
+                question.AddTopic(topic);
             }
 
             var image = request.Image;
@@ -62,10 +57,10 @@ namespace TraffiLearn.Application.Questions.Commands.CreateQuestion
                     image.ContentType,
                     cancellationToken);
 
-                entity.ImageUri = uploadResponse.BlobUri;
+                question.SetImageUri(uploadResponse.BlobUri);
             }
 
-            await _questionRepository.AddAsync(entity);
+            await _questionRepository.AddAsync(question);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }

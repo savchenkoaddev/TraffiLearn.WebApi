@@ -1,7 +1,5 @@
 ﻿using MediatR;
-using TraffiLearn.Application.Abstractions;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Exceptions;
 using TraffiLearn.Domain.RepositoryContracts;
 
@@ -25,30 +23,23 @@ namespace TraffiLearn.Application.Questions.Commands.AddTopicToQuestion
 
         public async Task Handle(AddTopicToQuestionCommand request, CancellationToken cancellationToken)
         {
-            var topic = await _topicRepository.GetByIdAsync(request.TopicId.Value);
+            var topic = await _topicRepository.GetByIdAsync(request.TopicId);
 
             if (topic is null)
             {
-                throw new TopicNotFoundException(request.TopicId.Value);
+                throw new TopicNotFoundException(request.TopicId);
             }
 
             var question = await _questionRepository.GetByIdAsync(
-                request.QuestionId.Value,
+                request.QuestionId,
                 includeExpression: x => x.Topics);
 
             if (question is null)
             {
-                throw new QuestionNotFoundException(request.QuestionId.Value);
+                throw new QuestionNotFoundException(request.QuestionId);
             }
 
-            if (question.Topics.Any(x => x.Id == topic.Id))
-            {
-                throw new TopicAlreadyInQuestionException(
-                    topicId: topic.Id,
-                    questionId: question.Id);
-            }
-
-            question.Topics.Add(topic);
+            question.AddTopic(topic);
             await _unitOfWork.SaveChangesAsync();
         }
     }

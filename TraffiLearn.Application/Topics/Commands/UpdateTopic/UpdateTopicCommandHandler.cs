@@ -11,12 +11,12 @@ namespace TraffiLearn.Application.Topics.Commands.UpdateTopic
     {
         private readonly ITopicRepository _topicRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper<TopicRequest, Topic> _topicMapper;
+        private readonly Mapper<TopicRequest, Topic> _topicMapper;
 
         public UpdateTopicCommandHandler(
             ITopicRepository topicRepository,
             IUnitOfWork unitOfWork,
-            IMapper<TopicRequest, Topic> topicMapper)
+            Mapper<TopicRequest, Topic> topicMapper)
         {
             _topicRepository = topicRepository;
             _unitOfWork = unitOfWork;
@@ -25,16 +25,17 @@ namespace TraffiLearn.Application.Topics.Commands.UpdateTopic
 
         public async Task Handle(UpdateTopicCommand request, CancellationToken cancellationToken)
         {
-            var oldTopicObject = await _topicRepository.GetByIdAsync(request.TopicId.Value);
+            var topic = await _topicRepository.GetByIdAsync(request.TopicId);
 
-            if (oldTopicObject is null)
+            if (topic is null)
             {
-                throw new TopicNotFoundException(request.TopicId.Value);
+                throw new TopicNotFoundException(request.TopicId);
             }
 
-            var newTopicObject = _topicMapper.Map(request.RequestObject);
+            topic.UpdateTopic(
+                request.RequestObject.Number,
+                request.RequestObject.Title);
 
-            await _topicRepository.UpdateAsync(oldTopicObject, newTopicObject);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
