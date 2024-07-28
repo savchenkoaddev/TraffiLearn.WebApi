@@ -39,7 +39,7 @@ namespace TraffiLearn.Domain.ValueObjects
 
         public override IEnumerable<object> GetAtomicValues()
         {
-            //Compare answers by text only
+            // Compare answers by text only
             yield return Text;
         }
     };

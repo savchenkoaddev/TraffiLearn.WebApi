@@ -1,6 +1,4 @@
 ﻿using Azure.Storage.Blobs;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Data;
@@ -9,7 +7,6 @@ using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Infrastructure.Database;
 using TraffiLearn.Infrastructure.External;
 using TraffiLearn.Infrastructure.Options;
-using TraffiLearn.Infrastructure.OptionsSetup;
 using TraffiLearn.Infrastructure.Repositories;
 
 namespace TraffiLearn.Infrastructure
@@ -17,18 +14,12 @@ namespace TraffiLearn.Infrastructure
     public static class DependencyInjection
     {
         public static IServiceCollection AddInfrastructure(
-            this IServiceCollection services,
-            IConfiguration configuration)
+            this IServiceCollection services)
         {
             services.ConfigureOptions<SqlServerSettingsSetup>();
             services.ConfigureOptions<AzureBlobStorageSettingsSetup>();
 
-            services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
-            {
-                var sqlServerSettings = serviceProvider.GetRequiredService<IOptions<AzureBlobStorageSettings>>().Value;
-
-                options.UseSqlServer(sqlServerSettings.ConnectionString);
-            });
+            services.AddDbContext<ApplicationDbContext>();
 
             services.AddSingleton((serviceProvider) =>
             {

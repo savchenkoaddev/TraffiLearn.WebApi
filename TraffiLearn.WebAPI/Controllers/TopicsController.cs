@@ -1,14 +1,13 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using TraffiLearn.Application.DTO.Topics.Request;
-using TraffiLearn.Application.Topics.Commands.AddQuestionToTopic;
-using TraffiLearn.Application.Topics.Commands.CreateTopic;
-using TraffiLearn.Application.Topics.Commands.DeleteTopic;
-using TraffiLearn.Application.Topics.Commands.RemoveQuestionForTopic;
-using TraffiLearn.Application.Topics.Commands.UpdateTopic;
-using TraffiLearn.Application.Topics.Queries.GetAllSorted;
-using TraffiLearn.Application.Topics.Queries.GetById;
-using TraffiLearn.Application.Topics.Queries.GetQuestionsForTopic;
+using TraffiLearn.Application.Commands.Topics.AddQuestionToTopic;
+using TraffiLearn.Application.Commands.Topics.Create;
+using TraffiLearn.Application.Commands.Topics.Delete;
+using TraffiLearn.Application.Commands.Topics.RemoveQuestionForTopic;
+using TraffiLearn.Application.Commands.Topics.Update;
+using TraffiLearn.Application.Queries.Topics.GetAllSortedByNumber;
+using TraffiLearn.Application.Queries.Topics.GetById;
+using TraffiLearn.Application.Queries.Topics.GetQuestionsForTopic;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
@@ -27,27 +26,23 @@ namespace TraffiLearn.WebAPI.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllSortedTopics()
+        public async Task<IActionResult> GetAllSortedTopicsByNumber()
         {
-            var topics = await _sender.Send(new GetAllSortedTopicsQuery());
+            var topics = await _sender.Send(new GetAllSortedTopicsByNumberQuery());
 
             return Ok(topics);
         }
 
         [HttpGet("{topicId:guid}")]
-        public async Task<IActionResult> GetTopicById(Guid topicId)
+        public async Task<IActionResult> GetTopicById(GetTopicByIdQuery query)
         {
-            var topic = await _sender.Send(new GetTopicByIdQuery(topicId));
-
-            return Ok(topic);
+            return Ok(await _sender.Send(query));
         }
 
         [HttpGet("{topicId:guid}/questions")]
-        public async Task<IActionResult> GetQuestionsForTopic(Guid topicId)
+        public async Task<IActionResult> GetQuestionsForTopic(GetQuestionsForTopicQuery query)
         {
-            var questions = await _sender.Send(new GetQuestionsForTopicQuery(topicId));
-
-            return Ok(questions);
+            return Ok(await _sender.Send(query));
         }
 
 
@@ -57,55 +52,41 @@ namespace TraffiLearn.WebAPI.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> CreateTopic(TopicRequest request)
+        public async Task<IActionResult> CreateTopic(CreateTopicCommand command)
         {
-            await _sender.Send(new CreateTopicCommand(request));
+            await _sender.Send(command);
 
             return Created();
         }
 
         [HttpPut("{topicId:guid}")]
-        public async Task<IActionResult> UpdateTopic(
-            Guid topicId,
-            TopicRequest request)
+        public async Task<IActionResult> UpdateTopic(UpdateTopicCommand command)
         {
-            await _sender.Send(new UpdateTopicCommand(topicId, request));
+            await _sender.Send(command);
 
             return NoContent();
         }
 
         [HttpPut("{topicId:guid}/addquestion/{questionId:guid}")]
-        public async Task<IActionResult> AddQuestionToTopic(
-            Guid topicId,
-            Guid questionId)
+        public async Task<IActionResult> AddQuestionToTopic(AddQuestionToTopicCommand command)
         {
-            var command = new AddQuestionToTopicCommand(
-                QuestionId: questionId,
-                TopicId: topicId);
-
             await _sender.Send(command);
 
             return NoContent();
         }
 
         [HttpPut("{topicId:guid}/removequestion/{questionId:guid}")]
-        public async Task<IActionResult> RemoveQuestionForTopic(
-            Guid topicId,
-            Guid questionId)
+        public async Task<IActionResult> RemoveQuestionForTopic(RemoveQuestionForTopicCommand command)
         {
-            var command = new RemoveQuestionForTopicCommand(
-                QuestionId: questionId,
-                TopicId: topicId);
-
             await _sender.Send(command);
 
             return NoContent();
         }
 
         [HttpDelete("{topicId:guid}")]
-        public async Task<IActionResult> DeleteTopic(Guid topicId)
+        public async Task<IActionResult> DeleteTopic(DeleteTopicCommand command)
         {
-            await _sender.Send(new DeleteTopicCommand(topicId));
+            await _sender.Send(command);
 
             return NoContent();
         }

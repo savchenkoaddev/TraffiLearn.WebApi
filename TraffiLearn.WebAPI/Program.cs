@@ -14,7 +14,7 @@ namespace TraffiLearn.WebAPI
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddApplication();
-            builder.Services.AddInfrastructure(builder.Configuration);
+            builder.Services.AddInfrastructure();
 
             var app = builder.Build();
 

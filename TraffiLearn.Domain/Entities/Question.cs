@@ -1,18 +1,16 @@
-﻿using TraffiLearn.Domain.Exceptions;
-using TraffiLearn.Domain.Primitives;
+﻿using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.ValueObjects;
 
 namespace TraffiLearn.Domain.Entities
 {
     public sealed class Question : Entity
     {
-        private QuestionContent _content;
-        private QuestionExplanation _explanation;
-        private TicketNumber _ticketNumber;
-        private QuestionNumber _questionNumber;
-        private ImageUri? _imageUri;
         private List<Answer> _answers = [];
         private readonly List<Topic> _topics = [];
+
+        private Question(Guid id)
+            : base(id)
+        { }
 
         private Question(
             QuestionId id,
@@ -23,12 +21,12 @@ namespace TraffiLearn.Domain.Entities
             List<Answer> answers,
             ImageUri? imageUri) : base(id.Value)
         {
-            _content = content;
-            _explanation = explanation;
-            _ticketNumber = ticketNumber;
-            _questionNumber = questionNumber;
+            Content = content;
+            Explanation = explanation;
+            TicketNumber = ticketNumber;
+            QuestionNumber = questionNumber;
             _answers = answers;
-            _imageUri = imageUri;
+            ImageUri = imageUri;
         }
 
         public QuestionContent Content { get; private set; }
@@ -92,21 +90,37 @@ namespace TraffiLearn.Domain.Entities
             topic.AddQuestion(this);
         }
 
-        public void RemoveTopic(TopicId topicId)
+        public void RemoveTopic(Topic topic)
         {
-            var topic = _topics.FirstOrDefault(t => t.Id == topicId.Value);
-
-            if (topic is null)
+            if (!_topics.Contains(topic))
             {
                 throw new ArgumentException("The question does not contain the provided topic.");
             }
 
             _topics.Remove(topic);
-            topic.RemoveQuestion(new QuestionId(Id));
+            topic.RemoveQuestion(this);
         }
 
         public void SetImageUri(ImageUri? imageUri)
         {
+            ImageUri = imageUri;
+        }
+
+        public void Update(
+            QuestionContent content,
+            QuestionExplanation explanation,
+            TicketNumber ticketNumber,
+            QuestionNumber questionNumber,
+            List<Answer> answers,
+            ImageUri? imageUri)
+        {
+            ValidateAnswers(answers);
+
+            Content = content;
+            Explanation = explanation;
+            TicketNumber = ticketNumber;
+            QuestionNumber = questionNumber;
+            _answers = answers;
             ImageUri = imageUri;
         }
 
@@ -140,7 +154,7 @@ namespace TraffiLearn.Domain.Entities
 
             if (answers.All(a => a.IsCorrect == false))
             {
-                throw new AllAnswersAreIncorrectException();
+                throw new ArgumentException("All answers are incorrect.");
             }
 
             var uniqueAnswers = new HashSet<Answer>(answers);

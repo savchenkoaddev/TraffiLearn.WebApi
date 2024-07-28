@@ -7,6 +7,10 @@ namespace TraffiLearn.Domain.Entities
     {
         private readonly List<Question> _questions = [];
 
+        private Topic(Guid id)
+            : base(id)
+        { }
+
         private Topic(
             TopicId id,
             TopicNumber number,
@@ -33,17 +37,23 @@ namespace TraffiLearn.Domain.Entities
             question.AddTopic(this);
         }
 
-        public void RemoveQuestion(QuestionId questionId)
+        public void RemoveQuestion(Question question)
         {
-            var question = _questions.FirstOrDefault(q => q.Id == questionId.Value);
-
-            if (question is null)
+            if (!_questions.Contains(question))
             {
                 throw new ArgumentException("The topic does not contain the provided question.");
             }
 
             _questions.Remove(question);
-            question.RemoveTopic(new TopicId(Id));
+            question.RemoveTopic(this);
+        }
+
+        public void Update(
+            TopicNumber number,
+            TopicTitle title)
+        {
+            Number = number;
+            Title = title;
         }
 
         public static Topic Create(

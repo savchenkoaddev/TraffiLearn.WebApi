@@ -1,14 +1,13 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using TraffiLearn.Application.DTO.Questions.Request;
-using TraffiLearn.Application.Questions.Commands.AddTopicToQuestion;
-using TraffiLearn.Application.Questions.Commands.CreateQuestion;
-using TraffiLearn.Application.Questions.Commands.DeleteQuestion;
-using TraffiLearn.Application.Questions.Commands.RemoveTopicForQuestion;
-using TraffiLearn.Application.Questions.Commands.UpdateQuestion;
-using TraffiLearn.Application.Questions.Queries.GetAllQuestions;
-using TraffiLearn.Application.Questions.Queries.GetQuestionById;
-using TraffiLearn.Application.Questions.Queries.GetTopicsForQuestion;
+using TraffiLearn.Application.Commands.Questions.AddTopicToQuestion;
+using TraffiLearn.Application.Commands.Questions.Create;
+using TraffiLearn.Application.Commands.Questions.Delete;
+using TraffiLearn.Application.Commands.Questions.RemoveTopicForQuestion;
+using TraffiLearn.Application.Commands.Questions.Update;
+using TraffiLearn.Application.Queries.Questions.GetAll;
+using TraffiLearn.Application.Queries.Questions.GetById;
+using TraffiLearn.Application.Queries.Questions.GetTopicsForQuestion;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
@@ -35,19 +34,15 @@ namespace TraffiLearn.WebAPI.Controllers
         }
 
         [HttpGet("{questionId:guid}")]
-        public async Task<IActionResult> GetQuestionById(Guid questionId)
+        public async Task<IActionResult> GetQuestionById(GetQuestionByIdQuery query)
         {
-            var question = await _sender.Send(new GetQuestionByIdQuery(questionId));
-
-            return Ok(question);
+            return Ok(await _sender.Send(query));
         }
 
         [HttpGet("{questionId:guid}/topics")]
-        public async Task<IActionResult> GetTopicsForQuestion(Guid questionId)
+        public async Task<IActionResult> GetTopicsForQuestion(GetTopicsForQuestionQuery query)
         {
-            var topics = await _sender.Send(new GetTopicsForQuestionQuery(questionId));
-
-            return Ok(topics);
+            return Ok(await _sender.Send(query));
         }
 
 
@@ -55,56 +50,49 @@ namespace TraffiLearn.WebAPI.Controllers
 
         #region Commands
 
+
         [HttpPost]
         public async Task<IActionResult> CreateQuestion(
-            [FromForm] QuestionCreateRequest? request,
-            [FromForm] IFormFile? image)
+            [FromForm] CreateQuestionCommand command)
         {
-            await _sender.Send(new CreateQuestionCommand(request, image));
+            await _sender.Send(command);
 
             return Created();
         }
 
         [HttpPut("{questionId:guid}")]
         public async Task<IActionResult> UpdateQuestion(
-            Guid questionId,
-            [FromForm] QuestionUpdateRequest request,
-            [FromForm] IFormFile? image)
+            [FromForm] UpdateQuestionCommand command)
         {
-            await _sender.Send(new UpdateQuestionCommand(questionId, request, image));
+            await _sender.Send(command);
 
             return NoContent();
         }
 
         [HttpPut("{questionId:guid}/addtopic/{topicId:guid}")]
-        public async Task<IActionResult> AddTopicToQuestion(
-            Guid questionId,
-            Guid topicId)
+        public async Task<IActionResult> AddTopicToQuestion(AddTopicToQuestionCommand command)
         {
-            await _sender.Send(new AddTopicToQuestionCommand(topicId, questionId));
+            await _sender.Send(command);
 
             return NoContent();
         }
 
         [HttpPut("{questionId:guid}/removetopic/{topicId:guid}")]
-        public async Task<IActionResult> RemoveTopicForQuestion(
-            Guid questionId,
-            Guid topicId,
-            ISender sender)
+        public async Task<IActionResult> RemoveTopicForQuestion(RemoveTopicForQuestionCommand command)
         {
-            await sender.Send(new RemoveTopicForQuestionCommand(topicId, questionId));
+            await _sender.Send(command);
 
             return NoContent();
         }
 
         [HttpDelete("{questionId:guid}")]
-        public async Task<IActionResult> DeleteQuestion(
-            Guid questionId)
+        public async Task<IActionResult> DeleteQuestion(DeleteQuestionCommand command)
         {
-            await _sender.Send(new DeleteQuestionCommand(questionId));
+            await _sender.Send(command);
 
             return NoContent();
         }
+
 
         #endregion
     }

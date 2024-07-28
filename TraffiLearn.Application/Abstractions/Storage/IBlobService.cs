@@ -1,4 +1,4 @@
-﻿using TraffiLearn.Application.DTO.Blobs.Response;
+﻿using TraffiLearn.Application.DTO.Blobs;
 
 namespace TraffiLearn.Application.Abstractions.Storage
 {
