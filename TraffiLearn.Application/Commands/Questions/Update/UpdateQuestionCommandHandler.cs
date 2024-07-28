@@ -38,19 +38,21 @@ namespace TraffiLearn.Application.Commands.Questions.Update
                 throw new ArgumentException("Question has not been found");
             }
 
+            var answers = request.Answers.Select(x => Answer.Create(x.Text, x.IsCorrect)).ToList();
+
             question.Update(
                 content: QuestionContent.Create(request.Content),
                 explanation: QuestionExplanation.Create(request.Explanation),
                 ticketNumber: TicketNumber.Create(request.TicketNumber),
                 questionNumber: QuestionNumber.Create(request.QuestionNumber),
-                answers: request.Answers,
+                answers: answers,
                 imageUri: question.ImageUri);
-
-            await _questionRepository.UpdateAsync(question);
 
             await UpdateTopics(
                 topicsIds: request.TopicsIds,
                 question: question);
+
+            await _questionRepository.UpdateAsync(question);
 
             await HandleImageAsync(
                 image: request.Image,
@@ -80,7 +82,9 @@ namespace TraffiLearn.Application.Commands.Questions.Update
                 }
             }
 
-            foreach (var topic in question.Topics)
+            var questionTopics = question.Topics.ToList();
+
+            foreach (var topic in questionTopics)
             {
                 if (!topicsIds.Contains(topic.Id))
                 {

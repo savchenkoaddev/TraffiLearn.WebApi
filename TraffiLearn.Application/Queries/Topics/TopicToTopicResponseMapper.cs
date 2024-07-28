@@ -10,8 +10,8 @@ namespace TraffiLearn.Application.Queries.Topics
         {
             return new TopicResponse(
                 Id: source.Id,
-                TopicNumber: source.Number,
-                Title: source.Title);
+                TopicNumber: source.Number.Value,
+                Title: source.Title.Value);
         }
     }
 }

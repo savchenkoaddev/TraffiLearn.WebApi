@@ -4,12 +4,12 @@ namespace TraffiLearn.Application.DTO.Questions
 {
     public sealed record QuestionResponse(
         Guid Id,
-        QuestionContent Content,
-        QuestionExplanation Explanation,
-        ImageUri? ImageUri,
+        string Content,
+        string Explanation,
+        string? ImageUri,
         int LikesCount,
         int DislikesCount,
-        TicketNumber TicketNumber,
-        QuestionNumber QuestionNumber,
+        int TicketNumber,
+        int QuestionNumber,
         List<Answer> Answers);
 }

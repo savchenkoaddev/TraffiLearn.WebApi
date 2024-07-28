@@ -34,15 +34,17 @@ namespace TraffiLearn.WebAPI.Controllers
         }
 
         [HttpGet("{topicId:guid}")]
-        public async Task<IActionResult> GetTopicById(GetTopicByIdQuery query)
+        public async Task<IActionResult> GetTopicById(
+            [FromRoute] Guid topicId)
         {
-            return Ok(await _sender.Send(query));
+            return Ok(await _sender.Send(new GetTopicByIdQuery(topicId)));
         }
 
         [HttpGet("{topicId:guid}/questions")]
-        public async Task<IActionResult> GetQuestionsForTopic(GetQuestionsForTopicQuery query)
+        public async Task<IActionResult> GetQuestionsForTopic(
+            [FromRoute] Guid topicId)
         {
-            return Ok(await _sender.Send(query));
+            return Ok(await _sender.Send(new GetQuestionsForTopicQuery(topicId)));
         }
 
 
@@ -59,7 +61,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return Created();
         }
 
-        [HttpPut("{topicId:guid}")]
+        [HttpPut]
         public async Task<IActionResult> UpdateTopic(UpdateTopicCommand command)
         {
             await _sender.Send(command);
@@ -68,25 +70,34 @@ namespace TraffiLearn.WebAPI.Controllers
         }
 
         [HttpPut("{topicId:guid}/addquestion/{questionId:guid}")]
-        public async Task<IActionResult> AddQuestionToTopic(AddQuestionToTopicCommand command)
+        public async Task<IActionResult> AddQuestionToTopic(
+            [FromRoute] Guid questionId,
+            [FromRoute] Guid topicId)
         {
-            await _sender.Send(command);
+            await _sender.Send(new AddQuestionToTopicCommand(
+                QuestionId: questionId,
+                TopicId: topicId));
 
             return NoContent();
         }
 
         [HttpPut("{topicId:guid}/removequestion/{questionId:guid}")]
-        public async Task<IActionResult> RemoveQuestionForTopic(RemoveQuestionForTopicCommand command)
+        public async Task<IActionResult> RemoveQuestionForTopic(
+            [FromRoute] Guid questionId,
+            [FromRoute] Guid topicId)
         {
-            await _sender.Send(command);
+            await _sender.Send(new RemoveQuestionForTopicCommand(
+                QuestionId: questionId,
+                TopicId: topicId));
 
             return NoContent();
         }
 
         [HttpDelete("{topicId:guid}")]
-        public async Task<IActionResult> DeleteTopic(DeleteTopicCommand command)
+        public async Task<IActionResult> DeleteTopic(
+            [FromRoute] Guid topicId)
         {
-            await _sender.Send(command);
+            await _sender.Send(new DeleteTopicCommand(topicId));
 
             return NoContent();
         }

@@ -4,6 +4,6 @@ namespace TraffiLearn.Application.DTO.Topics
 {
     public sealed record TopicResponse(
         Guid Id,
-        TopicNumber TopicNumber,
-        TopicTitle Title);
+        int TopicNumber,
+        string Title);
 }

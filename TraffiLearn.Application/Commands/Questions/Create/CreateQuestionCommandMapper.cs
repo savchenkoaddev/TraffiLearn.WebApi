@@ -10,13 +10,15 @@ namespace TraffiLearn.Application.Commands.Questions.Create
         {
             var questionId = new QuestionId(Guid.NewGuid());
 
+            var answers = source.Answers.Select(x => Answer.Create(x.Text, x.IsCorrect)).ToList();
+
             return Question.Create(
                 questionId,
                 QuestionContent.Create(source.Content),
                 QuestionExplanation.Create(source.Explanation),
                 TicketNumber.Create(source.TicketNumber),
                 QuestionNumber.Create(source.QuestionNumber),
-                answers: source.Answers,
+                answers: answers,
                 imageUri: null);
         }
     }

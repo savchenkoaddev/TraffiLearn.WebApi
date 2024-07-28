@@ -10,13 +10,13 @@ namespace TraffiLearn.Application.Queries.Questions
         {
             return new QuestionResponse(
                 Id: source.Id,
-                Content: source.Content,
-                Explanation: source.Explanation,
-                ImageUri: source.ImageUri,
+                Content: source.Content.Value,
+                Explanation: source.Explanation.Value,
+                ImageUri: source.ImageUri?.Value,
                 LikesCount: source.LikesCount,
                 DislikesCount: source.DislikesCount,
-                TicketNumber: source.TicketNumber,
-                QuestionNumber: source.QuestionNumber,
+                TicketNumber: source.TicketNumber.Value,
+                QuestionNumber: source.QuestionNumber.Value,
                 Answers: source.Answers.ToList());
         }
     }

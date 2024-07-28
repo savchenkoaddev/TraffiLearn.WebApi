@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
+using TraffiLearn.Application.DTO.Answers;
 using TraffiLearn.Domain.ValueObjects;
 
 namespace TraffiLearn.Application.Commands.Questions.Update
@@ -10,7 +11,7 @@ namespace TraffiLearn.Application.Commands.Questions.Update
         string Explanation,
         int TicketNumber,
         int QuestionNumber,
-        List<Answer> Answers,
+        List<AnswerRequest> Answers,
         List<Guid> TopicsIds,
         IFormFile? Image,
         bool RemoveOldImageIfNewImageMissing = true) : IRequest;

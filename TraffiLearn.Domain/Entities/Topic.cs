@@ -34,7 +34,11 @@ namespace TraffiLearn.Domain.Entities
             }
 
             _questions.Add(question);
-            question.AddTopic(this);
+
+            if (!question.Topics.Contains(this))
+            {
+                question.AddTopic(this);
+            }
         }
 
         public void RemoveQuestion(Question question)
@@ -45,7 +49,11 @@ namespace TraffiLearn.Domain.Entities
             }
 
             _questions.Remove(question);
-            question.RemoveTopic(this);
+
+            if (question.Topics.Contains(this))
+            {
+                question.RemoveTopic(this);
+            }
         }
 
         public void Update(

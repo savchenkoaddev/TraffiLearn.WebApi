@@ -87,7 +87,11 @@ namespace TraffiLearn.Domain.Entities
             }
 
             _topics.Add(topic);
-            topic.AddQuestion(this);
+
+            if (!topic.Questions.Contains(this))
+            {
+                topic.AddQuestion(this);
+            }
         }
 
         public void RemoveTopic(Topic topic)
@@ -98,7 +102,11 @@ namespace TraffiLearn.Domain.Entities
             }
 
             _topics.Remove(topic);
-            topic.RemoveQuestion(this);
+
+            if (topic.Questions.Contains(this))
+            {
+                topic.RemoveQuestion(this);
+            }
         }
 
         public void SetImageUri(ImageUri? imageUri)

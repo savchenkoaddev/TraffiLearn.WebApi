@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
+using TraffiLearn.Application.DTO.Answers;
 using TraffiLearn.Domain.ValueObjects;
 
 namespace TraffiLearn.Application.Commands.Questions.Create
@@ -10,6 +11,6 @@ namespace TraffiLearn.Application.Commands.Questions.Create
         int TicketNumber,
         int QuestionNumber,
         List<Guid> TopicsIds,
-        List<Answer> Answers,
+        List<AnswerRequest> Answers,
         IFormFile? Image) : IRequest;
 }
