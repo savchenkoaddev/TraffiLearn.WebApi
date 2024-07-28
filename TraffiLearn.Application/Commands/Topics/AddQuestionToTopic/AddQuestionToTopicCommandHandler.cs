@@ -22,7 +22,7 @@ namespace TraffiLearn.Application.Commands.Topics.AddQuestionToTopic
 
         public async Task Handle(AddQuestionToTopicCommand request, CancellationToken cancellationToken)
         {
-            var question = await _questionRepository.GetByIdAsync(request.QuestionId);
+            var question = await _questionRepository.GetByIdAsync(request.QuestionId.Value);
 
             if (question is null)
             {
@@ -30,7 +30,7 @@ namespace TraffiLearn.Application.Commands.Topics.AddQuestionToTopic
             }
 
             var topic = await _topicRepository.GetByIdAsync(
-                request.TopicId,
+                request.TopicId.Value,
                 includeExpression: x => x.Questions);
 
             if (topic is null)

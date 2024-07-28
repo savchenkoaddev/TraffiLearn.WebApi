@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.RepositoryContracts;
 
 namespace TraffiLearn.Application.Commands.Questions.AddTopicToQuestion
@@ -23,7 +22,7 @@ namespace TraffiLearn.Application.Commands.Questions.AddTopicToQuestion
 
         public async Task Handle(AddTopicToQuestionCommand request, CancellationToken cancellationToken)
         {
-            var topic = await _topicRepository.GetByIdAsync(request.TopicId);
+            var topic = await _topicRepository.GetByIdAsync(request.TopicId.Value);
 
             if (topic is null)
             {
@@ -31,7 +30,7 @@ namespace TraffiLearn.Application.Commands.Questions.AddTopicToQuestion
             }
 
             var question = await _questionRepository.GetByIdAsync(
-                request.QuestionId,
+                request.QuestionId.Value,
                 includeExpression: x => x.Topics);
 
             if (question is null)

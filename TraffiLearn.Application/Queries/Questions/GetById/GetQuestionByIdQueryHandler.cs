@@ -21,7 +21,7 @@ namespace TraffiLearn.Application.Queries.Questions.GetById
 
         public async Task<QuestionResponse> Handle(GetQuestionByIdQuery request, CancellationToken cancellationToken)
         {
-            var question = await _questionRepository.GetByIdAsync(request.QuestionId);
+            var question = await _questionRepository.GetByIdAsync(request.QuestionId.Value);
 
             if (question is null)
             {

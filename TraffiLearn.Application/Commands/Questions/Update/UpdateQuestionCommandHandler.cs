@@ -30,7 +30,7 @@ namespace TraffiLearn.Application.Commands.Questions.Update
         public async Task Handle(UpdateQuestionCommand request, CancellationToken cancellationToken)
         {
             var question = await _questionRepository.GetByIdAsync(
-                request.QuestionId,
+                request.QuestionId.Value,
                 includeExpression: x => x.Topics);
 
             if (question is null)
@@ -38,13 +38,13 @@ namespace TraffiLearn.Application.Commands.Questions.Update
                 throw new ArgumentException("Question has not been found");
             }
 
-            var answers = request.Answers.Select(x => Answer.Create(x.Text, x.IsCorrect)).ToList();
+            var answers = request.Answers.Select(x => Answer.Create(x.Text, x.IsCorrect.Value)).ToList();
 
             question.Update(
                 content: QuestionContent.Create(request.Content),
                 explanation: QuestionExplanation.Create(request.Explanation),
-                ticketNumber: TicketNumber.Create(request.TicketNumber),
-                questionNumber: QuestionNumber.Create(request.QuestionNumber),
+                ticketNumber: TicketNumber.Create(request.TicketNumber.Value),
+                questionNumber: QuestionNumber.Create(request.QuestionNumber.Value),
                 answers: answers,
                 imageUri: question.ImageUri);
 
@@ -57,19 +57,19 @@ namespace TraffiLearn.Application.Commands.Questions.Update
             await HandleImageAsync(
                 image: request.Image,
                 question,
-                request.RemoveOldImageIfNewImageMissing,
+                request.RemoveOldImageIfNewImageMissing.Value,
                 cancellationToken);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 
         private async Task UpdateTopics(
-            List<Guid> topicsIds,
+            List<Guid?>? topicsIds,
             Question question)
         {
             foreach (var topicId in topicsIds)
             {
-                var topic = await _topicRepository.GetByIdAsync(topicId);
+                var topic = await _topicRepository.GetByIdAsync(topicId.Value);
 
                 if (topic is null)
                 {

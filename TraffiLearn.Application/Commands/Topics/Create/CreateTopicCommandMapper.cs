@@ -12,7 +12,7 @@ namespace TraffiLearn.Application.Commands.Topics.Create
 
             return Topic.Create(
                 id: topicId,
-                number: TopicNumber.Create(source.TopicNumber),
+                number: TopicNumber.Create(source.TopicNumber.Value),
                 title: TopicTitle.Create(source.Title));
         }
     }

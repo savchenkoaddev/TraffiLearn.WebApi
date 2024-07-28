@@ -22,7 +22,7 @@ namespace TraffiLearn.Application.Commands.Questions.RemoveTopicForQuestion
 
         public async Task Handle(RemoveTopicForQuestionCommand request, CancellationToken cancellationToken)
         {
-            var topic = await _topicRepository.GetByIdAsync(request.TopicId);
+            var topic = await _topicRepository.GetByIdAsync(request.TopicId.Value);
 
             if (topic is null)
             {
@@ -30,7 +30,7 @@ namespace TraffiLearn.Application.Commands.Questions.RemoveTopicForQuestion
             }
 
             var question = await _questionRepository.GetByIdAsync(
-                request.QuestionId,
+                request.QuestionId.Value,
                 includeExpression: x => x.Topics);
 
             if (question is null)

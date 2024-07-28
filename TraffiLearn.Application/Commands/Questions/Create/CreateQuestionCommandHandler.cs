@@ -35,7 +35,7 @@ namespace TraffiLearn.Application.Commands.Questions.Create
 
             foreach (var topicId in request.TopicsIds)
             {
-                var topic = await _topicRepository.GetByIdAsync(topicId);
+                var topic = await _topicRepository.GetByIdAsync(topicId.Value);
 
                 if (topic is null)
                 {

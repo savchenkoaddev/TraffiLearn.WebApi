@@ -7,7 +7,8 @@ namespace TraffiLearn.Application.Commands.Topics.Create
         public CreateTopicCommandValidator()
         {
             RuleFor(x => x.TopicNumber)
-                .GreaterThan(0);
+                .GreaterThan(0)
+                .NotEmpty();
 
             RuleFor(x => x.Title)
                 .NotEmpty()

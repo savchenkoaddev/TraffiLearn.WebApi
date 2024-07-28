@@ -19,7 +19,7 @@ namespace TraffiLearn.Application.Commands.Topics.Delete
 
         public async Task Handle(DeleteTopicCommand request, CancellationToken cancellationToken)
         {
-            var found = await _topicRepository.GetByIdAsync(request.TopicId);
+            var found = await _topicRepository.GetByIdAsync(request.TopicId.Value);
 
             if (found is null)
             {
