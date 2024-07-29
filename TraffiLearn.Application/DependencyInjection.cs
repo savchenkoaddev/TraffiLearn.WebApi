@@ -7,7 +7,7 @@ using TraffiLearn.Application.Commands.Questions.Create;
 using TraffiLearn.Application.Commands.Topics.Create;
 using TraffiLearn.Application.DTO.Questions;
 using TraffiLearn.Application.DTO.Topics;
-using TraffiLearn.Application.PipelineBehaviors;
+using TraffiLearn.Application.Behaviors;
 using TraffiLearn.Application.Queries.Questions;
 using TraffiLearn.Application.Queries.Topics;
 using TraffiLearn.Domain.Entities;
@@ -27,9 +27,11 @@ namespace TraffiLearn.Application
                 CreateQuestionCommandMapper>();
 
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+            services.AddValidatorsFromAssembly(
+                Assembly.GetExecutingAssembly(),
+                includeInternalTypes: true);
 
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
 
             return services;
         }
