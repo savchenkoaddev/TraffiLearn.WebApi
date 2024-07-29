@@ -2,11 +2,13 @@
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.DTO.Questions;
 using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.Errors.Questions;
+using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.RepositoryContracts;
 
 namespace TraffiLearn.Application.Queries.Questions.GetById
 {
-    public sealed class GetQuestionByIdQueryHandler : IRequestHandler<GetQuestionByIdQuery, QuestionResponse>
+    public sealed class GetQuestionByIdQueryHandler : IRequestHandler<GetQuestionByIdQuery, Result<QuestionResponse>>
     {
         private readonly IQuestionRepository _questionRepository;
         private readonly Mapper<Question, QuestionResponse> _questionMapper;
@@ -19,13 +21,13 @@ namespace TraffiLearn.Application.Queries.Questions.GetById
             _questionMapper = questionMapper;
         }
 
-        public async Task<QuestionResponse> Handle(GetQuestionByIdQuery request, CancellationToken cancellationToken)
+        public async Task<Result<QuestionResponse>> Handle(GetQuestionByIdQuery request, CancellationToken cancellationToken)
         {
             var question = await _questionRepository.GetByIdAsync(request.QuestionId.Value);
 
             if (question is null)
             {
-                throw new ArgumentException("Question has not been found.");
+                return Result.Failure<QuestionResponse>(QuestionErrors.NotFound);
             }
 
             return _questionMapper.Map(question);

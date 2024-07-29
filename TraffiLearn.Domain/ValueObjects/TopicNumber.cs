@@ -1,4 +1,4 @@
-﻿using TraffiLearn.Domain.Errors;
+﻿using TraffiLearn.Domain.Errors.Topics;
 using TraffiLearn.Domain.Primitives;
 
 namespace TraffiLearn.Domain.ValueObjects

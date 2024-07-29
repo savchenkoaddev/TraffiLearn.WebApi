@@ -1,12 +1,15 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.DTO.Questions;
+using TraffiLearn.Application.DTO.Topics;
 using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.Errors.Topics;
+using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.RepositoryContracts;
 
 namespace TraffiLearn.Application.Queries.Topics.GetQuestionsForTopic
 {
-    public sealed class GetQuestionsForTopicQueryHandler : IRequestHandler<GetQuestionsForTopicQuery, IEnumerable<QuestionResponse>>
+    public sealed class GetQuestionsForTopicQueryHandler : IRequestHandler<GetQuestionsForTopicQuery, Result<IEnumerable<QuestionResponse>>>
     {
         private readonly ITopicRepository _topicRepository;
         private readonly Mapper<Question, QuestionResponse> _questionMapper;
@@ -19,7 +22,7 @@ namespace TraffiLearn.Application.Queries.Topics.GetQuestionsForTopic
             _questionMapper = questionMapper;
         }
 
-        public async Task<IEnumerable<QuestionResponse>> Handle(GetQuestionsForTopicQuery request, CancellationToken cancellationToken)
+        public async Task<Result<IEnumerable<QuestionResponse>>> Handle(GetQuestionsForTopicQuery request, CancellationToken cancellationToken)
         {
             var topic = await _topicRepository.GetByIdAsync(
                 request.TopicId.Value,
@@ -27,10 +30,10 @@ namespace TraffiLearn.Application.Queries.Topics.GetQuestionsForTopic
 
             if (topic is null)
             {
-                throw new ArgumentException("Topic has not been found");
+                return Result.Failure<IEnumerable<QuestionResponse>>(TopicErrors.NotFound);
             }
 
-            return _questionMapper.Map(topic.Questions);
+            return Result.Success(_questionMapper.Map(topic.Questions));
         }
     }
 }

@@ -1,8 +1,9 @@
 ﻿using MediatR;
 using TraffiLearn.Application.DTO.Questions;
+using TraffiLearn.Domain.Primitives;
 
 namespace TraffiLearn.Application.Queries.Questions.GetById
 {
     public sealed record GetQuestionByIdQuery(
-        Guid? QuestionId) : IRequest<QuestionResponse>;
+        Guid? QuestionId) : IRequest<Result<QuestionResponse>>;
 }
