@@ -13,13 +13,13 @@ namespace TraffiLearn.Infrastructure.Configurations
 
             builder.Property(t => t.Number).HasConversion(
                 number => number.Value,
-                value => TopicNumber.Create(value));
+                value => TopicNumber.Create(value).Value);
 
             builder.Property(t => t.Title)
                 .HasMaxLength(300)
                 .HasConversion(
                 title => title.Value,
-                value => TopicTitle.Create(value));
+                value => TopicTitle.Create(value).Value);
 
             builder
                 .HasMany(t => t.Questions)

@@ -15,23 +15,23 @@ namespace TraffiLearn.Infrastructure.Configurations
                 .HasMaxLength(2000)
                 .HasConversion(
                     content => content.Value,
-                    value => QuestionContent.Create(value));
+                    value => QuestionContent.Create(value).Value);
 
             builder.Property(q => q.Explanation)
                 .HasMaxLength(2000)
                 .HasConversion(
                     exp => exp.Value,
-                    value => QuestionExplanation.Create(value));
+                    value => QuestionExplanation.Create(value).Value);
 
             builder.Property(q => q.TicketNumber)
                 .HasConversion(
                     number => number.Value,
-                    value => TicketNumber.Create(value));
+                    value => TicketNumber.Create(value).Value);
 
             builder.Property(q => q.QuestionNumber)
                 .HasConversion(
                     number => number.Value,
-                    value => QuestionNumber.Create(value));
+                    value => QuestionNumber.Create(value).Value);
 
             builder.Property(q => q.LikesCount)
                 .HasDefaultValue(0);
@@ -44,7 +44,7 @@ namespace TraffiLearn.Infrastructure.Configurations
                 .HasMaxLength(300)
                 .HasConversion(
                     uri => uri.Value,
-                    value => ImageUri.Create(value));
+                    value => ImageUri.Create(value).Value);
 
             builder.OwnsMany(q => q.Answers, answersBuilder =>
             {

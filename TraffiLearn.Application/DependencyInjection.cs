@@ -13,6 +13,7 @@ using TraffiLearn.Application.PipelineBehaviors;
 using TraffiLearn.Application.Queries.Questions;
 using TraffiLearn.Application.Queries.Topics;
 using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application
 {
@@ -23,8 +24,8 @@ namespace TraffiLearn.Application
         {
             services.AddScoped<Mapper<Question, QuestionResponse>, QuestionToQuestionResponseMapper>();
             services.AddScoped<Mapper<Topic, TopicResponse>, TopicToTopicResponseMapper>();
-            services.AddScoped<Mapper<CreateTopicCommand, Topic>, CreateTopicCommandMapper>();
-            services.AddScoped<Mapper<CreateQuestionCommand, Question>,
+            services.AddScoped<Mapper<CreateTopicCommand, Result<Topic>>, CreateTopicCommandMapper>();
+            services.AddScoped<Mapper<CreateQuestionCommand, Result<Question>>,
                 CreateQuestionCommandMapper>();
 
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
