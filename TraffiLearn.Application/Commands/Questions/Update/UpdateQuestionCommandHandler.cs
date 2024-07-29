@@ -11,7 +11,7 @@ using TraffiLearn.Domain.ValueObjects;
 
 namespace TraffiLearn.Application.Commands.Questions.Update
 {
-    public sealed class UpdateQuestionCommandHandler : IRequestHandler<UpdateQuestionCommand, Result>
+    internal sealed class UpdateQuestionCommandHandler : IRequestHandler<UpdateQuestionCommand, Result>
     {
         private readonly IQuestionRepository _questionRepository;
         private readonly ITopicRepository _topicRepository;
@@ -41,13 +41,55 @@ namespace TraffiLearn.Application.Commands.Questions.Update
                 return QuestionErrors.NotFound;
             }
 
-            var answers = request.Answers.Select(x => Answer.Create(x.Text, x.IsCorrect.Value)).ToList();
+            List<Answer> answers = [];
+
+            foreach (var answer in request.Answers)
+            {
+                var answerCreateResult = Answer.Create(
+                    text: answer.Text,
+                    isCorrect: answer.IsCorrect.Value);
+
+                if (answerCreateResult.IsFailure)
+                {
+                    return answerCreateResult.Error;
+                }
+
+                answers.Add(answerCreateResult.Value);
+            }
+
+            Result<QuestionContent> contentResult = QuestionContent.Create(request.Content);
+
+            if (contentResult.IsFailure)
+            {
+                return contentResult.Error;
+            }
+
+            Result<QuestionExplanation> explanationResult = QuestionExplanation.Create(request.Explanation);
+
+            if (explanationResult.IsFailure)
+            {
+                return explanationResult.Error;
+            }
+
+            Result<TicketNumber> ticketNumberResult = TicketNumber.Create(request.TicketNumber.Value);
+
+            if (ticketNumberResult.IsFailure)
+            {
+                return ticketNumberResult.Error;
+            }
+
+            Result<QuestionNumber> questionNumberResult = QuestionNumber.Create(request.QuestionNumber.Value);
+
+            if (questionNumberResult.IsFailure)
+            {
+                return questionNumberResult.Error;
+            }
 
             question.Update(
-                content: QuestionContent.Create(request.Content),
-                explanation: QuestionExplanation.Create(request.Explanation),
-                ticketNumber: TicketNumber.Create(request.TicketNumber.Value),
-                questionNumber: QuestionNumber.Create(request.QuestionNumber.Value),
+                content: contentResult.Value,
+                explanation: explanationResult.Value,
+                ticketNumber: ticketNumberResult.Value,
+                questionNumber: questionNumberResult.Value,
                 answers: answers,
                 imageUri: question.ImageUri);
 

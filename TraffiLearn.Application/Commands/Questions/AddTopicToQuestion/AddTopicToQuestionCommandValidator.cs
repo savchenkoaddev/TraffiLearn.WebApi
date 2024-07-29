@@ -2,7 +2,7 @@
 
 namespace TraffiLearn.Application.Commands.Questions.AddTopicToQuestion
 {
-    public sealed class AddTopicToQuestionCommandValidator : AbstractValidator<AddTopicToQuestionCommand>
+    internal sealed class AddTopicToQuestionCommandValidator : AbstractValidator<AddTopicToQuestionCommand>
     {
         public AddTopicToQuestionCommandValidator()
         {

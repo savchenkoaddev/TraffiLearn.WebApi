@@ -4,5 +4,6 @@ using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Queries.Topics.GetById
 {
-    public sealed record GetTopicByIdQuery(Guid? TopicId) : IRequest<Result<TopicResponse>>;
+    public sealed record GetTopicByIdQuery(
+        Guid? TopicId) : IRequest<Result<TopicResponse>>;
 }

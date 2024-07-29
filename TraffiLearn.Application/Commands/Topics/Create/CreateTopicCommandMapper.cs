@@ -11,10 +11,24 @@ namespace TraffiLearn.Application.Commands.Topics.Create
         {
             var topicId = new TopicId(Guid.NewGuid());
 
+            Result<TopicNumber> numberCreateResult = TopicNumber.Create(source.TopicNumber.Value);
+
+            if (numberCreateResult.IsFailure)
+            {
+                return Result.Failure<Topic>(numberCreateResult.Error);
+            }
+
+            Result<TopicTitle> titleCreateResult = TopicTitle.Create(source.Title);
+
+            if (titleCreateResult.IsFailure)
+            {
+                return Result.Failure<Topic>(titleCreateResult.Error);
+            }
+
             return Topic.Create(
                 id: topicId,
-                number: TopicNumber.Create(source.TopicNumber.Value),
-                title: TopicTitle.Create(source.Title));
+                number: numberCreateResult.Value,
+                title: titleCreateResult.Value);
         }
     }
 }

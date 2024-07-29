@@ -9,38 +9,40 @@ using TraffiLearn.Domain.ValueObjects;
 
 namespace TraffiLearn.Application.Commands.Questions.Create
 {
-    public sealed class CreateQuestionCommandHandler : IRequestHandler<CreateQuestionCommand, Result>
+    internal sealed class CreateQuestionCommandHandler : IRequestHandler<CreateQuestionCommand, Result>
     {
         private readonly IQuestionRepository _questionRepository;
         private readonly ITopicRepository _topicRepository;
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IBlobService _blobService;
         private readonly Mapper<CreateQuestionCommand, Result<Question>> _questionMapper;
+        private readonly IUnitOfWork _unitOfWork;
 
         public CreateQuestionCommandHandler(
             IQuestionRepository questionRepository,
             ITopicRepository topicRepository,
-            IUnitOfWork unitOfWork,
             IBlobService blobService,
-            Mapper<CreateQuestionCommand, Result<Question>> questionMapper)
+            Mapper<CreateQuestionCommand, Result<Question>> questionMapper,
+            IUnitOfWork unitOfWork)
         {
             _questionRepository = questionRepository;
             _topicRepository = topicRepository;
-            _unitOfWork = unitOfWork;
             _blobService = blobService;
             _questionMapper = questionMapper;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result> Handle(CreateQuestionCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(
+            CreateQuestionCommand request, 
+            CancellationToken cancellationToken)
         {
-            var questionResult = _questionMapper.Map(request);
+            var mappingResult = _questionMapper.Map(request);
 
-            if (questionResult.IsFailure)
+            if (mappingResult.IsFailure)
             {
-                return questionResult.Error;
+                return mappingResult.Error;
             }
 
-            var question = questionResult.Value;
+            var question = mappingResult.Value;
 
             foreach (var topicId in request.TopicsIds)
             {
@@ -51,7 +53,12 @@ namespace TraffiLearn.Application.Commands.Questions.Create
                     return TopicErrors.NotFound;
                 }
 
-                question.AddTopic(topic);
+                Result addResult = question.AddTopic(topic);
+
+                if (addResult.IsFailure)
+                {
+                    return addResult.Error;
+                }
             }
 
             var image = request.Image;

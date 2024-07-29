@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Application.DTO.Topics;
 using TraffiLearn.Domain.Errors.Questions;
 using TraffiLearn.Domain.Errors.Topics;
 using TraffiLearn.Domain.RepositoryContracts;
@@ -8,7 +7,7 @@ using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Commands.Questions.AddTopicToQuestion
 {
-    public sealed class AddTopicToQuestionCommandHandler : IRequestHandler<AddTopicToQuestionCommand, Result>
+    internal sealed class AddTopicToQuestionCommandHandler : IRequestHandler<AddTopicToQuestionCommand, Result>
     {
         private readonly IQuestionRepository _questionRepository;
         private readonly ITopicRepository _topicRepository;
@@ -24,7 +23,9 @@ namespace TraffiLearn.Application.Commands.Questions.AddTopicToQuestion
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result> Handle(AddTopicToQuestionCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(
+            AddTopicToQuestionCommand request, 
+            CancellationToken cancellationToken)
         {
             var topic = await _topicRepository.GetByIdAsync(request.TopicId.Value);
 
@@ -42,7 +43,13 @@ namespace TraffiLearn.Application.Commands.Questions.AddTopicToQuestion
                 return QuestionErrors.NotFound;
             }
 
-            question.AddTopic(topic);
+            Result addResult = question.AddTopic(topic);
+
+            if (addResult.IsFailure)
+            {
+                return addResult.Error;
+            }
+
             await _unitOfWork.SaveChangesAsync();
 
             return Result.Success();

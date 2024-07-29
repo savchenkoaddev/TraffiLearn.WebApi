@@ -7,7 +7,7 @@ using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Commands.Questions.RemoveTopicForQuestion
 {
-    public sealed class RemoveTopicForQuestionCommandHandler : IRequestHandler<RemoveTopicForQuestionCommand, Result>
+    internal sealed class RemoveTopicForQuestionCommandHandler : IRequestHandler<RemoveTopicForQuestionCommand, Result>
     {
         private readonly IQuestionRepository _questionRepository;
         private readonly ITopicRepository _topicRepository;
@@ -23,7 +23,9 @@ namespace TraffiLearn.Application.Commands.Questions.RemoveTopicForQuestion
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result> Handle(RemoveTopicForQuestionCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(
+            RemoveTopicForQuestionCommand request, 
+            CancellationToken cancellationToken)
         {
             var topic = await _topicRepository.GetByIdAsync(request.TopicId.Value);
 
@@ -41,7 +43,12 @@ namespace TraffiLearn.Application.Commands.Questions.RemoveTopicForQuestion
                 return QuestionErrors.NotFound;
             }
 
-            question.RemoveTopic(topic);
+            Result removingResult = question.RemoveTopic(topic);
+
+            if (removingResult.IsFailure)
+            {
+                return removingResult.Error;
+            }
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

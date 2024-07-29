@@ -1,11 +1,13 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Domain.Errors.Topics;
 using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects;
 
 namespace TraffiLearn.Application.Commands.Topics.Update
 {
-    public sealed class UpdateTopicCommandHandler : IRequestHandler<UpdateTopicCommand>
+    internal sealed class UpdateTopicCommandHandler : IRequestHandler<UpdateTopicCommand, Result>
     {
         private readonly ITopicRepository _topicRepository;
         private readonly IUnitOfWork _unitOfWork;
@@ -18,21 +20,44 @@ namespace TraffiLearn.Application.Commands.Topics.Update
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Handle(UpdateTopicCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(
+            UpdateTopicCommand request, 
+            CancellationToken cancellationToken)
         {
             var topic = await _topicRepository.GetByIdAsync(request.TopicId.Value);
 
             if (topic is null)
             {
-                throw new ArgumentException("Topic has not been found");
+                return TopicErrors.NotFound;
             }
 
-            topic.Update(
-                number: TopicNumber.Create(request.TopicNumber.Value),
-                title: TopicTitle.Create(request.Title));
+            Result<TopicNumber> topicNumberResult = TopicNumber.Create(request.TopicNumber.Value);
+
+            if (topicNumberResult.IsFailure)
+            {
+                return topicNumberResult.Error;
+            }
+
+            Result<TopicTitle> topicTitleResult = TopicTitle.Create(request.Title);
+
+            if (topicTitleResult.IsFailure)
+            {
+                return topicTitleResult.Error;
+            }
+
+            Result updateResult = topic.Update(
+                number: topicNumberResult.Value,
+                title: topicTitleResult.Value);
+
+            if (updateResult.IsFailure)
+            {
+                return updateResult.Error;
+            }
 
             await _topicRepository.UpdateAsync(topic);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return Result.Success();
         }
     }
 }

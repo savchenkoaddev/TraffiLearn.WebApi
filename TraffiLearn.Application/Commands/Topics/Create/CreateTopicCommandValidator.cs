@@ -2,7 +2,7 @@
 
 namespace TraffiLearn.Application.Commands.Topics.Create
 {
-    public sealed class CreateTopicCommandValidator : AbstractValidator<CreateTopicCommand>
+    internal sealed class CreateTopicCommandValidator : AbstractValidator<CreateTopicCommand>
     {
         public CreateTopicCommandValidator()
         {

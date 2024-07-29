@@ -6,7 +6,7 @@ using TraffiLearn.Domain.RepositoryContracts;
 
 namespace TraffiLearn.Application.Queries.Topics.GetAllSortedByNumber
 {
-    public sealed class GetAllSortedTopicsByNumberQueryHandler : IRequestHandler<GetAllSortedTopicsByNumberQuery, IEnumerable<TopicResponse>>
+    internal sealed class GetAllSortedTopicsByNumberQueryHandler : IRequestHandler<GetAllSortedTopicsByNumberQuery, IEnumerable<TopicResponse>>
     {
         private readonly ITopicRepository _topicRepository;
         private readonly Mapper<Topic, TopicResponse> _topicMapper;
@@ -19,12 +19,14 @@ namespace TraffiLearn.Application.Queries.Topics.GetAllSortedByNumber
             _topicMapper = topicMapper;
         }
 
-        public async Task<IEnumerable<TopicResponse>> Handle(GetAllSortedTopicsByNumberQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<TopicResponse>> Handle(
+            GetAllSortedTopicsByNumberQuery request, 
+            CancellationToken cancellationToken)
         {
             var topics = await _topicRepository.GetAllAsync();
 
-            var sortedTopics = (topics)
-                .OrderBy(x => x.Number.Value);
+            var sortedTopics = topics.OrderBy(
+                x => x.Number.Value);
 
             return _topicMapper.Map(sortedTopics);
         }

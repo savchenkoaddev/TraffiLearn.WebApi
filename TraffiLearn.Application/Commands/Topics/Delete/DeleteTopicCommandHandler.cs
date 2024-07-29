@@ -1,10 +1,12 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Domain.Errors.Topics;
 using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Commands.Topics.Delete
 {
-    public sealed class DeleteTopicCommandHandler : IRequestHandler<DeleteTopicCommand>
+    internal sealed class DeleteTopicCommandHandler : IRequestHandler<DeleteTopicCommand, Result>
     {
         private readonly ITopicRepository _topicRepository;
         private readonly IUnitOfWork _unitOfWork;
@@ -17,17 +19,21 @@ namespace TraffiLearn.Application.Commands.Topics.Delete
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Handle(DeleteTopicCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(
+            DeleteTopicCommand request, 
+            CancellationToken cancellationToken)
         {
             var found = await _topicRepository.GetByIdAsync(request.TopicId.Value);
 
             if (found is null)
             {
-                throw new ArgumentException("Topic has not been found");
+                return TopicErrors.NotFound;
             }
 
             await _topicRepository.DeleteAsync(found);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return Result.Success();
         }
     }
 }

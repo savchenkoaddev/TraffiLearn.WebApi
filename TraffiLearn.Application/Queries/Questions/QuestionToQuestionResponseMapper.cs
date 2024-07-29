@@ -4,7 +4,7 @@ using TraffiLearn.Domain.Entities;
 
 namespace TraffiLearn.Application.Queries.Questions
 {
-    internal class QuestionToQuestionResponseMapper : Mapper<Question, QuestionResponse>
+    internal sealed class QuestionToQuestionResponseMapper : Mapper<Question, QuestionResponse>
     {
         public override QuestionResponse Map(Question source)
         {

@@ -1,10 +1,13 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Domain.Errors.Questions;
+using TraffiLearn.Domain.Errors.Topics;
 using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Commands.Topics.AddQuestionToTopic
 {
-    public sealed class AddQuestionToTopicCommandHandler : IRequestHandler<AddQuestionToTopicCommand>
+    internal sealed class AddQuestionToTopicCommandHandler : IRequestHandler<AddQuestionToTopicCommand, Result>
     {
         private readonly IQuestionRepository _questionRepository;
         private readonly ITopicRepository _topicRepository;
@@ -20,13 +23,15 @@ namespace TraffiLearn.Application.Commands.Topics.AddQuestionToTopic
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Handle(AddQuestionToTopicCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(
+            AddQuestionToTopicCommand request, 
+            CancellationToken cancellationToken)
         {
             var question = await _questionRepository.GetByIdAsync(request.QuestionId.Value);
 
             if (question is null)
             {
-                throw new ArgumentException("Question has not been found");
+                return QuestionErrors.NotFound;
             }
 
             var topic = await _topicRepository.GetByIdAsync(
@@ -35,12 +40,19 @@ namespace TraffiLearn.Application.Commands.Topics.AddQuestionToTopic
 
             if (topic is null)
             {
-                throw new ArgumentException("Topic has not been found");
+                return TopicErrors.NotFound;
             }
 
-            topic.AddQuestion(question);
+            Result result = topic.AddQuestion(question);
+
+            if (result.IsFailure)
+            {
+                return result.Error;
+            }
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return Result.Success();
         }
     }
 }

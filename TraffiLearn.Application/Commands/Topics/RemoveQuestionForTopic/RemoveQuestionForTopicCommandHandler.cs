@@ -1,10 +1,13 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Domain.Errors.Questions;
+using TraffiLearn.Domain.Errors.Topics;
 using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Commands.Topics.RemoveQuestionForTopic
 {
-    public sealed class RemoveQuestionForTopicCommandHandler : IRequestHandler<RemoveQuestionForTopicCommand>
+    internal sealed class RemoveQuestionForTopicCommandHandler : IRequestHandler<RemoveQuestionForTopicCommand, Result>
     {
         private readonly ITopicRepository _topicRepository;
         private readonly IQuestionRepository _questionRepository;
@@ -20,7 +23,9 @@ namespace TraffiLearn.Application.Commands.Topics.RemoveQuestionForTopic
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Handle(RemoveQuestionForTopicCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(
+            RemoveQuestionForTopicCommand request, 
+            CancellationToken cancellationToken)
         {
             var topic = await _topicRepository.GetByIdAsync(
                 request.TopicId.Value,
@@ -28,7 +33,7 @@ namespace TraffiLearn.Application.Commands.Topics.RemoveQuestionForTopic
 
             if (topic is null)
             {
-                throw new ArgumentException("Topic has not been found");
+                return TopicErrors.NotFound;
             }
 
             var question = await _questionRepository.GetByIdAsync(
@@ -37,12 +42,19 @@ namespace TraffiLearn.Application.Commands.Topics.RemoveQuestionForTopic
 
             if (question is null)
             {
-                throw new ArgumentException("Question has not been found");
+                return QuestionErrors.NotFound;
             }
 
-            topic.RemoveQuestion(question);
+            Result removeResult = topic.RemoveQuestion(question);
+
+            if (removeResult.IsFailure)
+            {
+                return removeResult.Error;
+            }
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return Result.Success();
         }
     }
 }

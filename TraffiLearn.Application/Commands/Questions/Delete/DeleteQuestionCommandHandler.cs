@@ -7,7 +7,7 @@ using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Commands.Questions.Delete
 {
-    public sealed class DeleteQuestionCommandHandler : IRequestHandler<DeleteQuestionCommand, Result>
+    internal sealed class DeleteQuestionCommandHandler : IRequestHandler<DeleteQuestionCommand, Result>
     {
         private readonly IQuestionRepository _questionRepository;
         private readonly IBlobService _blobService;
@@ -23,7 +23,9 @@ namespace TraffiLearn.Application.Commands.Questions.Delete
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result> Handle(DeleteQuestionCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(
+            DeleteQuestionCommand request, 
+            CancellationToken cancellationToken)
         {
             var found = await _questionRepository.GetByIdAsync(request.QuestionId.Value);
 

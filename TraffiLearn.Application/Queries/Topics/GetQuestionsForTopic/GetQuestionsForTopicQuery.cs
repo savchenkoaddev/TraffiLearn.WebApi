@@ -4,5 +4,6 @@ using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Queries.Topics.GetQuestionsForTopic
 {
-    public sealed record GetQuestionsForTopicQuery(Guid? TopicId) : IRequest<Result<IEnumerable<QuestionResponse>>>;
+    public sealed record GetQuestionsForTopicQuery(
+        Guid? TopicId) : IRequest<Result<IEnumerable<QuestionResponse>>>;
 }

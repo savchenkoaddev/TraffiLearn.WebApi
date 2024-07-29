@@ -2,7 +2,7 @@
 
 namespace TraffiLearn.Application.Commands.Topics.RemoveQuestionForTopic
 {
-    public sealed class RemoveQuestionForTopicCommandValidator : AbstractValidator<RemoveQuestionForTopicCommand>
+    internal sealed class RemoveQuestionForTopicCommandValidator : AbstractValidator<RemoveQuestionForTopicCommand>
     {
         public RemoveQuestionForTopicCommandValidator()
         {

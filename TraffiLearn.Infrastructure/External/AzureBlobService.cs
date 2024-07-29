@@ -8,7 +8,7 @@ using TraffiLearn.Infrastructure.Options;
 
 namespace TraffiLearn.Infrastructure.External
 {
-    public sealed class AzureBlobService : IBlobService
+    internal sealed class AzureBlobService : IBlobService
     {
         private readonly BlobServiceClient _blobClient;
         private readonly AzureBlobStorageSettings _storageSettings;

@@ -6,7 +6,7 @@ using TraffiLearn.Domain.RepositoryContracts;
 
 namespace TraffiLearn.Application.Queries.Questions.GetAll
 {
-    public sealed class GetAllQuestionsQueryHandler : IRequestHandler<GetAllQuestionsQuery, IEnumerable<QuestionResponse>>
+    internal sealed class GetAllQuestionsQueryHandler : IRequestHandler<GetAllQuestionsQuery, IEnumerable<QuestionResponse>>
     {
         private readonly IQuestionRepository _questionRepository;
         private readonly Mapper<Question, QuestionResponse> _questionMapper;

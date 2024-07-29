@@ -8,7 +8,7 @@ using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Queries.Topics.GetById
 {
-    public sealed class GetTopicByIdQueryHandler : IRequestHandler<GetTopicByIdQuery, Result<TopicResponse>>
+    internal sealed class GetTopicByIdQueryHandler : IRequestHandler<GetTopicByIdQuery, Result<TopicResponse>>
     {
         private readonly ITopicRepository _topicRepository;
         private readonly Mapper<Topic, TopicResponse> _topicMapper;
@@ -21,7 +21,9 @@ namespace TraffiLearn.Application.Queries.Topics.GetById
             _topicMapper = topicMapper;
         }
 
-        public async Task<Result<TopicResponse>> Handle(GetTopicByIdQuery request, CancellationToken cancellationToken)
+        public async Task<Result<TopicResponse>> Handle(
+            GetTopicByIdQuery request, 
+            CancellationToken cancellationToken)
         {
             var found = await _topicRepository.GetByIdAsync(request.TopicId.Value);
 

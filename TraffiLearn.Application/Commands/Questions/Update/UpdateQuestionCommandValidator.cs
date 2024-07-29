@@ -2,7 +2,7 @@
 
 namespace TraffiLearn.Application.Commands.Questions.Update
 {
-    public sealed class UpdateQuestionCommandValidator : AbstractValidator<UpdateQuestionCommand>
+    internal sealed class UpdateQuestionCommandValidator : AbstractValidator<UpdateQuestionCommand>
     {
         public UpdateQuestionCommandValidator()
         {

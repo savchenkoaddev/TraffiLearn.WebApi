@@ -2,7 +2,7 @@
 
 namespace TraffiLearn.Application.Commands.Topics.Delete
 {
-    public sealed class DeleteTopicCommandValidator : AbstractValidator<DeleteTopicCommand>
+    internal sealed class DeleteTopicCommandValidator : AbstractValidator<DeleteTopicCommand>
     {
         public DeleteTopicCommandValidator()
         {
