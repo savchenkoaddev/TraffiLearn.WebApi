@@ -1,4 +1,6 @@
-﻿using TraffiLearn.Domain.Primitives;
+﻿using TraffiLearn.Domain.Errors.Topics;
+using TraffiLearn.Domain.Primitives;
+using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects;
 
 namespace TraffiLearn.Domain.Entities
@@ -26,11 +28,11 @@ namespace TraffiLearn.Domain.Entities
 
         public IReadOnlyCollection<Question> Questions => _questions;
 
-        public void AddQuestion(Question question)
+        public Result AddQuestion(Question question)
         {
             if (_questions.Contains(question))
             {
-                throw new ArgumentException("The topic already contains the provided question.");
+                return TopicErrors.QuestionAlreadyAdded;
             }
 
             _questions.Add(question);
@@ -39,13 +41,15 @@ namespace TraffiLearn.Domain.Entities
             {
                 question.AddTopic(this);
             }
+
+            return Result.Success();
         }
 
-        public void RemoveQuestion(Question question)
+        public Result RemoveQuestion(Question question)
         {
             if (!_questions.Contains(question))
             {
-                throw new ArgumentException("The topic does not contain the provided question.");
+                return TopicErrors.QuestionNotFound;
             }
 
             _questions.Remove(question);
@@ -54,17 +58,21 @@ namespace TraffiLearn.Domain.Entities
             {
                 question.RemoveTopic(this);
             }
+
+            return Result.Success();
         }
 
-        public void Update(
+        public Result Update(
             TopicNumber number,
             TopicTitle title)
         {
             Number = number;
             Title = title;
+
+            return Result.Success();
         }
 
-        public static Topic Create(
+        public static Result<Topic> Create(
             TopicId id,
             TopicNumber number,
             TopicTitle title)

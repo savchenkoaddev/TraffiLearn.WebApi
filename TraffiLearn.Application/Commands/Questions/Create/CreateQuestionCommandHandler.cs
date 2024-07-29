@@ -2,25 +2,27 @@
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Storage;
 using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.Errors.Topics;
 using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects;
 
 namespace TraffiLearn.Application.Commands.Questions.Create
 {
-    public sealed class CreateQuestionCommandHandler : IRequestHandler<CreateQuestionCommand>
+    public sealed class CreateQuestionCommandHandler : IRequestHandler<CreateQuestionCommand, Result>
     {
         private readonly IQuestionRepository _questionRepository;
         private readonly ITopicRepository _topicRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IBlobService _blobService;
-        private readonly Mapper<CreateQuestionCommand, Question> _questionMapper;
+        private readonly Mapper<CreateQuestionCommand, Result<Question>> _questionMapper;
 
         public CreateQuestionCommandHandler(
             IQuestionRepository questionRepository,
             ITopicRepository topicRepository,
             IUnitOfWork unitOfWork,
             IBlobService blobService,
-            Mapper<CreateQuestionCommand, Question> questionMapper)
+            Mapper<CreateQuestionCommand, Result<Question>> questionMapper)
         {
             _questionRepository = questionRepository;
             _topicRepository = topicRepository;
@@ -29,9 +31,16 @@ namespace TraffiLearn.Application.Commands.Questions.Create
             _questionMapper = questionMapper;
         }
 
-        public async Task Handle(CreateQuestionCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(CreateQuestionCommand request, CancellationToken cancellationToken)
         {
-            var question = _questionMapper.Map(request);
+            var questionResult = _questionMapper.Map(request);
+
+            if (questionResult.IsFailure)
+            {
+                return questionResult.Error;
+            }
+
+            var question = questionResult.Value;
 
             foreach (var topicId in request.TopicsIds)
             {
@@ -39,7 +48,7 @@ namespace TraffiLearn.Application.Commands.Questions.Create
 
                 if (topic is null)
                 {
-                    throw new ArgumentException("Topic has not been found");
+                    return TopicErrors.NotFound;
                 }
 
                 question.AddTopic(topic);
@@ -56,13 +65,20 @@ namespace TraffiLearn.Application.Commands.Questions.Create
                     image.ContentType,
                     cancellationToken);
 
-                ImageUri imageUri = ImageUri.Create(uploadResponse.BlobUri);
+                Result<ImageUri> imageUriResult = ImageUri.Create(uploadResponse.BlobUri);
 
-                question.SetImageUri(imageUri);
+                if (imageUriResult.IsFailure)
+                {
+                    return imageUriResult.Error;
+                }
+
+                question.SetImageUri(imageUriResult.Value);
             }
 
             await _questionRepository.AddAsync(question);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return Result.Success();
         }
     }
 }

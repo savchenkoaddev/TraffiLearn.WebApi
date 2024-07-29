@@ -1,4 +1,4 @@
-﻿namespace TraffiLearn.Domain.Primitives
+﻿namespace TraffiLearn.Domain.Shared
 {
     public class Result
     {

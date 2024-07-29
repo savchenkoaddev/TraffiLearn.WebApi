@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TraffiLearn.Domain.Errors.Questions;
 using TraffiLearn.Domain.Primitives;
+using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Domain.ValueObjects
 {

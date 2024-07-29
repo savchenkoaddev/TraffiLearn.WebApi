@@ -1,10 +1,13 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Domain.Errors.Questions;
+using TraffiLearn.Domain.Errors.Topics;
 using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Commands.Questions.RemoveTopicForQuestion
 {
-    public sealed class RemoveTopicForQuestionCommandHandler : IRequestHandler<RemoveTopicForQuestionCommand>
+    public sealed class RemoveTopicForQuestionCommandHandler : IRequestHandler<RemoveTopicForQuestionCommand, Result>
     {
         private readonly IQuestionRepository _questionRepository;
         private readonly ITopicRepository _topicRepository;
@@ -20,13 +23,13 @@ namespace TraffiLearn.Application.Commands.Questions.RemoveTopicForQuestion
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Handle(RemoveTopicForQuestionCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(RemoveTopicForQuestionCommand request, CancellationToken cancellationToken)
         {
             var topic = await _topicRepository.GetByIdAsync(request.TopicId.Value);
 
             if (topic is null)
             {
-                throw new ArgumentException("Topic has not been found");
+                return TopicErrors.NotFound;
             }
 
             var question = await _questionRepository.GetByIdAsync(
@@ -35,12 +38,14 @@ namespace TraffiLearn.Application.Commands.Questions.RemoveTopicForQuestion
 
             if (question is null)
             {
-                throw new ArgumentException("Question has not been found");
+                return QuestionErrors.NotFound;
             }
 
             question.RemoveTopic(topic);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return Result.Success();
         }
     }
 }

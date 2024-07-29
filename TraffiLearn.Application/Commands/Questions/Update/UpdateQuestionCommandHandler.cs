@@ -3,12 +3,15 @@ using Microsoft.AspNetCore.Http;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Storage;
 using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.Errors.Questions;
+using TraffiLearn.Domain.Errors.Topics;
 using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects;
 
 namespace TraffiLearn.Application.Commands.Questions.Update
 {
-    public sealed class UpdateQuestionCommandHandler : IRequestHandler<UpdateQuestionCommand>
+    public sealed class UpdateQuestionCommandHandler : IRequestHandler<UpdateQuestionCommand, Result>
     {
         private readonly IQuestionRepository _questionRepository;
         private readonly ITopicRepository _topicRepository;
@@ -27,7 +30,7 @@ namespace TraffiLearn.Application.Commands.Questions.Update
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Handle(UpdateQuestionCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(UpdateQuestionCommand request, CancellationToken cancellationToken)
         {
             var question = await _questionRepository.GetByIdAsync(
                 request.QuestionId.Value,
@@ -35,7 +38,7 @@ namespace TraffiLearn.Application.Commands.Questions.Update
 
             if (question is null)
             {
-                throw new ArgumentException("Question has not been found");
+                return QuestionErrors.NotFound;
             }
 
             var answers = request.Answers.Select(x => Answer.Create(x.Text, x.IsCorrect.Value)).ToList();
@@ -48,22 +51,34 @@ namespace TraffiLearn.Application.Commands.Questions.Update
                 answers: answers,
                 imageUri: question.ImageUri);
 
-            await UpdateTopics(
+            var updateTopicsResult = await UpdateTopics(
                 topicsIds: request.TopicsIds,
                 question: question);
 
+            if (updateTopicsResult.IsFailure)
+            {
+                return updateTopicsResult.Error;
+            }
+
             await _questionRepository.UpdateAsync(question);
 
-            await HandleImageAsync(
+            var imageUpdateResult = await HandleImageAsync(
                 image: request.Image,
                 question,
                 request.RemoveOldImageIfNewImageMissing.Value,
                 cancellationToken);
 
+            if (imageUpdateResult.IsFailure)
+            {
+                return imageUpdateResult.Error;
+            }
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return Result.Success();
         }
 
-        private async Task UpdateTopics(
+        private async Task<Result> UpdateTopics(
             List<Guid?>? topicsIds,
             Question question)
         {
@@ -73,7 +88,7 @@ namespace TraffiLearn.Application.Commands.Questions.Update
 
                 if (topic is null)
                 {
-                    throw new ArgumentException($"Topic with the {topicId} id has not been found.");
+                    return TopicErrors.NotFound;
                 }
 
                 if (!question.Topics.Contains(topic))
@@ -91,9 +106,11 @@ namespace TraffiLearn.Application.Commands.Questions.Update
                     question.RemoveTopic(topic);
                 }
             }
+
+            return Result.Success();
         }
 
-        private async Task HandleImageAsync(
+        private async Task<Result> HandleImageAsync(
             IFormFile? image,
             Question question,
             bool removeOldImageIfNewImageMissing,
@@ -126,10 +143,17 @@ namespace TraffiLearn.Application.Commands.Questions.Update
                     image.ContentType,
                     cancellationToken);
 
-                var imageUri = ImageUri.Create(uploadResponse.BlobUri);
+                var imageUriResult = ImageUri.Create(uploadResponse.BlobUri);
 
-                question.SetImageUri(imageUri);
+                if (imageUriResult.IsFailure)
+                {
+                    return Result.Failure(Error.InternalFailure());
+                }
+
+                question.SetImageUri(imageUriResult.Value);
             }
+
+            return Result.Success();
         }
     }
 }

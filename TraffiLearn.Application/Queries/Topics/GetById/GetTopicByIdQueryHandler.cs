@@ -3,8 +3,8 @@ using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.DTO.Topics;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Topics;
-using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Queries.Topics.GetById
 {

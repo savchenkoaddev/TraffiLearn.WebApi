@@ -1,10 +1,10 @@
-﻿namespace TraffiLearn.Domain.Primitives
+﻿namespace TraffiLearn.Domain.Shared
 {
     public record Error
     {
-        public static readonly Error None = new(string.Empty, string.Empty, ErrorType.Failure);
+        public static readonly Error None = new(string.Empty, string.Empty, ErrorType.OperationFailure);
 
-        public static readonly Error NullValue = new("Error.NullValue", "Null value was provided", ErrorType.Failure);
+        public static readonly Error NullValue = new("Error.NullValue", "Null value was provided", ErrorType.OperationFailure);
 
         private Error(
             string code,
@@ -22,8 +22,14 @@
 
         public ErrorType ErrorType { get; init; }
 
-        public static Error Failure(string code, string description) =>
-            new Error(code, description, ErrorType.Failure);
+        public static Error InternalFailure(string code, string description) =>
+            new Error(code, description, ErrorType.InternalFailure);
+
+        public static Error InternalFailure() =>
+            new Error(string.Empty, string.Empty, ErrorType.InternalFailure);
+
+        public static Error OperationFailure(string code, string description) =>
+            new Error(code, description, ErrorType.OperationFailure);
 
         public static Error NotFound(string code, string description) =>
             new Error(code, description, ErrorType.NotFound);

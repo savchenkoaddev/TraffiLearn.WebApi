@@ -1,5 +1,6 @@
 ﻿using TraffiLearn.Domain.Errors.Questions;
 using TraffiLearn.Domain.Primitives;
+using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Domain.ValueObjects
 {

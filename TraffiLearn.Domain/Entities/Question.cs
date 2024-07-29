@@ -1,4 +1,6 @@
-﻿using TraffiLearn.Domain.Primitives;
+﻿using TraffiLearn.Domain.Errors.Questions;
+using TraffiLearn.Domain.Primitives;
+using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects;
 
 namespace TraffiLearn.Domain.Entities
@@ -47,43 +49,47 @@ namespace TraffiLearn.Domain.Entities
 
         public IReadOnlyCollection<Answer> Answers => _answers;
 
-        public void AddAnswer(Answer answer)
+        public Result AddAnswer(Answer answer)
         {
             if (_answers.Contains(answer))
             {
-                throw new ArgumentException("The question already contains the answer with the provided text");
+                return QuestionErrors.AnswerAlreadyAdded;
             }
 
             if (_answers.Count == 0 &&
                 answer.IsCorrect == false)
             {
-                throw new ArgumentException("Newly added answer cannot be incorrect if there are no existing answers in a question.");
+                return QuestionErrors.FirstlyAddedAnswerIncorrect;
             }
 
             _answers.Add(answer);
+
+            return Result.Success();
         }
 
-        public void RemoveAnswer(Answer answer)
+        public Result RemoveAnswer(Answer answer)
         {
             if (!_answers.Contains(answer))
             {
-                throw new ArgumentException("The question does not contain the answer with the provided text.");
+                return QuestionErrors.AnswerNotFound;
             }
 
-            if (_answers.Count(q => q.IsCorrect == true) <= 1 &&
+            if (ExistsSingleCorrectAnswerOnly() &&
                 answer.IsCorrect == true)
             {
-                throw new ArgumentException("Cannot delete a single correct answer in the question");
+                return QuestionErrors.UnableToRemoveSingleCorrectAnswer;
             }
 
             _answers.Remove(answer);
+
+            return Result.Success();
         }
 
-        public void AddTopic(Topic topic)
+        public Result AddTopic(Topic topic)
         {
             if (_topics.Contains(topic))
             {
-                throw new ArgumentException("The same topic has already been added.");
+                return QuestionErrors.TopicAlreadyAdded;
             }
 
             _topics.Add(topic);
@@ -92,13 +98,15 @@ namespace TraffiLearn.Domain.Entities
             {
                 topic.AddQuestion(this);
             }
+
+            return Result.Success();
         }
 
-        public void RemoveTopic(Topic topic)
+        public Result RemoveTopic(Topic topic)
         {
             if (!_topics.Contains(topic))
             {
-                throw new ArgumentException("The question does not contain the provided topic.");
+                return QuestionErrors.TopicNotFound;
             }
 
             _topics.Remove(topic);
@@ -107,6 +115,8 @@ namespace TraffiLearn.Domain.Entities
             {
                 topic.RemoveQuestion(this);
             }
+
+            return Result.Success();
         }
 
         public void SetImageUri(ImageUri? imageUri)
@@ -114,7 +124,7 @@ namespace TraffiLearn.Domain.Entities
             ImageUri = imageUri;
         }
 
-        public void Update(
+        public Result Update(
             QuestionContent content,
             QuestionExplanation explanation,
             TicketNumber ticketNumber,
@@ -122,7 +132,12 @@ namespace TraffiLearn.Domain.Entities
             List<Answer> answers,
             ImageUri? imageUri)
         {
-            ValidateAnswers(answers);
+            var validationResult = ValidateAnswers(answers);
+
+            if (validationResult.IsFailure)
+            {
+                return Result.Failure<Question>(validationResult.Error);
+            }
 
             Content = content;
             Explanation = explanation;
@@ -130,9 +145,11 @@ namespace TraffiLearn.Domain.Entities
             QuestionNumber = questionNumber;
             _answers = answers;
             ImageUri = imageUri;
+
+            return Result.Success();
         }
 
-        public static Question Create(
+        public static Result<Question> Create(
             QuestionId id,
             QuestionContent content,
             QuestionExplanation explanation,
@@ -141,7 +158,12 @@ namespace TraffiLearn.Domain.Entities
             List<Answer> answers,
             ImageUri? imageUri)
         {
-            ValidateAnswers(answers);
+            var validationResult = ValidateAnswers(answers);
+
+            if (validationResult.IsFailure)
+            {
+                return Result.Failure<Question>(validationResult.Error);
+            }
 
             return new Question(
                 id,
@@ -153,24 +175,31 @@ namespace TraffiLearn.Domain.Entities
                 imageUri);
         }
 
-        private static void ValidateAnswers(List<Answer> answers)
+        private static Result ValidateAnswers(List<Answer> answers)
         {
             if (answers.Count == 0)
             {
-                throw new ArgumentException("There are no answers in the question.");
+                return QuestionErrors.NoAnswers;
             }
 
             if (answers.All(a => a.IsCorrect == false))
             {
-                throw new ArgumentException("All answers are incorrect.");
+                return QuestionErrors.AllAnswersAreIncorrect;
             }
 
             var uniqueAnswers = new HashSet<Answer>(answers);
 
             if (uniqueAnswers.Count != answers.Count)
             {
-                throw new ArgumentException("There are duplicate answers in the provided question");
+                return QuestionErrors.DuplicateAnswers;
             }
+
+            return Result.Success();
+        }
+
+        private bool ExistsSingleCorrectAnswerOnly()
+        {
+            return _answers.Count(q => q.IsCorrect == true) == 1;
         }
     }
 

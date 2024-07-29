@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace TraffiLearn.Domain.Primitives
+namespace TraffiLearn.Domain.Shared
 {
     public class Result<TValue> : Result
     {

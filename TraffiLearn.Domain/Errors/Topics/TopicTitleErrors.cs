@@ -1,4 +1,4 @@
-﻿using TraffiLearn.Domain.Primitives;
+﻿using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Domain.Errors.Topics
 {

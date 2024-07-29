@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using TraffiLearn.Application.DTO.Questions;
-using TraffiLearn.Domain.Primitives;
+using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Queries.Questions.GetById
 {
