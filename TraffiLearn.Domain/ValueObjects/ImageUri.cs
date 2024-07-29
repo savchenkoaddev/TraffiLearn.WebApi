@@ -1,4 +1,5 @@
-﻿using TraffiLearn.Domain.Primitives;
+﻿using TraffiLearn.Domain.Errors;
+using TraffiLearn.Domain.Primitives;
 
 namespace TraffiLearn.Domain.ValueObjects
 {
@@ -13,21 +14,24 @@ namespace TraffiLearn.Domain.ValueObjects
 
         public string Value { get; init; }
 
-        public static ImageUri Create(string value)
+        public static Result<ImageUri> Create(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
             {
-                throw new ArgumentException("Image uri cannot be empty.");
+                return Result.Failure<ImageUri>(
+                    ImageUriErrors.Empty);
             }
 
             if (value.Length > MaxLength)
             {
-                throw new ArgumentException($"Image uri must not exceed {MaxLength} characters.");
+                return Result.Failure<ImageUri>(
+                    ImageUriErrors.TooLongText(allowedLength: MaxLength));
             }
 
             if (!IsValidUri(value))
             {
-                throw new ArgumentException("Image uri is not a valid URI.");
+                return Result.Failure<ImageUri>(
+                    ImageUriErrors.InvalidUri);
             }
 
             return new ImageUri(value);

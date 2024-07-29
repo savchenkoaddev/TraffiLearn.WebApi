@@ -1,4 +1,5 @@
-﻿using TraffiLearn.Domain.Primitives;
+﻿using TraffiLearn.Domain.Errors;
+using TraffiLearn.Domain.Primitives;
 
 namespace TraffiLearn.Domain.ValueObjects
 {
@@ -18,18 +19,20 @@ namespace TraffiLearn.Domain.ValueObjects
 
         public bool IsCorrect { get; init; }
 
-        public static Answer Create(
+        public static Result<Answer> Create(
             string text,
             bool isCorrect)
         {
             if (string.IsNullOrWhiteSpace(text))
             {
-                throw new ArgumentException("Answer text cannot be empty.");
+                return Result.Failure<Answer>(
+                    AnswerErrors.EmptyText);
             }
 
             if (text.Length > MaxTextLength)
             {
-                throw new ArgumentException($"Answer text must not exceed {MaxTextLength} characters.");
+                return Result.Failure<Answer>(
+                    AnswerErrors.TooLongText(allowedLength: MaxTextLength));
             }
 
             return new Answer(

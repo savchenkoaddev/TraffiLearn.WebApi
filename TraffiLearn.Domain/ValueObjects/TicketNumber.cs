@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TraffiLearn.Domain.Errors;
 using TraffiLearn.Domain.Primitives;
 
 namespace TraffiLearn.Domain.ValueObjects
@@ -18,11 +19,12 @@ namespace TraffiLearn.Domain.ValueObjects
 
         public int Value { get; init; }
 
-        public static TicketNumber Create(int value)
+        public static Result<TicketNumber> Create(int value)
         {
             if (value < MinValue)
             {
-                throw new ArgumentException($"Ticket number cannot be less than {MinValue} characters.");
+                return Result.Failure<TicketNumber>(
+                    TicketNumberErrors.TooSmall(minValue: MinValue));
             }
 
             return new TicketNumber(value);

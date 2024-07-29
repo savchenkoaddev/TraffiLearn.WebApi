@@ -1,4 +1,5 @@
-﻿using TraffiLearn.Domain.Primitives;
+﻿using TraffiLearn.Domain.Errors;
+using TraffiLearn.Domain.Primitives;
 
 namespace TraffiLearn.Domain.ValueObjects
 {
@@ -13,11 +14,12 @@ namespace TraffiLearn.Domain.ValueObjects
 
         public int Value { get; init; }
 
-        public static TopicNumber Create(int value)
+        public static Result<TopicNumber> Create(int value)
         {
             if (value < MinValue)
             {
-                throw new ArgumentException($"Topic number cannot be less than {MinValue} characters.");
+                return Result.Failure<TopicNumber>(
+                    TopicNumberErrors.TooSmall(minValue: MinValue));
             }
 
             return new TopicNumber(value);
