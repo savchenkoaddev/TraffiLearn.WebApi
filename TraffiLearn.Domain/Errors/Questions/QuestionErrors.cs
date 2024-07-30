@@ -53,5 +53,20 @@ namespace TraffiLearn.Domain.Errors.Questions
             Error.OperationFailure(
                 code: "Question.DuplicateAnswers",
                 description: "There are duplicate answers in the question.");
+
+        public static readonly Error DuplicateTickets =
+            Error.OperationFailure(
+                code: "Question.DuplicateTickets",
+                description: "There are duplicate tickets in the question.");
+
+        public static readonly Error TicketAlreadyAdded =
+            Error.OperationFailure(
+                code: "Question.TicketAlreadyAdded",
+                description: "The question already contains the ticket.");
+
+        public static readonly Error TicketNotFound =
+            Error.NotFound(
+                code: "Question.TicketNotFound",
+                description: "The question does not contain the ticket.");
     }
 }

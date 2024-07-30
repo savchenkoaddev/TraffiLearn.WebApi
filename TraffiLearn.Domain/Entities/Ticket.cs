@@ -1,5 +1,4 @@
-﻿using TraffiLearn.Domain.Errors.Questions;
-using TraffiLearn.Domain.Errors.Tickets;
+﻿using TraffiLearn.Domain.Errors.Tickets;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects;
@@ -16,12 +15,10 @@ namespace TraffiLearn.Domain.Entities
 
         private Ticket(
             TicketId ticketId,
-            TicketNumber ticketNumber,
-            List<Question> questions)
+            TicketNumber ticketNumber)
             : base(ticketId.Value)
         {
             TicketNumber = ticketNumber;
-            _questions = questions;
         }
 
         public TicketNumber TicketNumber { get; private set; }
@@ -37,13 +34,13 @@ namespace TraffiLearn.Domain.Entities
 
             _questions.Add(question);
 
-            if (question.Ticket != this)
+            if (!question.Tickets.Contains(this))
             {
-                var result = question.SetTicket(this);
+                var addResult = question.AddTicket(this);
 
-                if (result.IsFailure)
+                if (addResult.IsFailure)
                 {
-                    return result.Error;
+                    return addResult.Error;
                 }
             }
 
@@ -59,9 +56,9 @@ namespace TraffiLearn.Domain.Entities
 
             _questions.Remove(question);
 
-            if (question.Ticket is not null)
+            if (question.Tickets.Contains(this))
             {
-                var removeResult = question.RemoveTicket();
+                var removeResult = question.RemoveTicket(this);
 
                 if (removeResult.IsFailure)
                 {
@@ -74,20 +71,11 @@ namespace TraffiLearn.Domain.Entities
 
         public static Result<Ticket> Create(
             TicketId ticketId,
-            TicketNumber ticketNumber,
-            List<Question> questions)
+            TicketNumber ticketNumber)
         {
-            var validationResult = ValidateQuestions(questions);
-
-            if (validationResult.IsFailure)
-            {
-                return Result.Failure<Ticket>(validationResult.Error);
-            }
-
             return new Ticket(
                 ticketId,
-                ticketNumber,
-                questions);
+                ticketNumber);
         }
 
         private static Result ValidateQuestions(List<Question> questions)

@@ -9,6 +9,7 @@ namespace TraffiLearn.Domain.Entities
     {
         private List<Answer> _answers = [];
         private readonly List<Topic> _topics = [];
+        private readonly List<Ticket> _tickets = [];
 
         private Question(Guid id)
             : base(id)
@@ -18,14 +19,12 @@ namespace TraffiLearn.Domain.Entities
             QuestionId id,
             QuestionContent content,
             QuestionExplanation explanation,
-            Ticket ticket,
             QuestionNumber questionNumber,
             List<Answer> answers,
             ImageUri? imageUri) : base(id.Value)
         {
             Content = content;
             Explanation = explanation;
-            Ticket = ticket;
             QuestionNumber = questionNumber;
             _answers = answers;
             ImageUri = imageUri;
@@ -47,7 +46,7 @@ namespace TraffiLearn.Domain.Entities
 
         public IReadOnlyCollection<Answer> Answers => _answers;
 
-        public Ticket? Ticket { get; private set; }
+        public IReadOnlyCollection<Ticket> Tickets => _tickets;
 
         public Result AddAnswer(Answer answer)
         {
@@ -96,7 +95,12 @@ namespace TraffiLearn.Domain.Entities
 
             if (!topic.Questions.Contains(this))
             {
-                topic.AddQuestion(this);
+                var addResult = topic.AddQuestion(this);
+
+                if (addResult.IsFailure)
+                {
+                    return addResult.Error;
+                }
             }
 
             return Result.Success();
@@ -113,20 +117,59 @@ namespace TraffiLearn.Domain.Entities
 
             if (topic.Questions.Contains(this))
             {
-                topic.RemoveQuestion(this);
+                var removeResult = topic.RemoveQuestion(this);
+
+                if (removeResult.IsFailure)
+                {
+                    return removeResult.Error;
+                }
             }
 
             return Result.Success();
         }
 
-        public Result SetTicket(Ticket ticket)
+        public Result AddTicket(Ticket ticket)
         {
-            throw new NotImplementedException();
+            if (_tickets.Contains(ticket))
+            {
+                return QuestionErrors.DuplicateTickets;
+            }
+
+            _tickets.Add(ticket);
+
+            if (!ticket.Questions.Contains(this))
+            {
+                var addResult = ticket.AddQuestion(this);
+
+                if (addResult.IsFailure)
+                {
+                    return addResult.Error;
+                }
+            }
+
+            return Result.Success();
         }
 
-        public Result RemoveTicket()
+        public Result RemoveTicket(Ticket ticket)
         {
-            throw new NotImplementedException();
+            if (!_tickets.Contains(ticket))
+            {
+                return QuestionErrors.TicketNotFound;
+            }
+
+            _tickets.Add(ticket);
+
+            if (ticket.Questions.Contains(this))
+            {
+                var addResult = ticket.AddQuestion(this);
+
+                if (addResult.IsFailure)
+                {
+                    return addResult.Error;
+                }
+            }
+
+            return Result.Success();
         }
 
         public void SetImageUri(ImageUri? imageUri)
@@ -137,7 +180,6 @@ namespace TraffiLearn.Domain.Entities
         public Result Update(
             QuestionContent content,
             QuestionExplanation explanation,
-            Ticket? ticket,
             QuestionNumber questionNumber,
             List<Answer> answers,
             ImageUri? imageUri)
@@ -151,7 +193,6 @@ namespace TraffiLearn.Domain.Entities
 
             Content = content;
             Explanation = explanation;
-            Ticket = ticket;
             QuestionNumber = questionNumber;
             _answers = answers;
             ImageUri = imageUri;
@@ -163,23 +204,21 @@ namespace TraffiLearn.Domain.Entities
             QuestionId id,
             QuestionContent content,
             QuestionExplanation explanation,
-            Ticket ticket,
             QuestionNumber questionNumber,
             List<Answer> answers,
             ImageUri? imageUri)
         {
-            var validationResult = ValidateAnswers(answers);
+            var answersValidationResult = ValidateAnswers(answers);
 
-            if (validationResult.IsFailure)
+            if (answersValidationResult.IsFailure)
             {
-                return Result.Failure<Question>(validationResult.Error);
+                return Result.Failure<Question>(answersValidationResult.Error);
             }
 
             return new Question(
                 id,
                 content,
                 explanation,
-                ticket,
                 questionNumber,
                 answers,
                 imageUri);
