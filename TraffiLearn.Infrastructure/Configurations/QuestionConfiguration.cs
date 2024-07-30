@@ -23,11 +23,6 @@ namespace TraffiLearn.Infrastructure.Configurations
                     exp => exp.Value,
                     value => QuestionExplanation.Create(value).Value);
 
-            builder.Property(q => q.TicketNumber)
-                .HasConversion(
-                    number => number.Value,
-                    value => TicketNumber.Create(value).Value);
-
             builder.Property(q => q.QuestionNumber)
                 .HasConversion(
                     number => number.Value,
@@ -57,6 +52,10 @@ namespace TraffiLearn.Infrastructure.Configurations
             builder 
                 .HasMany(q => q.Topics)
                 .WithMany(q => q.Questions);
+
+            builder
+                .HasMany(t => t.Tickets)
+                .WithMany(t => t.Questions);
         }
     }
 }

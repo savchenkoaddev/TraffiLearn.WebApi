@@ -15,7 +15,6 @@ namespace TraffiLearn.Application.Queries.Questions
                 ImageUri: source.ImageUri?.Value,
                 LikesCount: source.LikesCount,
                 DislikesCount: source.DislikesCount,
-                TicketNumber: source.TicketNumber.Value,
                 QuestionNumber: source.QuestionNumber.Value,
                 Answers: source.Answers.ToList());
         }

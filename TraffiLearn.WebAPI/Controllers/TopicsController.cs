@@ -3,13 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using TraffiLearn.Application.Commands.Topics.AddQuestionToTopic;
 using TraffiLearn.Application.Commands.Topics.Create;
 using TraffiLearn.Application.Commands.Topics.Delete;
-using TraffiLearn.Application.Commands.Topics.RemoveQuestionForTopic;
+using TraffiLearn.Application.Commands.Topics.RemoveQuestionFromTopic;
 using TraffiLearn.Application.Commands.Topics.Update;
 using TraffiLearn.Application.Queries.Topics.GetAllSortedByNumber;
 using TraffiLearn.Application.Queries.Topics.GetById;
-using TraffiLearn.Application.Queries.Topics.GetQuestionsForTopic;
-using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Application.Queries.Topics.GetTopicQuestions;
 using TraffiLearn.WebAPI.Extensions;
 
 namespace TraffiLearn.WebAPI.Controllers
@@ -46,10 +44,10 @@ namespace TraffiLearn.WebAPI.Controllers
         }
 
         [HttpGet("{topicId:guid}/questions")]
-        public async Task<IActionResult> GetQuestionsForTopic(
+        public async Task<IActionResult> GetTopicQuestions(
             [FromRoute] Guid topicId)
         {
-            var queryResult = await _sender.Send(new GetQuestionsForTopicQuery(topicId));
+            var queryResult = await _sender.Send(new GetTopicQuestionsQuery(topicId));
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
@@ -89,11 +87,11 @@ namespace TraffiLearn.WebAPI.Controllers
         }
 
         [HttpPut("{topicId:guid}/removequestion/{questionId:guid}")]
-        public async Task<IActionResult> RemoveQuestionForTopic(
+        public async Task<IActionResult> RemoveQuestionFromTopic(
             [FromRoute] Guid questionId,
             [FromRoute] Guid topicId)
         {
-            var commandResult = await _sender.Send(new RemoveQuestionForTopicCommand(
+            var commandResult = await _sender.Send(new RemoveQuestionFromTopicCommand(
                 QuestionId: questionId,
                 TopicId: topicId));
 

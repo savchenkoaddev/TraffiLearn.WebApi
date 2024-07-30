@@ -9,7 +9,6 @@ namespace TraffiLearn.Application.Commands.Questions.Update
         Guid? QuestionId,
         string? Content,
         string? Explanation,
-        int? TicketNumber,
         int? QuestionNumber,
         List<AnswerRequest?>? Answers,
         List<Guid?>? TopicsIds,

@@ -17,10 +17,6 @@ namespace TraffiLearn.Application.Commands.Questions.Update
                 .NotEmpty()
                 .MaximumLength(2000);
 
-            RuleFor(x => x.TicketNumber)
-                .GreaterThan(0)
-                .NotEmpty();
-
             RuleFor(x => x.QuestionNumber)
                 .GreaterThan(0)
                 .NotEmpty();
@@ -45,7 +41,8 @@ namespace TraffiLearn.Application.Commands.Questions.Update
                 .NotEmpty();
 
             RuleForEach(x => x.TopicsIds)
-                .NotEmpty();
+                .NotEmpty()
+                .When(x => x.TopicsIds is not null);
         }
     }
 }

@@ -22,6 +22,21 @@ namespace TraffiLearn.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("QuestionTicket", b =>
+                {
+                    b.Property<Guid>("QuestionsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TicketsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("QuestionsId", "TicketsId");
+
+                    b.HasIndex("TicketsId");
+
+                    b.ToTable("QuestionTicket");
+                });
+
             modelBuilder.Entity("QuestionTopic", b =>
                 {
                     b.Property<Guid>("QuestionsId")
@@ -70,12 +85,23 @@ namespace TraffiLearn.Infrastructure.Migrations
                     b.Property<int>("QuestionNumber")
                         .HasColumnType("int");
 
+                    b.HasKey("Id");
+
+                    b.ToTable("Questions");
+                });
+
+            modelBuilder.Entity("TraffiLearn.Domain.Entities.Ticket", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("TicketNumber")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Questions");
+                    b.ToTable("Tickets");
                 });
 
             modelBuilder.Entity("TraffiLearn.Domain.Entities.Topic", b =>
@@ -95,6 +121,21 @@ namespace TraffiLearn.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Topics");
+                });
+
+            modelBuilder.Entity("QuestionTicket", b =>
+                {
+                    b.HasOne("TraffiLearn.Domain.Entities.Question", null)
+                        .WithMany()
+                        .HasForeignKey("QuestionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TraffiLearn.Domain.Entities.Ticket", null)
+                        .WithMany()
+                        .HasForeignKey("TicketsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("QuestionTopic", b =>
