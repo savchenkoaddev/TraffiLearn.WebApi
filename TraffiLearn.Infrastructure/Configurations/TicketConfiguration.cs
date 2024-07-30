@@ -13,8 +13,7 @@ namespace TraffiLearn.Infrastructure.Configurations
 
             builder.Property(t => t.TicketNumber).HasConversion(
                     ticketNumber => ticketNumber.Value,
-                    value => TicketNumber.Create(value).Value)
-                .HasDefaultValue(0);
+                    value => TicketNumber.Create(value).Value);
 
             builder
                 .HasMany(t => t.Questions)
