@@ -22,7 +22,6 @@ namespace TraffiLearn.Application.Commands.Questions.RemoveTicketFromQuestion
             _unitOfWork = unitOfWork;
         }
 
-
         public async Task<Result> Handle(
             RemoveTicketFromQuestionCommand request, 
             CancellationToken cancellationToken)
@@ -34,7 +33,9 @@ namespace TraffiLearn.Application.Commands.Questions.RemoveTicketFromQuestion
                 return QuestionErrors.TicketNotFound;
             }
 
-            var question = await _questionRepository.GetByIdAsync(request.QuestionId.Value);
+            var question = await _questionRepository.GetByIdAsync(
+                request.QuestionId.Value,
+                includeExpression: question => question.Tickets);
 
             if (question is null)
             {

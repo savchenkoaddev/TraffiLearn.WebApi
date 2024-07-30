@@ -132,7 +132,7 @@ namespace TraffiLearn.Domain.Entities
         {
             if (_tickets.Contains(ticket))
             {
-                return QuestionErrors.DuplicateTickets;
+                return QuestionErrors.TicketAlreadyAdded;
             }
 
             _tickets.Add(ticket);
@@ -161,7 +161,7 @@ namespace TraffiLearn.Domain.Entities
 
             if (ticket.Questions.Contains(this))
             {
-                var addResult = ticket.AddQuestion(this);
+                var addResult = ticket.RemoveQuestion(this);
 
                 if (addResult.IsFailure)
                 {
