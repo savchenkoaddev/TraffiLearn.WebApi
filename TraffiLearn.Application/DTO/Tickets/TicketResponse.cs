@@ -2,5 +2,5 @@
 {
     public sealed record TicketResponse(
         Guid Id,
-        string TicketNumber);
+        int TicketNumber);
 }

@@ -5,7 +5,8 @@ using TraffiLearn.Domain.ValueObjects;
 
 namespace TraffiLearn.Application.Commands.Questions.Create
 {
-    internal sealed class CreateQuestionCommandMapper : Mapper<CreateQuestionCommand, Result<Question>>
+    internal sealed class CreateQuestionCommandMapper 
+        : Mapper<CreateQuestionCommand, Result<Question>>
     {
         public override Result<Question> Map(CreateQuestionCommand source)
         {
