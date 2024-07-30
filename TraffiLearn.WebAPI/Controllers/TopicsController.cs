@@ -8,6 +8,8 @@ using TraffiLearn.Application.Commands.Topics.Update;
 using TraffiLearn.Application.Queries.Topics.GetAllSortedByNumber;
 using TraffiLearn.Application.Queries.Topics.GetById;
 using TraffiLearn.Application.Queries.Topics.GetQuestionsForTopic;
+using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.Shared;
 using TraffiLearn.WebAPI.Extensions;
 
 namespace TraffiLearn.WebAPI.Controllers
