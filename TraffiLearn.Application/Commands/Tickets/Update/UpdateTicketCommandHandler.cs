@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Tickets;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
@@ -11,21 +12,26 @@ namespace TraffiLearn.Application.Commands.Tickets.Update
         : IRequestHandler<UpdateTicketCommand, Result>
     {
         private readonly ITicketRepository _ticketRepository;
+        private readonly IQuestionRepository _questionRepository;
         private readonly IUnitOfWork _unitOfWork;
 
         public UpdateTicketCommandHandler(
-            ITicketRepository ticketRepository, 
+            ITicketRepository ticketRepository,
+            IQuestionRepository questionRepository,
             IUnitOfWork unitOfWork)
         {
             _ticketRepository = ticketRepository;
+            _questionRepository = questionRepository;
             _unitOfWork = unitOfWork;
         }
 
         public async Task<Result> Handle(
-            UpdateTicketCommand request, 
+            UpdateTicketCommand request,
             CancellationToken cancellationToken)
         {
-            var ticket = await _ticketRepository.GetByIdAsync(request.TicketId.Value);
+            var ticket = await _ticketRepository.GetByIdAsync(
+                request.TicketId.Value,
+                includeExpression: ticket => ticket.Questions);
 
             if (ticket is null)
             {
@@ -46,8 +52,60 @@ namespace TraffiLearn.Application.Commands.Tickets.Update
                 return updateResult.Error;
             }
 
+            var updateQuestionsResult = await UpdateQuestions(
+                ticket,
+                request.QuestionsIds);
+
+            if (updateQuestionsResult.IsFailure)
+            {
+                return updateQuestionsResult.Error;
+            }
+
             await _ticketRepository.UpdateAsync(ticket);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return Result.Success();
+        }
+
+        private async Task<Result> UpdateQuestions(
+            Ticket ticket, 
+            IEnumerable<Guid?>? questionsIds)
+        {
+            foreach (var questionId in questionsIds)
+            {
+                var question = await _questionRepository.GetByIdAsync(
+                    questionId.Value);
+
+                if (question is null)
+                {
+                    return TicketErrors.QuestionNotFound;
+                }
+
+                if (!ticket.Questions.Contains(question))
+                {
+                    var addResult = ticket.AddQuestion(question);
+
+                    if (addResult.IsFailure)
+                    {
+                        return addResult.Error;
+                    }
+                }
+            }
+
+            var ticketQuestions = ticket.Questions.ToList();
+
+            foreach (var question in ticketQuestions)
+            {
+                if (!questionsIds.Contains(question.Id))
+                {
+                    var removeResult = ticket.RemoveQuestion(question);
+
+                    if (removeResult.IsFailure)
+                    {
+                        return removeResult.Error;
+                    }
+                }
+            }
 
             return Result.Success();
         }

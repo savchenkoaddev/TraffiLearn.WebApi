@@ -5,5 +5,6 @@ namespace TraffiLearn.Application.Commands.Tickets.Update
 {
     public sealed record UpdateTicketCommand(
         Guid? TicketId,
-        int? TicketNumber) : IRequest<Result>;
+        int? TicketNumber,
+        List<Guid?>? QuestionsIds) : IRequest<Result>;
 }

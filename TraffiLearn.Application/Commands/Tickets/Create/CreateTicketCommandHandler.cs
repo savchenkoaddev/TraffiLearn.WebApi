@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.Errors.Tickets;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 
@@ -10,15 +11,18 @@ namespace TraffiLearn.Application.Commands.Tickets.Create
         IRequestHandler<CreateTicketCommand, Result>
     {
         private readonly ITicketRepository _ticketRepository;
+        private readonly IQuestionRepository _questionRepository;
         private readonly Mapper<CreateTicketCommand, Result<Ticket>> _ticketMapper;
         private readonly IUnitOfWork _unitOfWork;
 
         public CreateTicketCommandHandler(
             ITicketRepository ticketRepository, 
+            IQuestionRepository questionRepository,
             Mapper<CreateTicketCommand, Result<Ticket>> ticketMapper, 
             IUnitOfWork unitOfWork)
         {
             _ticketRepository = ticketRepository;
+            _questionRepository = questionRepository;
             _ticketMapper = ticketMapper;
             _unitOfWork = unitOfWork;
         }
@@ -35,6 +39,23 @@ namespace TraffiLearn.Application.Commands.Tickets.Create
             }
 
             var ticket = mappingResult.Value;
+
+            foreach (var questionId in request.QuestionIds)
+            {
+                var question = await _questionRepository.GetByIdAsync(questionId.Value);
+
+                if (question is null)
+                {
+                    return TicketErrors.QuestionNotFound;
+                }
+
+                var addResult = ticket.AddQuestion(question);
+
+                if (addResult.IsFailure)
+                {
+                    return addResult.Error;
+                }
+            }
 
             await _ticketRepository.AddAsync(ticket);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

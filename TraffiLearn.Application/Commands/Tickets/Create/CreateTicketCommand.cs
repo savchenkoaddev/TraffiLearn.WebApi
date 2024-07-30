@@ -4,5 +4,6 @@ using TraffiLearn.Domain.Shared;
 namespace TraffiLearn.Application.Commands.Tickets.Create
 {
     public sealed record CreateTicketCommand(
-        int? TicketNumber) : IRequest<Result>;
+        int? TicketNumber,
+        List<Guid?>? QuestionIds) : IRequest<Result>;
 }

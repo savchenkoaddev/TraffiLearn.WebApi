@@ -10,6 +10,12 @@ namespace TraffiLearn.Application.Commands.Tickets.Create
             RuleFor(x => x.TicketNumber)
                 .NotEmpty()
                 .GreaterThan(0);
+
+            RuleFor(x => x.QuestionIds)
+                .NotEmpty();
+
+            RuleForEach(x => x.QuestionIds)
+                .NotEmpty();
         }
     }
 }
