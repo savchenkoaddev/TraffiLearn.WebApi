@@ -39,13 +39,6 @@ namespace TraffiLearn.Application.Commands.Questions.Create
                 return Result.Failure<Question>(explanationResult.Error);
             }
 
-            Result<Domain.ValueObjects.TicketNumber> ticketNumberResult = Domain.ValueObjects.TicketNumber.Create(source.TicketNumber.Value);
-
-            if (ticketNumberResult.IsFailure)
-            {
-                return Result.Failure<Question>(ticketNumberResult.Error);
-            }
-
             Result<QuestionNumber> questionNumberResult = QuestionNumber.Create(source.QuestionNumber.Value);
 
             if (questionNumberResult.IsFailure)
@@ -57,7 +50,6 @@ namespace TraffiLearn.Application.Commands.Questions.Create
                 questionId,
                 contentResult.Value,
                 explanationResult.Value,
-                ticketNumberResult.Value,
                 questionNumberResult.Value,
                 answers: answers,
                 imageUri: null);

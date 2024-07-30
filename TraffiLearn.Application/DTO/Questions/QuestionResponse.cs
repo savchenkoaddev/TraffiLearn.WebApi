@@ -9,7 +9,6 @@ namespace TraffiLearn.Application.DTO.Questions
         string? ImageUri,
         int LikesCount,
         int DislikesCount,
-        int TicketNumber,
         int QuestionNumber,
         List<Answer> Answers);
 }

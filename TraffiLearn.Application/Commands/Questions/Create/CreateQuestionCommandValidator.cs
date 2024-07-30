@@ -17,10 +17,6 @@ namespace TraffiLearn.Application.Commands.Questions.Create
                 .GreaterThan(0)
                 .NotEmpty();
 
-            RuleFor(x => x.TicketNumber)
-                .GreaterThan(0)
-                .NotEmpty();
-
             RuleFor(x => x.TopicsIds)
                 .NotEmpty();
 

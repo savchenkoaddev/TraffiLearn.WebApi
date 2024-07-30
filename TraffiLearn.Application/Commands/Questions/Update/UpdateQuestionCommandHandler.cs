@@ -71,13 +71,6 @@ namespace TraffiLearn.Application.Commands.Questions.Update
                 return explanationResult.Error;
             }
 
-            Result<Domain.ValueObjects.TicketNumber> ticketNumberResult = Domain.ValueObjects.TicketNumber.Create(request.TicketNumber.Value);
-
-            if (ticketNumberResult.IsFailure)
-            {
-                return ticketNumberResult.Error;
-            }
-
             Result<QuestionNumber> questionNumberResult = QuestionNumber.Create(request.QuestionNumber.Value);
 
             if (questionNumberResult.IsFailure)
@@ -88,7 +81,6 @@ namespace TraffiLearn.Application.Commands.Questions.Update
             question.Update(
                 content: contentResult.Value,
                 explanation: explanationResult.Value,
-                ticketNumber: ticketNumberResult.Value,
                 questionNumber: questionNumberResult.Value,
                 answers: answers,
                 imageUri: question.ImageUri);
