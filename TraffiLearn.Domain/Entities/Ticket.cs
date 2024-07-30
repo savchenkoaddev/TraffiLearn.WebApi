@@ -69,6 +69,13 @@ namespace TraffiLearn.Domain.Entities
             return Result.Success();
         }
 
+        public Result Update(TicketNumber ticketNumber)
+        {
+            TicketNumber = ticketNumber;
+
+            return Result.Success();
+        }
+
         public static Result<Ticket> Create(
             TicketId ticketId,
             TicketNumber ticketNumber)
