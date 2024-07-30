@@ -8,6 +8,8 @@ using TraffiLearn.Application.Commands.Topics.Update;
 using TraffiLearn.Application.Queries.Topics.GetAllSortedByNumber;
 using TraffiLearn.Application.Queries.Topics.GetById;
 using TraffiLearn.Application.Queries.Topics.GetQuestionsForTopic;
+using TraffiLearn.Domain.Shared;
+using TraffiLearn.WebAPI.Extensions;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
@@ -56,9 +58,9 @@ namespace TraffiLearn.WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateTopic(CreateTopicCommand command)
         {
-            await _sender.Send(command);
+            Result result = await _sender.Send(command);
 
-            return Created();
+            return result.IsSuccess ? Created() : result.ToProblemDetails();
         }
 
         [HttpPut]

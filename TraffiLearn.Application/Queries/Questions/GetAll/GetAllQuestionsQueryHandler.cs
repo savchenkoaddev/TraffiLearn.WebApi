@@ -3,10 +3,11 @@ using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.DTO.Questions;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Queries.Questions.GetAll
 {
-    internal sealed class GetAllQuestionsQueryHandler : IRequestHandler<GetAllQuestionsQuery, IEnumerable<QuestionResponse>>
+    internal sealed class GetAllQuestionsQueryHandler : IRequestHandler<GetAllQuestionsQuery, Result<IEnumerable<QuestionResponse>>>
     {
         private readonly IQuestionRepository _questionRepository;
         private readonly Mapper<Question, QuestionResponse> _questionMapper;
@@ -19,11 +20,11 @@ namespace TraffiLearn.Application.Queries.Questions.GetAll
             _questionMapper = questionMapper;
         }
 
-        public async Task<IEnumerable<QuestionResponse>> Handle(GetAllQuestionsQuery request, CancellationToken cancellationToken)
+        public async Task<Result<IEnumerable<QuestionResponse>>> Handle(GetAllQuestionsQuery request, CancellationToken cancellationToken)
         {
             var questions = await _questionRepository.GetAllAsync();
 
-            return _questionMapper.Map(questions);
+            return Result.Success(_questionMapper.Map(questions));
         }
     }
 }

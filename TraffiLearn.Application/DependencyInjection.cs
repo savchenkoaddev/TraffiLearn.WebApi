@@ -27,11 +27,12 @@ namespace TraffiLearn.Application
                 CreateQuestionCommandMapper>();
 
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
+            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
+
             services.AddValidatorsFromAssembly(
                 Assembly.GetExecutingAssembly(),
                 includeInternalTypes: true);
-
-            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
 
             return services;
         }

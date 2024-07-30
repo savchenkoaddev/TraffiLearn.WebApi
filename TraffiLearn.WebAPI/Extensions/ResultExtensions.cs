@@ -1,10 +1,11 @@
-﻿using TraffiLearn.Domain.Shared;
+﻿using Microsoft.AspNetCore.Mvc;
+using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.WebAPI.Extensions
 {
     public static class ResultExtensions
     {
-        public static IResult ToProblemDetails(this Result result)
+        public static IActionResult ToProblemDetails(this Result result)
         {
             if (result.IsSuccess)
             {
@@ -13,26 +14,28 @@ namespace TraffiLearn.WebAPI.Extensions
 
             var error = result.Error;
 
+            var problemDetails = new ProblemDetails
+            {
+                Type = GetType(error.ErrorType),
+                Title = GetTitle(error.ErrorType),
+                Status = GetStatusCode(error.ErrorType),
+                Extensions = new Dictionary<string, object?>
+                {
+                    { "errors", new { code = error.Code, description = error.Description }   },
+                }
+            };
+
             if (result is IValidationResult validationResult)
             {
-                return Results.Problem(
-                    statusCode: GetStatusCode(error.ErrorType),
-                    title: GetTitle(error.ErrorType),
-                    type: GetType(error.ErrorType),
-                    extensions: new Dictionary<string, object?>
-                    {
-                        { "errors", new object[] { validationResult.Errors } }
-                    });
+                problemDetails.Extensions["errors"] = validationResult.Errors
+                    .Select(e => new { e.Code, e.Description })
+                    .ToArray();
             }
 
-            return Results.Problem(
-                statusCode: GetStatusCode(error.ErrorType),
-                title: GetTitle(error.ErrorType),
-                type: GetType(error.ErrorType),
-                extensions: new Dictionary<string, object?>
-                    {
-                        { "errors", new object[] { result.Error } }
-                    });
+            return new ObjectResult(problemDetails)
+            {
+                StatusCode = problemDetails.Status
+            };
         }
 
         private static int GetStatusCode(ErrorType errorType)

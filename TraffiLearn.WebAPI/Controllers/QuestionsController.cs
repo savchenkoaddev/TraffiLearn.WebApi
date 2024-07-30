@@ -5,9 +5,12 @@ using TraffiLearn.Application.Commands.Questions.Create;
 using TraffiLearn.Application.Commands.Questions.Delete;
 using TraffiLearn.Application.Commands.Questions.RemoveTopicForQuestion;
 using TraffiLearn.Application.Commands.Questions.Update;
+using TraffiLearn.Application.DTO.Questions;
 using TraffiLearn.Application.Queries.Questions.GetAll;
 using TraffiLearn.Application.Queries.Questions.GetById;
 using TraffiLearn.Application.Queries.Questions.GetTopicsForQuestion;
+using TraffiLearn.Domain.Shared;
+using TraffiLearn.WebAPI.Extensions;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
@@ -28,23 +31,27 @@ namespace TraffiLearn.WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllQuestions()
         {
-            var questions = await _sender.Send(new GetAllQuestionsQuery());
+            var queryResult = await _sender.Send(new GetAllQuestionsQuery());
 
-            return Ok(questions);
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
         [HttpGet("{questionId:guid}")]
         public async Task<IActionResult> GetQuestionById(
             [FromRoute] Guid questionId)
         {
-            return Ok(await _sender.Send(new GetQuestionByIdQuery(questionId)));
+            var queryResult = await _sender.Send(new GetQuestionByIdQuery(questionId));
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
         [HttpGet("{questionId:guid}/topics")]
         public async Task<IActionResult> GetTopicsForQuestion(
             [FromRoute] Guid questionId)
         {
-            return Ok(await _sender.Send(new GetTopicsForQuestionQuery(questionId)));
+            var queryResult = await _sender.Send(new GetTopicsForQuestionQuery(questionId));
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
 

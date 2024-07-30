@@ -1,5 +1,6 @@
 using TraffiLearn.Application;
 using TraffiLearn.Infrastructure;
+using TraffiLearn.WebAPI.Middleware;
 
 namespace TraffiLearn.WebAPI
 {
@@ -26,6 +27,8 @@ namespace TraffiLearn.WebAPI
 
             app.UseHttpsRedirection();
             app.UseRouting();
+
+            app.UseExceptionHandlingMiddleware();
 
             app.MapControllers();
 

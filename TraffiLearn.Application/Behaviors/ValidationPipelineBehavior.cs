@@ -4,9 +4,9 @@ using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Behaviors
 {
-    public sealed class ValidationPipelineBehavior<TRequest, TResponse> 
+    internal sealed class ValidationPipelineBehavior<TRequest, TResponse> 
         : IPipelineBehavior<TRequest, TResponse>
-        where TRequest : IRequest
+        where TRequest : IRequest<TResponse>
         where TResponse: Result
     {
         private readonly IEnumerable<IValidator<TRequest>> _validators;
@@ -24,7 +24,7 @@ namespace TraffiLearn.Application.Behaviors
             if (!_validators.Any())
             {
                 return await next();
-            }   
+            }
 
             Error[] errors = GetErrors(request);
 
