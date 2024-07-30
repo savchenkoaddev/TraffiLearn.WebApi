@@ -5,11 +5,9 @@ using TraffiLearn.Application.Commands.Questions.Create;
 using TraffiLearn.Application.Commands.Questions.Delete;
 using TraffiLearn.Application.Commands.Questions.RemoveTopicForQuestion;
 using TraffiLearn.Application.Commands.Questions.Update;
-using TraffiLearn.Application.DTO.Questions;
 using TraffiLearn.Application.Queries.Questions.GetAll;
 using TraffiLearn.Application.Queries.Questions.GetById;
 using TraffiLearn.Application.Queries.Questions.GetTopicsForQuestion;
-using TraffiLearn.Domain.Shared;
 using TraffiLearn.WebAPI.Extensions;
 
 namespace TraffiLearn.WebAPI.Controllers
@@ -64,18 +62,18 @@ namespace TraffiLearn.WebAPI.Controllers
         public async Task<IActionResult> CreateQuestion(
             [FromForm] CreateQuestionCommand command)
         {
-            await _sender.Send(command);
+            var commandResult = await _sender.Send(command);
 
-            return Created();
+            return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateQuestion(
             [FromForm] UpdateQuestionCommand command)
         {
-            await _sender.Send(command);
+            var commandResult = await _sender.Send(command);
 
-            return NoContent();
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails(); ;
         }
 
         [HttpPut("{questionId:guid}/addtopic/{topicId:guid}")]
@@ -83,11 +81,11 @@ namespace TraffiLearn.WebAPI.Controllers
             [FromRoute] Guid topicId,
             [FromRoute] Guid questionId)
         {
-            await _sender.Send(new AddTopicToQuestionCommand(
+            var commandResult = await _sender.Send(new AddTopicToQuestionCommand(
                 TopicId: topicId,
                 QuestionId: questionId));
 
-            return NoContent();
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails(); ;
         }
 
         [HttpPut("{questionId:guid}/removetopic/{topicId:guid}")]
@@ -95,20 +93,20 @@ namespace TraffiLearn.WebAPI.Controllers
             [FromRoute] Guid topicId,
             [FromRoute] Guid questionId)
         {
-            await _sender.Send(new RemoveTopicForQuestionCommand(
+            var commandResult = await _sender.Send(new RemoveTopicForQuestionCommand(
                 TopicId: topicId,
                 QuestionId: questionId));
 
-            return NoContent();
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails(); ;
         }
 
         [HttpDelete("{questionId:guid}")]
         public async Task<IActionResult> DeleteQuestion(
             [FromRoute] Guid questionId)
         {
-            await _sender.Send(new DeleteQuestionCommand(questionId));
+            var commandResult = await _sender.Send(new DeleteQuestionCommand(questionId));
 
-            return NoContent();
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails(); ;
         }
 
 

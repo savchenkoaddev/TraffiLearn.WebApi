@@ -8,7 +8,6 @@ using TraffiLearn.Application.Commands.Topics.Update;
 using TraffiLearn.Application.Queries.Topics.GetAllSortedByNumber;
 using TraffiLearn.Application.Queries.Topics.GetById;
 using TraffiLearn.Application.Queries.Topics.GetQuestionsForTopic;
-using TraffiLearn.Domain.Shared;
 using TraffiLearn.WebAPI.Extensions;
 
 namespace TraffiLearn.WebAPI.Controllers
@@ -30,23 +29,27 @@ namespace TraffiLearn.WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllSortedTopicsByNumber()
         {
-            var topics = await _sender.Send(new GetAllSortedTopicsByNumberQuery());
+            var queryResult = await _sender.Send(new GetAllSortedTopicsByNumberQuery());
 
-            return Ok(topics);
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
         [HttpGet("{topicId:guid}")]
         public async Task<IActionResult> GetTopicById(
             [FromRoute] Guid topicId)
         {
-            return Ok(await _sender.Send(new GetTopicByIdQuery(topicId)));
+            var queryResult = await _sender.Send(new GetTopicByIdQuery(topicId));
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
         [HttpGet("{topicId:guid}/questions")]
         public async Task<IActionResult> GetQuestionsForTopic(
             [FromRoute] Guid topicId)
         {
-            return Ok(await _sender.Send(new GetQuestionsForTopicQuery(topicId)));
+            var queryResult = await _sender.Send(new GetQuestionsForTopicQuery(topicId));
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
 
@@ -58,17 +61,17 @@ namespace TraffiLearn.WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateTopic(CreateTopicCommand command)
         {
-            Result result = await _sender.Send(command);
+            var commandResult = await _sender.Send(command);
 
-            return result.IsSuccess ? Created() : result.ToProblemDetails();
+            return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateTopic(UpdateTopicCommand command)
         {
-            await _sender.Send(command);
+            var commandResult = await _sender.Send(command);
 
-            return NoContent();
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
         [HttpPut("{topicId:guid}/addquestion/{questionId:guid}")]
@@ -76,11 +79,11 @@ namespace TraffiLearn.WebAPI.Controllers
             [FromRoute] Guid questionId,
             [FromRoute] Guid topicId)
         {
-            await _sender.Send(new AddQuestionToTopicCommand(
+            var commandResult = await _sender.Send(new AddQuestionToTopicCommand(
                 QuestionId: questionId,
                 TopicId: topicId));
 
-            return NoContent();
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
         [HttpPut("{topicId:guid}/removequestion/{questionId:guid}")]
@@ -88,20 +91,20 @@ namespace TraffiLearn.WebAPI.Controllers
             [FromRoute] Guid questionId,
             [FromRoute] Guid topicId)
         {
-            await _sender.Send(new RemoveQuestionForTopicCommand(
+            var commandResult = await _sender.Send(new RemoveQuestionForTopicCommand(
                 QuestionId: questionId,
                 TopicId: topicId));
 
-            return NoContent();
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
         [HttpDelete("{topicId:guid}")]
         public async Task<IActionResult> DeleteTopic(
             [FromRoute] Guid topicId)
         {
-            await _sender.Send(new DeleteTopicCommand(topicId));
+            var commandResult = await _sender.Send(new DeleteTopicCommand(topicId));
 
-            return NoContent();
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
 
