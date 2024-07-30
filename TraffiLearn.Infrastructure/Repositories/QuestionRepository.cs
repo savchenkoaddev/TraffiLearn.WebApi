@@ -6,7 +6,7 @@ using TraffiLearn.Infrastructure.Database;
 
 namespace TraffiLearn.Infrastructure.Repositories
 {
-    public sealed class QuestionRepository : IQuestionRepository
+    internal sealed class QuestionRepository : IQuestionRepository
     {
         private readonly ApplicationDbContext _dbContext;
 
@@ -15,21 +15,21 @@ namespace TraffiLearn.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task AddAsync(Question entity)
+        public async Task AddAsync(Question question)
         {
-            await _dbContext.Questions.AddAsync(entity);
+            await _dbContext.Questions.AddAsync(question);
         }
 
-        public async Task DeleteAsync(Question entity)
+        public Task DeleteAsync(Question question)
         {
-            _dbContext.Remove(entity);
+            _dbContext.Questions.Remove(question);
 
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
 
-        public async Task<bool> ExistsAsync(Guid key)
+        public async Task<bool> ExistsAsync(Guid id)
         {
-            return (await _dbContext.Questions.FindAsync(key)) is not null;
+            return (await _dbContext.Questions.FindAsync(id)) is not null;
         }
 
         public async Task<IEnumerable<Question>> GetAllAsync()
@@ -37,23 +37,31 @@ namespace TraffiLearn.Infrastructure.Repositories
             return await _dbContext.Questions.ToListAsync();
         }
 
-        public async Task<Question?> GetByIdAsync(Guid key, Expression<Func<Question, object>> includeExpression = null)
+        public async Task<Question?> GetByIdAsync(
+            Guid questionId, 
+            Expression<Func<Question, object>>? includeExpression = null!)
         {
-            if (includeExpression is not null)
+            if (includeExpression is null)
             {
-                return await _dbContext.Questions
-                    .Include(includeExpression)
-                    .FirstOrDefaultAsync(q => q.Id == key);
+                return await _dbContext.Questions.FindAsync(questionId);
             }
 
-            return await _dbContext.Questions.FindAsync(key);
+            IQueryable<Question> query = _dbContext.Questions;
+
+            if (includeExpression != null)
+            {
+                query = query.Include(includeExpression);
+            }
+
+            return await query
+                .FirstOrDefaultAsync(q => q.Id == questionId);
         }
 
-        public async Task UpdateAsync(Question oldEntity, Question newEntity)
+        public Task UpdateAsync(Question question)
         {
-            _dbContext.Entry(oldEntity).CurrentValues.SetValues(newEntity);
+            _dbContext.Questions.Update(question);
 
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
     }
 }

@@ -2,13 +2,13 @@
 using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Storage;
-using TraffiLearn.Application.DTO.Blobs.Response;
+using TraffiLearn.Application.DTO.Blobs;
 using TraffiLearn.Infrastructure.Exceptions;
 using TraffiLearn.Infrastructure.Options;
 
 namespace TraffiLearn.Infrastructure.External
 {
-    public sealed class AzureBlobService : IBlobService
+    internal sealed class AzureBlobService : IBlobService
     {
         private readonly BlobServiceClient _blobClient;
         private readonly AzureBlobStorageSettings _storageSettings;
@@ -39,7 +39,7 @@ namespace TraffiLearn.Infrastructure.External
             }
         }
 
-        public async Task<BlobResponse> DownloadAsync(string blobName, CancellationToken cancellationToken = default)
+        public async Task<DownloadBlobResponse> DownloadAsync(string blobName, CancellationToken cancellationToken = default)
         {
             BlobClient blobClient = _containerClient.GetBlobClient(blobName);
 
@@ -52,7 +52,7 @@ namespace TraffiLearn.Infrastructure.External
 
             var response = await blobClient.DownloadContentAsync(cancellationToken);
 
-            return new BlobResponse(
+            return new DownloadBlobResponse(
                 response.Value.Content.ToStream(),
                 response.Value.Details.ContentType);
         }

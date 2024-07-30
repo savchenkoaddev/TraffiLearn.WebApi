@@ -1,14 +1,22 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Domain.Entities;
+using TraffiLearn.Infrastructure.Options;
 
 namespace TraffiLearn.Infrastructure.Database
 {
-    public sealed class ApplicationDbContext : DbContext, IApplicationDbContext, IUnitOfWork
+    public sealed class ApplicationDbContext : DbContext, IUnitOfWork
     {
-        public ApplicationDbContext(DbContextOptions options)
+        private readonly SqlServerSettings _sqlServerSettings;
+
+        public ApplicationDbContext(
+            DbContextOptions options,
+            IOptions<SqlServerSettings> sqlServerSettings)
             : base(options)
-        { }
+        {
+            _sqlServerSettings = sqlServerSettings.Value;
+        }
 
         public DbSet<Question> Questions { get; set; }
 
@@ -18,13 +26,14 @@ namespace TraffiLearn.Infrastructure.Database
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Question>().ComplexProperty(q => q.TitleDetails);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+        }
 
-            modelBuilder.Entity<Question>().OwnsMany(
-                question => question.Answers, ownedNavigationBuilder =>
-                {
-                    ownedNavigationBuilder.ToJson();
-                });
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+
+            optionsBuilder.UseSqlServer(_sqlServerSettings.ConnectionString);
         }
     }
 }

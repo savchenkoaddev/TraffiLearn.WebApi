@@ -1,7 +1,6 @@
 ﻿using Azure.Storage.Blobs;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Storage;
 using TraffiLearn.Domain.RepositoryContracts;
@@ -15,25 +14,23 @@ namespace TraffiLearn.Infrastructure
     public static class DependencyInjection
     {
         public static IServiceCollection AddInfrastructure(
-            this IServiceCollection services,
-            IConfiguration configuration)
+            this IServiceCollection services)
         {
-            var sqlServerSettings = configuration.GetRequiredSection(SqlServerSettings.CONFIG_KEY).Get<SqlServerSettings>();
-            var blobStorageSettings = configuration.GetRequiredSection(AzureBlobStorageSettings.CONFIG_KEY).Get<AzureBlobStorageSettings>();
+            services.ConfigureOptions<SqlServerSettingsSetup>();
+            services.ConfigureOptions<AzureBlobStorageSettingsSetup>();
 
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<ApplicationDbContext>();
+
+            services.AddSingleton((serviceProvider) =>
             {
-                options.UseSqlServer(sqlServerSettings.ConnectionString);
+                var blobStorageSettings = serviceProvider.GetRequiredService<IOptions<AzureBlobStorageSettings>>().Value;
+
+                return new BlobServiceClient(blobStorageSettings.ConnectionString);
             });
 
-            services.Configure<AzureBlobStorageSettings>(
-                configuration.GetRequiredSection(AzureBlobStorageSettings.CONFIG_KEY));
-
-            services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
             services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
 
             services.AddSingleton<IBlobService, AzureBlobService>();
-            services.AddSingleton(_ => new BlobServiceClient(blobStorageSettings.ConnectionString));
 
             services.AddScoped<ITopicRepository, TopicRepository>();
             services.AddScoped<IQuestionRepository, QuestionRepository>();

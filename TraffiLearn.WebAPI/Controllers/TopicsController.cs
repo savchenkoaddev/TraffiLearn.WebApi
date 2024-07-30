@@ -1,14 +1,16 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using TraffiLearn.Application.DTO.Topics.Request;
-using TraffiLearn.Application.Topics.Commands.AddQuestionToTopic;
-using TraffiLearn.Application.Topics.Commands.CreateTopic;
-using TraffiLearn.Application.Topics.Commands.DeleteTopic;
-using TraffiLearn.Application.Topics.Commands.RemoveQuestionForTopic;
-using TraffiLearn.Application.Topics.Commands.UpdateTopic;
-using TraffiLearn.Application.Topics.Queries.GetAll;
-using TraffiLearn.Application.Topics.Queries.GetById;
-using TraffiLearn.Application.Topics.Queries.GetQuestionsForTopic;
+using TraffiLearn.Application.Commands.Topics.AddQuestionToTopic;
+using TraffiLearn.Application.Commands.Topics.Create;
+using TraffiLearn.Application.Commands.Topics.Delete;
+using TraffiLearn.Application.Commands.Topics.RemoveQuestionForTopic;
+using TraffiLearn.Application.Commands.Topics.Update;
+using TraffiLearn.Application.Queries.Topics.GetAllSortedByNumber;
+using TraffiLearn.Application.Queries.Topics.GetById;
+using TraffiLearn.Application.Queries.Topics.GetQuestionsForTopic;
+using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.Shared;
+using TraffiLearn.WebAPI.Extensions;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
@@ -27,27 +29,29 @@ namespace TraffiLearn.WebAPI.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllSortedTopics()
+        public async Task<IActionResult> GetAllSortedTopicsByNumber()
         {
-            var topics = await _sender.Send(new GetAllSortedTopicsQuery());
+            var queryResult = await _sender.Send(new GetAllSortedTopicsByNumberQuery());
 
-            return Ok(topics);
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
         [HttpGet("{topicId:guid}")]
-        public async Task<IActionResult> GetTopicById(Guid? topicId)
+        public async Task<IActionResult> GetTopicById(
+            [FromRoute] Guid topicId)
         {
-            var topic = await _sender.Send(new GetTopicByIdQuery(topicId));
+            var queryResult = await _sender.Send(new GetTopicByIdQuery(topicId));
 
-            return Ok(topic);
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
         [HttpGet("{topicId:guid}/questions")]
-        public async Task<IActionResult> GetQuestionsForTopic(Guid? topicId)
+        public async Task<IActionResult> GetQuestionsForTopic(
+            [FromRoute] Guid topicId)
         {
-            var questions = await _sender.Send(new GetQuestionsForTopicQuery(topicId));
+            var queryResult = await _sender.Send(new GetQuestionsForTopicQuery(topicId));
 
-            return Ok(questions);
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
 
@@ -57,57 +61,52 @@ namespace TraffiLearn.WebAPI.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> CreateTopic(TopicRequest? request)
+        public async Task<IActionResult> CreateTopic(CreateTopicCommand command)
         {
-            await _sender.Send(new CreateTopicCommand(request));
+            var commandResult = await _sender.Send(command);
 
-            return Created();
+            return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
         }
 
-        [HttpPut("{topicId:guid}")]
-        public async Task<IActionResult> UpdateTopic(
-            Guid? topicId,
-            TopicRequest? request)
+        [HttpPut]
+        public async Task<IActionResult> UpdateTopic(UpdateTopicCommand command)
         {
-            await _sender.Send(new UpdateTopicCommand(topicId, request));
+            var commandResult = await _sender.Send(command);
 
-            return NoContent();
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
         [HttpPut("{topicId:guid}/addquestion/{questionId:guid}")]
         public async Task<IActionResult> AddQuestionToTopic(
-            Guid? topicId,
-            Guid? questionId)
+            [FromRoute] Guid questionId,
+            [FromRoute] Guid topicId)
         {
-            var command = new AddQuestionToTopicCommand(
+            var commandResult = await _sender.Send(new AddQuestionToTopicCommand(
                 QuestionId: questionId,
-                TopicId: topicId);
+                TopicId: topicId));
 
-            await _sender.Send(command);
-
-            return NoContent();
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
         [HttpPut("{topicId:guid}/removequestion/{questionId:guid}")]
         public async Task<IActionResult> RemoveQuestionForTopic(
-            Guid? topicId,
-            Guid? questionId)
+            [FromRoute] Guid questionId,
+            [FromRoute] Guid topicId)
         {
-            var command = new RemoveQuestionForTopicCommand(
+            var commandResult = await _sender.Send(new RemoveQuestionForTopicCommand(
                 QuestionId: questionId,
-                TopicId: topicId);
+                TopicId: topicId));
 
-            await _sender.Send(command);
-
-            return NoContent();
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
         [HttpDelete("{topicId:guid}")]
-        public async Task<IActionResult> DeleteTopic(Guid? topicId)
+        public async Task<IActionResult> DeleteTopic(
+            [FromRoute] Guid topicId)
         {
-            await _sender.Send(new DeleteTopicCommand(topicId));
+            var commandResult = await _sender.Send(new DeleteTopicCommand(topicId));
 
-            return NoContent();
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
 

@@ -1,30 +1,207 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using TraffiLearn.Domain.Errors.Questions;
+using TraffiLearn.Domain.Primitives;
+using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects;
 
 namespace TraffiLearn.Domain.Entities
 {
-    public sealed class Question
+    public sealed class Question : Entity
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        private List<Answer> _answers = [];
+        private readonly List<Topic> _topics = [];
 
-        [StringLength(2000)]
-        public string Content { get; set; }
+        private Question(Guid id)
+            : base(id)
+        { }
 
-        public string Explanation { get; set; } 
+        private Question(
+            QuestionId id,
+            QuestionContent content,
+            QuestionExplanation explanation,
+            TicketNumber ticketNumber,
+            QuestionNumber questionNumber,
+            List<Answer> answers,
+            ImageUri? imageUri) : base(id.Value)
+        {
+            Content = content;
+            Explanation = explanation;
+            TicketNumber = ticketNumber;
+            QuestionNumber = questionNumber;
+            _answers = answers;
+            ImageUri = imageUri;
+        }
 
-        [Range(0, int.MaxValue)]
-        public int LikesCount { get; set; }
+        public QuestionContent Content { get; private set; }
 
-        [Range(0, int.MaxValue)]
-        public int DislikesCount { get; set; }
+        public QuestionExplanation Explanation { get; private set; }
 
-        public ICollection<Topic> Topics { get; set; } = [];
+        public TicketNumber TicketNumber { get; private set; }
 
-        public List<Answer> Answers { get; set; } = [];
+        public QuestionNumber QuestionNumber { get; private set; }
 
-        public QuestionTitleDetails TitleDetails { get; set; }
+        public ImageUri? ImageUri { get; private set; }
 
-        [StringLength(200)]
-        public string? ImageUri { get; set; }
+        public int LikesCount { get; private set; } = 0;
+
+        public int DislikesCount { get; private set; } = 0;
+
+        public IReadOnlyCollection<Topic> Topics => _topics;
+
+        public IReadOnlyCollection<Answer> Answers => _answers;
+
+        public Result AddAnswer(Answer answer)
+        {
+            if (_answers.Contains(answer))
+            {
+                return QuestionErrors.AnswerAlreadyAdded;
+            }
+
+            if (_answers.Count == 0 &&
+                answer.IsCorrect == false)
+            {
+                return QuestionErrors.FirstlyAddedAnswerIncorrect;
+            }
+
+            _answers.Add(answer);
+
+            return Result.Success();
+        }
+
+        public Result RemoveAnswer(Answer answer)
+        {
+            if (!_answers.Contains(answer))
+            {
+                return QuestionErrors.AnswerNotFound;
+            }
+
+            if (ExistsSingleCorrectAnswerOnly() &&
+                answer.IsCorrect == true)
+            {
+                return QuestionErrors.UnableToRemoveSingleCorrectAnswer;
+            }
+
+            _answers.Remove(answer);
+
+            return Result.Success();
+        }
+
+        public Result AddTopic(Topic topic)
+        {
+            if (_topics.Contains(topic))
+            {
+                return QuestionErrors.TopicAlreadyAdded;
+            }
+
+            _topics.Add(topic);
+
+            if (!topic.Questions.Contains(this))
+            {
+                topic.AddQuestion(this);
+            }
+
+            return Result.Success();
+        }
+
+        public Result RemoveTopic(Topic topic)
+        {
+            if (!_topics.Contains(topic))
+            {
+                return QuestionErrors.TopicNotFound;
+            }
+
+            _topics.Remove(topic);
+
+            if (topic.Questions.Contains(this))
+            {
+                topic.RemoveQuestion(this);
+            }
+
+            return Result.Success();
+        }
+
+        public void SetImageUri(ImageUri? imageUri)
+        {
+            ImageUri = imageUri;
+        }
+
+        public Result Update(
+            QuestionContent content,
+            QuestionExplanation explanation,
+            TicketNumber ticketNumber,
+            QuestionNumber questionNumber,
+            List<Answer> answers,
+            ImageUri? imageUri)
+        {
+            var validationResult = ValidateAnswers(answers);
+
+            if (validationResult.IsFailure)
+            {
+                return Result.Failure<Question>(validationResult.Error);
+            }
+
+            Content = content;
+            Explanation = explanation;
+            TicketNumber = ticketNumber;
+            QuestionNumber = questionNumber;
+            _answers = answers;
+            ImageUri = imageUri;
+
+            return Result.Success();
+        }
+
+        public static Result<Question> Create(
+            QuestionId id,
+            QuestionContent content,
+            QuestionExplanation explanation,
+            TicketNumber ticketNumber,
+            QuestionNumber questionNumber,
+            List<Answer> answers,
+            ImageUri? imageUri)
+        {
+            var validationResult = ValidateAnswers(answers);
+
+            if (validationResult.IsFailure)
+            {
+                return Result.Failure<Question>(validationResult.Error);
+            }
+
+            return new Question(
+                id,
+                content,
+                explanation,
+                ticketNumber,
+                questionNumber,
+                answers,
+                imageUri);
+        }
+
+        private static Result ValidateAnswers(List<Answer> answers)
+        {
+            if (answers.Count == 0)
+            {
+                return QuestionErrors.NoAnswers;
+            }
+
+            if (answers.All(a => a.IsCorrect == false))
+            {
+                return QuestionErrors.AllAnswersAreIncorrect;
+            }
+
+            var uniqueAnswers = new HashSet<Answer>(answers);
+
+            if (uniqueAnswers.Count != answers.Count)
+            {
+                return QuestionErrors.DuplicateAnswers;
+            }
+
+            return Result.Success();
+        }
+
+        private bool ExistsSingleCorrectAnswerOnly()
+        {
+            return _answers.Count(q => q.IsCorrect == true) == 1;
+        }
     }
+
+    public sealed record QuestionId(Guid Value);
 }
