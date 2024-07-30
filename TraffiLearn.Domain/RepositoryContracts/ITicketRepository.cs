@@ -5,7 +5,7 @@ namespace TraffiLearn.Domain.RepositoryContracts
 {
     public interface ITicketRepository
     {
-        Task<Topic?> GetByIdAsync(
+        Task<Ticket?> GetByIdAsync(
             Guid ticketId,
             Expression<Func<Ticket, object>> includeExpression = null!);
 
