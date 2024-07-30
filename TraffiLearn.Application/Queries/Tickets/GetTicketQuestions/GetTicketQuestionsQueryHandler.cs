@@ -6,15 +6,15 @@ using TraffiLearn.Domain.Errors.Tickets;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Queries.Tickets.GetQuestionsForTicket
+namespace TraffiLearn.Application.Queries.Tickets.GetTicketQuestions
 {
-    internal sealed class GetQuestionsForTicketQueryHandler
-        : IRequestHandler<GetQuestionsForTicketQuery, Result<IEnumerable<QuestionResponse>>>
+    internal sealed class GetTicketQuestionsQueryHandler
+        : IRequestHandler<GetTicketQuestionsQuery, Result<IEnumerable<QuestionResponse>>>
     {
         private readonly ITicketRepository _ticketRepository;
         private readonly Mapper<Question, QuestionResponse> _questionMapper;
 
-        public GetQuestionsForTicketQueryHandler(
+        public GetTicketQuestionsQueryHandler(
             ITicketRepository ticketRepository,
             Mapper<Question, QuestionResponse> questionMapper)
         {
@@ -23,7 +23,7 @@ namespace TraffiLearn.Application.Queries.Tickets.GetQuestionsForTicket
         }
 
         public async Task<Result<IEnumerable<QuestionResponse>>> Handle(
-            GetQuestionsForTicketQuery request,
+            GetTicketQuestionsQuery request,
             CancellationToken cancellationToken)
         {
             var ticket = await _ticketRepository.GetByIdAsync(

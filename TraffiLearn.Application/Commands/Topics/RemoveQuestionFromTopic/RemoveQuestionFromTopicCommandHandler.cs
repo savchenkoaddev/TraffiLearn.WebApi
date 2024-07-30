@@ -5,29 +5,31 @@ using TraffiLearn.Domain.Errors.Topics;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Commands.Questions.RemoveTopicForQuestion
+namespace TraffiLearn.Application.Commands.Topics.RemoveQuestionFromTopic
 {
-    internal sealed class RemoveTopicForQuestionCommandHandler : IRequestHandler<RemoveTopicForQuestionCommand, Result>
+    internal sealed class RemoveQuestionFromTopicCommandHandler : IRequestHandler<RemoveQuestionFromTopicCommand, Result>
     {
-        private readonly IQuestionRepository _questionRepository;
         private readonly ITopicRepository _topicRepository;
+        private readonly IQuestionRepository _questionRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public RemoveTopicForQuestionCommandHandler(
-            IQuestionRepository questionRepository,
+        public RemoveQuestionFromTopicCommandHandler(
             ITopicRepository topicRepository,
+            IQuestionRepository questionRepository,
             IUnitOfWork unitOfWork)
         {
-            _questionRepository = questionRepository;
             _topicRepository = topicRepository;
+            _questionRepository = questionRepository;
             _unitOfWork = unitOfWork;
         }
 
         public async Task<Result> Handle(
-            RemoveTopicForQuestionCommand request, 
+            RemoveQuestionFromTopicCommand request, 
             CancellationToken cancellationToken)
         {
-            var topic = await _topicRepository.GetByIdAsync(request.TopicId.Value);
+            var topic = await _topicRepository.GetByIdAsync(
+                request.TopicId.Value,
+                includeExpression: x => x.Questions);
 
             if (topic is null)
             {
@@ -43,11 +45,11 @@ namespace TraffiLearn.Application.Commands.Questions.RemoveTopicForQuestion
                 return QuestionErrors.NotFound;
             }
 
-            Result removingResult = question.RemoveTopic(topic);
+            Result removeResult = topic.RemoveQuestion(question);
 
-            if (removingResult.IsFailure)
+            if (removeResult.IsFailure)
             {
-                return removingResult.Error;
+                return removeResult.Error;
             }
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);

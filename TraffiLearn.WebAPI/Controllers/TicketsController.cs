@@ -7,7 +7,7 @@ using TraffiLearn.Application.Commands.Tickets.RemoveQuestionFromTicket;
 using TraffiLearn.Application.Commands.Tickets.Update;
 using TraffiLearn.Application.Queries.Tickets.GetAll;
 using TraffiLearn.Application.Queries.Tickets.GetById;
-using TraffiLearn.Application.Queries.Tickets.GetQuestionsForTicket;
+using TraffiLearn.Application.Queries.Tickets.GetTicketQuestions;
 using TraffiLearn.WebAPI.Extensions;
 
 namespace TraffiLearn.WebAPI.Controllers
@@ -44,10 +44,10 @@ namespace TraffiLearn.WebAPI.Controllers
         }
 
         [HttpGet("{ticketId:guid}/questions")]
-        public async Task<IActionResult> GetQuestionsForTicket(
+        public async Task<IActionResult> GetTicketQuestions(
             [FromRoute] Guid ticketId)
         {
-            var queryResult = await _sender.Send(new GetQuestionsForTicketQuery(ticketId));
+            var queryResult = await _sender.Send(new GetTicketQuestionsQuery(ticketId));
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }

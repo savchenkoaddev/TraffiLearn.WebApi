@@ -41,7 +41,8 @@ namespace TraffiLearn.Application.Commands.Questions.Update
                 .NotEmpty();
 
             RuleForEach(x => x.TopicsIds)
-                .NotEmpty();
+                .NotEmpty()
+                .When(x => x.TopicsIds is not null);
         }
     }
 }

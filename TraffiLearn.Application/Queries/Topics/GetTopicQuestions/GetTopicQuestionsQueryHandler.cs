@@ -6,14 +6,14 @@ using TraffiLearn.Domain.Errors.Topics;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Queries.Topics.GetQuestionsForTopic
+namespace TraffiLearn.Application.Queries.Topics.GetTopicQuestions
 {
-    internal sealed class GetQuestionsForTopicQueryHandler : IRequestHandler<GetQuestionsForTopicQuery, Result<IEnumerable<QuestionResponse>>>
+    internal sealed class GetTopicQuestionsQueryHandler : IRequestHandler<GetTopicQuestionsQuery, Result<IEnumerable<QuestionResponse>>>
     {
         private readonly ITopicRepository _topicRepository;
         private readonly Mapper<Question, QuestionResponse> _questionMapper;
 
-        public GetQuestionsForTopicQueryHandler(
+        public GetTopicQuestionsQueryHandler(
             ITopicRepository topicRepository,
             Mapper<Question, QuestionResponse> questionMapper)
         {
@@ -22,7 +22,7 @@ namespace TraffiLearn.Application.Queries.Topics.GetQuestionsForTopic
         }
 
         public async Task<Result<IEnumerable<QuestionResponse>>> Handle(
-            GetQuestionsForTopicQuery request, 
+            GetTopicQuestionsQuery request, 
             CancellationToken cancellationToken)
         {
             var topic = await _topicRepository.GetByIdAsync(
