@@ -22,6 +22,8 @@ namespace TraffiLearn.Infrastructure.Database
 
         public DbSet<Topic> Topics { get; set; }
 
+        public DbSet<Ticket> Tickets { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
