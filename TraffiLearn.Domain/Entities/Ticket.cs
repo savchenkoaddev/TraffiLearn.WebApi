@@ -77,23 +77,6 @@ namespace TraffiLearn.Domain.Entities
                 ticketId,
                 ticketNumber);
         }
-
-        private static Result ValidateQuestions(List<Question> questions)
-        {
-            if (questions.Count == 0)
-            {
-                return TicketErrors.NoQuestions;
-            }
-
-            var uniqueQuestions = new HashSet<Question>(questions);
-
-            if (uniqueQuestions.Count != questions.Count)
-            {
-                return TicketErrors.DuplicateQuestions;
-            }
-
-            return Result.Success();
-        }
     }
 
     public sealed record TicketId(Guid Value);
