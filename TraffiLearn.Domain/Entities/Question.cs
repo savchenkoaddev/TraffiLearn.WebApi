@@ -18,14 +18,14 @@ namespace TraffiLearn.Domain.Entities
             QuestionId id,
             QuestionContent content,
             QuestionExplanation explanation,
-            TicketNumber ticketNumber,
+            Ticket ticket,
             QuestionNumber questionNumber,
             List<Answer> answers,
             ImageUri? imageUri) : base(id.Value)
         {
             Content = content;
             Explanation = explanation;
-            TicketNumber = ticketNumber;
+            Ticket = ticket;
             QuestionNumber = questionNumber;
             _answers = answers;
             ImageUri = imageUri;
@@ -34,8 +34,6 @@ namespace TraffiLearn.Domain.Entities
         public QuestionContent Content { get; private set; }
 
         public QuestionExplanation Explanation { get; private set; }
-
-        public TicketNumber TicketNumber { get; private set; }
 
         public QuestionNumber QuestionNumber { get; private set; }
 
@@ -48,6 +46,8 @@ namespace TraffiLearn.Domain.Entities
         public IReadOnlyCollection<Topic> Topics => _topics;
 
         public IReadOnlyCollection<Answer> Answers => _answers;
+
+        public Ticket? Ticket { get; private set; }
 
         public Result AddAnswer(Answer answer)
         {
@@ -119,6 +119,16 @@ namespace TraffiLearn.Domain.Entities
             return Result.Success();
         }
 
+        public Result SetTicket(Ticket ticket)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Result RemoveTicket()
+        {
+            throw new NotImplementedException();
+        }
+
         public void SetImageUri(ImageUri? imageUri)
         {
             ImageUri = imageUri;
@@ -127,7 +137,7 @@ namespace TraffiLearn.Domain.Entities
         public Result Update(
             QuestionContent content,
             QuestionExplanation explanation,
-            TicketNumber ticketNumber,
+            Ticket? ticket,
             QuestionNumber questionNumber,
             List<Answer> answers,
             ImageUri? imageUri)
@@ -141,7 +151,7 @@ namespace TraffiLearn.Domain.Entities
 
             Content = content;
             Explanation = explanation;
-            TicketNumber = ticketNumber;
+            Ticket = ticket;
             QuestionNumber = questionNumber;
             _answers = answers;
             ImageUri = imageUri;
@@ -153,7 +163,7 @@ namespace TraffiLearn.Domain.Entities
             QuestionId id,
             QuestionContent content,
             QuestionExplanation explanation,
-            TicketNumber ticketNumber,
+            Ticket ticket,
             QuestionNumber questionNumber,
             List<Answer> answers,
             ImageUri? imageUri)
@@ -169,7 +179,7 @@ namespace TraffiLearn.Domain.Entities
                 id,
                 content,
                 explanation,
-                ticketNumber,
+                ticket,
                 questionNumber,
                 answers,
                 imageUri);

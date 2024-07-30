@@ -25,8 +25,8 @@ namespace TraffiLearn.Infrastructure.Configurations
 
             builder.Property(q => q.TicketNumber)
                 .HasConversion(
-                    number => number.Value,
-                    value => TicketNumber.Create(value).Value);
+                    (object number) => number.Value,
+                    (object value) => Domain.ValueObjects.TicketNumber.Create(value).Value);
 
             builder.Property(q => q.QuestionNumber)
                 .HasConversion(

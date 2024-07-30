@@ -39,7 +39,7 @@ namespace TraffiLearn.Application.Commands.Questions.Create
                 return Result.Failure<Question>(explanationResult.Error);
             }
 
-            Result<TicketNumber> ticketNumberResult = TicketNumber.Create(source.TicketNumber.Value);
+            Result<Domain.ValueObjects.TicketNumber> ticketNumberResult = Domain.ValueObjects.TicketNumber.Create(source.TicketNumber.Value);
 
             if (ticketNumberResult.IsFailure)
             {

@@ -71,7 +71,7 @@ namespace TraffiLearn.Application.Commands.Questions.Update
                 return explanationResult.Error;
             }
 
-            Result<TicketNumber> ticketNumberResult = TicketNumber.Create(request.TicketNumber.Value);
+            Result<Domain.ValueObjects.TicketNumber> ticketNumberResult = Domain.ValueObjects.TicketNumber.Create(request.TicketNumber.Value);
 
             if (ticketNumberResult.IsFailure)
             {
