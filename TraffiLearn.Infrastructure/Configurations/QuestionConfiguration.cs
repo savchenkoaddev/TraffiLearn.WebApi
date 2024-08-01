@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.ValueObjects.Question;
+using TraffiLearn.Domain.ValueObjects.Questions;
 
 namespace TraffiLearn.Infrastructure.Configurations
 {
@@ -49,7 +49,7 @@ namespace TraffiLearn.Infrastructure.Configurations
                 answersBuilder.Property(a => a.IsCorrect);
             });
 
-            builder 
+            builder
                 .HasMany(q => q.Topics)
                 .WithMany(q => q.Questions);
 

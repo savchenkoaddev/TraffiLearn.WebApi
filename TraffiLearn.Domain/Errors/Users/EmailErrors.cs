@@ -13,5 +13,10 @@ namespace TraffiLearn.Domain.Errors.Users
             Error.Validation(
                 code: "Email.InvalidFormat",
                 description: "Email is in invalid format.");
+
+        public static Error TooLong(int maxLength) =>
+            Error.Validation(
+                code: "Email.TooLong",
+                description: $"Email exceeds {maxLength} characters.");
     }
 }

@@ -1,13 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Domain.ValueObjects.User
+namespace TraffiLearn.Domain.ValueObjects.Users
 {
     public sealed class Email : ValueObject
     {
+        public const int MaxLength = 254;
+
         private Email(string value)
         {
             Value = value;
@@ -37,6 +38,12 @@ namespace TraffiLearn.Domain.ValueObjects.User
             if (string.IsNullOrWhiteSpace(email))
             {
                 return EmailErrors.Empty;
+            }
+
+            if (email.Length > MaxLength)
+            {
+                return Result.Failure<Email>(EmailErrors.TooLong(
+                    maxLength: MaxLength));
             }
 
             var emailRegex = new Regex(

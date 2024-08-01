@@ -8,5 +8,10 @@ namespace TraffiLearn.Domain.Errors.Users
             Error.Validation(
                 code: "Username.Empty",
                 description: "Username cannot be empty.");
+
+        public static Error TooLong(int maxLength) =>
+            Error.Validation(
+                code: "Username.TooLong",
+                description: $"Username exceeds {maxLength} characters.");
     }
 }

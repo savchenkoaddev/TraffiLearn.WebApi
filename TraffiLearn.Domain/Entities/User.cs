@@ -1,6 +1,6 @@
 ﻿using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects.User;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Domain.Entities
 {

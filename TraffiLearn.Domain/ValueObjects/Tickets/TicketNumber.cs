@@ -2,7 +2,7 @@
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Domain.ValueObjects.Ticket
+namespace TraffiLearn.Domain.ValueObjects.Tickets
 {
     public sealed class TicketNumber : ValueObject
     {

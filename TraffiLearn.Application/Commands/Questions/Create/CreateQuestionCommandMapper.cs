@@ -1,7 +1,7 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects.Question;
+using TraffiLearn.Domain.ValueObjects.Questions;
 
 namespace TraffiLearn.Application.Commands.Questions.Create
 {

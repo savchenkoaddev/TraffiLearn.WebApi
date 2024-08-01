@@ -2,10 +2,12 @@
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Domain.ValueObjects.User
+namespace TraffiLearn.Domain.ValueObjects.Users
 {
     public sealed class Username : ValueObject
     {
+        public const int MaxLength = 30;
+
         private Username(string value)
         {
             Value = value;
@@ -18,6 +20,12 @@ namespace TraffiLearn.Domain.ValueObjects.User
             if (string.IsNullOrWhiteSpace(value))
             {
                 return Result.Failure<Username>(UsernameErrors.Empty);
+            }
+
+            if (value.Length > MaxLength)
+            {
+                return Result.Failure<Username>(UsernameErrors.TooLong(
+                    maxLength: MaxLength));
             }
 
             return new Username(value);

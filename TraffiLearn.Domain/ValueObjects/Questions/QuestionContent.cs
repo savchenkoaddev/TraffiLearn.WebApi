@@ -2,34 +2,34 @@
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Domain.ValueObjects.Question
+namespace TraffiLearn.Domain.ValueObjects.Questions
 {
-    public sealed class QuestionExplanation : ValueObject
+    public sealed class QuestionContent : ValueObject
     {
         public const int MaxLength = 2000;
 
-        private QuestionExplanation(string value)
+        private QuestionContent(string value)
         {
             Value = value;
         }
 
         public string Value { get; }
 
-        public static Result<QuestionExplanation> Create(string value)
+        public static Result<QuestionContent> Create(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
             {
-                return Result.Failure<QuestionExplanation>(
-                    QuestionExplanationErrors.EmptyText);
+                return Result.Failure<QuestionContent>(
+                    QuestionContentErrors.EmptyText);
             }
 
             if (value.Length > MaxLength)
             {
-                return Result.Failure<QuestionExplanation>(
-                    QuestionExplanationErrors.TooLongText(allowedLength: MaxLength));
+                return Result.Failure<QuestionContent>(
+                    QuestionContentErrors.TooLongText(allowedLength: MaxLength));
             }
 
-            return new QuestionExplanation(value);
+            return new QuestionContent(value);
         }
 
         public override IEnumerable<object> GetAtomicValues()

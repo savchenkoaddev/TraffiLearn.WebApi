@@ -2,7 +2,7 @@
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Domain.ValueObjects.Question
+namespace TraffiLearn.Domain.ValueObjects.Questions
 {
     public sealed class Answer : ValueObject
     {

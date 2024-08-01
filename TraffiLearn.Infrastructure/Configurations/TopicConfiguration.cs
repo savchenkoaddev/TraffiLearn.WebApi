@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.ValueObjects.Topic;
+using TraffiLearn.Domain.ValueObjects.Topics;
 
 namespace TraffiLearn.Infrastructure.Configurations
 {
