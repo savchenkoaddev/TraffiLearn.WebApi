@@ -10,7 +10,7 @@ namespace TraffiLearn.Domain.Errors.Tickets
                 description: "The ticket has not been found.");
 
         public static readonly Error QuestionAlreadyAdded =
-            Error.OperationFailure(
+            Error.Validation(
                 code: "Ticket.QuestionAlreadyAdded",
                 description: "The ticket already contains the provided question.");
 
