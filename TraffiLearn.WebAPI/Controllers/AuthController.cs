@@ -17,7 +17,7 @@ namespace TraffiLearn.WebAPI.Controllers
             _sender = sender;
         }
 
-        [HttpPost("registeruser")]
+        [HttpPost("register")]
         public async Task<IActionResult> RegisterUser(RegisterUserCommand command)
         {
             var commandResult = await _sender.Send(command);

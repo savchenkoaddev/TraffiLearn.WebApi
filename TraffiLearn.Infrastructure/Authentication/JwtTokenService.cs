@@ -68,8 +68,8 @@ namespace TraffiLearn.Infrastructure.Authentication
                 issuer: _jwtSettings.Issuer,
                 audience: _jwtSettings.Audience,
                 claims,
-                notBefore: null,
-                expires: DateTime.UtcNow.AddHours(_jwtSettings.ExpirationTimeInHours),
+                null,
+                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.ExpirationTimeInMinutes),
                 signingCredentials: credentials);
         }
 

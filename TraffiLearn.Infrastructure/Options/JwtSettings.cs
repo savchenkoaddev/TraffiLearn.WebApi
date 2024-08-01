@@ -12,7 +12,7 @@ namespace TraffiLearn.Infrastructure.Options
 
         public string? SecretKey { get; set; }
 
-        public int ExpirationTimeInHours { get; set; } = 1;
+        public int ExpirationTimeInMinutes { get; set; } = 20;
 
         public string SecurityAlgorithm = SecurityAlgorithms.HmacSha256;
     }

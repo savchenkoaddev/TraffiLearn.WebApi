@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TraffiLearn.Application.Commands.Tickets.AddQuestionToTicket;
 using TraffiLearn.Application.Commands.Tickets.Create;
@@ -12,6 +13,7 @@ using TraffiLearn.WebAPI.Extensions;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
+    [Authorize]
     [Route("api/tickets")]
     [ApiController]
     public class TicketsController : ControllerBase

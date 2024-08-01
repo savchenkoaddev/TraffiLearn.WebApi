@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TraffiLearn.Application.Commands.Topics.AddQuestionToTopic;
 using TraffiLearn.Application.Commands.Topics.Create;
@@ -12,6 +13,7 @@ using TraffiLearn.WebAPI.Extensions;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
+    [Authorize]
     [Route("api/topics")]
     [ApiController]
     public class TopicsController : ControllerBase
