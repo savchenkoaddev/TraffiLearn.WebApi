@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.ValueObjects;
+using TraffiLearn.Domain.ValueObjects.Questions;
 
 namespace TraffiLearn.Infrastructure.Configurations
 {
@@ -12,13 +12,13 @@ namespace TraffiLearn.Infrastructure.Configurations
             builder.HasKey(q => q.Id);
 
             builder.Property(q => q.Content)
-                .HasMaxLength(2000)
+                .HasMaxLength(QuestionContent.MaxLength)
                 .HasConversion(
                     content => content.Value,
                     value => QuestionContent.Create(value).Value);
 
             builder.Property(q => q.Explanation)
-                .HasMaxLength(2000)
+                .HasMaxLength(QuestionExplanation.MaxLength)
                 .HasConversion(
                     exp => exp.Value,
                     value => QuestionExplanation.Create(value).Value);
@@ -36,7 +36,7 @@ namespace TraffiLearn.Infrastructure.Configurations
 
             builder.Property(q => q.ImageUri)
                 .IsRequired(false)
-                .HasMaxLength(300)
+                .HasMaxLength(ImageUri.MaxLength)
                 .HasConversion(
                     uri => uri.Value,
                     value => ImageUri.Create(value).Value);
@@ -44,12 +44,12 @@ namespace TraffiLearn.Infrastructure.Configurations
             builder.OwnsMany(q => q.Answers, answersBuilder =>
             {
                 answersBuilder.Property(a => a.Text)
-                              .HasMaxLength(300);
+                              .HasMaxLength(Answer.MaxTextLength);
 
                 answersBuilder.Property(a => a.IsCorrect);
             });
 
-            builder 
+            builder
                 .HasMany(q => q.Topics)
                 .WithMany(q => q.Questions);
 

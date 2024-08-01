@@ -1,10 +1,17 @@
 ﻿using Azure.Storage.Blobs;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Storage;
+using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.Infrastructure.Database;
 using TraffiLearn.Infrastructure.External;
 using TraffiLearn.Infrastructure.Options;
@@ -19,19 +26,30 @@ namespace TraffiLearn.Infrastructure
             IConfiguration configuration)
         {
             services.AddOptions(configuration);
-            
+
+            services.AddAuthenticationServices();
             services.AddExternalServices();
 
-            services.AddPersistance();
+            services.AddPersistence();
             services.AddRepositories();
             
             return services;
         }
 
-        private static IServiceCollection AddPersistance(this IServiceCollection services)
+        private static IServiceCollection AddAuthenticationServices(this IServiceCollection services)
+        {
+            services.AddScoped<ITokenService, JwtTokenService>();
+
+            return services;
+        }
+
+        private static IServiceCollection AddPersistence(this IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>();
             services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                    .AddEntityFrameworkStores<ApplicationDbContext>();
 
             return services;
         }
@@ -42,6 +60,7 @@ namespace TraffiLearn.Infrastructure
         {
             services.Configure<SqlServerSettings>(configuration.GetRequiredSection(SqlServerSettings.SectionName));
             services.Configure<AzureBlobStorageSettings>(configuration.GetRequiredSection(AzureBlobStorageSettings.SectionName));
+            services.Configure<JwtSettings>(configuration.GetRequiredSection(JwtSettings.SectionName));
 
             return services;
         }
@@ -65,6 +84,7 @@ namespace TraffiLearn.Infrastructure
             services.AddScoped<ITopicRepository, TopicRepository>();
             services.AddScoped<IQuestionRepository, QuestionRepository>();
             services.AddScoped<ITicketRepository, TicketRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             return services;
         }

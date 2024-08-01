@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TraffiLearn.Application.Commands.Questions.AddTicketToQuestion;
 using TraffiLearn.Application.Commands.Questions.AddTopicToQuestion;
@@ -16,6 +17,7 @@ using TraffiLearn.WebAPI.Extensions;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
+    [Authorize]
     [Route("api/questions")]
     [ApiController]
     public class QuestionsController : ControllerBase
@@ -30,7 +32,7 @@ namespace TraffiLearn.WebAPI.Controllers
         #region Queries
 
 
-        [HttpGet]
+        [HttpGet("")]
         public async Task<IActionResult> GetAllQuestions()
         {
             var queryResult = await _sender.Send(new GetAllQuestionsQuery());

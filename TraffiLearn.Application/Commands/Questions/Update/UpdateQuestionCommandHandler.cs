@@ -7,7 +7,7 @@ using TraffiLearn.Domain.Errors.Questions;
 using TraffiLearn.Domain.Errors.Topics;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects;
+using TraffiLearn.Domain.ValueObjects.Questions;
 
 namespace TraffiLearn.Application.Commands.Questions.Update
 {

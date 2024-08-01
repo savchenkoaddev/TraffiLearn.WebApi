@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.ValueObjects;
+using TraffiLearn.Domain.ValueObjects.Topics;
 
 namespace TraffiLearn.Infrastructure.Configurations
 {
@@ -16,7 +16,7 @@ namespace TraffiLearn.Infrastructure.Configurations
                 value => TopicNumber.Create(value).Value);
 
             builder.Property(t => t.Title)
-                .HasMaxLength(300)
+                .HasMaxLength(TopicTitle.MaxLength)
                 .HasConversion(
                 title => title.Value,
                 value => TopicTitle.Create(value).Value);

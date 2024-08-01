@@ -2,7 +2,7 @@
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Domain.ValueObjects
+namespace TraffiLearn.Domain.ValueObjects.Topics
 {
     public sealed class TopicTitle : ValueObject
     {
@@ -13,7 +13,7 @@ namespace TraffiLearn.Domain.ValueObjects
             Value = value;
         }
 
-        public string Value { get; init; }
+        public string Value { get; }
 
         public static Result<TopicTitle> Create(string value)
         {

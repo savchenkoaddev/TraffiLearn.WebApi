@@ -7,7 +7,7 @@ using TraffiLearn.Domain.Errors.Questions;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Domain.ValueObjects
+namespace TraffiLearn.Domain.ValueObjects.Questions
 {
     public sealed class QuestionNumber : ValueObject
     {
@@ -18,7 +18,7 @@ namespace TraffiLearn.Domain.ValueObjects
             Value = value;
         }
 
-        public int Value { get; init; }
+        public int Value { get; }
 
         public static Result<QuestionNumber> Create(int value)
         {

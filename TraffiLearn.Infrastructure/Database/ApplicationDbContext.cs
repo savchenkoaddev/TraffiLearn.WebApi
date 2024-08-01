@@ -1,12 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Infrastructure.Options;
 
 namespace TraffiLearn.Infrastructure.Database
 {
-    public sealed class ApplicationDbContext : DbContext, IUnitOfWork
+    public sealed class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IUnitOfWork
     {
         private readonly SqlServerSettings _sqlServerSettings;
 
@@ -23,6 +25,8 @@ namespace TraffiLearn.Infrastructure.Database
         public DbSet<Topic> Topics { get; set; }
 
         public DbSet<Ticket> Tickets { get; set; }
+
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
