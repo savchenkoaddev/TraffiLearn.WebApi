@@ -9,7 +9,7 @@ namespace TraffiLearn.Application.Commands.Auth.Login
         public LoginCommandValidator()
         {
             RuleFor(x => x.Email)
-                .Matches("@\"^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$\"")
+                .Matches(@"^[^@\s]+@[^@\s]+\.[^@\s]+$")
                 .MaximumLength(Email.MaxLength)
                 .NotEmpty();
 

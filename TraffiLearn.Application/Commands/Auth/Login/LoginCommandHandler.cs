@@ -62,8 +62,7 @@ namespace TraffiLearn.Application.Commands.Auth.Login
 
             var accessToken = _tokenService.GenerateAccessToken(user);
 
-            _logger.LogInformation(
-                "Succesfully logged in. Access Token: {AccessToken}", accessToken.Take(5).ToString());
+            _logger.LogInformation("Succesfully logged in. Access Token generated.");
 
             var response = new LoginResponse(accessToken);
 

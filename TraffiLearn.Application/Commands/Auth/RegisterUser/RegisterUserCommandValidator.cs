@@ -9,7 +9,7 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterUser
         public RegisterUserCommandValidator()
         {
             RuleFor(x => x.Email)
-                .Matches("@\"^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$\"")
+                .Matches(@"^[^@\s]+@[^@\s]+\.[^@\s]+$")
                 .MaximumLength(Email.MaxLength)
                 .NotEmpty();
 

@@ -68,6 +68,8 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterUser
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+            _logger.LogInformation("Succesfully created a new user with {Email} email.", identityUser.Email);
+
             return Result.Success();
         }
 
