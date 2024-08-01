@@ -18,11 +18,36 @@ namespace TraffiLearn.Infrastructure
             this IServiceCollection services,
             IConfiguration configuration)
         {
+            services.AddOptions(configuration);
+            
+            services.AddExternalServices();
+
+            services.AddPersistance();
+            services.AddRepositories();
+            
+            return services;
+        }
+
+        private static IServiceCollection AddPersistance(this IServiceCollection services)
+        {
+            services.AddDbContext<ApplicationDbContext>();
+            services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
+
+            return services;
+        }
+
+        private static IServiceCollection AddOptions(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
             services.Configure<SqlServerSettings>(configuration.GetRequiredSection(SqlServerSettings.SectionName));
             services.Configure<AzureBlobStorageSettings>(configuration.GetRequiredSection(AzureBlobStorageSettings.SectionName));
 
-            services.AddDbContext<ApplicationDbContext>();
+            return services;
+        }
 
+        private static IServiceCollection AddExternalServices(this IServiceCollection services)
+        {
             services.AddSingleton((serviceProvider) =>
             {
                 var blobStorageSettings = serviceProvider.GetRequiredService<IOptions<AzureBlobStorageSettings>>().Value;
@@ -30,10 +55,13 @@ namespace TraffiLearn.Infrastructure
                 return new BlobServiceClient(blobStorageSettings.ConnectionString);
             });
 
-            services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
-
             services.AddSingleton<IBlobService, AzureBlobService>();
 
+            return services;
+        }
+
+        private static IServiceCollection AddRepositories(this IServiceCollection services)
+        {
             services.AddScoped<ITopicRepository, TopicRepository>();
             services.AddScoped<IQuestionRepository, QuestionRepository>();
             services.AddScoped<ITicketRepository, TicketRepository>();

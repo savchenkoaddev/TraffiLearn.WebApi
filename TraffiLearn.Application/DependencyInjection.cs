@@ -26,6 +26,42 @@ namespace TraffiLearn.Application
             this IServiceCollection services,
             IConfiguration configuration)
         {
+            services.AddMappers();
+            services.AddOptions(configuration);
+
+            services.AddMediatR();
+
+            services.AddPipelineBehaviors();
+            services.AddValidators();
+            
+            return services;
+        }
+
+        private static IServiceCollection AddValidators(this IServiceCollection services)
+        {
+            services.AddValidatorsFromAssembly(
+                Assembly.GetExecutingAssembly(),
+                includeInternalTypes: true);
+
+            return services;
+        }
+
+        private static IServiceCollection AddPipelineBehaviors(this IServiceCollection services)
+        {
+            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
+
+            return services;
+        }
+
+        private static IServiceCollection AddMediatR(this IServiceCollection services)
+        {
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
+            return services;
+        }
+
+        private static IServiceCollection AddMappers(this IServiceCollection services)
+        {
             services.AddScoped<Mapper<Question, QuestionResponse>,
                 QuestionToQuestionResponseMapper>();
             services.AddScoped<Mapper<Topic, TopicResponse>, TopicToTopicResponseMapper>();
@@ -37,15 +73,14 @@ namespace TraffiLearn.Application
             services.AddScoped<Mapper<Ticket, TicketResponse>,
                 TicketToTicketResponseMapper>();
 
+            return services;
+        }
+
+        private static IServiceCollection AddOptions(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
             services.Configure<QuestionsSettings>(configuration.GetRequiredSection(QuestionsSettings.SectionName));
-
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-
-            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
-
-            services.AddValidatorsFromAssembly(
-                Assembly.GetExecutingAssembly(),
-                includeInternalTypes: true);
 
             return services;
         }
