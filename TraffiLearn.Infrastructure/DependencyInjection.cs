@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Storage;
 using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.Infrastructure.Database;
 using TraffiLearn.Infrastructure.External;
 using TraffiLearn.Infrastructure.Options;
@@ -21,12 +23,20 @@ namespace TraffiLearn.Infrastructure
             IConfiguration configuration)
         {
             services.AddOptions(configuration);
-            
+
+            services.AddAuthenticationServices();
             services.AddExternalServices();
 
             services.AddPersistence();
             services.AddRepositories();
             
+            return services;
+        }
+
+        private static IServiceCollection AddAuthenticationServices(this IServiceCollection services)
+        {
+            services.AddScoped<ITokenService, JwtTokenService>();
+
             return services;
         }
 
@@ -47,6 +57,7 @@ namespace TraffiLearn.Infrastructure
         {
             services.Configure<SqlServerSettings>(configuration.GetRequiredSection(SqlServerSettings.SectionName));
             services.Configure<AzureBlobStorageSettings>(configuration.GetRequiredSection(AzureBlobStorageSettings.SectionName));
+            services.Configure<JwtSettings>(configuration.GetRequiredSection(JwtSettings.SectionName));
 
             return services;
         }
