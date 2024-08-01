@@ -1,9 +1,11 @@
 ﻿using Azure.Storage.Blobs;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Storage;
+using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Infrastructure.Database;
 using TraffiLearn.Infrastructure.External;
@@ -22,16 +24,19 @@ namespace TraffiLearn.Infrastructure
             
             services.AddExternalServices();
 
-            services.AddPersistance();
+            services.AddPersistence();
             services.AddRepositories();
             
             return services;
         }
 
-        private static IServiceCollection AddPersistance(this IServiceCollection services)
+        private static IServiceCollection AddPersistence(this IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>();
             services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                    .AddEntityFrameworkStores<ApplicationDbContext>();
 
             return services;
         }
