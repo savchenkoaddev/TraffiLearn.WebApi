@@ -68,5 +68,10 @@ namespace TraffiLearn.Domain.Errors.Questions
             Error.NotFound(
                 code: "Question.TicketNotFound",
                 description: "The question does not contain the ticket.");
+
+        public static readonly Error NotEnoughRecords =
+            Error.OperationFailure(
+                code: "Question.NotEnoughRecords",
+                description: "Cannot perform the operation because there are not enough existing records.");
     }
 }

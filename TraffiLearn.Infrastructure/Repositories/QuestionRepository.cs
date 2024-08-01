@@ -8,7 +8,6 @@ namespace TraffiLearn.Infrastructure.Repositories
 {
     internal sealed class QuestionRepository : IQuestionRepository
     {
-        private const int TheoryTestQuestionsCount = 20;
         private readonly ApplicationDbContext _dbContext;
 
         public QuestionRepository(ApplicationDbContext dbContext)
@@ -58,11 +57,11 @@ namespace TraffiLearn.Infrastructure.Repositories
                 .FirstOrDefaultAsync(q => q.Id == questionId);
         }
 
-        public async Task<IEnumerable<Question>> GetQuestionsForTheoryTest()
+        public async Task<IEnumerable<Question>> GetRandomRecords(int amount)
         {
             return await _dbContext.Questions
                 .OrderBy(q => EF.Functions.Random())
-                .Take(TheoryTestQuestionsCount)
+                .Take(amount)
                 .ToListAsync();
         }
 

@@ -11,7 +11,7 @@ namespace TraffiLearn.Domain.RepositoryContracts
 
         Task<IEnumerable<Question>> GetAllAsync();
 
-        Task<IEnumerable<Question>> GetQuestionsForTheoryTest();
+        Task<IEnumerable<Question>> GetRandomRecords(int amount);
 
         Task<bool> ExistsAsync(Guid id);
 
