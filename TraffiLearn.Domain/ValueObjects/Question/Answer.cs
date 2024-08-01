@@ -2,7 +2,7 @@
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Domain.ValueObjects
+namespace TraffiLearn.Domain.ValueObjects.Question
 {
     public sealed class Answer : ValueObject
     {
@@ -16,9 +16,9 @@ namespace TraffiLearn.Domain.ValueObjects
             IsCorrect = isCorrect;
         }
 
-        public string Text { get; init; }
+        public string Text { get; }
 
-        public bool IsCorrect { get; init; }
+        public bool IsCorrect { get; }
 
         public static Result<Answer> Create(
             string text,

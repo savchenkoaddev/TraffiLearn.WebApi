@@ -1,7 +1,7 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects;
+using TraffiLearn.Domain.ValueObjects.Ticket;
 
 namespace TraffiLearn.Application.Commands.Tickets.Create
 {

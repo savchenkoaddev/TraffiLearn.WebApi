@@ -3,7 +3,7 @@ using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Domain.Errors.Topics;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects;
+using TraffiLearn.Domain.ValueObjects.Topic;
 
 namespace TraffiLearn.Application.Commands.Topics.Update
 {

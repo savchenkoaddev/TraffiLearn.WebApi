@@ -1,7 +1,7 @@
 ﻿using TraffiLearn.Domain.Errors.Tickets;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects;
+using TraffiLearn.Domain.ValueObjects.Ticket;
 
 namespace TraffiLearn.Domain.Entities
 {
