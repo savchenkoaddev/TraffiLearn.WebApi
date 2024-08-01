@@ -8,7 +8,7 @@ using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Commands.Users.Register
+namespace TraffiLearn.Application.Commands.Auth.RegisterUser
 {
     internal sealed class RegisterUserCommandHandler
         : IRequestHandler<RegisterUserCommand, Result>

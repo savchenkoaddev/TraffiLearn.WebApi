@@ -8,6 +8,7 @@ using TraffiLearn.Application.Behaviors;
 using TraffiLearn.Application.Commands.Questions.Create;
 using TraffiLearn.Application.Commands.Tickets.Create;
 using TraffiLearn.Application.Commands.Topics.Create;
+using TraffiLearn.Application.Commands.Auth.RegisterUser;
 using TraffiLearn.Application.DTO.Questions;
 using TraffiLearn.Application.DTO.Tickets;
 using TraffiLearn.Application.DTO.Topics;
@@ -72,6 +73,8 @@ namespace TraffiLearn.Application
             services.AddScoped<Mapper<CreateTicketCommand, Result<Ticket>>, CreateTicketCommandMapper>();
             services.AddScoped<Mapper<Ticket, TicketResponse>,
                 TicketToTicketResponseMapper>();
+            services.AddScoped<Mapper<RegisterUserCommand, Result<User>>,
+                RegisterUserCommandMapper>();
 
             return services;
         }

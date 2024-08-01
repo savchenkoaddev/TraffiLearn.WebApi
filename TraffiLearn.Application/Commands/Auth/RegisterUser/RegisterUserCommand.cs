@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Commands.Users.Register
+namespace TraffiLearn.Application.Commands.Auth.RegisterUser
 {
     public sealed record RegisterUserCommand(
         string? Username,

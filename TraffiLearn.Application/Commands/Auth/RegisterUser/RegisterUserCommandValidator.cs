@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using TraffiLearn.Domain.ValueObjects.Users;
 
-namespace TraffiLearn.Application.Commands.Users.Register
+namespace TraffiLearn.Application.Commands.Auth.RegisterUser
 {
     internal sealed class RegisterUserCommandValidator 
         : AbstractValidator<RegisterUserCommand>
@@ -9,7 +9,7 @@ namespace TraffiLearn.Application.Commands.Users.Register
         public RegisterUserCommandValidator()
         {
             RuleFor(x => x.Email)
-                .EmailAddress()
+                .Matches("@\"^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$\"")
                 .MaximumLength(Email.MaxLength)
                 .NotEmpty();
 
