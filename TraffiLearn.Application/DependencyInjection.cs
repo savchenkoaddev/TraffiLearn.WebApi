@@ -80,7 +80,7 @@ namespace TraffiLearn.Application
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.Configure<QuestionsSettings>(configuration.GetRequiredSection(QuestionsSettings.SectionName));
+            services.Configure<QuestionsSettings>(configuration.GetSection(QuestionsSettings.SectionName));
 
             return services;
         }
