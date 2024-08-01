@@ -13,5 +13,15 @@ namespace TraffiLearn.Domain.Errors.Users
             Error.Validation(
                 code: "User.AlreadyRegistered",
                 description: "The same user has already been registered.");
+
+        public static readonly Error InvalidCredentials =
+            Error.OperationFailure(
+                code: "User.InvalidCredentials",
+                description: "The provided credentials are invalid.");
+
+        public static readonly Error CannotLogin =
+            Error.OperationFailure(
+                code: "User.CannotLogin",
+                description: "The user cannot login due to some reasons. Check if the email is confirmed.");
     }
 }

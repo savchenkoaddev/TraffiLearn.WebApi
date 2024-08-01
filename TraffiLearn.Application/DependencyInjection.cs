@@ -84,6 +84,7 @@ namespace TraffiLearn.Application
             IConfiguration configuration)
         {
             services.Configure<QuestionsSettings>(configuration.GetSection(QuestionsSettings.SectionName));
+            services.Configure<LoginSettings>(configuration.GetSection(LoginSettings.SectionName));
 
             return services;
         }
