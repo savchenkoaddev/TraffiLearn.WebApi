@@ -57,6 +57,14 @@ namespace TraffiLearn.Infrastructure.Repositories
                 .FirstOrDefaultAsync(q => q.Id == questionId);
         }
 
+        public async Task<IEnumerable<Question>> GetRandomRecords(int amount)
+        {
+            return await _dbContext.Questions
+                .OrderBy(q => EF.Functions.Random())
+                .Take(amount)
+                .ToListAsync();
+        }
+
         public Task UpdateAsync(Question question)
         {
             _dbContext.Questions.Update(question);

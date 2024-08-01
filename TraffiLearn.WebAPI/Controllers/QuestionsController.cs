@@ -9,6 +9,7 @@ using TraffiLearn.Application.Commands.Questions.RemoveTopicFromQuestion;
 using TraffiLearn.Application.Commands.Questions.Update;
 using TraffiLearn.Application.Queries.Questions.GetAll;
 using TraffiLearn.Application.Queries.Questions.GetById;
+using TraffiLearn.Application.Queries.Questions.GetQuestionsForTheoryTest;
 using TraffiLearn.Application.Queries.Questions.GetQuestionTickets;
 using TraffiLearn.Application.Queries.Questions.GetQuestionTopics;
 using TraffiLearn.WebAPI.Extensions;
@@ -60,6 +61,14 @@ namespace TraffiLearn.WebAPI.Controllers
             [FromRoute] Guid questionId)
         {
             var queryResult = await _sender.Send(new GetQuestionTicketsQuery(questionId));
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+
+        [HttpGet("theorytest")]
+        public async Task<IActionResult> GetQuestionsForTheoryTest()
+        {
+            var queryResult = await _sender.Send(new GetQuestionsForTheoryTestQuery());
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }

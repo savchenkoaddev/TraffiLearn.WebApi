@@ -10,7 +10,7 @@ namespace TraffiLearn.Domain.Errors.Topics
                 description: "Topic has not been found.");
 
         public static readonly Error QuestionAlreadyAdded =
-            Error.OperationFailure(
+            Error.Validation(
                 code: "Topic.QuestionAlreadyAdded",
                 description: "The topic already contains the question.");
 
