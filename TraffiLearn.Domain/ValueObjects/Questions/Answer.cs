@@ -6,7 +6,7 @@ namespace TraffiLearn.Domain.ValueObjects.Questions
 {
     public sealed class Answer : ValueObject
     {
-        private const int MaxTextLength = 300;
+        public const int MaxTextLength = 300;
 
         private Answer(
             string text,
