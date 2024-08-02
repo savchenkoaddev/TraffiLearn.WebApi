@@ -10,6 +10,7 @@ namespace TraffiLearn.Domain.Entities
         private List<Answer> _answers = [];
         private readonly List<Topic> _topics = [];
         private readonly List<Ticket> _tickets = [];
+        private readonly List<Comment> _comments = [];
 
         private Question(Guid id)
             : base(id)
@@ -47,6 +48,15 @@ namespace TraffiLearn.Domain.Entities
         public IReadOnlyCollection<Answer> Answers => _answers;
 
         public IReadOnlyCollection<Ticket> Tickets => _tickets;
+
+        public IReadOnlyCollection<Comment> Comments => _comments;
+
+        public Result AddComment(Comment comment)
+        {
+            _comments.Add(comment);
+
+            return Result.Success();
+        }
 
         public Result AddAnswer(Answer answer)
         {

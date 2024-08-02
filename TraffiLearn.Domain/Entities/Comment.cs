@@ -10,8 +10,7 @@ namespace TraffiLearn.Domain.Entities
 
         private Comment(Guid id)
             : base(id)
-        {
-        }
+        { }
 
         private Comment(
             Guid id,
