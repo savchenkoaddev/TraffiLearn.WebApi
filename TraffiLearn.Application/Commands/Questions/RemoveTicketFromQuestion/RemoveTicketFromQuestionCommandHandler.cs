@@ -42,11 +42,18 @@ namespace TraffiLearn.Application.Commands.Questions.RemoveTicketFromQuestion
                 return QuestionErrors.NotFound;
             }
 
-            var removeResult = question.RemoveTicket(ticket);
+            var ticketRemoveResult = question.RemoveTicket(ticket);
 
-            if (removeResult.IsFailure)
+            if (ticketRemoveResult.IsFailure)
             {
-                return removeResult.Error;
+                return ticketRemoveResult.Error;
+            }
+
+            var questionRemoveResult = ticket.RemoveQuestion(question);
+
+            if (questionRemoveResult.IsFailure)
+            {
+                return questionRemoveResult.Error;
             }
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);

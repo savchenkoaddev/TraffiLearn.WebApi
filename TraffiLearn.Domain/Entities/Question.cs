@@ -108,16 +108,6 @@ namespace TraffiLearn.Domain.Entities
 
             _topics.Add(topic);
 
-            if (!topic.Questions.Contains(this))
-            {
-                var addResult = topic.AddQuestion(this);
-
-                if (addResult.IsFailure)
-                {
-                    return addResult.Error;
-                }
-            }
-
             return Result.Success();
         }
 
@@ -129,16 +119,6 @@ namespace TraffiLearn.Domain.Entities
             }
 
             _topics.Remove(topic);
-
-            if (topic.Questions.Contains(this))
-            {
-                var removeResult = topic.RemoveQuestion(this);
-
-                if (removeResult.IsFailure)
-                {
-                    return removeResult.Error;
-                }
-            }
 
             return Result.Success();
         }
@@ -152,16 +132,6 @@ namespace TraffiLearn.Domain.Entities
 
             _tickets.Add(ticket);
 
-            if (!ticket.Questions.Contains(this))
-            {
-                var addResult = ticket.AddQuestion(this);
-
-                if (addResult.IsFailure)
-                {
-                    return addResult.Error;
-                }
-            }
-
             return Result.Success();
         }
 
@@ -173,16 +143,6 @@ namespace TraffiLearn.Domain.Entities
             }
 
             _tickets.Add(ticket);
-
-            if (ticket.Questions.Contains(this))
-            {
-                var addResult = ticket.RemoveQuestion(this);
-
-                if (addResult.IsFailure)
-                {
-                    return addResult.Error;
-                }
-            }
 
             return Result.Success();
         }

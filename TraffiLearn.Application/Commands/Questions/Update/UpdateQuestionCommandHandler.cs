@@ -78,12 +78,17 @@ namespace TraffiLearn.Application.Commands.Questions.Update
                 return questionNumberResult.Error;
             }
 
-            question.Update(
+            var updateResult = question.Update(
                 content: contentResult.Value,
                 explanation: explanationResult.Value,
                 questionNumber: questionNumberResult.Value,
                 answers: answers,
                 imageUri: question.ImageUri);
+
+            if (updateResult.IsFailure)
+            {
+                return updateResult.Error;
+            }
 
             var updateTopicsResult = await UpdateTopics(
                 topicsIds: request.TopicsIds,
@@ -127,7 +132,19 @@ namespace TraffiLearn.Application.Commands.Questions.Update
 
                 if (!question.Topics.Contains(topic))
                 {
-                    question.AddTopic(topic);
+                    var topicAddResult = question.AddTopic(topic);
+
+                    if (topicAddResult.IsFailure)
+                    {
+                        return topicAddResult.Error;
+                    }
+
+                    var questionAddResult = topic.AddQuestion(question);
+
+                    if (questionAddResult.IsFailure)
+                    {
+                        return questionAddResult.Error;
+                    }
                 }
             }
 
@@ -137,7 +154,19 @@ namespace TraffiLearn.Application.Commands.Questions.Update
             {
                 if (!topicsIds.Contains(topic.Id))
                 {
-                    question.RemoveTopic(topic);
+                    var topicRemoveResult = question.RemoveTopic(topic);
+
+                    if (topicRemoveResult.IsFailure)
+                    {
+                        return topicRemoveResult.Error;
+                    }
+
+                    var questionRemoveResult = topic.RemoveQuestion(question);
+
+                    if (questionRemoveResult.IsFailure)
+                    {
+                        return questionRemoveResult.Error;
+                    }
                 }
             }
 

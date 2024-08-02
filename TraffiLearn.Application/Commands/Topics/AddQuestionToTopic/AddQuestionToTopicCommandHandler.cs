@@ -43,11 +43,18 @@ namespace TraffiLearn.Application.Commands.Topics.AddQuestionToTopic
                 return TopicErrors.NotFound;
             }
 
-            Result result = topic.AddQuestion(question);
+            Result questionAddResult = topic.AddQuestion(question);
 
-            if (result.IsFailure)
+            if (questionAddResult.IsFailure)
             {
-                return result.Error;
+                return questionAddResult.Error;
+            }
+
+            Result topicAddResult = question.AddTopic(topic);
+
+            if (topicAddResult.IsFailure)
+            {
+                return topicAddResult.Error;
             }
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);

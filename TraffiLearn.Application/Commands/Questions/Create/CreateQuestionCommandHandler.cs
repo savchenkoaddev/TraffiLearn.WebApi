@@ -53,11 +53,18 @@ namespace TraffiLearn.Application.Commands.Questions.Create
                     return TopicErrors.NotFound;
                 }
 
-                Result addResult = question.AddTopic(topic);
+                Result topicAddResult = question.AddTopic(topic);
 
-                if (addResult.IsFailure)
+                if (topicAddResult.IsFailure)
                 {
-                    return addResult.Error;
+                    return topicAddResult.Error;
+                }
+
+                Result questionAddResult = topic.AddQuestion(question);
+
+                if (questionAddResult.IsFailure)
+                {
+                    return questionAddResult.Error;
                 }
             }
 
@@ -66,7 +73,7 @@ namespace TraffiLearn.Application.Commands.Questions.Create
             if (image is not null)
             {
                 using Stream stream = image.OpenReadStream();
-
+                
                 var uploadResponse = await _blobService.UploadAsync(
                     stream,
                     image.ContentType,

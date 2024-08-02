@@ -37,11 +37,6 @@ namespace TraffiLearn.Domain.Entities
 
             _questions.Add(question);
 
-            if (!question.Topics.Contains(this))
-            {
-                question.AddTopic(this);
-            }
-
             return Result.Success();
         }
 
@@ -53,11 +48,6 @@ namespace TraffiLearn.Domain.Entities
             }
 
             _questions.Remove(question);
-
-            if (question.Topics.Contains(this))
-            {
-                question.RemoveTopic(this);
-            }
 
             return Result.Success();
         }

@@ -45,11 +45,18 @@ namespace TraffiLearn.Application.Commands.Topics.RemoveQuestionFromTopic
                 return QuestionErrors.NotFound;
             }
 
-            Result removeResult = topic.RemoveQuestion(question);
+            Result questionRemoveResult = topic.RemoveQuestion(question);
 
-            if (removeResult.IsFailure)
+            if (questionRemoveResult.IsFailure)
             {
-                return removeResult.Error;
+                return questionRemoveResult.Error;
+            }
+
+            Result topicRemoveResult = question.RemoveTopic(topic);
+
+            if (topicRemoveResult.IsFailure)
+            {
+                return topicRemoveResult.Error;
             }
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);

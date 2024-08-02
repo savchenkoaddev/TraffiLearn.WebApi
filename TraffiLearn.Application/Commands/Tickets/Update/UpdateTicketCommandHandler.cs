@@ -83,11 +83,18 @@ namespace TraffiLearn.Application.Commands.Tickets.Update
 
                 if (!ticket.Questions.Contains(question))
                 {
-                    var addResult = ticket.AddQuestion(question);
+                    var questionAddResult = ticket.AddQuestion(question);
 
-                    if (addResult.IsFailure)
+                    if (questionAddResult.IsFailure)
                     {
-                        return addResult.Error;
+                        return questionAddResult.Error;
+                    }
+
+                    var ticketAddResult = question.AddTicket(ticket);
+
+                    if (ticketAddResult.IsFailure)
+                    {
+                        return ticketAddResult.Error;
                     }
                 }
             }
@@ -98,11 +105,18 @@ namespace TraffiLearn.Application.Commands.Tickets.Update
             {
                 if (!questionsIds.Contains(question.Id))
                 {
-                    var removeResult = ticket.RemoveQuestion(question);
+                    var questionRemoveResult = ticket.RemoveQuestion(question);
 
-                    if (removeResult.IsFailure)
+                    if (questionRemoveResult.IsFailure)
                     {
-                        return removeResult.Error;
+                        return questionRemoveResult.Error;
+                    }
+
+                    var ticketRemoveResult = question.RemoveTicket(ticket);
+
+                    if (ticketRemoveResult.IsFailure)
+                    {
+                        return ticketRemoveResult.Error;
                     }
                 }
             }
