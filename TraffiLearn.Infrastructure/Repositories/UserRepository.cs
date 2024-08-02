@@ -1,4 +1,5 @@
-﻿using TraffiLearn.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Infrastructure.Database;
 
@@ -23,6 +24,11 @@ namespace TraffiLearn.Infrastructure.Repositories
             _dbContext.Users.Remove(user);
 
             return Task.CompletedTask;
+        }
+
+        public async Task<User?> GetByEmailAsync(string email)
+        {
+            return await _dbContext.Users.FirstOrDefaultAsync(x => x.Email.Value == email);
         }
 
         public async Task<User?> GetByIdAsync(Guid userId)
