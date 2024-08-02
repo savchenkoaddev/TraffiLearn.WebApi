@@ -41,7 +41,7 @@ namespace TraffiLearn.Application.Commands.Questions.AddComment
             AddCommentCommand request,
             CancellationToken cancellationToken)
         {
-            var emailResult = _authService.GetCurrentUserEmail();
+            var emailResult = _authService.GetAuthenticatedUserEmail();
 
             if (emailResult.IsFailure)
             {

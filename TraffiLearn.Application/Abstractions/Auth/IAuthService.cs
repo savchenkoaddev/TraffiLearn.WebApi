@@ -6,6 +6,8 @@ namespace TraffiLearn.Application.Abstractions.Auth
     public interface IAuthService<TUser>
         where TUser : class
     {
-        Result<Email> GetCurrentUserEmail();
+        Result<Email> GetAuthenticatedUserEmail();
+
+        Result<Guid> GetAuthenticatedUserId();
     }
 }

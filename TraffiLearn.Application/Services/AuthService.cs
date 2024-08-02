@@ -21,7 +21,7 @@ namespace TraffiLearn.Application.Services
             _logger = logger;
         }
 
-        public Result<Email> GetCurrentUserEmail()
+        public Result<Email> GetAuthenticatedUserEmail()
         {
             var userAuthenticated = _signInManager.Context.User.Identity.IsAuthenticated;
 
@@ -51,6 +51,36 @@ namespace TraffiLearn.Application.Services
             }
 
             return emailCreateResult.Value;
+        }
+
+        public Result<Guid> GetAuthenticatedUserId()
+        {
+            var userAuthenticated = _signInManager.Context.User.Identity.IsAuthenticated;
+
+            if (!userAuthenticated)
+            {
+                _logger.LogError("The user is not authenticated. This is probably due to some authorization failures.");
+
+                return Result.Failure<TKey>(Error.InternalFailure());
+            }
+
+            var claimsId = _signInManager.Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            if (claimsId is null)
+            {
+                _logger.LogError("Couldn't fetch the id from http context. This is probably due to the token generation issues.");
+
+                return Result.Failure<TKey>(Error.InternalFailure());
+            }
+
+            if (Guid.TryParse(claimsId, out Guid id))
+            {
+                return id;
+            }
+
+            _logger.LogError("Failed to parse id from to GUID. The id: {id}", claimsId);
+
+            return Result.Failure<Guid>(Error.InternalFailure());
         }
     }
 }

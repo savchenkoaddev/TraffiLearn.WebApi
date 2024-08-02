@@ -48,7 +48,7 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
                 return CommentErrors.NotFound;
             }
 
-            Result<Email> emailResult = _authService.GetCurrentUserEmail();
+            Result<Email> emailResult = _authService.GetAuthenticatedUserEmail();
 
             if (emailResult.IsFailure)
             {
