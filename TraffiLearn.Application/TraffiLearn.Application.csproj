@@ -17,8 +17,4 @@
     <ProjectReference Include="..\TraffiLearn.Domain\TraffiLearn.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Commands\Comments\DeleteComment\" />
-  </ItemGroup>
-
 </Project>

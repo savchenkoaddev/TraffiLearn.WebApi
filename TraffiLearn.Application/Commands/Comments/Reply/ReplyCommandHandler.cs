@@ -35,7 +35,9 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
         }
 
 
-        public async Task<Result> Handle(ReplyCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(
+            ReplyCommand request, 
+            CancellationToken cancellationToken)
         {
             var comment = await _commentRepository.GetByIdAsync(
                 request.CommentId.Value,
