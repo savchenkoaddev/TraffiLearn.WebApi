@@ -33,7 +33,6 @@ namespace TraffiLearn.Infrastructure.Configurations
             builder
                 .HasOne(c => c.RootComment)
                 .WithMany(c => c.Replies)
-                //unwelcome
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }

@@ -30,9 +30,8 @@ namespace TraffiLearn.Application.Commands.Comments.UpdateComment
             UpdateCommentCommand request,
             CancellationToken cancellationToken)
         {
-            var comment = await _commentRepository.GetByIdAsync(
-                request.CommentId.Value,
-                includeExpression: x => x.User);
+            var comment = await _commentRepository.GetByIdWithUserAsync(
+                request.CommentId.Value);
 
             if (comment is null)
             {

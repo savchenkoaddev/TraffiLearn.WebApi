@@ -16,74 +16,41 @@ namespace TraffiLearn.Application.Commands.Questions.Update
         private readonly IQuestionRepository _questionRepository;
         private readonly ITopicRepository _topicRepository;
         private readonly IBlobService _blobService;
+        private readonly Mapper<UpdateQuestionCommand, Result<Question>> _commandMapper;
         private readonly IUnitOfWork _unitOfWork;
 
         public UpdateQuestionCommandHandler(
             IQuestionRepository questionRepository,
             ITopicRepository topicRepository,
             IBlobService blobService,
+            Mapper<UpdateQuestionCommand, Result<Question>> commandMapper,
             IUnitOfWork unitOfWork)
         {
             _questionRepository = questionRepository;
             _topicRepository = topicRepository;
             _blobService = blobService;
+            _commandMapper = commandMapper;
             _unitOfWork = unitOfWork;
         }
 
         public async Task<Result> Handle(UpdateQuestionCommand request, CancellationToken cancellationToken)
         {
-            var question = await _questionRepository.GetByIdAsync(
-                request.QuestionId.Value,
-                includeExpression: x => x.Topics);
+            var question = await _questionRepository.GetByIdWithTopicsAsync(
+                request.QuestionId.Value);
 
             if (question is null)
             {
                 return QuestionErrors.NotFound;
             }
 
-            List<Answer> answers = [];
+            var mappingResult = _commandMapper.Map(request);
 
-            foreach (var answer in request.Answers)
+            if (mappingResult.IsFailure)
             {
-                var answerCreateResult = Answer.Create(
-                    text: answer.Text,
-                    isCorrect: answer.IsCorrect.Value);
-
-                if (answerCreateResult.IsFailure)
-                {
-                    return answerCreateResult.Error;
-                }
-
-                answers.Add(answerCreateResult.Value);
+                return mappingResult.Error;
             }
 
-            Result<QuestionContent> contentResult = QuestionContent.Create(request.Content);
-
-            if (contentResult.IsFailure)
-            {
-                return contentResult.Error;
-            }
-
-            Result<QuestionExplanation> explanationResult = QuestionExplanation.Create(request.Explanation);
-
-            if (explanationResult.IsFailure)
-            {
-                return explanationResult.Error;
-            }
-
-            Result<QuestionNumber> questionNumberResult = QuestionNumber.Create(request.QuestionNumber.Value);
-
-            if (questionNumberResult.IsFailure)
-            {
-                return questionNumberResult.Error;
-            }
-
-            var updateResult = question.Update(
-                content: contentResult.Value,
-                explanation: explanationResult.Value,
-                questionNumber: questionNumberResult.Value,
-                answers: answers,
-                imageUri: question.ImageUri);
+            var updateResult = question.Update(mappingResult.Value);
 
             if (updateResult.IsFailure)
             {
@@ -123,7 +90,7 @@ namespace TraffiLearn.Application.Commands.Questions.Update
         {
             foreach (var topicId in topicsIds)
             {
-                var topic = await _topicRepository.GetByIdAsync(topicId.Value);
+                var topic = await _topicRepository.GetByIdRawAsync(topicId.Value);
 
                 if (topic is null)
                 {

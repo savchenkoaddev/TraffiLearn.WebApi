@@ -8,29 +8,27 @@ using TraffiLearn.Application.Identity;
 using TraffiLearn.Application.Options;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Commands.Auth.Login
 {
     internal sealed class LoginCommandHandler : IRequestHandler<LoginCommand, Result<LoginResponse>>
     {
+        private readonly IAuthService<ApplicationUser> _authService;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ITokenService _tokenService;
         private readonly ILogger<LoginCommandHandler> _logger;
-        private readonly LoginSettings _loginSettings;
 
         public LoginCommandHandler(
+            IAuthService<ApplicationUser> authService,
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
             ITokenService tokenService,
-            ILogger<LoginCommandHandler> logger,
-            IOptions<LoginSettings> loginSettings)
+            ILogger<LoginCommandHandler> logger)
         {
+            _authService = authService;
             _userManager = userManager;
-            _signInManager = signInManager;
             _tokenService = tokenService;
             _logger = logger;
-            _loginSettings = loginSettings.Value;
         }
 
         public async Task<Result<LoginResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
@@ -42,20 +40,16 @@ namespace TraffiLearn.Application.Commands.Auth.Login
                 return Result.Failure<LoginResponse>(UserErrors.NotFound);
             }
 
-            var canLogin = await _signInManager.CanSignInAsync(user);
+            var loginResult = await _authService.PasswordLogin(
+                user: user,
+                password: request.Password);
 
-            if (!canLogin)
+            if (loginResult.IsFailure)
             {
-                return Result.Failure<LoginResponse>(UserErrors.CannotLogin);
+                return Result.Failure<LoginResponse>(loginResult.Error);
             }
 
-            var signInResult = await _signInManager.PasswordSignInAsync(
-                user,
-                password: request.Password,
-                isPersistent: _loginSettings.IsPersistent,
-                lockoutOnFailure: _loginSettings.LockoutOnFailure);
-
-            if (!signInResult.Succeeded)
+            if (!loginResult.Value.Succeeded)
             {
                 return Result.Failure<LoginResponse>(UserErrors.InvalidCredentials);
             }

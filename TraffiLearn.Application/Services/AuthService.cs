@@ -1,7 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using TraffiLearn.Application.Abstractions.Auth;
+using TraffiLearn.Application.DTO.Auth;
+using TraffiLearn.Application.Options;
+using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Users;
 
@@ -11,13 +16,16 @@ namespace TraffiLearn.Application.Services
         where TUser : class
     {
         private readonly SignInManager<TUser> _signInManager;
+        private readonly LoginSettings _loginSettings;
         private readonly ILogger<AuthService<TUser>> _logger;
 
         public AuthService(
-            SignInManager<TUser> signInManager, 
+            SignInManager<TUser> signInManager,
+            IOptions<LoginSettings> loginSettings,
             ILogger<AuthService<TUser>> logger)
         {
             _signInManager = signInManager;
+            _loginSettings = loginSettings.Value;
             _logger = logger;
         }
 
@@ -81,6 +89,24 @@ namespace TraffiLearn.Application.Services
             _logger.LogError("Failed to parse id from to GUID. The id: {id}", claimsId);
 
             return Result.Failure<Guid>(Error.InternalFailure());
+        }
+
+        public async Task<Result<SignInResult>> PasswordLogin(
+            TUser user, 
+            string password)
+        {
+            var canLogin = await _signInManager.CanSignInAsync(user);
+
+            if (!canLogin)
+            {
+                return Result.Failure<SignInResult>(UserErrors.CannotLogin);
+            }
+
+            return await _signInManager.PasswordSignInAsync(
+                user,
+                password: password,
+                isPersistent: _loginSettings.IsPersistent,
+                lockoutOnFailure: _loginSettings.LockoutOnFailure);
         }
     }
 }

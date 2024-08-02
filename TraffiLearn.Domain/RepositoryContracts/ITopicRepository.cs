@@ -1,17 +1,18 @@
-﻿using System.Linq.Expressions;
-using TraffiLearn.Domain.Entities;
+﻿using TraffiLearn.Domain.Entities;
 
 namespace TraffiLearn.Domain.RepositoryContracts
 {
     public interface ITopicRepository
     {
-        Task<Topic?> GetByIdAsync(
-            Guid topicId,
-            Expression<Func<Topic, object>> includeExpression = null!);
+        Task<Topic?> GetByIdRawAsync(Guid topicId);
+
+        Task<Topic?> GetByIdWithQuestionsAsync(Guid topicId);
+
+        Task<IEnumerable<Topic>> GetAllRawSortedByNumberAsync();
 
         Task<IEnumerable<Topic>> GetAllAsync();
 
-        Task<bool> ExistsAsync(Guid id);
+        Task<bool> ExistsAsync(Guid topicId);
 
         Task AddAsync(Topic topic);
 

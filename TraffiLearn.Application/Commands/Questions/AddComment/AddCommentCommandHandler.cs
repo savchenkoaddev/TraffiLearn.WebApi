@@ -4,7 +4,6 @@ using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.Errors.Comments;
 using TraffiLearn.Domain.Errors.Questions;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
@@ -59,9 +58,8 @@ namespace TraffiLearn.Application.Commands.Questions.AddComment
                 return Error.InternalFailure();
             }
 
-            var question = await _questionRepository.GetByIdAsync(
-                request.QuestionId.Value,
-                includeExpression: x => x.Comments);
+            var question = await _questionRepository.GetByIdWithCommentsAsync(
+                request.QuestionId.Value);
 
             if (question is null)
             {
@@ -105,7 +103,6 @@ namespace TraffiLearn.Application.Commands.Questions.AddComment
             }
 
             await _commentRepository.AddAsync(comment);
-
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Added comment succesfully.");

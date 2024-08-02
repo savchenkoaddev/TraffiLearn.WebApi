@@ -1,17 +1,16 @@
-﻿using System.Linq.Expressions;
-using TraffiLearn.Domain.Entities;
+﻿using TraffiLearn.Domain.Entities;
 
 namespace TraffiLearn.Domain.RepositoryContracts
 {
     public interface ITicketRepository
     {
-        Task<Ticket?> GetByIdAsync(
-            Guid ticketId,
-            Expression<Func<Ticket, object>> includeExpression = null!);
+        Task<Ticket?> GetByIdRawAsync(Guid ticketId);
+
+        Task<Ticket?> GetByIdWithQuestionsAsync(Guid ticketId);
 
         Task<IEnumerable<Ticket>> GetAllAsync();
 
-        Task<bool> ExistsAsync(Guid id);
+        Task<bool> ExistsAsync(Guid ticketId);
 
         Task AddAsync(Ticket ticket);
 

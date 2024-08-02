@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Infrastructure.Database;
@@ -37,24 +36,23 @@ namespace TraffiLearn.Infrastructure.Repositories
             return await _dbContext.Topics.ToListAsync();
         }
 
-        public async Task<Topic?> GetByIdAsync(
-            Guid topicId,
-            Expression<Func<Topic, object>>? includeExpression = null!)
+        public async Task<IEnumerable<Topic>> GetAllRawSortedByNumberAsync()
         {
-            if (includeExpression is null)
-            {
-                return await _dbContext.Topics.FindAsync(topicId);
-            }
+            return await _dbContext.Topics
+                .OrderBy(t => t.Number)
+                .ToListAsync();
+        }
 
-            IQueryable<Topic> query = _dbContext.Topics;
+        public async Task<Topic?> GetByIdRawAsync(Guid topicId)
+        {
+            return await _dbContext.Topics.FindAsync(topicId);
+        }
 
-            if (includeExpression != null)
-            {
-                query = query.Include(includeExpression);
-            }
-
-            return await query
-                .FirstOrDefaultAsync(q => q.Id == topicId);
+        public async Task<Topic?> GetByIdWithQuestionsAsync(Guid topicId)
+        {
+            return await _dbContext.Topics
+                .Include(t => t.Questions)
+                .FirstOrDefaultAsync(t => t.Id == topicId);
         }
 
         public Task UpdateAsync(Topic topic)

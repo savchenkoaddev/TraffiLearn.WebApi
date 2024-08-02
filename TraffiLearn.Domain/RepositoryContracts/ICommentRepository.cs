@@ -1,15 +1,16 @@
-﻿using System.Linq.Expressions;
-using TraffiLearn.Domain.Entities;
+﻿using TraffiLearn.Domain.Entities;
 
 namespace TraffiLearn.Domain.RepositoryContracts
 {
     public interface ICommentRepository
     {
-        Task<Comment?> GetByIdAsync(
-            Guid commentId,
-            Expression<Func<Comment, object>>? includeExpression = null!);
+        Task<Comment?> GetByIdRawAsync(Guid commentId);
 
-        Task<bool> ExistsAsync(Guid id);
+        Task<Comment?> GetByIdWithQuestionAsync(Guid commentId);
+
+        Task<Comment?> GetByIdWithUserAsync(Guid commentId);
+
+        Task<bool> ExistsAsync(Guid commentId);
 
         Task AddAsync(Comment comment);
 

@@ -23,7 +23,7 @@ namespace TraffiLearn.Application.Commands.Topics.Delete
             DeleteTopicCommand request, 
             CancellationToken cancellationToken)
         {
-            var found = await _topicRepository.GetByIdAsync(request.TopicId.Value);
+            var found = await _topicRepository.GetByIdRawAsync(request.TopicId.Value);
 
             if (found is null)
             {

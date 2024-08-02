@@ -34,14 +34,12 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
             _logger = logger;
         }
 
-
         public async Task<Result> Handle(
             ReplyCommand request, 
             CancellationToken cancellationToken)
         {
-            var comment = await _commentRepository.GetByIdAsync(
-                request.CommentId.Value,
-                includeExpression: x => x.Question);
+            var comment = await _commentRepository.GetByIdWithQuestionAsync(
+                request.CommentId.Value);
 
             if (comment is null)
             {

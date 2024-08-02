@@ -26,16 +26,16 @@ namespace TraffiLearn.Application.Commands.Questions.RemoveTicketFromQuestion
             RemoveTicketFromQuestionCommand request, 
             CancellationToken cancellationToken)
         {
-            var ticket = await _ticketRepository.GetByIdAsync(request.TicketId.Value);
+            var ticket = await _ticketRepository.GetByIdWithQuestionsAsync(
+                request.TicketId.Value);
 
             if (ticket is null)
             {
                 return QuestionErrors.TicketNotFound;
             }
 
-            var question = await _questionRepository.GetByIdAsync(
-                request.QuestionId.Value,
-                includeExpression: question => question.Tickets);
+            var question = await _questionRepository.GetByIdWithTicketsAsync(
+                request.QuestionId.Value);
 
             if (question is null)
             {

@@ -25,9 +25,8 @@ namespace TraffiLearn.Application.Queries.Topics.GetTopicQuestions
             GetTopicQuestionsQuery request, 
             CancellationToken cancellationToken)
         {
-            var topic = await _topicRepository.GetByIdAsync(
-                request.TopicId.Value,
-                includeExpression: x => x.Questions);
+            var topic = await _topicRepository.GetByIdWithQuestionsAsync(
+                request.TopicId.Value);
 
             if (topic is null)
             {

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Storage;
 using TraffiLearn.Domain.Entities;
@@ -32,7 +33,7 @@ namespace TraffiLearn.Application.Commands.Questions.Create
         }
 
         public async Task<Result> Handle(
-            CreateQuestionCommand request, 
+            CreateQuestionCommand request,
             CancellationToken cancellationToken)
         {
             var mappingResult = _questionMapper.Map(request);
@@ -44,9 +45,28 @@ namespace TraffiLearn.Application.Commands.Questions.Create
 
             var question = mappingResult.Value;
 
-            foreach (var topicId in request.TopicsIds)
+            await AddTopics(
+                question,
+                request.TopicsIds);
+
+            await HandleImage(
+                question,
+                image: request.Image,
+                cancellationToken);
+
+            await _questionRepository.AddAsync(question);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return Result.Success();
+        }
+
+        private async Task<Result> AddTopics(
+            Question question,
+            List<Guid?> topicsIds)
+        {
+            foreach (var topicId in topicsIds)
             {
-                var topic = await _topicRepository.GetByIdAsync(topicId.Value);
+                var topic = await _topicRepository.GetByIdRawAsync(topicId.Value);
 
                 if (topic is null)
                 {
@@ -68,14 +88,20 @@ namespace TraffiLearn.Application.Commands.Questions.Create
                 }
             }
 
-            var image = request.Image;
+            return Result.Success();
+        }
 
+        private async Task<Result> HandleImage(
+            Question question,
+            IFormFile? image,
+            CancellationToken cancellationToken)
+        {
             if (image is not null)
             {
                 using Stream stream = image.OpenReadStream();
-                
+
                 var uploadResponse = await _blobService.UploadAsync(
-                    stream,
+                stream,
                     image.ContentType,
                     cancellationToken);
 
@@ -88,9 +114,6 @@ namespace TraffiLearn.Application.Commands.Questions.Create
 
                 question.SetImageUri(imageUriResult.Value);
             }
-
-            await _questionRepository.AddAsync(question);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
         }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Infrastructure.Database;
@@ -32,22 +31,23 @@ namespace TraffiLearn.Infrastructure.Repositories
             return (await _dbContext.Comments.FindAsync(id)) is not null;
         }
 
-        public async Task<Comment?> GetByIdAsync(Guid commentId, Expression<Func<Comment, object>>? includeExpression = null)
+        public async Task<Comment?> GetByIdRawAsync(Guid commentId)
         {
-            if (includeExpression is null)
-            {
-                return await _dbContext.Comments.FindAsync(commentId);
-            }
+            return await _dbContext.Comments.FindAsync(commentId);
+        }
 
-            IQueryable<Comment> query = _dbContext.Comments;
+        public async Task<Comment?> GetByIdWithQuestionAsync(Guid commentId)
+        {
+            return await _dbContext.Comments
+                .Include(c => c.Question)
+                .FirstOrDefaultAsync(c => c.Id == commentId);
+        }
 
-            if (includeExpression != null)
-            {
-                query = query.Include(includeExpression);
-            }
-
-            return await query
-                .FirstOrDefaultAsync(q => q.Id == commentId);
+        public async Task<Comment?> GetByIdWithUserAsync(Guid commentId)
+        {
+            return await _dbContext.Comments
+                .Include(c => c.User)
+                .FirstOrDefaultAsync(c => c.Id == commentId);
         }
 
         public Task UpdateAsync(Comment comment)

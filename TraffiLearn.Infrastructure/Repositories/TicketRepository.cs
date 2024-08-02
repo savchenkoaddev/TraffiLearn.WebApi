@@ -37,24 +37,16 @@ namespace TraffiLearn.Infrastructure.Repositories
             return await _dbContext.Tickets.ToListAsync();
         }
 
-        public async Task<Ticket?> GetByIdAsync(
-            Guid ticketId, 
-            Expression<Func<Ticket, object>> includeExpression = null!)
+        public async Task<Ticket?> GetByIdRawAsync(Guid ticketId)
         {
-            if (includeExpression is null)
-            {
-                return await _dbContext.Tickets.FindAsync(ticketId);
-            }
+            return await _dbContext.Tickets.FindAsync(ticketId);
+        }
 
-            IQueryable<Ticket> query = _dbContext.Tickets;
-
-            if (includeExpression != null)
-            {
-                query = query.Include(includeExpression);
-            }
-
-            return await query
-                .FirstOrDefaultAsync(q => q.Id == ticketId);
+        public async Task<Ticket?> GetByIdWithQuestionsAsync(Guid ticketId)
+        {
+            return await _dbContext.Tickets
+                .Include(t => t.Questions)
+                .FirstOrDefaultAsync(t => t.Id == ticketId);
         }
 
         public Task UpdateAsync(Ticket ticket)

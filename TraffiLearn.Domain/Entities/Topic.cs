@@ -52,12 +52,10 @@ namespace TraffiLearn.Domain.Entities
             return Result.Success();
         }
 
-        public Result Update(
-            TopicNumber number,
-            TopicTitle title)
+        public Result Update(Topic topic)
         {
-            Number = number;
-            Title = title;
+            Number = topic.Number;
+            Title = topic.Title;
 
             return Result.Success();
         }

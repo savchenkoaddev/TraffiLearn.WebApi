@@ -21,6 +21,8 @@ using TraffiLearn.Domain.Shared;
 using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Identity;
 using TraffiLearn.Application.Services;
+using TraffiLearn.Application.Commands.Questions.Update;
+using TraffiLearn.Application.Commands.Topics.Update;
 
 namespace TraffiLearn.Application
 {
@@ -87,6 +89,10 @@ namespace TraffiLearn.Application
                 TicketToTicketResponseMapper>();
             services.AddScoped<Mapper<RegisterUserCommand, Result<User>>,
                 RegisterUserCommandMapper>();
+            services.AddScoped<Mapper<UpdateQuestionCommand, Result<Question>>,
+                UpdateQuestionCommandMapper>();
+            services.AddScoped<Mapper<UpdateTopicCommand, Result<Topic>>,
+                UpdateTopicCommandMapper>();
 
             return services;
         }

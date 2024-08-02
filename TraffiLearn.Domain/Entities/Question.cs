@@ -152,25 +152,13 @@ namespace TraffiLearn.Domain.Entities
             ImageUri = imageUri;
         }
 
-        public Result Update(
-            QuestionContent content,
-            QuestionExplanation explanation,
-            QuestionNumber questionNumber,
-            List<Answer> answers,
-            ImageUri? imageUri)
+        public Result Update(Question question)
         {
-            var validationResult = ValidateAnswers(answers);
-
-            if (validationResult.IsFailure)
-            {
-                return Result.Failure<Question>(validationResult.Error);
-            }
-
-            Content = content;
-            Explanation = explanation;
-            QuestionNumber = questionNumber;
-            _answers = answers;
-            ImageUri = imageUri;
+            Content = question.Content;
+            Explanation = question.Explanation;
+            QuestionNumber = question.QuestionNumber;
+            _answers = question.Answers.ToList();
+            ImageUri = question.ImageUri;
 
             return Result.Success();
         }
