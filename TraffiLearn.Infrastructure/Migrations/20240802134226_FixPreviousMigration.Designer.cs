@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TraffiLearn.Infrastructure.Database;
 
@@ -11,9 +12,11 @@ using TraffiLearn.Infrastructure.Database;
 namespace TraffiLearn.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240802134226_FixPreviousMigration")]
+    partial class FixPreviousMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -467,7 +470,7 @@ namespace TraffiLearn.Infrastructure.Migrations
                     b.HasOne("TraffiLearn.Domain.Entities.Comment", "RootComment")
                         .WithMany("Replies")
                         .HasForeignKey("RootCommentId")
-                        .OnDelete(DeleteBehavior.ClientCascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("TraffiLearn.Domain.Entities.User", "User")
                         .WithMany("Comments")

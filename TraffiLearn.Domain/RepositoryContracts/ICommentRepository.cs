@@ -6,6 +6,8 @@ namespace TraffiLearn.Domain.RepositoryContracts
     {
         Task<Comment?> GetByIdRawAsync(Guid commentId);
 
+        Task<Comment?> GetByIdWithAllNestedCommentsAsync(Guid commentId);
+
         Task<Comment?> GetByIdWithQuestionAsync(Guid commentId);
 
         Task<Comment?> GetByIdWithUserAsync(Guid commentId);

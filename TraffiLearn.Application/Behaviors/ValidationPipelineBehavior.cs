@@ -62,7 +62,7 @@ namespace TraffiLearn.Application.Behaviors
                 .GetGenericTypeDefinition()
                 .MakeGenericType(typeof(TResult).GenericTypeArguments.First())
                 .GetMethod(nameof(ValidationResult.WithErrors))!
-                .Invoke(null, new object?[] { errors })!;
+                .Invoke(null, [errors])!;
 
             return (TResult) validationResult;
         }

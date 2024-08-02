@@ -45,14 +45,24 @@ namespace TraffiLearn.Application.Commands.Questions.Create
 
             var question = mappingResult.Value;
 
-            await AddTopics(
+            var addResult = await AddTopics(
                 question,
                 request.TopicsIds);
 
-            await HandleImage(
+            if (addResult.IsFailure)
+            {
+                return addResult.Error;
+            }
+
+            var imageResult = await HandleImage(
                 question,
                 image: request.Image,
                 cancellationToken);
+
+            if (imageResult.IsFailure)
+            {
+                return imageResult.Error;
+            }
 
             await _questionRepository.AddAsync(question);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

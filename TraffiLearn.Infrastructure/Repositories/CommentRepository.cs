@@ -36,6 +36,52 @@ namespace TraffiLearn.Infrastructure.Repositories
             return await _dbContext.Comments.FindAsync(commentId);
         }
 
+        public async Task<Comment?> GetByIdWithAllNestedCommentsAsync(Guid commentId)
+        {
+            var sql = """
+                WITH RecursiveComments AS (
+                    SELECT 
+                        Id, 
+                        Content, 
+                        UserId, 
+                        QuestionId, 
+                        RootCommentId,
+                        0 AS Level
+                    FROM Comments
+                    WHERE Id = {0}
+
+                    UNION ALL
+
+                    SELECT 
+                        c.Id, 
+                        c.Content, 
+                        c.UserId, 
+                        c.QuestionId, 
+                        c.RootCommentId,
+                        rc.Level + 1 AS Level
+                    FROM Comments c
+                    INNER JOIN RecursiveComments rc ON c.RootCommentId = rc.Id
+                )
+                SELECT 
+                    rc.Id, 
+                    rc.Content, 
+                    rc.UserId, 
+                    rc.QuestionId, 
+                    rc.RootCommentId,
+                    rc.Level
+                FROM RecursiveComments rc
+                ORDER BY rc.Level
+            """;
+
+            var result = await _dbContext.Comments
+                .FromSqlRaw(sql, commentId)
+                .ToListAsync();
+
+            var rootComment = result.FirstOrDefault();
+
+            return rootComment;
+        }
+
         public async Task<Comment?> GetByIdWithQuestionAsync(Guid commentId)
         {
             return await _dbContext.Comments

@@ -6,8 +6,8 @@ namespace TraffiLearn.Domain.Errors.Comments
     {
         public static readonly Error NotFound =
             Error.NotFound(
-                code: "Comment.QuestionNotFound",
-                description: "Question has not been found.");
+                code: "Comment.NotFound",
+                description: "Comment has not been found.");
 
         public static readonly Error CommentAlreadyAdded =
             Error.Validation(

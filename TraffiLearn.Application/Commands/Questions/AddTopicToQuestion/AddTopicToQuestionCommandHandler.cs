@@ -56,7 +56,7 @@ namespace TraffiLearn.Application.Commands.Questions.AddTopicToQuestion
                 return questionAddResult.Error;
             }
 
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
         }
