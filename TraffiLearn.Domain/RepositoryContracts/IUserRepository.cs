@@ -1,4 +1,5 @@
 ﻿using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Domain.RepositoryContracts
 {
@@ -6,7 +7,7 @@ namespace TraffiLearn.Domain.RepositoryContracts
     {
         Task<User?> GetByIdAsync(Guid userId);
 
-        Task<User?> GetByEmailAsync(string email);
+        Task<User?> GetByEmailAsync(Email email);
 
         Task AddAsync(User user);
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.ValueObjects.Users;
 using TraffiLearn.Infrastructure.Database;
 
 namespace TraffiLearn.Infrastructure.Repositories
@@ -26,9 +27,9 @@ namespace TraffiLearn.Infrastructure.Repositories
             return Task.CompletedTask;
         }
 
-        public async Task<User?> GetByEmailAsync(string email)
+        public async Task<User?> GetByEmailAsync(Email email)
         {
-            return await _dbContext.Users.FirstOrDefaultAsync(x => x.Email.Value == email);
+            return await _dbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
         }
 
         public async Task<User?> GetByIdAsync(Guid userId)

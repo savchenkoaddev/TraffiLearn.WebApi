@@ -9,6 +9,7 @@ using TraffiLearn.Domain.Errors.Comments;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Comments;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Commands.Comments.AddComment
 {
@@ -50,14 +51,25 @@ namespace TraffiLearn.Application.Commands.Comments.AddComment
                 return Error.InternalFailure();
             }
 
-            var email = _signInManager.Context.User.FindFirst(ClaimTypes.Email).Value;
+            var claimsEmail = _signInManager.Context.User.FindFirst(ClaimTypes.Email).Value;
 
-            if (email is null)
+            if (claimsEmail is null)
             {
                 _logger.LogWarning("Couldn't fetch the email from http context. This is probably due to the token generation issues.");
 
                 return Error.InternalFailure();
             }
+
+            var emailCreateResult = Email.Create(claimsEmail);
+
+            if (emailCreateResult.IsFailure)
+            {
+                _logger.LogError("Failed to create email due to unknown reasons. The registration request validation may have failed.");
+
+                return Error.InternalFailure();
+            }
+
+            var email = emailCreateResult.Value;
 
             var user = await _userRepository.GetByEmailAsync(email);
 

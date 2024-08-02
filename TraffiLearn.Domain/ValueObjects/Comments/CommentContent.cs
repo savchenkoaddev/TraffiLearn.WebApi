@@ -17,7 +17,7 @@ namespace TraffiLearn.Domain.ValueObjects.Comments
 
         public override IEnumerable<object> GetAtomicValues()
         {
-            throw new NotImplementedException();
+            yield return Value;
         }
 
         public static Result<CommentContent> Create(string value) 
