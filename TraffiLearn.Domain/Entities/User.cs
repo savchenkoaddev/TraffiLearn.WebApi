@@ -1,4 +1,5 @@
-﻿using TraffiLearn.Domain.Primitives;
+﻿using TraffiLearn.Domain.Errors.Users;
+using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Users;
 
@@ -30,6 +31,11 @@ namespace TraffiLearn.Domain.Entities
 
         public Result AddComment(Comment comment)
         {
+            if (_comments.Contains(comment))
+            {
+                return UserErrors.CommentAlreadyAdded;
+            }
+
             _comments.Add(comment);
 
             return Result.Success();

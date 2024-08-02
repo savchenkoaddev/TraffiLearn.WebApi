@@ -8,5 +8,10 @@ namespace TraffiLearn.Domain.Errors.Comments
             Error.NotFound(
                 code: "Comment.QuestionNotFound",
                 description: "Question has not been found.");
+
+        public static readonly Error CommentAlreadyAdded =
+            Error.Validation(
+                code: "Comment.CommentAlreadyAdded",
+                description: "The same comment has already been added within the root comment.");
     }
 }

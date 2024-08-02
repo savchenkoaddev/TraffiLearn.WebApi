@@ -53,6 +53,11 @@ namespace TraffiLearn.Domain.Entities
 
         public Result AddComment(Comment comment)
         {
+            if (_comments.Contains(comment))
+            {
+                return QuestionErrors.CommentAlreadyAdded;
+            }
+
             _comments.Add(comment);
 
             return Result.Success();
