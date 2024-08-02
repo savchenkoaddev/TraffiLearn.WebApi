@@ -14,9 +14,9 @@ namespace TraffiLearn.Domain.Entities
         { }
 
         private Ticket(
-            TicketId ticketId,
+            Guid ticketId,
             TicketNumber ticketNumber)
-            : base(ticketId.Value)
+            : base(ticketId)
         {
             TicketNumber = ticketNumber;
         }
@@ -77,7 +77,7 @@ namespace TraffiLearn.Domain.Entities
         }
 
         public static Result<Ticket> Create(
-            TicketId ticketId,
+            Guid ticketId,
             TicketNumber ticketNumber)
         {
             return new Ticket(
@@ -85,6 +85,4 @@ namespace TraffiLearn.Domain.Entities
                 ticketNumber);
         }
     }
-
-    public sealed record TicketId(Guid Value);
 }

@@ -10,7 +10,7 @@ namespace TraffiLearn.Application.Commands.Topics.Create
     {
         public override Result<Topic> Map(CreateTopicCommand source)
         {
-            var topicId = new TopicId(Guid.NewGuid());
+            var topicId = Guid.NewGuid();
 
             Result<TopicNumber> numberCreateResult = TopicNumber.Create(source.TopicNumber.Value);
 

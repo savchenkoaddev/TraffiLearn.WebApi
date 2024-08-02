@@ -17,12 +17,12 @@ namespace TraffiLearn.Domain.Entities
         { }
 
         private Question(
-            QuestionId id,
+            Guid id,
             QuestionContent content,
             QuestionExplanation explanation,
             QuestionNumber questionNumber,
             List<Answer> answers,
-            ImageUri? imageUri) : base(id.Value)
+            ImageUri? imageUri) : base(id)
         {
             Content = content;
             Explanation = explanation;
@@ -216,7 +216,7 @@ namespace TraffiLearn.Domain.Entities
         }
 
         public static Result<Question> Create(
-            QuestionId id,
+            Guid id,
             QuestionContent content,
             QuestionExplanation explanation,
             QuestionNumber questionNumber,
@@ -266,6 +266,4 @@ namespace TraffiLearn.Domain.Entities
             return _answers.Count(q => q.IsCorrect == true) == 1;
         }
     }
-
-    public sealed record QuestionId(Guid Value);
 }

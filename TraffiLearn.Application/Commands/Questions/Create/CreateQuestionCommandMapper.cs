@@ -10,7 +10,7 @@ namespace TraffiLearn.Application.Commands.Questions.Create
     {
         public override Result<Question> Map(CreateQuestionCommand source)
         {
-            var questionId = new QuestionId(Guid.NewGuid());
+            var questionId = Guid.NewGuid();
 
             List<Answer> answers = [];
 

@@ -17,7 +17,7 @@ namespace TraffiLearn.Application.Commands.Tickets.Create
                 return Result.Failure<Ticket>(numberCreateResult.Error);
             }
 
-            var ticketId = new TicketId(Guid.NewGuid());
+            var ticketId = Guid.NewGuid();
 
             return Ticket.Create(
                 ticketId,

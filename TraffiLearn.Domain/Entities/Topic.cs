@@ -14,9 +14,9 @@ namespace TraffiLearn.Domain.Entities
         { }
 
         private Topic(
-            TopicId id,
+            Guid id,
             TopicNumber number,
-            TopicTitle title) : base(id.Value)
+            TopicTitle title) : base(id)
         {
             Number = number;
             Title = title;
@@ -73,7 +73,7 @@ namespace TraffiLearn.Domain.Entities
         }
 
         public static Result<Topic> Create(
-            TopicId id,
+            Guid id,
             TopicNumber number,
             TopicTitle title)
         {
@@ -83,6 +83,4 @@ namespace TraffiLearn.Domain.Entities
                 title: title);
         }
     }
-
-    public sealed record TopicId(Guid Value);
 }

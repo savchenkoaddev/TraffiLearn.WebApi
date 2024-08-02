@@ -61,7 +61,7 @@ namespace TraffiLearn.Application.Services
             {
                 _logger.LogError("The user is not authenticated. This is probably due to some authorization failures.");
 
-                return Result.Failure<TKey>(Error.InternalFailure());
+                return Result.Failure<Guid>(Error.InternalFailure());
             }
 
             var claimsId = _signInManager.Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -70,7 +70,7 @@ namespace TraffiLearn.Application.Services
             {
                 _logger.LogError("Couldn't fetch the id from http context. This is probably due to the token generation issues.");
 
-                return Result.Failure<TKey>(Error.InternalFailure());
+                return Result.Failure<Guid>(Error.InternalFailure());
             }
 
             if (Guid.TryParse(claimsId, out Guid id))
