@@ -167,7 +167,7 @@ namespace TraffiLearn.Infrastructure.Migrations
 
                     b.HasIndex("TicketsId");
 
-                    b.ToTable("QuestionTicket");
+                    b.ToTable("QuestionTicket", (string)null);
                 });
 
             modelBuilder.Entity("QuestionTopic", b =>
@@ -182,7 +182,7 @@ namespace TraffiLearn.Infrastructure.Migrations
 
                     b.HasIndex("TopicsId");
 
-                    b.ToTable("QuestionTopic");
+                    b.ToTable("QuestionTopic", (string)null);
                 });
 
             modelBuilder.Entity("TraffiLearn.Application.Identity.ApplicationUser", b =>
@@ -278,7 +278,7 @@ namespace TraffiLearn.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("TraffiLearn.Domain.Entities.Question", b =>
@@ -316,7 +316,7 @@ namespace TraffiLearn.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Questions");
+                    b.ToTable("Questions", (string)null);
                 });
 
             modelBuilder.Entity("TraffiLearn.Domain.Entities.Ticket", b =>
@@ -330,7 +330,7 @@ namespace TraffiLearn.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tickets");
+                    b.ToTable("Tickets", (string)null);
                 });
 
             modelBuilder.Entity("TraffiLearn.Domain.Entities.Topic", b =>
@@ -349,7 +349,7 @@ namespace TraffiLearn.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Topics");
+                    b.ToTable("Topics", (string)null);
                 });
 
             modelBuilder.Entity("TraffiLearn.Domain.Entities.User", b =>
@@ -372,7 +372,7 @@ namespace TraffiLearn.Infrastructure.Migrations
 
                     b.HasIndex("Email");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -484,7 +484,7 @@ namespace TraffiLearn.Infrastructure.Migrations
 
             modelBuilder.Entity("TraffiLearn.Domain.Entities.Question", b =>
                 {
-                    b.OwnsMany("TraffiLearn.Domain.ValueObjects.Questions.Answer", "Answers", b1 =>
+                    b.OwnsMany("TraffiLearn.Domain.Entities.Question.Answers#TraffiLearn.Domain.ValueObjects.Questions.Answer", "Answers", b1 =>
                         {
                             b1.Property<Guid>("QuestionId")
                                 .HasColumnType("uniqueidentifier");
@@ -505,7 +505,7 @@ namespace TraffiLearn.Infrastructure.Migrations
 
                             b1.HasKey("QuestionId", "Id");
 
-                            b1.ToTable("Answer");
+                            b1.ToTable("Answer", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("QuestionId");

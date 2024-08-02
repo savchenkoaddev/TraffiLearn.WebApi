@@ -37,7 +37,9 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
 
         public async Task<Result> Handle(ReplyCommand request, CancellationToken cancellationToken)
         {
-            var comment = await _commentRepository.GetByIdAsync(request.CommentId.Value);
+            var comment = await _commentRepository.GetByIdAsync(
+                request.CommentId.Value,
+                includeExpression: x => x.Question);
 
             if (comment is null)
             {
@@ -94,8 +96,15 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
             var userAddCommentResult = user.AddComment(replyComment);
 
             if (userAddCommentResult.IsFailure)
-            { 
+            {
                 return userAddCommentResult.Error;
+            }
+
+            var questionAddCommentResult = comment.Question.AddComment(replyComment);
+
+            if (questionAddCommentResult.IsFailure) 
+            {
+                return questionAddCommentResult.Error;
             }
 
             await _commentRepository.AddAsync(replyComment);

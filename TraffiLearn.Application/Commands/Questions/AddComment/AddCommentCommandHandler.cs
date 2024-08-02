@@ -59,7 +59,9 @@ namespace TraffiLearn.Application.Commands.Questions.AddComment
                 return Error.InternalFailure();
             }
 
-            var question = await _questionRepository.GetByIdAsync(request.QuestionId.Value);
+            var question = await _questionRepository.GetByIdAsync(
+                request.QuestionId.Value,
+                includeExpression: x => x.Comments);
 
             if (question is null)
             {
