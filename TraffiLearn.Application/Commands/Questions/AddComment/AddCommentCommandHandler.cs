@@ -5,6 +5,7 @@ using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Comments;
+using TraffiLearn.Domain.Errors.Questions;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Comments;
@@ -62,7 +63,7 @@ namespace TraffiLearn.Application.Commands.Questions.AddComment
 
             if (question is null)
             {
-                return CommentErrors.QuestionNotFound;
+                return QuestionErrors.NotFound;
             }
 
             var contentResult = CommentContent.Create(request.Content);
