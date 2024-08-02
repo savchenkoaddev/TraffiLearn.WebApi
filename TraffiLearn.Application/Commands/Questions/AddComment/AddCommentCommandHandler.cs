@@ -1,7 +1,6 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using System.Security.Claims;
+using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.Entities;
@@ -9,16 +8,15 @@ using TraffiLearn.Domain.Errors.Comments;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Comments;
-using TraffiLearn.Domain.ValueObjects.Users;
 
-namespace TraffiLearn.Application.Commands.Comments.AddComment
+namespace TraffiLearn.Application.Commands.Questions.AddComment
 {
     internal sealed class AddCommentCommandHandler : IRequestHandler<AddCommentCommand, Result>
     {
         private readonly ICommentRepository _commentRepository;
         private readonly IUserRepository _userRepository;
         private readonly IQuestionRepository _questionRepository;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IAuthService<ApplicationUser> _authService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<AddCommentCommandHandler> _logger;
 
@@ -26,50 +24,30 @@ namespace TraffiLearn.Application.Commands.Comments.AddComment
             ICommentRepository commentRepository,
             IUserRepository userRepository,
             IQuestionRepository questionRepository,
-            SignInManager<ApplicationUser> signInManager,
+            IAuthService<ApplicationUser> authService,
             IUnitOfWork unitOfWork,
             ILogger<AddCommentCommandHandler> logger)
         {
             _commentRepository = commentRepository;
             _userRepository = userRepository;
             _questionRepository = questionRepository;
-            _signInManager = signInManager;
+            _authService = authService;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
 
         public async Task<Result> Handle(
-            AddCommentCommand request, 
+            AddCommentCommand request,
             CancellationToken cancellationToken)
         {
-            var userAuthenticated = _signInManager.Context.User.Identity.IsAuthenticated;
+            var emailResult = _authService.GetCurrentUserEmail();
 
-            if (!userAuthenticated)
+            if (emailResult.IsFailure)
             {
-                _logger.LogWarning("The user is not authenticated. This is probably due to some authorization failures.");
-
-                return Error.InternalFailure();
+                return emailResult.Error;
             }
 
-            var claimsEmail = _signInManager.Context.User.FindFirst(ClaimTypes.Email).Value;
-
-            if (claimsEmail is null)
-            {
-                _logger.LogWarning("Couldn't fetch the email from http context. This is probably due to the token generation issues.");
-
-                return Error.InternalFailure();
-            }
-
-            var emailCreateResult = Email.Create(claimsEmail);
-
-            if (emailCreateResult.IsFailure)
-            {
-                _logger.LogError("Failed to create email due to unknown reasons. The registration request validation may have failed.");
-
-                return Error.InternalFailure();
-            }
-
-            var email = emailCreateResult.Value;
+            var email = emailResult.Value;
 
             var user = await _userRepository.GetByEmailAsync(email);
 
@@ -95,7 +73,7 @@ namespace TraffiLearn.Application.Commands.Comments.AddComment
             }
 
             var commentId = Guid.NewGuid();
-            
+
             var commentResult = Comment.Create(
                 commentId,
                 contentResult.Value,

@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using TraffiLearn.Domain.ValueObjects.Comments;
 
-namespace TraffiLearn.Application.Commands.Comments.AddComment
+namespace TraffiLearn.Application.Commands.Questions.AddComment
 {
     internal sealed class AddCommentCommandValidator
         : AbstractValidator<AddCommentCommand>

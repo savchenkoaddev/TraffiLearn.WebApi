@@ -18,6 +18,9 @@ using TraffiLearn.Application.Queries.Tickets;
 using TraffiLearn.Application.Queries.Topics;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Application.Abstractions.Auth;
+using TraffiLearn.Application.Identity;
+using TraffiLearn.Application.Services;
 
 namespace TraffiLearn.Application
 {
@@ -32,9 +35,18 @@ namespace TraffiLearn.Application
 
             services.AddMediatR();
 
+            services.AddApplicationServices();
+
             services.AddPipelineBehaviors();
             services.AddValidators();
             
+            return services;
+        }
+
+        private static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        {
+            services.AddScoped<IAuthService<ApplicationUser>, AuthService<ApplicationUser>>();
+
             return services;
         }
 

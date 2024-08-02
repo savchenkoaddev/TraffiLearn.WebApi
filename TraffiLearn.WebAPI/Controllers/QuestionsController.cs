@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TraffiLearn.Application.Commands.Comments.AddComment;
+using TraffiLearn.Application.Commands.Questions.AddComment;
 using TraffiLearn.Application.Commands.Questions.AddTicketToQuestion;
 using TraffiLearn.Application.Commands.Questions.AddTopicToQuestion;
 using TraffiLearn.Application.Commands.Questions.Create;
@@ -14,7 +14,6 @@ using TraffiLearn.Application.Queries.Questions.GetById;
 using TraffiLearn.Application.Queries.Questions.GetQuestionsForTheoryTest;
 using TraffiLearn.Application.Queries.Questions.GetQuestionTickets;
 using TraffiLearn.Application.Queries.Questions.GetQuestionTopics;
-using TraffiLearn.Domain.Entities;
 using TraffiLearn.WebAPI.Extensions;
 
 namespace TraffiLearn.WebAPI.Controllers

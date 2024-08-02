@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Commands.Comments.AddComment
+namespace TraffiLearn.Application.Commands.Questions.AddComment
 {
     public sealed record AddCommentCommand(
         Guid? QuestionId,
