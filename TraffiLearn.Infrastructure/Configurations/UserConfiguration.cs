@@ -24,6 +24,11 @@ namespace TraffiLearn.Infrastructure.Configurations
                     value => Email.Create(value).Value);
 
             builder.HasIndex(user => user.Email);
+
+            builder
+                .HasMany(user => user.Comments)
+                .WithOne(c => c.User)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

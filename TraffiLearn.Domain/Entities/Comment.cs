@@ -6,7 +6,7 @@ namespace TraffiLearn.Domain.Entities
 {
     public sealed class Comment : Entity
     {
-        private readonly List<Comment> _comments = [];
+        private readonly List<Comment> _replies = [];
 
         private Comment(Guid id)
             : base(id)
@@ -19,26 +19,29 @@ namespace TraffiLearn.Domain.Entities
             Question question) : base(id)
         {
             Content = commentContent;
-            LeftBy = leftBy;
+            User = leftBy;
             Question = question;
         }
 
         public CommentContent Content { get; private set; }
 
-        public User LeftBy { get; private set; }
+        public User User { get; private set; }
 
         public Question Question { get; private set; }
 
-        public IReadOnlyCollection<Comment> Comments => _comments;
+        public Comment? RootComment { get; private set; }
+
+        public IReadOnlyCollection<Comment> Replies => _replies;
 
         public void UpdateContent(CommentContent content)
         {
             Content = content;
         }
 
-        public Result Answer(Comment comment)
+        public Result Reply(Comment comment)
         {
-            _comments.Add(comment);
+            comment.RootComment = this;
+            _replies.Add(comment);
 
             return Result.Success();
         }
