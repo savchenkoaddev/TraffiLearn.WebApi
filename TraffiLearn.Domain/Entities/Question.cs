@@ -10,18 +10,19 @@ namespace TraffiLearn.Domain.Entities
         private List<Answer> _answers = [];
         private readonly List<Topic> _topics = [];
         private readonly List<Ticket> _tickets = [];
+        private readonly List<Comment> _comments = [];
 
         private Question(Guid id)
             : base(id)
         { }
 
         private Question(
-            QuestionId id,
+            Guid id,
             QuestionContent content,
             QuestionExplanation explanation,
             QuestionNumber questionNumber,
             List<Answer> answers,
-            ImageUri? imageUri) : base(id.Value)
+            ImageUri? imageUri) : base(id)
         {
             Content = content;
             Explanation = explanation;
@@ -47,6 +48,20 @@ namespace TraffiLearn.Domain.Entities
         public IReadOnlyCollection<Answer> Answers => _answers;
 
         public IReadOnlyCollection<Ticket> Tickets => _tickets;
+
+        public IReadOnlyCollection<Comment> Comments => _comments;
+
+        public Result AddComment(Comment comment)
+        {
+            if (_comments.Contains(comment))
+            {
+                return QuestionErrors.CommentAlreadyAdded;
+            }
+
+            _comments.Add(comment);
+
+            return Result.Success();
+        }
 
         public Result AddAnswer(Answer answer)
         {
@@ -93,16 +108,6 @@ namespace TraffiLearn.Domain.Entities
 
             _topics.Add(topic);
 
-            if (!topic.Questions.Contains(this))
-            {
-                var addResult = topic.AddQuestion(this);
-
-                if (addResult.IsFailure)
-                {
-                    return addResult.Error;
-                }
-            }
-
             return Result.Success();
         }
 
@@ -114,16 +119,6 @@ namespace TraffiLearn.Domain.Entities
             }
 
             _topics.Remove(topic);
-
-            if (topic.Questions.Contains(this))
-            {
-                var removeResult = topic.RemoveQuestion(this);
-
-                if (removeResult.IsFailure)
-                {
-                    return removeResult.Error;
-                }
-            }
 
             return Result.Success();
         }
@@ -137,16 +132,6 @@ namespace TraffiLearn.Domain.Entities
 
             _tickets.Add(ticket);
 
-            if (!ticket.Questions.Contains(this))
-            {
-                var addResult = ticket.AddQuestion(this);
-
-                if (addResult.IsFailure)
-                {
-                    return addResult.Error;
-                }
-            }
-
             return Result.Success();
         }
 
@@ -159,16 +144,6 @@ namespace TraffiLearn.Domain.Entities
 
             _tickets.Add(ticket);
 
-            if (ticket.Questions.Contains(this))
-            {
-                var addResult = ticket.RemoveQuestion(this);
-
-                if (addResult.IsFailure)
-                {
-                    return addResult.Error;
-                }
-            }
-
             return Result.Success();
         }
 
@@ -177,31 +152,19 @@ namespace TraffiLearn.Domain.Entities
             ImageUri = imageUri;
         }
 
-        public Result Update(
-            QuestionContent content,
-            QuestionExplanation explanation,
-            QuestionNumber questionNumber,
-            List<Answer> answers,
-            ImageUri? imageUri)
+        public Result Update(Question question)
         {
-            var validationResult = ValidateAnswers(answers);
-
-            if (validationResult.IsFailure)
-            {
-                return Result.Failure<Question>(validationResult.Error);
-            }
-
-            Content = content;
-            Explanation = explanation;
-            QuestionNumber = questionNumber;
-            _answers = answers;
-            ImageUri = imageUri;
+            Content = question.Content;
+            Explanation = question.Explanation;
+            QuestionNumber = question.QuestionNumber;
+            _answers = question.Answers.ToList();
+            ImageUri = question.ImageUri;
 
             return Result.Success();
         }
 
         public static Result<Question> Create(
-            QuestionId id,
+            Guid id,
             QuestionContent content,
             QuestionExplanation explanation,
             QuestionNumber questionNumber,
@@ -251,6 +214,4 @@ namespace TraffiLearn.Domain.Entities
             return _answers.Count(q => q.IsCorrect == true) == 1;
         }
     }
-
-    public sealed record QuestionId(Guid Value);
 }

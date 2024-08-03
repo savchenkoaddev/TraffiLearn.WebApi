@@ -1,4 +1,5 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.DTO.Answers;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Questions;
@@ -10,21 +11,16 @@ namespace TraffiLearn.Application.Commands.Questions.Create
     {
         public override Result<Question> Map(CreateQuestionCommand source)
         {
-            var questionId = new QuestionId(Guid.NewGuid());
+            var questionId = Guid.NewGuid();
 
-            List<Answer> answers = [];
+            var answersResult = ParseAnswers(source.Answers);
 
-            foreach (var answer in source.Answers)
+            if (answersResult.IsFailure)
             {
-                Result<Answer> answerResult = Answer.Create(answer.Text, answer.IsCorrect.Value);
-
-                if (answerResult.IsFailure)
-                {
-                    return Result.Failure<Question>(answerResult.Error);
-                }
-
-                answers.Add(answerResult.Value);
+                return Result.Failure<Question>(answersResult.Error);
             }
+
+            var answers = answersResult.Value;
 
             Result<QuestionContent> contentResult = QuestionContent.Create(source.Content);
 
@@ -54,6 +50,27 @@ namespace TraffiLearn.Application.Commands.Questions.Create
                 questionNumberResult.Value,
                 answers: answers,
                 imageUri: null);
+        }
+
+        private Result<List<Answer>> ParseAnswers(IEnumerable<AnswerRequest?> requestAnswers)
+        {
+            List<Answer> answers = [];
+
+            foreach (var answer in requestAnswers)
+            {
+                var answerCreateResult = Answer.Create(
+                    text: answer.Text,
+                    isCorrect: answer.IsCorrect.Value);
+
+                if (answerCreateResult.IsFailure)
+                {
+                    return Result.Failure<List<Answer>>(answerCreateResult.Error);
+                }
+
+                answers.Add(answerCreateResult.Value);
+            }
+
+            return Result.Success(answers);
         }
     }
 }

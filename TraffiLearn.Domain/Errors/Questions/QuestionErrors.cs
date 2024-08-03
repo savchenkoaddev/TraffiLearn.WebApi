@@ -69,6 +69,11 @@ namespace TraffiLearn.Domain.Errors.Questions
                 code: "Question.TicketNotFound",
                 description: "The question does not contain the ticket.");
 
+        public static readonly Error CommentAlreadyAdded =
+            Error.Validation(
+                code: "Question.CommentAlreadyAdded",
+                description: "The question already contains the comment.");
+
         public static readonly Error NotEnoughRecords =
             Error.InternalFailure(
                 code: "Question.NotEnoughRecords",

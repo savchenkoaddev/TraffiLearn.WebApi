@@ -51,11 +51,16 @@ namespace TraffiLearn.Infrastructure.Configurations
 
             builder
                 .HasMany(q => q.Topics)
-                .WithMany(q => q.Questions);
+                .WithMany(t => t.Questions);
 
             builder
-                .HasMany(t => t.Tickets)
+                .HasMany(q => q.Tickets)
                 .WithMany(t => t.Questions);
+
+            builder
+                .HasMany(q => q.Comments)
+                .WithOne(c => c.Question)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

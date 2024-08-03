@@ -23,5 +23,10 @@ namespace TraffiLearn.Domain.Errors.Users
             Error.OperationFailure(
                 code: "User.CannotLogin",
                 description: "The user cannot login due to some reasons. Check if the email is confirmed.");
+
+        public static readonly Error CommentAlreadyAdded =
+            Error.Validation(
+                code: "User.CommentAlreadyAdded",
+                description: "The user already has the same comment.");
     }
 }

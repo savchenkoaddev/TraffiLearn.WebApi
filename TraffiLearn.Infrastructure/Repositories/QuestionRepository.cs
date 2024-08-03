@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Infrastructure.Database;
@@ -37,27 +36,33 @@ namespace TraffiLearn.Infrastructure.Repositories
             return await _dbContext.Questions.ToListAsync();
         }
 
-        public async Task<Question?> GetByIdAsync(
-            Guid questionId, 
-            Expression<Func<Question, object>>? includeExpression = null!)
+        public async Task<Question?> GetByIdRawAsync(Guid questionId)
         {
-            if (includeExpression is null)
-            {
-                return await _dbContext.Questions.FindAsync(questionId);
-            }
+            return await _dbContext.Questions.FindAsync(questionId);
+        }
 
-            IQueryable<Question> query = _dbContext.Questions;
-
-            if (includeExpression != null)
-            {
-                query = query.Include(includeExpression);
-            }
-
-            return await query
+        public async Task<Question?> GetByIdWithCommentsAsync(Guid questionId)
+        {
+            return await _dbContext.Questions
+                .Include(q => q.Comments)
                 .FirstOrDefaultAsync(q => q.Id == questionId);
         }
 
-        public async Task<IEnumerable<Question>> GetRandomRecords(int amount)
+        public async Task<Question?> GetByIdWithTicketsAsync(Guid questionId)
+        {
+            return await _dbContext.Questions
+                .Include(q => q.Tickets)
+                .FirstOrDefaultAsync(q => q.Id == questionId);
+        }
+
+        public async Task<Question?> GetByIdWithTopicsAsync(Guid questionId)
+        {
+            return await _dbContext.Questions
+                .Include(q => q.Topics)
+                .FirstOrDefaultAsync(q => q.Id == questionId);
+        }
+
+        public async Task<IEnumerable<Question>> GetRawRandomRecordsAsync(int amount)
         {
             return await _dbContext.Questions
                 .OrderBy(q => EF.Functions.Random())

@@ -250,6 +250,37 @@ namespace TraffiLearn.Infrastructure.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("TraffiLearn.Domain.Entities.Comment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("RootCommentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("RootCommentId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments");
+                });
+
             modelBuilder.Entity("TraffiLearn.Domain.Entities.Question", b =>
                 {
                     b.Property<Guid>("Id")
@@ -425,6 +456,32 @@ namespace TraffiLearn.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("TraffiLearn.Domain.Entities.Comment", b =>
+                {
+                    b.HasOne("TraffiLearn.Domain.Entities.Question", "Question")
+                        .WithMany("Comments")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TraffiLearn.Domain.Entities.Comment", "RootComment")
+                        .WithMany("Replies")
+                        .HasForeignKey("RootCommentId")
+                        .OnDelete(DeleteBehavior.ClientCascade);
+
+                    b.HasOne("TraffiLearn.Domain.Entities.User", "User")
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+
+                    b.Navigation("RootComment");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("TraffiLearn.Domain.Entities.Question", b =>
                 {
                     b.OwnsMany("TraffiLearn.Domain.ValueObjects.Questions.Answer", "Answers", b1 =>
@@ -455,6 +512,21 @@ namespace TraffiLearn.Infrastructure.Migrations
                         });
 
                     b.Navigation("Answers");
+                });
+
+            modelBuilder.Entity("TraffiLearn.Domain.Entities.Comment", b =>
+                {
+                    b.Navigation("Replies");
+                });
+
+            modelBuilder.Entity("TraffiLearn.Domain.Entities.Question", b =>
+                {
+                    b.Navigation("Comments");
+                });
+
+            modelBuilder.Entity("TraffiLearn.Domain.Entities.User", b =>
+                {
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }

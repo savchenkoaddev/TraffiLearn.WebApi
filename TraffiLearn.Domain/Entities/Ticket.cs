@@ -14,9 +14,9 @@ namespace TraffiLearn.Domain.Entities
         { }
 
         private Ticket(
-            TicketId ticketId,
+            Guid ticketId,
             TicketNumber ticketNumber)
-            : base(ticketId.Value)
+            : base(ticketId)
         {
             TicketNumber = ticketNumber;
         }
@@ -34,16 +34,6 @@ namespace TraffiLearn.Domain.Entities
 
             _questions.Add(question);
 
-            if (!question.Tickets.Contains(this))
-            {
-                var addResult = question.AddTicket(this);
-
-                if (addResult.IsFailure)
-                {
-                    return addResult.Error;
-                }
-            }
-
             return Result.Success();
         }
 
@@ -56,16 +46,6 @@ namespace TraffiLearn.Domain.Entities
 
             _questions.Remove(question);
 
-            if (question.Tickets.Contains(this))
-            {
-                var removeResult = question.RemoveTicket(this);
-
-                if (removeResult.IsFailure)
-                {
-                    return removeResult.Error;
-                }
-            }
-
             return Result.Success();
         }
 
@@ -77,7 +57,7 @@ namespace TraffiLearn.Domain.Entities
         }
 
         public static Result<Ticket> Create(
-            TicketId ticketId,
+            Guid ticketId,
             TicketNumber ticketNumber)
         {
             return new Ticket(
@@ -85,6 +65,4 @@ namespace TraffiLearn.Domain.Entities
                 ticketNumber);
         }
     }
-
-    public sealed record TicketId(Guid Value);
 }

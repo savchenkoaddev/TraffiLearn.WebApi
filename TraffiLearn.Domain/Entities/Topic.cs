@@ -14,9 +14,9 @@ namespace TraffiLearn.Domain.Entities
         { }
 
         private Topic(
-            TopicId id,
+            Guid id,
             TopicNumber number,
-            TopicTitle title) : base(id.Value)
+            TopicTitle title) : base(id)
         {
             Number = number;
             Title = title;
@@ -37,11 +37,6 @@ namespace TraffiLearn.Domain.Entities
 
             _questions.Add(question);
 
-            if (!question.Topics.Contains(this))
-            {
-                question.AddTopic(this);
-            }
-
             return Result.Success();
         }
 
@@ -54,26 +49,19 @@ namespace TraffiLearn.Domain.Entities
 
             _questions.Remove(question);
 
-            if (question.Topics.Contains(this))
-            {
-                question.RemoveTopic(this);
-            }
-
             return Result.Success();
         }
 
-        public Result Update(
-            TopicNumber number,
-            TopicTitle title)
+        public Result Update(Topic topic)
         {
-            Number = number;
-            Title = title;
+            Number = topic.Number;
+            Title = topic.Title;
 
             return Result.Success();
         }
 
         public static Result<Topic> Create(
-            TopicId id,
+            Guid id,
             TopicNumber number,
             TopicTitle title)
         {
@@ -83,6 +71,4 @@ namespace TraffiLearn.Domain.Entities
                 title: title);
         }
     }
-
-    public sealed record TopicId(Guid Value);
 }

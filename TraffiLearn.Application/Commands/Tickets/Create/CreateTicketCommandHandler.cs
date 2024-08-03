@@ -42,18 +42,25 @@ namespace TraffiLearn.Application.Commands.Tickets.Create
 
             foreach (var questionId in request.QuestionIds)
             {
-                var question = await _questionRepository.GetByIdAsync(questionId.Value);
+                var question = await _questionRepository.GetByIdRawAsync(questionId.Value);
 
                 if (question is null)
                 {
                     return TicketErrors.QuestionNotFound;
                 }
 
-                var addResult = ticket.AddQuestion(question);
+                var questionAddResult = ticket.AddQuestion(question);
 
-                if (addResult.IsFailure)
+                if (questionAddResult.IsFailure)
                 {
-                    return addResult.Error;
+                    return questionAddResult.Error;
+                }
+
+                var ticketAddResult = question.AddTicket(ticket);
+
+                if (ticketAddResult.IsFailure)
+                {
+                    return ticketAddResult.Error;
                 }
             }
 

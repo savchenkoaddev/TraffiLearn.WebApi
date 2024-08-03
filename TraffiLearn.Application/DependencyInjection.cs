@@ -18,6 +18,13 @@ using TraffiLearn.Application.Queries.Tickets;
 using TraffiLearn.Application.Queries.Topics;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Application.Abstractions.Auth;
+using TraffiLearn.Application.Identity;
+using TraffiLearn.Application.Services;
+using TraffiLearn.Application.Commands.Questions.Update;
+using TraffiLearn.Application.Commands.Topics.Update;
+using TraffiLearn.Application.DTO.Comments;
+using TraffiLearn.Application.Queries.Questions.GetQuestionComments;
 
 namespace TraffiLearn.Application
 {
@@ -32,9 +39,18 @@ namespace TraffiLearn.Application
 
             services.AddMediatR();
 
+            services.AddApplicationServices();
+
             services.AddPipelineBehaviors();
             services.AddValidators();
             
+            return services;
+        }
+
+        private static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        {
+            services.AddScoped<IAuthService<ApplicationUser>, AuthService<ApplicationUser>>();
+
             return services;
         }
 
@@ -75,6 +91,12 @@ namespace TraffiLearn.Application
                 TicketToTicketResponseMapper>();
             services.AddScoped<Mapper<RegisterUserCommand, Result<User>>,
                 RegisterUserCommandMapper>();
+            services.AddScoped<Mapper<UpdateQuestionCommand, Result<Question>>,
+                UpdateQuestionCommandMapper>();
+            services.AddScoped<Mapper<UpdateTopicCommand, Result<Topic>>,
+                UpdateTopicCommandMapper>();
+            services.AddScoped<Mapper<Comment, QuestionCommentResponse>,
+               CommentToQuestionCommentResponseMapper>();
 
             return services;
         }

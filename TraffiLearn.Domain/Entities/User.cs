@@ -1,4 +1,5 @@
-﻿using TraffiLearn.Domain.Primitives;
+﻿using TraffiLearn.Domain.Errors.Users;
+using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Users;
 
@@ -6,10 +7,11 @@ namespace TraffiLearn.Domain.Entities
 {
     public sealed class User : Entity
     {
+        private readonly List<Comment> _comments = [];
+
         private User(Guid id)
             : base(id)
-        {
-        }
+        { }
 
         private User(
             Guid id,
@@ -24,6 +26,20 @@ namespace TraffiLearn.Domain.Entities
         public Email Email { get; private set; }
 
         public Username Username { get; private set; }
+
+        public IReadOnlyCollection<Comment> Comments => _comments;
+
+        public Result AddComment(Comment comment)
+        {
+            if (_comments.Contains(comment))
+            {
+                return UserErrors.CommentAlreadyAdded;
+            }
+
+            _comments.Add(comment);
+
+            return Result.Success();
+        }
 
         public static Result<User> Create(
             Guid id,

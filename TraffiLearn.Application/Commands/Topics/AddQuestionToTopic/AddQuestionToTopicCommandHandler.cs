@@ -27,27 +27,33 @@ namespace TraffiLearn.Application.Commands.Topics.AddQuestionToTopic
             AddQuestionToTopicCommand request, 
             CancellationToken cancellationToken)
         {
-            var question = await _questionRepository.GetByIdAsync(request.QuestionId.Value);
+            var question = await _questionRepository.GetByIdWithTopicsAsync(request.QuestionId.Value);
 
             if (question is null)
             {
                 return QuestionErrors.NotFound;
             }
 
-            var topic = await _topicRepository.GetByIdAsync(
-                request.TopicId.Value,
-                includeExpression: x => x.Questions);
+            var topic = await _topicRepository.GetByIdWithQuestionsAsync(
+                request.TopicId.Value);
 
             if (topic is null)
             {
                 return TopicErrors.NotFound;
             }
 
-            Result result = topic.AddQuestion(question);
+            Result questionAddResult = topic.AddQuestion(question);
 
-            if (result.IsFailure)
+            if (questionAddResult.IsFailure)
             {
-                return result.Error;
+                return questionAddResult.Error;
+            }
+
+            Result topicAddResult = question.AddTopic(topic);
+
+            if (topicAddResult.IsFailure)
+            {
+                return topicAddResult.Error;
             }
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);

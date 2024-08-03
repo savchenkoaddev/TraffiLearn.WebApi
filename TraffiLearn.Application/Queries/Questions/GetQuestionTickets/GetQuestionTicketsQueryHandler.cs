@@ -26,16 +26,14 @@ namespace TraffiLearn.Application.Queries.Questions.GetQuestionTickets
             GetQuestionTicketsQuery request,
             CancellationToken cancellationToken)
         {
-            var question = await _questionRepository.GetByIdAsync(
-                request.QuestionId.Value,
-                includeExpression: question => question.Tickets);
+            var question = await _questionRepository.GetByIdWithTicketsAsync(request.QuestionId.Value);
 
             if (question is null)
             {
                 return Result.Failure<IEnumerable<TicketResponse>>(QuestionErrors.NotFound);
             }
 
-            return Result.Success<IEnumerable<TicketResponse>>(_ticketMapper.Map(question.Tickets));
+            return Result.Success(_ticketMapper.Map(question.Tickets));
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TraffiLearn.Application.Commands.Questions.AddComment;
 using TraffiLearn.Application.Commands.Questions.AddTicketToQuestion;
 using TraffiLearn.Application.Commands.Questions.AddTopicToQuestion;
 using TraffiLearn.Application.Commands.Questions.Create;
@@ -10,6 +11,7 @@ using TraffiLearn.Application.Commands.Questions.RemoveTopicFromQuestion;
 using TraffiLearn.Application.Commands.Questions.Update;
 using TraffiLearn.Application.Queries.Questions.GetAll;
 using TraffiLearn.Application.Queries.Questions.GetById;
+using TraffiLearn.Application.Queries.Questions.GetQuestionComments;
 using TraffiLearn.Application.Queries.Questions.GetQuestionsForTheoryTest;
 using TraffiLearn.Application.Queries.Questions.GetQuestionTickets;
 using TraffiLearn.Application.Queries.Questions.GetQuestionTopics;
@@ -75,6 +77,15 @@ namespace TraffiLearn.WebAPI.Controllers
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
+        [HttpGet("{questionId:guid}/comments")]
+        public async Task<IActionResult> GetQuestionComments(
+            [FromRoute] Guid questionId)
+        {
+            var queryResult = await _sender.Send(new GetQuestionCommentsQuery(questionId));
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+            
 
         #endregion
 
@@ -96,7 +107,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command);
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails(); ;
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
         [HttpPut("{questionId:guid}/addtopic/{topicId:guid}")]
@@ -108,7 +119,7 @@ namespace TraffiLearn.WebAPI.Controllers
                 TopicId: topicId,
                 QuestionId: questionId));
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails(); ;
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
         [HttpPut("{questionId:guid}/removetopic/{topicId:guid}")]
@@ -120,7 +131,7 @@ namespace TraffiLearn.WebAPI.Controllers
                 TopicId: topicId,
                 QuestionId: questionId));
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails(); ;
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
         [HttpPut("{questionId:guid}/addticket/{ticketId:guid}")]
@@ -132,7 +143,7 @@ namespace TraffiLearn.WebAPI.Controllers
                 TicketId: ticketId,
                 QuestionId: questionId));
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails(); ;
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
         [HttpPut("{questionId:guid}/removeticket/{ticketId:guid}")]
@@ -144,7 +155,7 @@ namespace TraffiLearn.WebAPI.Controllers
                 TicketId: ticketId,
                 QuestionId: questionId));
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails(); ;
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
         [HttpDelete("{questionId:guid}")]
@@ -153,9 +164,16 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(new DeleteQuestionCommand(questionId));
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails(); ;
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
+        [HttpPost("addcomment")]
+        public async Task<IActionResult> AddComment(AddCommentCommand command)
+        {
+            var commandResult = await _sender.Send(command);
+
+            return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
+        }
 
         #endregion
     }
