@@ -48,6 +48,14 @@ namespace TraffiLearn.Infrastructure.Repositories
                 .FirstOrDefaultAsync(q => q.Id == questionId);
         }
 
+        public async Task<Question?> GetByIdWithCommentsTwoLevelsDeepAsync(Guid questionId)
+        {
+            return await _dbContext.Questions
+                .Include(q => q.Comments)
+                .ThenInclude(q => q.Replies)
+                .FirstOrDefaultAsync(q => q.Id == questionId);
+        }
+
         public async Task<Question?> GetByIdWithTicketsAsync(Guid questionId)
         {
             return await _dbContext.Questions
