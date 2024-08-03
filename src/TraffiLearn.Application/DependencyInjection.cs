@@ -3,28 +3,26 @@ using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Behaviors;
+using TraffiLearn.Application.Commands.Auth.RegisterUser;
 using TraffiLearn.Application.Commands.Questions.Create;
+using TraffiLearn.Application.Commands.Questions.Update;
 using TraffiLearn.Application.Commands.Tickets.Create;
 using TraffiLearn.Application.Commands.Topics.Create;
-using TraffiLearn.Application.Commands.Auth.RegisterUser;
+using TraffiLearn.Application.Commands.Topics.Update;
 using TraffiLearn.Application.DTO.Questions;
 using TraffiLearn.Application.DTO.Tickets;
 using TraffiLearn.Application.DTO.Topics;
+using TraffiLearn.Application.Identity;
 using TraffiLearn.Application.Options;
 using TraffiLearn.Application.Queries.Questions;
 using TraffiLearn.Application.Queries.Tickets;
 using TraffiLearn.Application.Queries.Topics;
+using TraffiLearn.Application.Services;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Application.Abstractions.Auth;
-using TraffiLearn.Application.Identity;
-using TraffiLearn.Application.Services;
-using TraffiLearn.Application.Commands.Questions.Update;
-using TraffiLearn.Application.Commands.Topics.Update;
-using TraffiLearn.Application.DTO.Comments;
-using TraffiLearn.Application.Queries.Questions.GetQuestionComments;
 
 namespace TraffiLearn.Application
 {
@@ -43,7 +41,7 @@ namespace TraffiLearn.Application
 
             services.AddPipelineBehaviors();
             services.AddValidators();
-            
+
             return services;
         }
 
@@ -95,8 +93,6 @@ namespace TraffiLearn.Application
                 UpdateQuestionCommandMapper>();
             services.AddScoped<Mapper<UpdateTopicCommand, Result<Topic>>,
                 UpdateTopicCommandMapper>();
-            services.AddScoped<Mapper<Comment, QuestionCommentResponse>,
-               CommentToQuestionCommentResponseMapper>();
 
             return services;
         }

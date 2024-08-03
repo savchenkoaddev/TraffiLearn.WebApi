@@ -5,8 +5,6 @@ VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{153C3EC4-AE72-41AB-AAA1-FCF6375D4CDD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{23904BBD-0071-49EB-A723-9524FB67C422}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TraffiLearn.Domain", "TraffiLearn.Domain\TraffiLearn.Domain.csproj", "{266CB284-0354-4C8C-8FF8-CCD4829FAC1F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TraffiLearn.Application", "TraffiLearn.Application\TraffiLearn.Application.csproj", "{DE6144ED-B6BD-402B-A3E2-024821202E3D}"
