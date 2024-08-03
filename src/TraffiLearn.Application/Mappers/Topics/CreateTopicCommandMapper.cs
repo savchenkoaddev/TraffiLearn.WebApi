@@ -1,11 +1,12 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Commands.Topics.Create;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Topics;
 
-namespace TraffiLearn.Application.Commands.Topics.Create
+namespace TraffiLearn.Application.Mappers.Topics
 {
-    internal sealed class CreateTopicCommandMapper 
+    internal sealed class CreateTopicCommandMapper
         : Mapper<CreateTopicCommand, Result<Topic>>
     {
         public override Result<Topic> Map(CreateTopicCommand source)

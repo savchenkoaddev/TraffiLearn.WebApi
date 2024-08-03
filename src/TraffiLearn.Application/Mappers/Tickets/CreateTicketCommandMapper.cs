@@ -1,9 +1,10 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Commands.Tickets.Create;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Tickets;
 
-namespace TraffiLearn.Application.Commands.Tickets.Create
+namespace TraffiLearn.Application.Mappers.Tickets
 {
     internal sealed class CreateTicketCommandMapper
         : Mapper<CreateTicketCommand, Result<Ticket>>

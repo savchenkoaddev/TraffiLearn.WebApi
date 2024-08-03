@@ -1,12 +1,13 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Commands.Questions.Create;
 using TraffiLearn.Application.DTO.Answers;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Questions;
 
-namespace TraffiLearn.Application.Commands.Questions.Create
+namespace TraffiLearn.Application.Mappers.Questions
 {
-    internal sealed class CreateQuestionCommandMapper 
+    internal sealed class CreateQuestionCommandMapper
         : Mapper<CreateQuestionCommand, Result<Question>>
     {
         public override Result<Question> Map(CreateQuestionCommand source)

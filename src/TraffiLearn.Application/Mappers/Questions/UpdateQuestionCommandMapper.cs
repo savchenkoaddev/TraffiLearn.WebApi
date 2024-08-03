@@ -1,11 +1,12 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Commands.Questions.Update;
 using TraffiLearn.Application.DTO.Answers;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Questions;
 
-namespace TraffiLearn.Application.Commands.Questions.Update
+namespace TraffiLearn.Application.Mappers.Questions
 {
     internal sealed class UpdateQuestionCommandMapper
         : Mapper<UpdateQuestionCommand, Result<Question>>

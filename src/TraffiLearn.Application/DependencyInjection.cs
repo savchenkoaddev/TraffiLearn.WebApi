@@ -12,14 +12,17 @@ using TraffiLearn.Application.Commands.Questions.Update;
 using TraffiLearn.Application.Commands.Tickets.Create;
 using TraffiLearn.Application.Commands.Topics.Create;
 using TraffiLearn.Application.Commands.Topics.Update;
+using TraffiLearn.Application.DTO.Comments;
 using TraffiLearn.Application.DTO.Questions;
 using TraffiLearn.Application.DTO.Tickets;
 using TraffiLearn.Application.DTO.Topics;
 using TraffiLearn.Application.Identity;
+using TraffiLearn.Application.Mappers.Auth;
+using TraffiLearn.Application.Mappers.Comments;
+using TraffiLearn.Application.Mappers.Questions;
+using TraffiLearn.Application.Mappers.Tickets;
+using TraffiLearn.Application.Mappers.Topics;
 using TraffiLearn.Application.Options;
-using TraffiLearn.Application.Queries.Questions;
-using TraffiLearn.Application.Queries.Tickets;
-using TraffiLearn.Application.Queries.Topics;
 using TraffiLearn.Application.Services;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Shared;
@@ -93,6 +96,8 @@ namespace TraffiLearn.Application
                 UpdateQuestionCommandMapper>();
             services.AddScoped<Mapper<UpdateTopicCommand, Result<Topic>>,
                 UpdateTopicCommandMapper>();
+            services.AddScoped<Mapper<Comment, CommentResponse>,
+                CommentToCommentResponseMapper>();
 
             return services;
         }

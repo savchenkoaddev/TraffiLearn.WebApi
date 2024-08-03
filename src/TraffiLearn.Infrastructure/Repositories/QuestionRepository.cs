@@ -48,8 +48,20 @@ namespace TraffiLearn.Infrastructure.Repositories
                 .FirstOrDefaultAsync(q => q.Id == questionId);
         }
 
-        public async Task<Question?> GetByIdWithCommentsTwoLevelsDeepAsync(Guid questionId)
-        {
+        public async Task<Question?> GetByIdWithCommentsTwoLevelsDeepAsync(
+            Guid questionId,
+            bool includeUsers = false)
+        {  
+            if (includeUsers)
+            {
+                return await _dbContext.Questions
+                    .Include(q => q.Comments)
+                    .ThenInclude(q => q.Replies)
+                    .Include(q => q.Comments)
+                    .ThenInclude(q => q.User)
+                    .FirstOrDefaultAsync(q => q.Id == questionId);
+            }
+
             return await _dbContext.Questions
                 .Include(q => q.Comments)
                 .ThenInclude(q => q.Replies)

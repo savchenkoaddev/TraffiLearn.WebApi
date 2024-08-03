@@ -12,7 +12,9 @@ namespace TraffiLearn.Domain.RepositoryContracts
 
         Task<Question?> GetByIdWithCommentsAsync(Guid questionId);
 
-        Task<Question?> GetByIdWithCommentsTwoLevelsDeepAsync(Guid questionId);
+        Task<Question?> GetByIdWithCommentsTwoLevelsDeepAsync(
+            Guid questionId,
+            bool includeUsers = false);
 
         Task<IEnumerable<Question>> GetAllAsync();
 
