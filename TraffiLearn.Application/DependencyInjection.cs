@@ -23,6 +23,8 @@ using TraffiLearn.Application.Identity;
 using TraffiLearn.Application.Services;
 using TraffiLearn.Application.Commands.Questions.Update;
 using TraffiLearn.Application.Commands.Topics.Update;
+using TraffiLearn.Application.DTO.Comments;
+using TraffiLearn.Application.Queries.Questions.GetQuestionComments;
 
 namespace TraffiLearn.Application
 {
@@ -93,6 +95,8 @@ namespace TraffiLearn.Application
                 UpdateQuestionCommandMapper>();
             services.AddScoped<Mapper<UpdateTopicCommand, Result<Topic>>,
                 UpdateTopicCommandMapper>();
+            services.AddScoped<Mapper<Comment, QuestionCommentResponse>,
+               CommentToQuestionCommentResponseMapper>();
 
             return services;
         }
