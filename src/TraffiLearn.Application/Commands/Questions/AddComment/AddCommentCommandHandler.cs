@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
@@ -58,8 +59,9 @@ namespace TraffiLearn.Application.Commands.Questions.AddComment
                 return Error.InternalFailure();
             }
 
-            var question = await _questionRepository.GetByIdWithCommentsAsync(
-                request.QuestionId.Value);
+            var question = await _questionRepository.GetByIdAsync(
+                request.QuestionId.Value,
+                query => query.Include);
 
             if (question is null)
             {

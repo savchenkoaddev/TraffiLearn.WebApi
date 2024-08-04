@@ -1,28 +1,38 @@
-﻿using TraffiLearn.Domain.Entities;
+﻿using System.Linq.Expressions;
+using TraffiLearn.Domain.Entities;
 
 namespace TraffiLearn.Domain.RepositoryContracts
 {
     public interface IQuestionRepository
     {
-        Task<Question?> GetByIdRawAsync(Guid questionId);
-
-        Task<Question?> GetByIdWithTicketsAsync(Guid questionId);
-
-        Task<Question?> GetByIdWithTopicsAsync(Guid questionId);
-
-        Task<Question?> GetByIdWithCommentsAsync(Guid questionId);
+        Task<Question?> GetByIdAsync(
+            Guid questionId,
+            CancellationToken cancellationToken = default,
+            params Expression<Func<Question, object>>[] includeExpressions);
 
         Task<Question?> GetByIdWithCommentsTwoLevelsDeepAsync(
             Guid questionId,
-            bool includeUsers = false);
+            CancellationToken cancellationToken = default,
+            params Expression<Func<Question, object>>[] includeExpressions);
 
-        Task<IEnumerable<Question>> GetAllAsync();
+        Task<IEnumerable<Question>> GetAllAsync(
+            Expression<Func<Question, object>>? orderByExpression = null,
+            CancellationToken cancellationToken = default,
+            params Expression<Func<Question, object>>[] includeExpressions);
 
-        Task<IEnumerable<Question>> GetRawRandomRecordsAsync(int amount);
+        Task<IEnumerable<Question>> GetRandomRecordsAsync(
+            int amount,
+            Expression<Func<Question, object>>? orderByExpression = null,
+            CancellationToken cancellationToken = default,
+            params Expression<Func<Question, object>>[] includeExpressions);
 
-        Task<bool> ExistsAsync(Guid questionId);
+        Task<bool> ExistsAsync(
+            Guid questionId,
+            CancellationToken cancellationToken = default);
 
-        Task AddAsync(Question question);
+        Task AddAsync(
+            Question question,
+            CancellationToken cancellationToken = default);
 
         Task UpdateAsync(Question question);
 

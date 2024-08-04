@@ -32,7 +32,7 @@ namespace TraffiLearn.Application.Queries.Questions.GetQuestionsForTheoryTest
         {
             var neededQuestionsCount = _questionsSettings.TheoryTestQuestionsCount;
 
-            var questions = await _questionRepository.GetRawRandomRecordsAsync(
+            var questions = await _questionRepository.GetRandomRecordsAsync(
                 amount: neededQuestionsCount);
 
             if (questions.Count() < neededQuestionsCount &&

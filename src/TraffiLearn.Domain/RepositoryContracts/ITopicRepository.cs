@@ -1,20 +1,27 @@
-﻿using TraffiLearn.Domain.Entities;
+﻿using System.Linq.Expressions;
+using TraffiLearn.Domain.Entities;
 
 namespace TraffiLearn.Domain.RepositoryContracts
 {
     public interface ITopicRepository
     {
-        Task<Topic?> GetByIdRawAsync(Guid topicId);
+        Task<Topic?> GetByIdAsync(
+            Guid topicId,
+            CancellationToken cancellationToken = default,
+            params Expression<Func<Topic, object>>[] includeExpressions);
 
-        Task<Topic?> GetByIdWithQuestionsAsync(Guid topicId);
+        Task<IEnumerable<Topic>> GetAllAsync(
+            Expression<Func<Topic, object>>? orderByExpression = null,
+            CancellationToken cancellationToken = default,
+            params Expression<Func<Topic, object>>[] includeExpressions);
 
-        Task<IEnumerable<Topic>> GetAllRawSortedByNumberAsync();
+        Task<bool> ExistsAsync(
+            Guid topicId,
+            CancellationToken cancellationToken = default);
 
-        Task<IEnumerable<Topic>> GetAllAsync();
-
-        Task<bool> ExistsAsync(Guid topicId);
-
-        Task AddAsync(Topic topic);
+        Task AddAsync(
+            Topic topic,
+            CancellationToken cancellationToken = default);
 
         Task UpdateAsync(Topic topic);
 

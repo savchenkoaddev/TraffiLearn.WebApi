@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
@@ -38,8 +39,10 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
             ReplyCommand request, 
             CancellationToken cancellationToken)
         {
-            var comment = await _commentRepository.GetByIdWithQuestionAsync(
-                request.CommentId.Value);
+            var comment = await _commentRepository.GetByIdAsync(
+                request.CommentId.Value,
+                query => query
+                    .Include(c => c.Question));
 
             if (comment is null)
             {

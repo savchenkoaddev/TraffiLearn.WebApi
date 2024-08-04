@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Infrastructure.Database;
@@ -14,29 +15,45 @@ namespace TraffiLearn.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task AddAsync(Comment comment)
+        public async Task AddAsync(
+            Comment comment,
+            CancellationToken cancellationToken = default)
         {
-            await _dbContext.Comments.AddAsync(comment);
+            await _dbContext.Comments.AddAsync(
+                comment, 
+                cancellationToken);
         }
 
-        public Task DeleteAsync(Comment comment)
+        public async Task<bool> ExistsAsync(
+            Guid commentId,
+            CancellationToken cancellationToken = default)
         {
-            _dbContext.Comments.Remove(comment);
-
-            return Task.CompletedTask;
+            return (await _dbContext.Comments.FindAsync(
+                keyValues: [commentId],
+                cancellationToken)) is not null;
         }
 
-        public async Task<bool> ExistsAsync(Guid id)
+        public async Task<Comment?> GetByIdAsync(
+            Guid commentId,
+            CancellationToken cancellationToken = default,
+            params Expression<Func<Comment, object>>[] includeExpressions)
         {
-            return (await _dbContext.Comments.FindAsync(id)) is not null;
+            var query = _dbContext.Comments.AsQueryable();
+
+            foreach (var includeExpression in includeExpressions)
+            {
+                query = query.Include(includeExpression);
+            }
+
+            return await query
+                .FirstOrDefaultAsync(
+                    c => c.Id == commentId, 
+                    cancellationToken);
         }
 
-        public async Task<Comment?> GetByIdRawAsync(Guid commentId)
-        {
-            return await _dbContext.Comments.FindAsync(commentId);
-        }
-
-        public async Task<Comment?> GetByIdWithAllNestedCommentsAsync(Guid commentId)
+        public async Task<Comment?> GetByIdWithAllNestedRepliesAsync(
+            Guid commentId,
+            CancellationToken cancellationToken = default)
         {
             var sql = """
                 WITH RecursiveComments AS (
@@ -75,25 +92,18 @@ namespace TraffiLearn.Infrastructure.Repositories
 
             var result = await _dbContext.Comments
                 .FromSqlRaw(sql, commentId)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             var rootComment = result.FirstOrDefault();
 
             return rootComment;
         }
 
-        public async Task<Comment?> GetByIdWithQuestionAsync(Guid commentId)
+        public Task DeleteAsync(Comment comment)
         {
-            return await _dbContext.Comments
-                .Include(c => c.Question)
-                .FirstOrDefaultAsync(c => c.Id == commentId);
-        }
+            _dbContext.Comments.Remove(comment);
 
-        public async Task<Comment?> GetByIdWithUserAsync(Guid commentId)
-        {
-            return await _dbContext.Comments
-                .Include(c => c.User)
-                .FirstOrDefaultAsync(c => c.Id == commentId);
+            return Task.CompletedTask;
         }
 
         public Task UpdateAsync(Comment comment)

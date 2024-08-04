@@ -72,7 +72,7 @@ namespace TraffiLearn.Application.Commands.Tickets.Update
         {
             foreach (var questionId in questionsIds)
             {
-                var question = await _questionRepository.GetByIdRawAsync(
+                var question = await _questionRepository.GetByIdAsync(
                     questionId.Value);
 
                 if (question is null)

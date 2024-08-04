@@ -1,18 +1,27 @@
-﻿using TraffiLearn.Domain.Entities;
+﻿using System.Linq.Expressions;
+using TraffiLearn.Domain.Entities;
 
 namespace TraffiLearn.Domain.RepositoryContracts
 {
     public interface ITicketRepository
     {
-        Task<Ticket?> GetByIdRawAsync(Guid ticketId);
+        Task<Ticket?> GetByIdAsync(
+            Guid ticketId,
+            CancellationToken cancellationToken = default,
+            params Expression<Func<Ticket, object>>[] includeExpressions);
 
-        Task<Ticket?> GetByIdWithQuestionsAsync(Guid ticketId);
+        Task<IEnumerable<Ticket>> GetAllAsync(
+            Expression<Func<Ticket, object>>? orderByExpression = null,
+            CancellationToken cancellationToken = default,
+            params Expression<Func<Ticket, object>>[] includeExpressions);
 
-        Task<IEnumerable<Ticket>> GetAllAsync();
+        Task<bool> ExistsAsync(
+            Guid ticketId,
+            CancellationToken cancellationToken = default);
 
-        Task<bool> ExistsAsync(Guid ticketId);
-
-        Task AddAsync(Ticket ticket);
+        Task AddAsync(
+            Ticket ticket,
+            CancellationToken cancellationToken = default);
 
         Task UpdateAsync(Ticket ticket);
 

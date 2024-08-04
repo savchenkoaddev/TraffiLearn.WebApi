@@ -23,7 +23,7 @@ namespace TraffiLearn.Infrastructure.Configurations
                     email => email.Value,
                     value => Email.Create(value).Value);
 
-            builder.HasIndex(user => user.Email);
+            builder.HasIndex(user => user.Email).IsUnique();
 
             builder
                 .HasMany(user => user.Comments)
