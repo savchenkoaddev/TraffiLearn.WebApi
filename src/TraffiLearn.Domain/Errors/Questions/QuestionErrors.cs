@@ -74,6 +74,36 @@ namespace TraffiLearn.Domain.Errors.Questions
                 code: "Question.CommentAlreadyAdded",
                 description: "The question already contains the comment.");
 
+        public static readonly Error AlreadyLikedByUser =
+            Error.Validation(
+                code: "Question.AlreadyLikedByUser",
+                description: "The question is already liked by the user.");
+
+        public static readonly Error AlreadyDislikedByUser =
+            Error.Validation(
+                code: "Question.AlreadyDislikedByUser",
+                description: "The question is already disliked by the user.");
+
+        public static readonly Error NotLikedByUser =
+            Error.Validation(
+                code: "Question.NotLikedByUser",
+                description: "The question is not liked by the user.");
+
+        public static readonly Error NotDislikedByUser =
+            Error.Validation(
+                code: "Question.NotDislikedByUser",
+                description: "The question is not disliked by the user.");
+
+        public static readonly Error CantDislikeIfLikedByUser =
+            Error.Validation(
+                code: "Question.CantDislikeIfLikedByUser",
+                description: "Unable to dislike the question, because the question has already been liked by the user.");
+
+        public static readonly Error CantLikeIfDislikedByUser =
+            Error.Validation(
+                code: "Question.CantLikeIfDislikedByUser",
+                description: "Unable to like the question, because the question has already been disliked by the user.");
+
         public static readonly Error NotEnoughRecords =
             Error.InternalFailure(
                 code: "Question.NotEnoughRecords",

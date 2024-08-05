@@ -43,5 +43,35 @@ namespace TraffiLearn.Domain.Errors.Users
             Error.Validation(
                 code: "User.QuestionAlreadyUnmarked",
                 description: "The same question has already been unmarked.");
+
+        public static readonly Error QuestionAlreadyLikedByUser =
+           Error.Validation(
+               code: "User.QuestionAlreadyLikedByUser",
+               description: "The question is already liked by the user.");
+
+        public static readonly Error QuestionAlreadyDislikedByUser =
+            Error.Validation(
+                code: "User.QuestionAlreadyDislikedByUser",
+                description: "The question is already disliked by the user.");
+
+        public static readonly Error QuestionNotLiked =
+            Error.Validation(
+                code: "User.QuestionNotLiked",
+                description: "The question is not liked by the user.");
+
+        public static readonly Error QuestionNotDisliked =
+            Error.Validation(
+                code: "User.QuestionNotDisliked",
+                description: "The question is not disliked by the user.");
+
+        public static readonly Error CantDislikeQuestionIfLiked =
+            Error.Validation(
+                code: "User.CantDislikeQuestionIfLiked",
+                description: "Unable to dislike the question, because the question has already been liked.");
+
+        public static readonly Error CantLikeQuestionIfDisliked =
+            Error.Validation(
+                code: "User.CantLikeQuestionIfDisliked",
+                description: "Unable to like the question, because the question has already been disliked.");
     }
 }

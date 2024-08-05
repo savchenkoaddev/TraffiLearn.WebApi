@@ -11,6 +11,8 @@ namespace TraffiLearn.Domain.Entities
         private readonly HashSet<Topic> _topics = [];
         private readonly HashSet<Ticket> _tickets = [];
         private readonly HashSet<Comment> _comments = [];
+        private readonly HashSet<User> _likedByUsers = [];
+        private readonly HashSet<User> _dislikedByUsers = [];
 
         private Question(Guid id)
             : base(id)
@@ -39,9 +41,9 @@ namespace TraffiLearn.Domain.Entities
 
         public ImageUri? ImageUri { get; private set; }
 
-        public int LikesCount { get; private set; } = 0;
+        public int LikesCount => _likedByUsers.Count;
 
-        public int DislikesCount { get; private set; } = 0;
+        public int DislikesCount => _dislikedByUsers.Count;
 
         public IReadOnlyCollection<Topic> Topics => _topics;
 
@@ -50,6 +52,68 @@ namespace TraffiLearn.Domain.Entities
         public IReadOnlyCollection<Ticket> Tickets => _tickets;
 
         public IReadOnlyCollection<Comment> Comments => _comments;
+
+        public IReadOnlyCollection<User> LikedByUsers => _likedByUsers;
+
+        public IReadOnlyCollection<User> DislikedByUsers => _likedByUsers;
+
+        public Result AddLike(User user)
+        {
+            if (_likedByUsers.Contains(user))
+            {
+                return QuestionErrors.AlreadyLikedByUser;
+            }
+
+            if (_dislikedByUsers.Contains(user))
+            {
+                return QuestionErrors.CantLikeIfDislikedByUser;
+            }
+
+            _likedByUsers.Add(user);
+
+            return Result.Success();
+        }
+
+        public Result AddDislike(User user)
+        {
+            if (_dislikedByUsers.Contains(user))
+            {
+                return QuestionErrors.AlreadyDislikedByUser;
+            }
+
+            if (_likedByUsers.Contains(user))
+            {
+                return QuestionErrors.CantDislikeIfLikedByUser;
+            }
+
+            _dislikedByUsers.Add(user);
+
+            return Result.Success();
+        }
+
+        public Result RemoveLike(User user)
+        {
+            if (!_likedByUsers.Contains(user))
+            {
+                return QuestionErrors.NotLikedByUser;
+            }
+
+            _likedByUsers.Remove(user);
+
+            return Result.Success();
+        }
+
+        public Result RemoveDislike(User user)
+        {
+            if (!_dislikedByUsers.Contains(user))
+            {
+                return QuestionErrors.NotDislikedByUser;
+            }
+
+            _dislikedByUsers.Remove(user);
+
+            return Result.Success();
+        }
 
         public Result AddComment(Comment comment)
         {
