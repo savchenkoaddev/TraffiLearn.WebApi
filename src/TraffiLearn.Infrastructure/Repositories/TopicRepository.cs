@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Infrastructure.Database;
@@ -14,9 +15,13 @@ namespace TraffiLearn.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task AddAsync(Topic topic)
+        public async Task AddAsync(
+            Topic topic,
+            CancellationToken cancellationToken = default)
         {
-            await _dbContext.Topics.AddAsync(topic);
+            await _dbContext.Topics.AddAsync(
+                topic,
+                cancellationToken);
         }
 
         public Task DeleteAsync(Topic topic)
@@ -26,33 +31,52 @@ namespace TraffiLearn.Infrastructure.Repositories
             return Task.CompletedTask;
         }
 
-        public async Task<bool> ExistsAsync(Guid id)
+        public async Task<bool> ExistsAsync(
+            Guid topicId,
+            CancellationToken cancellationToken = default)
         {
-            return (await _dbContext.Topics.FindAsync(id)) is not null;
+            return (await _dbContext.Topics.FindAsync(
+                keyValues: [topicId],
+                cancellationToken)) is not null;
         }
 
-        public async Task<IEnumerable<Topic>> GetAllAsync()
+        public async Task<IEnumerable<Topic>> GetAllAsync(
+            Expression<Func<Topic, object>>? orderByExpression = null,
+            CancellationToken cancellationToken = default,
+            params Expression<Func<Topic, object>>[] includeExpressions)
         {
-            return await _dbContext.Topics.ToListAsync();
+            IQueryable<Topic> topics = _dbContext.Topics;
+
+            foreach (var includeExpression in includeExpressions)
+            {
+                topics = topics.Include(includeExpression);
+            }
+
+            if (orderByExpression is not null)
+            {
+                topics = topics.OrderBy(orderByExpression);
+            }
+
+            return await topics
+                .ToListAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<Topic>> GetAllRawSortedByNumberAsync()
+        public async Task<Topic?> GetByIdAsync(
+            Guid topicId,
+            CancellationToken cancellationToken = default,
+            params Expression<Func<Topic, object>>[] includeExpressions)
         {
-            return await _dbContext.Topics
-                .OrderBy(t => t.Number)
-                .ToListAsync();
-        }
+            var query = _dbContext.Topics.AsQueryable();
 
-        public async Task<Topic?> GetByIdRawAsync(Guid topicId)
-        {
-            return await _dbContext.Topics.FindAsync(topicId);
-        }
+            foreach (var includeExpression in includeExpressions)
+            {
+                query = query.Include(includeExpression);
+            }
 
-        public async Task<Topic?> GetByIdWithQuestionsAsync(Guid topicId)
-        {
-            return await _dbContext.Topics
-                .Include(t => t.Questions)
-                .FirstOrDefaultAsync(t => t.Id == topicId);
+            return await query
+                .FirstOrDefaultAsync(
+                    c => c.Id == topicId,
+                    cancellationToken);
         }
 
         public Task UpdateAsync(Topic topic)

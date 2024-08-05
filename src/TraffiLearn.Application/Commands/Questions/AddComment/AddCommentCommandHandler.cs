@@ -49,7 +49,9 @@ namespace TraffiLearn.Application.Commands.Questions.AddComment
 
             var email = emailResult.Value;
 
-            var user = await _userRepository.GetByEmailAsync(email);
+            var user = await _userRepository.GetByEmailAsync(
+                email,
+                cancellationToken);
 
             if (user is null)
             {
@@ -58,8 +60,10 @@ namespace TraffiLearn.Application.Commands.Questions.AddComment
                 return Error.InternalFailure();
             }
 
-            var question = await _questionRepository.GetByIdWithCommentsAsync(
-                request.QuestionId.Value);
+            var question = await _questionRepository.GetByIdAsync(
+                request.QuestionId.Value,
+                cancellationToken,
+                includeExpressions: question => question.Comments);
 
             if (question is null)
             {
@@ -102,7 +106,10 @@ namespace TraffiLearn.Application.Commands.Questions.AddComment
                 return questionAddCommentResult.Error;
             }
 
-            await _commentRepository.AddAsync(comment);
+            await _commentRepository.AddAsync(
+                comment,
+                cancellationToken);
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Added comment succesfully.");

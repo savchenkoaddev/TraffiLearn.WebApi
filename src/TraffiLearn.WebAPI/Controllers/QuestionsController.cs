@@ -11,6 +11,7 @@ using TraffiLearn.Application.Commands.Questions.RemoveTopicFromQuestion;
 using TraffiLearn.Application.Commands.Questions.Update;
 using TraffiLearn.Application.Queries.Questions.GetAll;
 using TraffiLearn.Application.Queries.Questions.GetById;
+using TraffiLearn.Application.Queries.Questions.GetQuestionComments;
 using TraffiLearn.Application.Queries.Questions.GetQuestionsForTheoryTest;
 using TraffiLearn.Application.Queries.Questions.GetQuestionTickets;
 using TraffiLearn.Application.Queries.Questions.GetQuestionTopics;
@@ -33,7 +34,7 @@ namespace TraffiLearn.WebAPI.Controllers
         #region Queries
 
 
-        [HttpGet("")]
+        [HttpGet]
         public async Task<IActionResult> GetAllQuestions()
         {
             var queryResult = await _sender.Send(new GetAllQuestionsQuery());
@@ -75,6 +76,16 @@ namespace TraffiLearn.WebAPI.Controllers
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
+
+        [HttpGet("{questionId:guid}/comments")]
+        public async Task<IActionResult> GetQuestionComments(Guid questionId)
+        {
+            var queryResult = await _sender.Send(
+                new GetQuestionCommentsQuery(questionId));
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+
 
         #endregion
 

@@ -35,11 +35,13 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
         }
 
         public async Task<Result> Handle(
-            ReplyCommand request, 
+            ReplyCommand request,
             CancellationToken cancellationToken)
         {
-            var comment = await _commentRepository.GetByIdWithQuestionAsync(
-                request.CommentId.Value);
+            var comment = await _commentRepository.GetByIdAsync(
+                request.CommentId.Value,
+                cancellationToken,
+                includeExpressions: comment => comment.Question);
 
             if (comment is null)
             {
@@ -55,7 +57,9 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
 
             var email = emailResult.Value;
 
-            var user = await _userRepository.GetByEmailAsync(email);
+            var user = await _userRepository.GetByEmailAsync(
+                email,
+                cancellationToken);
 
             if (user is null)
             {
@@ -64,7 +68,7 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
                 return Error.InternalFailure();
             }
 
-            var commentContentResult = CommentContent.Create(request.ReplyContent);
+            var commentContentResult = CommentContent.Create(request.Content);
 
             if (commentContentResult.IsFailure)
             {
@@ -102,12 +106,15 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
 
             var questionAddCommentResult = comment.Question.AddComment(replyComment);
 
-            if (questionAddCommentResult.IsFailure) 
+            if (questionAddCommentResult.IsFailure)
             {
                 return questionAddCommentResult.Error;
             }
 
-            await _commentRepository.AddAsync(replyComment);
+            await _commentRepository.AddAsync(
+                replyComment,
+                cancellationToken);
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Replied to the comment succesfully.");

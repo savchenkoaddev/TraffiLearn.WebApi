@@ -1,17 +1,19 @@
-﻿using MediatR;
-using TraffiLearn.Application.Abstractions.Data;
+﻿using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Commands.Questions.Create;
 using TraffiLearn.Application.DTO.Answers;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Questions;
 
-namespace TraffiLearn.Application.Commands.Questions.Update
+namespace TraffiLearn.Application.Mapper.Questions
 {
-    internal sealed class UpdateQuestionCommandMapper
-        : Mapper<UpdateQuestionCommand, Result<Question>>
+    internal sealed class CreateQuestionCommandMapper
+        : Mapper<CreateQuestionCommand, Result<Question>>
     {
-        public override Result<Question> Map(UpdateQuestionCommand source)
+        public override Result<Question> Map(CreateQuestionCommand source)
         {
+            var questionId = Guid.NewGuid();
+
             var answersResult = ParseAnswers(source.Answers);
 
             if (answersResult.IsFailure)
@@ -43,12 +45,12 @@ namespace TraffiLearn.Application.Commands.Questions.Update
             }
 
             return Question.Create(
-                Guid.NewGuid(),
+                questionId,
                 contentResult.Value,
                 explanationResult.Value,
                 questionNumberResult.Value,
-                answers,
-                null);
+                answers: answers,
+                imageUri: null);
         }
 
         private Result<List<Answer>> ParseAnswers(IEnumerable<AnswerRequest?> requestAnswers)

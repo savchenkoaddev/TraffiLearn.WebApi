@@ -11,7 +11,7 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
             RuleFor(x => x.CommentId)
                 .NotEmpty();
 
-            RuleFor(x => x.ReplyContent)
+            RuleFor(x => x.Content)
                 .NotEmpty()
                 .MaximumLength(CommentContent.MaxLength);
         }

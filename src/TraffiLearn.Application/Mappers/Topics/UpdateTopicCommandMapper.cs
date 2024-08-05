@@ -1,10 +1,11 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Commands.Topics.Update;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Topics;
 
-namespace TraffiLearn.Application.Commands.Topics.Update
+namespace TraffiLearn.Application.Mapper.Topics
 {
     internal sealed class UpdateTopicCommandMapper
         : Mapper<UpdateTopicCommand, Result<Topic>>

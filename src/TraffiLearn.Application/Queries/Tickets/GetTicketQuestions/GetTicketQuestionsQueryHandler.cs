@@ -26,8 +26,10 @@ namespace TraffiLearn.Application.Queries.Tickets.GetTicketQuestions
             GetTicketQuestionsQuery request,
             CancellationToken cancellationToken)
         {
-            var ticket = await _ticketRepository.GetByIdWithQuestionsAsync(
-                ticketId: request.TicketId.Value);
+            var ticket = await _ticketRepository.GetByIdAsync(
+                ticketId: request.TicketId.Value,
+                cancellationToken,
+                includeExpressions: ticket => ticket.Questions);
 
             if (ticket is null)
             {

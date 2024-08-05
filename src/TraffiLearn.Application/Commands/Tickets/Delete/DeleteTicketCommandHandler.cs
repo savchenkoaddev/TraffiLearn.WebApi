@@ -24,7 +24,9 @@ namespace TraffiLearn.Application.Commands.Tickets.Delete
             DeleteTicketCommand request, 
             CancellationToken cancellationToken)
         {
-            var ticket = await _ticketRepository.GetByIdRawAsync(request.TicketId.Value);
+            var ticket = await _ticketRepository.GetByIdAsync(
+                request.TicketId.Value, 
+                cancellationToken);
 
             if (ticket is null)
             {

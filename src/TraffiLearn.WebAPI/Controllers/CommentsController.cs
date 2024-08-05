@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using TraffiLearn.Application.Commands.Comments.DeleteComment;
 using TraffiLearn.Application.Commands.Comments.Reply;
 using TraffiLearn.Application.Commands.Comments.UpdateComment;
+using TraffiLearn.Application.Queries.Comments.GetCommentReplies;
 using TraffiLearn.WebAPI.Extensions;
 
 namespace TraffiLearn.WebAPI.Controllers
@@ -19,6 +20,23 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             _sender = sender;
         }
+
+        #region Queries
+
+
+        [HttpGet("{commentId:guid}/replies")]
+        public async Task<IActionResult> GetCommentReplies(Guid commentId)
+        {
+            var queryResult = await _sender.Send(new GetCommentsRepliesQuery(commentId));
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+
+
+        #endregion
+
+        #region Commands
+
 
         [HttpPost("reply")]
         public async Task<IActionResult> Reply(ReplyCommand replyCommand)
@@ -43,5 +61,8 @@ namespace TraffiLearn.WebAPI.Controllers
 
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
+
+
+        #endregion
     }
 }

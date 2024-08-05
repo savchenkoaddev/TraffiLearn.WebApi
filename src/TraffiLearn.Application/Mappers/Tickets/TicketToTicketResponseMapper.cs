@@ -2,14 +2,14 @@
 using TraffiLearn.Application.DTO.Tickets;
 using TraffiLearn.Domain.Entities;
 
-namespace TraffiLearn.Application.Queries.Tickets
+namespace TraffiLearn.Application.Mapper.Tickets
 {
     internal sealed class TicketToTicketResponseMapper : Mapper<Ticket, TicketResponse>
     {
         public override TicketResponse Map(Ticket source)
         {
             return new TicketResponse(
-                Id: source.Id,
+                TicketId: source.Id,
                 TicketNumber: source.TicketNumber.Value);
         }
     }

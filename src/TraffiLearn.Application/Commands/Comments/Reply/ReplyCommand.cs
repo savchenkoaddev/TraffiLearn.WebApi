@@ -5,5 +5,5 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
 {
     public sealed record ReplyCommand(
         Guid? CommentId,
-        string? ReplyContent) : IRequest<Result>;
+        string? Content) : IRequest<Result>;
 }

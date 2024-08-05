@@ -24,7 +24,9 @@ namespace TraffiLearn.Application.Commands.Comments.DeleteComment
             DeleteCommentCommand request, 
             CancellationToken cancellationToken)
         {
-            var comment = await _commentRepository.GetByIdWithAllNestedCommentsAsync(request.CommentId.Value);
+            var comment = await _commentRepository.GetByIdWithAllNestedRepliesAsync(
+                request.CommentId.Value,
+                cancellationToken);
 
             if (comment is null)
             {

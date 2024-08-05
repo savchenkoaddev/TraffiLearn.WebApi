@@ -64,7 +64,10 @@ namespace TraffiLearn.Application.Commands.Questions.Create
                 return imageResult.Error;
             }
 
-            await _questionRepository.AddAsync(question);
+            await _questionRepository.AddAsync(
+                question,
+                cancellationToken);
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
@@ -76,7 +79,7 @@ namespace TraffiLearn.Application.Commands.Questions.Create
         {
             foreach (var topicId in topicsIds)
             {
-                var topic = await _topicRepository.GetByIdRawAsync(topicId.Value);
+                var topic = await _topicRepository.GetByIdAsync(topicId.Value);
 
                 if (topic is null)
                 {

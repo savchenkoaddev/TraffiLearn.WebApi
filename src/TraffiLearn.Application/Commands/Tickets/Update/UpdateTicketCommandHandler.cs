@@ -29,8 +29,10 @@ namespace TraffiLearn.Application.Commands.Tickets.Update
             UpdateTicketCommand request,
             CancellationToken cancellationToken)
         {
-            var ticket = await _ticketRepository.GetByIdWithQuestionsAsync(
-                request.TicketId.Value);
+            var ticket = await _ticketRepository.GetByIdAsync(
+                request.TicketId.Value,
+                cancellationToken,
+                includeExpressions: ticket => ticket.Questions);
 
             if (ticket is null)
             {
@@ -72,7 +74,7 @@ namespace TraffiLearn.Application.Commands.Tickets.Update
         {
             foreach (var questionId in questionsIds)
             {
-                var question = await _questionRepository.GetByIdRawAsync(
+                var question = await _questionRepository.GetByIdAsync(
                     questionId.Value);
 
                 if (question is null)

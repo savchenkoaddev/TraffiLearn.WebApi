@@ -15,9 +15,13 @@ namespace TraffiLearn.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task AddAsync(Ticket ticket)
+        public async Task AddAsync(
+            Ticket ticket, 
+            CancellationToken cancellationToken = default)
         {
-            await _dbContext.Tickets.AddAsync(ticket);
+            await _dbContext.Tickets.AddAsync(
+                ticket, 
+                cancellationToken);
         }
 
         public Task DeleteAsync(Ticket ticket)
@@ -27,26 +31,52 @@ namespace TraffiLearn.Infrastructure.Repositories
             return Task.CompletedTask;
         }
 
-        public async Task<bool> ExistsAsync(Guid id)
+        public async Task<bool> ExistsAsync(
+            Guid ticketId, 
+            CancellationToken cancellationToken = default)
         {
-            return (await _dbContext.Tickets.FindAsync(id)) is not null;
+            return (await _dbContext.Tickets.FindAsync(
+                keyValues: [ticketId],
+                cancellationToken)) is not null;
         }
 
-        public async Task<IEnumerable<Ticket>> GetAllAsync()
+        public async Task<IEnumerable<Ticket>> GetAllAsync(
+            Expression<Func<Ticket, object>>? orderByExpression = null, 
+            CancellationToken cancellationToken = default, 
+            params Expression<Func<Ticket, object>>[] includeExpressions)
         {
-            return await _dbContext.Tickets.ToListAsync();
+            IQueryable<Ticket> tickets = _dbContext.Tickets;
+
+            foreach (var includeExpression in includeExpressions)
+            {
+                tickets = tickets.Include(includeExpression);
+            }
+
+            if (orderByExpression is not null)
+            {
+                tickets = tickets.OrderBy(orderByExpression);
+            }
+
+            return await tickets
+                .ToListAsync(cancellationToken);
         }
 
-        public async Task<Ticket?> GetByIdRawAsync(Guid ticketId)
+        public async Task<Ticket?> GetByIdAsync(
+            Guid ticketId, 
+            CancellationToken cancellationToken = default, 
+            params Expression<Func<Ticket, object>>[] includeExpressions)
         {
-            return await _dbContext.Tickets.FindAsync(ticketId);
-        }
+            var query = _dbContext.Tickets.AsQueryable();
 
-        public async Task<Ticket?> GetByIdWithQuestionsAsync(Guid ticketId)
-        {
-            return await _dbContext.Tickets
-                .Include(t => t.Questions)
-                .FirstOrDefaultAsync(t => t.Id == ticketId);
+            foreach (var includeExpression in includeExpressions)
+            {
+                query = query.Include(includeExpression);
+            }
+
+            return await query
+                .FirstOrDefaultAsync(
+                    c => c.Id == ticketId,
+                    cancellationToken);
         }
 
         public Task UpdateAsync(Ticket ticket)

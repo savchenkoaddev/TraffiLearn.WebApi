@@ -34,7 +34,6 @@ namespace TraffiLearn.Infrastructure.Configurations
                 .HasOne(c => c.RootComment)
                 .WithMany(c => c.Replies)
                 .OnDelete(DeleteBehavior.ClientCascade);
-
         }
     }
 }
