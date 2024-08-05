@@ -32,9 +32,13 @@ namespace TraffiLearn.Infrastructure.Repositories
             return Task.CompletedTask;
         }
 
-        public async Task<bool> ExistsAsync(Guid userId)
+        public async Task<bool> ExistsAsync(
+            Guid userId,
+            CancellationToken cancellationToken = default)
         {
-            return (await _dbContext.Users.FindAsync(userId)) is not null;
+            return (await _dbContext.Users.FindAsync(
+                userId,
+                cancellationToken)) is not null;
         }
 
         public Task<User?> GetByEmailAsync(
@@ -82,6 +86,13 @@ namespace TraffiLearn.Infrastructure.Repositories
                 .Include(q => q.Replies)
                 .Include(q => q.User)
                 .ToListAsync(cancellationToken);
+        }
+
+        public Task UpdateAsync(User user)
+        {
+            _dbContext.Users.Update(user);
+
+            return Task.CompletedTask;
         }
     }
 }
