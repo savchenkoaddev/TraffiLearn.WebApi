@@ -38,5 +38,10 @@ namespace TraffiLearn.Domain.Errors.Users
             Error.Validation(
                 code: "User.QuestionAlreadyMarked",
                 description: "The same question has already been marked.");
+
+        public static readonly Error QuestionAlreadyUnmarked =
+            Error.Validation(
+                code: "User.QuestionAlreadyUnmarked",
+                description: "The same question has already been unmarked.");
     }
 }

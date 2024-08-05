@@ -60,7 +60,7 @@ namespace TraffiLearn.Domain.Entities
         {
             if (!_markedQuestions.Contains(question))
             {
-                return UserErrors.QuestionNotFound;
+                return UserErrors.QuestionAlreadyUnmarked;
             }
 
             _markedQuestions.Remove(question);
