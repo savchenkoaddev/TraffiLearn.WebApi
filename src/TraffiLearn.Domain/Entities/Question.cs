@@ -1,4 +1,5 @@
-﻿using TraffiLearn.Domain.Errors.Questions;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using TraffiLearn.Domain.Errors.Questions;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Questions;

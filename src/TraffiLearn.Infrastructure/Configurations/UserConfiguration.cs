@@ -23,7 +23,9 @@ namespace TraffiLearn.Infrastructure.Configurations
                     email => email.Value,
                     value => Email.Create(value).Value);
 
-            builder.HasIndex(user => user.Email).IsUnique();
+            builder
+                .HasIndex(user => user.Email)
+                .IsUnique();
 
             builder
                 .HasMany(user => user.Comments)
@@ -32,7 +34,18 @@ namespace TraffiLearn.Infrastructure.Configurations
 
             builder
                 .HasMany(user => user.MarkedQuestions)
-                .WithMany();
+                .WithMany()
+                .UsingEntity(join => join.ToTable("QuestionsMarked"));
+
+            builder
+                .HasMany(user => user.LikedQuestions)
+                .WithMany(question => question.LikedByUsers)
+                .UsingEntity(join => join.ToTable("QuestionsLikedByUsers"));
+
+            builder
+                .HasMany(user => user.DislikedQuestions)
+                .WithMany(question => question.DislikedByUsers)
+                .UsingEntity(join => join.ToTable("QuestionsDislikedByUsers"));
         }
     }
 }

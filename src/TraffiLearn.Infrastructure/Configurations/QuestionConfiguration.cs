@@ -61,6 +61,22 @@ namespace TraffiLearn.Infrastructure.Configurations
                 .HasMany(q => q.Comments)
                 .WithOne(c => c.Question)
                 .OnDelete(DeleteBehavior.Cascade);
-         }
+
+            builder
+                .HasMany(q => q.LikedByUsers)
+                .WithMany(user => user.LikedQuestions)
+                .UsingEntity(join => join.ToTable("QuestionsLikedByUsers"));
+
+            builder
+                .HasMany(q => q.DislikedByUsers)
+                .WithMany(user => user.DislikedQuestions)
+                .UsingEntity(join => join.ToTable("QuestionsDislikedByUsers"));
+
+            builder
+                .Ignore(q => q.LikesCount);
+
+            builder
+                .Ignore(q => q.DislikesCount);
+        }
     }
 }

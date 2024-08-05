@@ -37,8 +37,8 @@ namespace TraffiLearn.Infrastructure.Repositories
             CancellationToken cancellationToken = default)
         {
             return (await _dbContext.Users.FindAsync(
-                userId,
-                cancellationToken)) is not null;
+                keyValues: [userId],
+                cancellationToken: cancellationToken)) is not null;
         }
 
         public Task<User?> GetByEmailAsync(

@@ -58,7 +58,7 @@ namespace TraffiLearn.Application.Queries.Users.GetLoggedInUserComments
                 userId,
                 cancellationToken);
 
-            _logger.LogInformation("Succesfully fetched authenticated user comments. Comments fetched: {0}", comments.Count());
+            _logger.LogInformation("Succesfully fetched authenticated user comments. Comments fetched: {count}", comments.Count());
 
             return Result.Success(_commentMapper.Map(comments));
         }
