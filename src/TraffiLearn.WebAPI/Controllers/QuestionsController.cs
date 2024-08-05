@@ -17,6 +17,7 @@ using TraffiLearn.Application.Queries.Questions.GetQuestionComments;
 using TraffiLearn.Application.Queries.Questions.GetQuestionsForTheoryTest;
 using TraffiLearn.Application.Queries.Questions.GetQuestionTickets;
 using TraffiLearn.Application.Queries.Questions.GetQuestionTopics;
+using TraffiLearn.Application.Queries.Users.GetMarkedQuestions;
 using TraffiLearn.WebAPI.Extensions;
 
 namespace TraffiLearn.WebAPI.Controllers
@@ -84,6 +85,14 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(
                 new GetQuestionCommentsQuery(questionId));
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+
+        [HttpGet("marked")]
+        public async Task<IActionResult> GetMarkedQuestions()
+        {
+            var queryResult = await _sender.Send(new GetMarkedQuestionsQuery());
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
