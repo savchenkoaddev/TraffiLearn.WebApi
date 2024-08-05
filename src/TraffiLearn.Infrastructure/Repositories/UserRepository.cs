@@ -32,6 +32,11 @@ namespace TraffiLearn.Infrastructure.Repositories
             return Task.CompletedTask;
         }
 
+        public async Task<bool> ExistsAsync(Guid userId)
+        {
+            return (await _dbContext.Users.FindAsync(userId)) is not null;
+        }
+
         public Task<User?> GetByEmailAsync(
             Email email, 
             CancellationToken cancellationToken = default, 
@@ -65,6 +70,18 @@ namespace TraffiLearn.Infrastructure.Repositories
                 .FirstOrDefaultAsync(
                     c => c.Id == userId,
                     cancellationToken);
+        }
+
+        public async Task<IEnumerable<Comment>> GetUserCommentsWithRepliesAsync(
+            Guid userId, 
+            CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Comments
+                .AsNoTracking()
+                .Where(c => c.User.Id == userId)
+                .Include(q => q.Replies)
+                .Include(q => q.User)
+                .ToListAsync(cancellationToken);
         }
     }
 }

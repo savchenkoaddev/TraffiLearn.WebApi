@@ -27,16 +27,20 @@ namespace TraffiLearn.Application.Queries.Questions.GetQuestionComments
             GetQuestionCommentsQuery request,
             CancellationToken cancellationToken)
         {
+            var questionExists = await _questionRepository.ExistsAsync(
+                questionId: request.QuestionId.Value,
+                cancellationToken);
+
+            if (!questionExists) 
+            {
+                return Result.Failure<IEnumerable<CommentResponse>>(
+                   QuestionErrors.NotFound);
+            }
+
             var comments = await _questionRepository
                 .GetQuestionCommentsWithRepliesAsync(
                     questionId: request.QuestionId.Value,
                     cancellationToken);
-
-            if (comments is null)
-            {
-                return Result.Failure<IEnumerable<CommentResponse>>(
-                    QuestionErrors.NotFound);
-            }
 
             return Result.Success(_commentMapper.Map(comments));
         }

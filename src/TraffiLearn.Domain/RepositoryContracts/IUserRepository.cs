@@ -21,5 +21,11 @@ namespace TraffiLearn.Domain.RepositoryContracts
             CancellationToken cancellationToken = default);
 
         Task DeleteAsync(User user);
+
+        Task<bool> ExistsAsync(Guid userId);
+
+        Task<IEnumerable<Comment>> GetUserCommentsWithRepliesAsync(
+            Guid userId,
+            CancellationToken cancellationToken = default);
     }
 }
