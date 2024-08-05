@@ -9,6 +9,7 @@ using TraffiLearn.Application.Commands.Questions.Delete;
 using TraffiLearn.Application.Commands.Questions.RemoveTicketFromQuestion;
 using TraffiLearn.Application.Commands.Questions.RemoveTopicFromQuestion;
 using TraffiLearn.Application.Commands.Questions.Update;
+using TraffiLearn.Application.Commands.Users.DislikeQuestion;
 using TraffiLearn.Application.Commands.Users.LikeQuestion;
 using TraffiLearn.Application.Commands.Users.MarkQuestion;
 using TraffiLearn.Application.Commands.Users.UnmarkQuestion;
@@ -207,6 +208,14 @@ namespace TraffiLearn.WebAPI.Controllers
         public async Task<IActionResult> LikeQuestion(Guid questionId)
         {
             var commandResult = await _sender.Send(new LikeQuestionCommand(questionId));
+
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+        }
+
+        [HttpPut("{questionId:guid}/dislike")]
+        public async Task<IActionResult> DislikeQuestion(Guid questionId)
+        {
+            var commandResult = await _sender.Send(new DislikeQuestionCommand(questionId));
 
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
