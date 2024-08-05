@@ -4,7 +4,7 @@ using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Topics;
 
-namespace TraffiLearn.Application.Mappers.Topics
+namespace TraffiLearn.Application.Mapper.Topics
 {
     internal sealed class CreateTopicCommandMapper
         : Mapper<CreateTopicCommand, Result<Topic>>

@@ -38,7 +38,7 @@ namespace TraffiLearn.Infrastructure.Repositories
             CancellationToken cancellationToken = default,
             params Expression<Func<Comment, object>>[] includeExpressions)
         {
-            var query = _dbContext.Comments.AsQueryable();
+            IQueryable<Comment> query = _dbContext.Comments;
 
             foreach (var includeExpression in includeExpressions)
             {
@@ -111,6 +111,26 @@ namespace TraffiLearn.Infrastructure.Repositories
             _dbContext.Comments.Update(comment);
 
             return Task.CompletedTask;
+        }
+
+        public Task<Comment?> GetByIdWithRepliesTwoLevelsDeepAsync(
+            Guid commentId,
+            CancellationToken cancellationToken = default, 
+            params Expression<Func<Comment, object>>[] includeExpressions)
+        {
+            IQueryable<Comment> query = _dbContext.Comments;
+
+            foreach (var includeExpression in includeExpressions)
+            {
+                query = query.Include(includeExpression);
+            }
+
+            return query
+                .Include(c => c.Replies)
+                .ThenInclude(c => c.Replies)
+                .FirstOrDefaultAsync(
+                    comment => comment.Id == commentId,
+                    cancellationToken);
         }
     }
 }

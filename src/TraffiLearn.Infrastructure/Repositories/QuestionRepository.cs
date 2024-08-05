@@ -54,25 +54,6 @@ namespace TraffiLearn.Infrastructure.Repositories
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<Question?> GetByIdWithCommentsTwoLevelsDeepAsync(
-            Guid questionId, 
-            CancellationToken cancellationToken = default)
-        {
-            IQueryable<Question> query = _dbContext.Questions;
-
-            //REQUIRES OPTIMIZATION
-            query = query
-                .Include(q => q.Comments)
-                    .ThenInclude(q => q.Replies)
-                .Include(q => q.Comments)
-                    .ThenInclude(q => q.User);
-
-            return await query
-                .FirstOrDefaultAsync(
-                    q => q.Id == questionId,
-                    cancellationToken);
-        }
-
         public async Task<IEnumerable<Question>> GetRandomRecordsAsync(
             int amount, 
             Expression<Func<Question, object>>? orderByExpression = null,
@@ -145,6 +126,16 @@ namespace TraffiLearn.Infrastructure.Repositories
                 .FirstOrDefaultAsync(
                     c => c.Id == questionId,
                     cancellationToken);
+        }
+
+        public async Task<IEnumerable<Comment>> GetQuestionCommentsWithRepliesAsync(Guid questionId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Comments
+                .AsNoTracking()
+                .Where(c => c.Question.Id == questionId && c.RootComment == null)
+                .Include(q => q.Replies)
+                .Include(q => q.User)
+                .ToListAsync(cancellationToken);
         }
     }
 }

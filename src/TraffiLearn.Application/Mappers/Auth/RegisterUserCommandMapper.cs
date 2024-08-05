@@ -4,7 +4,7 @@ using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Users;
 
-namespace TraffiLearn.Application.Mappers.Auth
+namespace TraffiLearn.Application.Mapper.Auth
 {
     internal sealed class RegisterUserCommandMapper
         : Mapper<RegisterUserCommand, Result<User>>

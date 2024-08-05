@@ -5,7 +5,7 @@ using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Questions;
 
-namespace TraffiLearn.Application.Mappers.Questions
+namespace TraffiLearn.Application.Mapper.Questions
 {
     internal sealed class CreateQuestionCommandMapper
         : Mapper<CreateQuestionCommand, Result<Question>>

@@ -2,7 +2,7 @@
 using TraffiLearn.Application.DTO.Comments;
 using TraffiLearn.Domain.Entities;
 
-namespace TraffiLearn.Application.Mappers.Comments
+namespace TraffiLearn.Application.Mapper.Comments
 {
     internal sealed class CommentToCommentResponseMapper
         : Mapper<Comment, CommentResponse>

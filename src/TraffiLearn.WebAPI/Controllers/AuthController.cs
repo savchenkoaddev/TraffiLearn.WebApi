@@ -17,6 +17,9 @@ namespace TraffiLearn.WebAPI.Controllers
             _sender = sender;
         }
 
+        #region Commands
+
+
         [HttpPost("register")]
         public async Task<IActionResult> RegisterUser(RegisterUserCommand command)
         {
@@ -32,5 +35,8 @@ namespace TraffiLearn.WebAPI.Controllers
 
             return commandResult.IsSuccess ? Ok(commandResult.Value) : commandResult.ToProblemDetails();
         }
+
+
+        #endregion
     }
 }

@@ -2,7 +2,7 @@
 using TraffiLearn.Application.DTO.Topics;
 using TraffiLearn.Domain.Entities;
 
-namespace TraffiLearn.Application.Mappers.Topics
+namespace TraffiLearn.Application.Mapper.Topics
 {
     internal sealed class TopicToTopicResponseMapper : Mapper<Topic, TopicResponse>
     {

@@ -28,7 +28,7 @@ namespace TraffiLearn.Application.Behaviors
 
             Error[] errors = GetErrors(request);
 
-            if (errors.Length == 0)
+            if (errors.Length > 0)
             {
                 return CreateValidationResult<TResponse>(errors);
             }
