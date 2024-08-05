@@ -7,7 +7,8 @@ namespace TraffiLearn.Domain.Entities
 {
     public sealed class User : Entity
     {
-        private readonly List<Comment> _comments = [];
+        private readonly HashSet<Comment> _comments = [];
+        private readonly HashSet<Question> _markedQuestions = [];
 
         private User(Guid id)
             : base(id)
@@ -29,6 +30,8 @@ namespace TraffiLearn.Domain.Entities
 
         public IReadOnlyCollection<Comment> Comments => _comments;
 
+        public IReadOnlyCollection<Question> MarkedQuestions => _markedQuestions;
+
         public Result AddComment(Comment comment)
         {
             if (_comments.Contains(comment))
@@ -37,6 +40,30 @@ namespace TraffiLearn.Domain.Entities
             }
 
             _comments.Add(comment);
+
+            return Result.Success();
+        }
+
+        public Result MarkQuestion(Question question)
+        {
+            if (_markedQuestions.Contains(question))
+            {
+                return UserErrors.QuestionAlreadyMarked;
+            }
+
+            _markedQuestions.Add(question);
+
+            return Result.Success();
+        }
+
+        public Result UnmarkQuestion(Question question)
+        {
+            if (!_markedQuestions.Contains(question))
+            {
+                return UserErrors.QuestionAlreadyUnmarked;
+            }
+
+            _markedQuestions.Remove(question);
 
             return Result.Success();
         }

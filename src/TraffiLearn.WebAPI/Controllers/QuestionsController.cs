@@ -9,12 +9,15 @@ using TraffiLearn.Application.Commands.Questions.Delete;
 using TraffiLearn.Application.Commands.Questions.RemoveTicketFromQuestion;
 using TraffiLearn.Application.Commands.Questions.RemoveTopicFromQuestion;
 using TraffiLearn.Application.Commands.Questions.Update;
+using TraffiLearn.Application.Commands.Users.MarkQuestion;
+using TraffiLearn.Application.Commands.Users.UnmarkQuestion;
 using TraffiLearn.Application.Queries.Questions.GetAll;
 using TraffiLearn.Application.Queries.Questions.GetById;
 using TraffiLearn.Application.Queries.Questions.GetQuestionComments;
 using TraffiLearn.Application.Queries.Questions.GetQuestionsForTheoryTest;
 using TraffiLearn.Application.Queries.Questions.GetQuestionTickets;
 using TraffiLearn.Application.Queries.Questions.GetQuestionTopics;
+using TraffiLearn.Application.Queries.Users.GetMarkedQuestions;
 using TraffiLearn.WebAPI.Extensions;
 
 namespace TraffiLearn.WebAPI.Controllers
@@ -82,6 +85,14 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(
                 new GetQuestionCommentsQuery(questionId));
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+
+        [HttpGet("marked")]
+        public async Task<IActionResult> GetMarkedQuestions()
+        {
+            var queryResult = await _sender.Send(new GetMarkedQuestionsQuery());
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
@@ -174,6 +185,23 @@ namespace TraffiLearn.WebAPI.Controllers
 
             return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
         }
+
+        [HttpPut("{questionId:guid}/mark")]
+        public async Task<IActionResult> MarkQuestion(Guid questionId)
+        {
+            var commandResult = await _sender.Send(new MarkQuestionCommand(questionId));
+
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+        }
+
+        [HttpPut("{questionId:guid}/unmark")]
+        public async Task<IActionResult> UnmarkQuestion(Guid questionId)
+        {
+            var commandResult = await _sender.Send(new UnmarkQuestionCommand(questionId));
+
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+        }
+
 
         #endregion
     }

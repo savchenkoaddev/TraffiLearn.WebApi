@@ -43,7 +43,9 @@ namespace TraffiLearn.Application.Queries.Users.GetLoggedInUserComments
 
             var userId = userIdResult.Value;
 
-            var userExists = await _userRepository.ExistsAsync(userId);
+            var userExists = await _userRepository.ExistsAsync(
+                userId,
+                cancellationToken);
 
             if (!userExists)
             {

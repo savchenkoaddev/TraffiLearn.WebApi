@@ -8,9 +8,9 @@ namespace TraffiLearn.Domain.Entities
     public sealed class Question : Entity
     {
         private List<Answer> _answers = [];
-        private readonly List<Topic> _topics = [];
-        private readonly List<Ticket> _tickets = [];
-        private readonly List<Comment> _comments = [];
+        private readonly HashSet<Topic> _topics = [];
+        private readonly HashSet<Ticket> _tickets = [];
+        private readonly HashSet<Comment> _comments = [];
 
         private Question(Guid id)
             : base(id)

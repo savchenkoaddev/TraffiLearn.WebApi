@@ -7,7 +7,7 @@ namespace TraffiLearn.Domain.Entities
 {
     public sealed class Ticket : Entity
     {
-        private readonly List<Question> _questions = [];
+        private readonly HashSet<Question> _questions = [];
 
         private Ticket(Guid id)
             : base(id)

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TraffiLearn.Infrastructure.Database;
 
@@ -11,9 +12,11 @@ using TraffiLearn.Infrastructure.Database;
 namespace TraffiLearn.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240805114003_MarkedQuestions")]
+    partial class MarkedQuestions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -185,21 +188,6 @@ namespace TraffiLearn.Infrastructure.Migrations
                     b.ToTable("QuestionTopic");
                 });
 
-            modelBuilder.Entity("QuestionUser", b =>
-                {
-                    b.Property<Guid>("MarkedQuestionsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("MarkedQuestionsId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("QuestionUser");
-                });
-
             modelBuilder.Entity("TraffiLearn.Application.Identity.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -329,7 +317,12 @@ namespace TraffiLearn.Infrastructure.Migrations
                     b.Property<int>("QuestionNumber")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Questions");
                 });
@@ -472,21 +465,6 @@ namespace TraffiLearn.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("QuestionUser", b =>
-                {
-                    b.HasOne("TraffiLearn.Domain.Entities.Question", null)
-                        .WithMany()
-                        .HasForeignKey("MarkedQuestionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TraffiLearn.Domain.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("TraffiLearn.Domain.Entities.Comment", b =>
                 {
                     b.HasOne("TraffiLearn.Domain.Entities.Question", "Question")
@@ -515,6 +493,10 @@ namespace TraffiLearn.Infrastructure.Migrations
 
             modelBuilder.Entity("TraffiLearn.Domain.Entities.Question", b =>
                 {
+                    b.HasOne("TraffiLearn.Domain.Entities.User", null)
+                        .WithMany("MarkedQuestions")
+                        .HasForeignKey("UserId");
+
                     b.OwnsMany("TraffiLearn.Domain.ValueObjects.Questions.Answer", "Answers", b1 =>
                         {
                             b1.Property<Guid>("QuestionId")
@@ -558,6 +540,8 @@ namespace TraffiLearn.Infrastructure.Migrations
             modelBuilder.Entity("TraffiLearn.Domain.Entities.User", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("MarkedQuestions");
                 });
 #pragma warning restore 612, 618
         }

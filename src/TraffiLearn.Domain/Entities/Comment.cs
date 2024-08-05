@@ -7,7 +7,7 @@ namespace TraffiLearn.Domain.Entities
 {
     public sealed class Comment : Entity
     {
-        private readonly List<Comment> _replies = [];
+        private readonly HashSet<Comment> _replies = [];
 
         private Comment(Guid id)
             : base(id)

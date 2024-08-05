@@ -27,7 +27,8 @@ namespace TraffiLearn.Application.Queries.Users.GetUserComments
             CancellationToken cancellationToken)
         {
             var userExists = await _userRepository.ExistsAsync(
-                request.UserId.Value);
+                userId: request.UserId.Value,
+                cancellationToken);
 
             if (!userExists)
             {

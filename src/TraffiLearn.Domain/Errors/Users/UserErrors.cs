@@ -28,5 +28,20 @@ namespace TraffiLearn.Domain.Errors.Users
             Error.Validation(
                 code: "User.CommentAlreadyAdded",
                 description: "The user already has the same comment.");
+
+        public static readonly Error QuestionNotFound =
+            Error.Validation(
+                code: "User.QuestionNotFound",
+                description: "The question has not been found.");
+
+        public static readonly Error QuestionAlreadyMarked =
+            Error.Validation(
+                code: "User.QuestionAlreadyMarked",
+                description: "The same question has already been marked.");
+
+        public static readonly Error QuestionAlreadyUnmarked =
+            Error.Validation(
+                code: "User.QuestionAlreadyUnmarked",
+                description: "The same question has already been unmarked.");
     }
 }
