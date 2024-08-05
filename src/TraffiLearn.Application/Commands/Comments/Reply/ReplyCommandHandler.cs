@@ -68,7 +68,7 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
                 return Error.InternalFailure();
             }
 
-            var commentContentResult = CommentContent.Create(request.ReplyContent);
+            var commentContentResult = CommentContent.Create(request.Content);
 
             if (commentContentResult.IsFailure)
             {
@@ -111,7 +111,10 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
                 return questionAddCommentResult.Error;
             }
 
-            await _commentRepository.AddAsync(replyComment);
+            await _commentRepository.AddAsync(
+                replyComment,
+                cancellationToken);
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Replied to the comment succesfully.");

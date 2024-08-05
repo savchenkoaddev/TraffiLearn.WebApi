@@ -106,7 +106,10 @@ namespace TraffiLearn.Application.Commands.Questions.AddComment
                 return questionAddCommentResult.Error;
             }
 
-            await _commentRepository.AddAsync(comment);
+            await _commentRepository.AddAsync(
+                comment,
+                cancellationToken);
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Added comment succesfully.");

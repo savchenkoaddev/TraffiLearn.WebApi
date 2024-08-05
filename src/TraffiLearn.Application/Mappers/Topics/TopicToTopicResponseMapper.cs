@@ -9,7 +9,7 @@ namespace TraffiLearn.Application.Mappers.Topics
         public override TopicResponse Map(Topic source)
         {
             return new TopicResponse(
-                Id: source.Id,
+                TopicId: source.Id,
                 TopicNumber: source.Number.Value,
                 Title: source.Title.Value);
         }

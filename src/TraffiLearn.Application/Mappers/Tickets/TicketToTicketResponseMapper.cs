@@ -9,7 +9,7 @@ namespace TraffiLearn.Application.Mappers.Tickets
         public override TicketResponse Map(Ticket source)
         {
             return new TicketResponse(
-                Id: source.Id,
+                TicketId: source.Id,
                 TicketNumber: source.TicketNumber.Value);
         }
     }
