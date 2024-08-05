@@ -76,7 +76,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
-        [HttpGet("theorytest")]
+        [HttpGet("theory-test")]
         public async Task<IActionResult> GetQuestionsForTheoryTest()
         {
             var queryResult = await _sender.Send(new GetQuestionsForTheoryTestQuery());
@@ -125,7 +125,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
-        [HttpPut("{questionId:guid}/addtopic/{topicId:guid}")]
+        [HttpPut("{questionId:guid}/add-topic/{topicId:guid}")]
         public async Task<IActionResult> AddTopicToQuestion(
             [FromRoute] Guid topicId,
             [FromRoute] Guid questionId)
@@ -137,7 +137,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
-        [HttpPut("{questionId:guid}/removetopic/{topicId:guid}")]
+        [HttpPut("{questionId:guid}/remove-topic/{topicId:guid}")]
         public async Task<IActionResult> RemoveTopicFromQuestion(
             [FromRoute] Guid topicId,
             [FromRoute] Guid questionId)
@@ -149,7 +149,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
-        [HttpPut("{questionId:guid}/addticket/{ticketId:guid}")]
+        [HttpPut("{questionId:guid}/add-ticket/{ticketId:guid}")]
         public async Task<IActionResult> AddTicketToQuestion(
             [FromRoute] Guid ticketId,
             [FromRoute] Guid questionId)
@@ -161,7 +161,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
-        [HttpPut("{questionId:guid}/removeticket/{ticketId:guid}")]
+        [HttpPut("{questionId:guid}/remove-ticket/{ticketId:guid}")]
         public async Task<IActionResult> RemoveTicketFromQuestion(
             [FromRoute] Guid ticketId,
             [FromRoute] Guid questionId)
@@ -182,7 +182,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
-        [HttpPost("addcomment")]
+        [HttpPost("add-comment")]
         public async Task<IActionResult> AddComment(AddCommentCommand command)
         {
             var commandResult = await _sender.Send(command);
@@ -222,7 +222,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
-        [HttpPut("{questionId:guid}/removelike")]
+        [HttpPut("{questionId:guid}/remove-like")]
         public async Task<IActionResult> RemoveQuestionLike(Guid questionId)
         {
             var commandResult = await _sender.Send(new RemoveQuestionLikeCommand(questionId));
@@ -230,7 +230,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
-        [HttpPut("{questionId:guid}/removedislike")]
+        [HttpPut("{questionId:guid}/remove-dislike")]
         public async Task<IActionResult> RemoveQuestionDislike(Guid questionId)
         {
             var commandResult = await _sender.Send(new RemoveQuestionDislikeCommand(questionId));
