@@ -31,7 +31,8 @@ namespace TraffiLearn.Infrastructure.Configurations
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder
-                .HasMany(user => user.MarkedQuestions);
+                .HasMany(user => user.MarkedQuestions)
+                .WithMany();
         }
     }
 }

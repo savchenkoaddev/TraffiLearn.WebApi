@@ -75,7 +75,7 @@ namespace TraffiLearn.Application.Commands.Users.MarkQuestion
             await _userRepository.UpdateAsync(user);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Succesfully marked question. User's username: {username}", user.Username);
+            _logger.LogInformation("Succesfully marked question. User's username: {username}", user.Username.Value);
 
             return Result.Success();
         }

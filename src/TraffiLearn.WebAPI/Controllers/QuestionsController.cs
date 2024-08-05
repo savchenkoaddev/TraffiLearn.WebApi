@@ -9,6 +9,7 @@ using TraffiLearn.Application.Commands.Questions.Delete;
 using TraffiLearn.Application.Commands.Questions.RemoveTicketFromQuestion;
 using TraffiLearn.Application.Commands.Questions.RemoveTopicFromQuestion;
 using TraffiLearn.Application.Commands.Questions.Update;
+using TraffiLearn.Application.Commands.Users.MarkQuestion;
 using TraffiLearn.Application.Queries.Questions.GetAll;
 using TraffiLearn.Application.Queries.Questions.GetById;
 using TraffiLearn.Application.Queries.Questions.GetQuestionComments;
@@ -174,6 +175,15 @@ namespace TraffiLearn.WebAPI.Controllers
 
             return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
         }
+
+        [HttpPut("{questionId:guid}/mark")]
+        public async Task<IActionResult> MarkQuestion(Guid questionId)
+        {
+            var commandResult = await _sender.Send(new MarkQuestionCommand(questionId));
+
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+        }
+
 
         #endregion
     }
