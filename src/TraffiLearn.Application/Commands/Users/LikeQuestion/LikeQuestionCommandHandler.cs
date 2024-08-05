@@ -7,33 +7,33 @@ using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Commands.Users.MarkQuestion
+namespace TraffiLearn.Application.Commands.Users.LikeQuestion
 {
-    internal sealed class MarkQuestionCommandHandler
-        : IRequestHandler<MarkQuestionCommand, Result>
+    internal sealed class LikeQuestionCommandHandler
+        : IRequestHandler<LikeQuestionCommand, Result>
     {
         private readonly IAuthService<ApplicationUser> _authService;
-        private readonly IUserRepository _userRepository;
         private readonly IQuestionRepository _questionRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<MarkQuestionCommandHandler> _logger;
+        private readonly ILogger<LikeQuestionCommandHandler> _logger;
 
-        public MarkQuestionCommandHandler(
+        public LikeQuestionCommandHandler(
             IAuthService<ApplicationUser> authService,
-            IUserRepository userRepository,
             IQuestionRepository questionRepository,
+            IUserRepository userRepository,
             IUnitOfWork unitOfWork,
-            ILogger<MarkQuestionCommandHandler> logger)
+            ILogger<LikeQuestionCommandHandler> logger)
         {
             _authService = authService;
-            _userRepository = userRepository;
             _questionRepository = questionRepository;
+            _userRepository = userRepository;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
 
         public async Task<Result> Handle(
-            MarkQuestionCommand request,
+            LikeQuestionCommand request, 
             CancellationToken cancellationToken)
         {
             var userIdResult = _authService.GetAuthenticatedUserId();
@@ -47,7 +47,10 @@ namespace TraffiLearn.Application.Commands.Users.MarkQuestion
 
             var question = await _questionRepository.GetByIdAsync(
                 questionId: request.QuestionId.Value,
-                cancellationToken);
+                cancellationToken,
+                includeExpressions: 
+                    [question => question.LikedByUsers,
+                    question => question.DislikedByUsers]);
 
             if (question is null)
             {
@@ -57,7 +60,9 @@ namespace TraffiLearn.Application.Commands.Users.MarkQuestion
             var user = await _userRepository.GetByIdAsync(
                 userId,
                 cancellationToken,
-                includeExpressions: user => user.MarkedQuestions);
+                includeExpressions:
+                    [user => user.LikedQuestions, 
+                    user => user.DislikedQuestions]);
 
             if (user is null)
             {
@@ -66,17 +71,21 @@ namespace TraffiLearn.Application.Commands.Users.MarkQuestion
                 return Error.InternalFailure();
             }
 
-            var markResult = user.MarkQuestion(question);
+            var questionLikeResult = user.LikeQuestion(question);
 
-            if (markResult.IsFailure)
+            if (questionLikeResult.IsFailure)
             {
-                return markResult.Error;
+                return questionLikeResult.Error;
             }
 
-            await _userRepository.UpdateAsync(user);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            var addLikeResult = question.AddLike(user);
 
-            _logger.LogInformation("Succesfully marked question. User's username: {username}", user.Username.Value);
+            if (addLikeResult.IsFailure)
+            {
+                return addLikeResult.Error;
+            }
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
         }
