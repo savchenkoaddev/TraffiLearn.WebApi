@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
@@ -50,7 +49,9 @@ namespace TraffiLearn.Application.Commands.Questions.AddComment
 
             var email = emailResult.Value;
 
-            var user = await _userRepository.GetByEmailAsync(email);
+            var user = await _userRepository.GetByEmailAsync(
+                email,
+                cancellationToken);
 
             if (user is null)
             {
@@ -61,7 +62,8 @@ namespace TraffiLearn.Application.Commands.Questions.AddComment
 
             var question = await _questionRepository.GetByIdAsync(
                 request.QuestionId.Value,
-                query => query.Include);
+                cancellationToken,
+                includeExpressions: question => question.Comments);
 
             if (question is null)
             {

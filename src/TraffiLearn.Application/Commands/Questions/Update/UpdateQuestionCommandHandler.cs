@@ -35,8 +35,10 @@ namespace TraffiLearn.Application.Commands.Questions.Update
 
         public async Task<Result> Handle(UpdateQuestionCommand request, CancellationToken cancellationToken)
         {
-            var question = await _questionRepository.GetByIdWithTopicsAsync(
-                request.QuestionId.Value);
+            var question = await _questionRepository.GetByIdAsync(
+                request.QuestionId.Value,
+                cancellationToken,
+                includeExpressions: question => question.Topics);
 
             if (question is null)
             {
@@ -90,7 +92,7 @@ namespace TraffiLearn.Application.Commands.Questions.Update
         {
             foreach (var topicId in topicsIds)
             {
-                var topic = await _topicRepository.GetByIdRawAsync(topicId.Value);
+                var topic = await _topicRepository.GetByIdAsync(topicId.Value);
 
                 if (topic is null)
                 {

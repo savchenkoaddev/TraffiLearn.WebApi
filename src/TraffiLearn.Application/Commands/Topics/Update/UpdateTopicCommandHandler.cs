@@ -27,7 +27,9 @@ namespace TraffiLearn.Application.Commands.Topics.Update
             UpdateTopicCommand request,
             CancellationToken cancellationToken)
         {
-            var topic = await _topicRepository.GetByIdRawAsync(request.TopicId.Value);
+            var topic = await _topicRepository.GetByIdAsync(
+                request.TopicId.Value, 
+                cancellationToken);
 
             if (topic is null)
             {

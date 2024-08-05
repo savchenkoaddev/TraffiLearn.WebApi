@@ -30,7 +30,7 @@ namespace TraffiLearn.Application.Queries.Questions.GetQuestionComments
             var question = await _questionRepository
                 .GetByIdWithCommentsTwoLevelsDeepAsync(
                     questionId: request.QuestionId.Value,
-                    includeUsers: true);
+                    cancellationToken);
 
             if (question is null)
             {

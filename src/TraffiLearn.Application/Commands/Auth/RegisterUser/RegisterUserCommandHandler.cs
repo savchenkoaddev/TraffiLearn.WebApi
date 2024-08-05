@@ -53,7 +53,9 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterUser
 
             var user = mappingResult.Value;
 
-            await _userRepository.AddAsync(user);
+            await _userRepository.AddAsync(
+                user,
+                cancellationToken);
 
             identityUser = CreateIdentityUser(user);
 

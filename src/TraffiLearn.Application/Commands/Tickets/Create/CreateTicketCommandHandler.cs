@@ -42,7 +42,9 @@ namespace TraffiLearn.Application.Commands.Tickets.Create
 
             foreach (var questionId in request.QuestionIds)
             {
-                var question = await _questionRepository.GetByIdAsync(questionId.Value);
+                var question = await _questionRepository.GetByIdAsync(
+                    questionId.Value,
+                    cancellationToken);
 
                 if (question is null)
                 {
@@ -64,7 +66,10 @@ namespace TraffiLearn.Application.Commands.Tickets.Create
                 }
             }
 
-            await _ticketRepository.AddAsync(ticket);
+            await _ticketRepository.AddAsync(
+                ticket,
+                cancellationToken);
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();

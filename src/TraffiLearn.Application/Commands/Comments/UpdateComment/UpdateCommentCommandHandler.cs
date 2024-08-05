@@ -33,8 +33,8 @@ namespace TraffiLearn.Application.Commands.Comments.UpdateComment
         {
             var comment = await _commentRepository.GetByIdAsync(
                 request.CommentId.Value,
-                query => query
-                    .Include(c => c.User));
+                cancellationToken,
+                includeExpressions: comment => comment.User);
 
             if (comment is null)
             {

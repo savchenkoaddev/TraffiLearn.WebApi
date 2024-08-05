@@ -38,27 +38,6 @@ namespace TraffiLearn.Infrastructure.Repositories
             CancellationToken cancellationToken = default,
             params Expression<Func<Question, object>>[] includeExpressions)
         {
-            IQueryable<Question> questions = _dbContext.Questions;
-
-            foreach (var includeExpression in includeExpressions)
-            {
-                questions = questions.Include(includeExpression);
-            }
-
-            if (orderByExpression is not null)
-            {
-                questions = questions.OrderBy(orderByExpression);
-            }
-
-            return await questions
-                .ToListAsync(cancellationToken);
-        }
-
-        public async Task<Question?> GetByIdWithCommentsTwoLevelsDeepAsync(
-            Guid questionId, 
-            CancellationToken cancellationToken = default,
-            params Expression<Func<Question, object>>[] includeExpressions)
-        {
             IQueryable<Question> query = _dbContext.Questions;
 
             foreach (var includeExpression in includeExpressions)
@@ -66,9 +45,27 @@ namespace TraffiLearn.Infrastructure.Repositories
                 query = query.Include(includeExpression);
             }
 
-            query
+            if (orderByExpression is not null)
+            {
+                query = query.OrderBy(orderByExpression);
+            }
+
+            return await query
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<Question?> GetByIdWithCommentsTwoLevelsDeepAsync(
+            Guid questionId, 
+            CancellationToken cancellationToken = default)
+        {
+            IQueryable<Question> query = _dbContext.Questions;
+
+            //REQUIRES OPTIMIZATION
+            query = query
                 .Include(q => q.Comments)
-                    .ThenInclude(q => q.Replies);
+                    .ThenInclude(q => q.Replies)
+                .Include(q => q.Comments)
+                    .ThenInclude(q => q.User);
 
             return await query
                 .FirstOrDefaultAsync(

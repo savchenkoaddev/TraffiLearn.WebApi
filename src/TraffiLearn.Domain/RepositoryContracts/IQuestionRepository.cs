@@ -12,8 +12,7 @@ namespace TraffiLearn.Domain.RepositoryContracts
 
         Task<Question?> GetByIdWithCommentsTwoLevelsDeepAsync(
             Guid questionId,
-            CancellationToken cancellationToken = default,
-            params Expression<Func<Question, object>>[] includeExpressions);
+            CancellationToken cancellationToken = default);
 
         Task<IEnumerable<Question>> GetAllAsync(
             Expression<Func<Question, object>>? orderByExpression = null,
