@@ -12,6 +12,7 @@ using TraffiLearn.Application.Commands.Questions.Update;
 using TraffiLearn.Application.Commands.Users.DislikeQuestion;
 using TraffiLearn.Application.Commands.Users.LikeQuestion;
 using TraffiLearn.Application.Commands.Users.MarkQuestion;
+using TraffiLearn.Application.Commands.Users.RemoveQuestionDislike;
 using TraffiLearn.Application.Commands.Users.RemoveQuestionLike;
 using TraffiLearn.Application.Commands.Users.UnmarkQuestion;
 using TraffiLearn.Application.Queries.Questions.GetAll;
@@ -228,6 +229,15 @@ namespace TraffiLearn.WebAPI.Controllers
 
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
+
+        [HttpPut("{questionId:guid}/removedislike")]
+        public async Task<IActionResult> RemoveQuestionDislike(Guid questionId)
+        {
+            var commandResult = await _sender.Send(new RemoveQuestionDislikeCommand(questionId));
+
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+        }
+
 
         #endregion
     }
