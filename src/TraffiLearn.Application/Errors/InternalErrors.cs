@@ -19,6 +19,11 @@ namespace TraffiLearn.Application.Errors
                 code: "Internal.AuthorizationFailure",
                 description: "The user is not authenticated. This is probably due to some authorization failures.");
 
+        public static readonly Error DataConsistencyError =
+            Error.InternalFailure(
+                code: "Internal.DataConsistencyError",
+                description: "There are some data consistency errors.");
+
         public static Error ClaimMissing(string claimName) => 
            Error.InternalFailure(
                code: "Internal.ClaimMissing",

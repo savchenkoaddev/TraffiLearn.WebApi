@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using TraffiLearn.Application.Abstractions.Auth;
-using TraffiLearn.Application.Identity;
+using TraffiLearn.Domain.Entities;
 using TraffiLearn.Infrastructure.Options;
 
 namespace TraffiLearn.Infrastructure.Authentication
@@ -22,9 +22,9 @@ namespace TraffiLearn.Infrastructure.Authentication
             _symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
         }
 
-        public string GenerateAccessToken(ApplicationUser identityUser)
+        public string GenerateAccessToken(User user)
         {
-            var claims = GenerateClaims(identityUser);
+            var claims = GenerateClaims(user);
 
             var signingCredentials = new SigningCredentials(
                  key: _symmetricSecurityKey,
@@ -78,12 +78,13 @@ namespace TraffiLearn.Infrastructure.Authentication
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private Claim[] GenerateClaims(ApplicationUser identityUser)
+        private Claim[] GenerateClaims(User user)
         {
             return
             [
-                new(JwtRegisteredClaimNames.Sub, identityUser.Id),
-                new(JwtRegisteredClaimNames.Email, identityUser.Email)
+                new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new(JwtRegisteredClaimNames.Email, user.Email.Value.ToString()),
+                new("role", user.Role.ToString())
             ];
         }
 

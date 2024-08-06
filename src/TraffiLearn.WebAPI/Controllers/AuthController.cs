@@ -38,7 +38,6 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
         }
 
-        [Authorize]
         [HttpPost("register-admin")]
         public async Task<IActionResult> RegisterAdmin(RegisterAdminCommand command)
         {
