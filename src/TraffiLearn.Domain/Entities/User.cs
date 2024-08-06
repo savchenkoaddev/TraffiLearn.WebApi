@@ -1,4 +1,5 @@
-﻿using TraffiLearn.Domain.Errors.Users;
+﻿using TraffiLearn.Domain.Enums;
+using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Users;
@@ -19,16 +20,20 @@ namespace TraffiLearn.Domain.Entities
         private User(
             Guid id,
             Email email,
-            Username username)
+            Username username,
+            UserRole role)
             : base(id)
         {
             Email = email;
             Username = username;
+            Role = role;
         }
 
         public Email Email { get; private set; }
 
         public Username Username { get; private set; }
+
+        public UserRole Role { get; private set; }
 
         public IReadOnlyCollection<Comment> Comments => _comments;
 
@@ -135,12 +140,14 @@ namespace TraffiLearn.Domain.Entities
         public static Result<User> Create(
             Guid id,
             Email email,
-            Username username)
+            Username username,
+            UserRole role)
         {
             return new User(
                 id,
                 email,
-                username);
+                username,
+                role);
         }
     }
 }
