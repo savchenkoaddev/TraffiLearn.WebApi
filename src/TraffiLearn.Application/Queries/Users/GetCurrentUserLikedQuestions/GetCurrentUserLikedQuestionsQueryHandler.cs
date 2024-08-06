@@ -3,9 +3,9 @@ using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.DTO.Questions;
+using TraffiLearn.Application.Errors;
 using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.Errors;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 

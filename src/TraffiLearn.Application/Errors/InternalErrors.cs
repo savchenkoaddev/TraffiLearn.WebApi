@@ -1,6 +1,6 @@
 ﻿using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Domain.Errors
+namespace TraffiLearn.Application.Errors
 {
     public static class InternalErrors
     {
@@ -23,5 +23,10 @@ namespace TraffiLearn.Domain.Errors
            Error.InternalFailure(
                code: "Internal.ClaimMissing",
                description: $"Couldn't fetch the {claimName} from http context. This is probably due to the token generation issues.");
+
+        public static Error RoleAssigningFailure(string roleName) =>
+           Error.InternalFailure(
+               code: "Internal.ClaimMissing",
+               description: $"Failed to assign role {roleName} to user.");
     }
 }

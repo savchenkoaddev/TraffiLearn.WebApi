@@ -1,11 +1,11 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.DTO.Questions;
+using TraffiLearn.Application.Errors;
 using TraffiLearn.Application.Options;
 using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.Errors;
-using TraffiLearn.Domain.Errors.Questions;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 
@@ -16,15 +16,18 @@ namespace TraffiLearn.Application.Queries.Questions.GetQuestionsForTheoryTest
         private readonly IQuestionRepository _questionRepository;
         private readonly QuestionsSettings _questionsSettings;
         private readonly Mapper<Question, QuestionResponse> _entityToResponseMapper;
+        private readonly ILogger<GetQuestionsForTheoryTestQueryHandler> _logger;
 
         public GetQuestionsForTheoryTestQueryHandler(
             IQuestionRepository questionRepository,
             IOptions<QuestionsSettings> questionsSettings,
-            Mapper<Question, QuestionResponse> questionMapper)
+            Mapper<Question, QuestionResponse> questionMapper,
+            ILogger<GetQuestionsForTheoryTestQueryHandler> logger)
         {
             _questionRepository = questionRepository;
             _questionsSettings = questionsSettings.Value;
             _entityToResponseMapper = questionMapper;
+            _logger = logger;
         }
 
         public async Task<Result<IEnumerable<QuestionResponse>>> Handle(
@@ -39,6 +42,8 @@ namespace TraffiLearn.Application.Queries.Questions.GetQuestionsForTheoryTest
             if (questions.Count() < neededQuestionsCount &&
                 _questionsSettings.DemandEnoughRecordsOnTheoryTestFetching)
             {
+                _logger.LogError(InternalErrors.NotEnoughRecords.Description);
+
                 return Result.Failure<IEnumerable<QuestionResponse>>(InternalErrors.NotEnoughRecords);
             }
 

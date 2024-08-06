@@ -3,8 +3,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using TraffiLearn.Application.Abstractions.Auth;
+using TraffiLearn.Application.Errors;
 using TraffiLearn.Application.Options;
-using TraffiLearn.Domain.Errors;
+using TraffiLearn.Domain.Enums;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Users;
@@ -15,17 +16,37 @@ namespace TraffiLearn.Application.Services
         where TUser : class
     {
         private readonly SignInManager<TUser> _signInManager;
+        private readonly UserManager<TUser> _userManager;
         private readonly LoginSettings _loginSettings;
         private readonly ILogger<AuthService<TUser>> _logger;
 
         public AuthService(
             SignInManager<TUser> signInManager,
+            UserManager<TUser> userManager,
             IOptions<LoginSettings> loginSettings,
             ILogger<AuthService<TUser>> logger)
         {
             _signInManager = signInManager;
+            _userManager = userManager;
             _loginSettings = loginSettings.Value;
             _logger = logger;
+        }
+
+        public async Task<Result> AssignRoleToUser(TUser user, Role role)
+        {
+            var roleName = role.ToString();
+
+            var result = await _userManager.AddToRoleAsync(user, roleName);
+
+            if (!result.Succeeded)
+            {
+                _logger.LogCritical(
+                    InternalErrors.RoleAssigningFailure(roleName).Description);
+
+                return InternalErrors.RoleAssigningFailure(roleName);
+            }
+
+            return Result.Success();
         }
 
         public Result<Email> GetAuthenticatedUserEmail()

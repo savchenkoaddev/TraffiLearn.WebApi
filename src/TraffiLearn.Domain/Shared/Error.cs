@@ -37,6 +37,9 @@
         public static Error Validation(string code, string description) =>
             new Error(code, description, ErrorType.Validation);
 
+        public static Error Unauthorized(string code, string description) =>
+           new Error(code, description, ErrorType.Unauthorized);
+
         public static implicit operator Result(Error error) => Result.Failure(error);
     }
 }

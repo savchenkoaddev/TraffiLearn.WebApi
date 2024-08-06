@@ -12,7 +12,12 @@ namespace TraffiLearn.Domain.Errors.Users
         public static readonly Error AlreadyRegistered =
             Error.Validation(
                 code: "User.AlreadyRegistered",
-                description: "The same user has already been registered.");
+                description: "The same user has already been registered. Use different email or username.");
+
+        public static readonly Error NotAllowedToCreateAdmins =
+           Error.Unauthorized(
+               code: "User.NotAllowedToCreateAdmins",
+               description: "You are not allowed to create admin accounts.");
 
         public static readonly Error InvalidCredentials =
             Error.Validation(

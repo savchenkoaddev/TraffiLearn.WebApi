@@ -3,9 +3,9 @@ using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.DTO.Comments;
+using TraffiLearn.Application.Errors;
 using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.Errors;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 
@@ -32,7 +32,7 @@ namespace TraffiLearn.Application.Queries.Users.GetLoggedInUserComments
         }
 
         public async Task<Result<IEnumerable<CommentResponse>>> Handle(
-            GetLoggedInUserCommentsQuery request, 
+            GetLoggedInUserCommentsQuery request,
             CancellationToken cancellationToken)
         {
             Result<Guid> userIdResult = _authService.GetAuthenticatedUserId();

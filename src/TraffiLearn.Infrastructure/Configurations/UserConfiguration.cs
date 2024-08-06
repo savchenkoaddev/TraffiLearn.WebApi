@@ -28,6 +28,10 @@ namespace TraffiLearn.Infrastructure.Configurations
                 .IsUnique();
 
             builder
+                .HasIndex(user => user.Username)
+                .IsUnique();
+
+            builder
                 .HasMany(user => user.Comments)
                 .WithOne(c => c.User)
                 .OnDelete(DeleteBehavior.Cascade);

@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using TraffiLearn.Application.Identity;
+using TraffiLearn.Domain.Enums;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Users;
 
@@ -14,5 +16,9 @@ namespace TraffiLearn.Application.Abstractions.Auth
         Task<Result<SignInResult>> PasswordLogin(
             TUser user,
             string password);
+
+        Task<Result> AssignRoleToUser(
+            TUser user, 
+            Role role);
     }
 }

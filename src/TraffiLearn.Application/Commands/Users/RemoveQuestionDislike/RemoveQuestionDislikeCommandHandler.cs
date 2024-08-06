@@ -3,8 +3,8 @@ using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Commands.Users.LikeQuestion;
+using TraffiLearn.Application.Errors;
 using TraffiLearn.Application.Identity;
-using TraffiLearn.Domain.Errors;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
@@ -50,7 +50,7 @@ namespace TraffiLearn.Application.Commands.Users.RemoveQuestionDislike
                 cancellationToken,
                 includeExpressions:
                     [question => question.LikedByUsers,
-                     question => question.DislikedByUsers]);
+                        question => question.DislikedByUsers]);
 
             if (question is null)
             {
@@ -62,7 +62,7 @@ namespace TraffiLearn.Application.Commands.Users.RemoveQuestionDislike
                 cancellationToken,
                 includeExpressions:
                     [user => user.LikedQuestions,
-                     user => user.DislikedQuestions]);
+                        user => user.DislikedQuestions]);
 
             if (user is null)
             {

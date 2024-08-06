@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Errors;
 using TraffiLearn.Application.Identity;
-using TraffiLearn.Domain.Errors;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
@@ -34,7 +34,7 @@ namespace TraffiLearn.Application.Commands.Users.LikeQuestion
         }
 
         public async Task<Result> Handle(
-            LikeQuestionCommand request, 
+            LikeQuestionCommand request,
             CancellationToken cancellationToken)
         {
             var userIdResult = _authService.GetAuthenticatedUserId();
@@ -49,9 +49,9 @@ namespace TraffiLearn.Application.Commands.Users.LikeQuestion
             var question = await _questionRepository.GetByIdAsync(
                 questionId: request.QuestionId.Value,
                 cancellationToken,
-                includeExpressions: 
+                includeExpressions:
                     [question => question.LikedByUsers,
-                    question => question.DislikedByUsers]);
+                        question => question.DislikedByUsers]);
 
             if (question is null)
             {
@@ -62,8 +62,8 @@ namespace TraffiLearn.Application.Commands.Users.LikeQuestion
                 userId,
                 cancellationToken,
                 includeExpressions:
-                    [user => user.LikedQuestions, 
-                    user => user.DislikedQuestions]);
+                    [user => user.LikedQuestions,
+                        user => user.DislikedQuestions]);
 
             if (user is null)
             {

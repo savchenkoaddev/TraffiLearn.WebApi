@@ -2,12 +2,12 @@
 using TraffiLearn.Application.CustomValidators;
 using TraffiLearn.Domain.ValueObjects.Users;
 
-namespace TraffiLearn.Application.Commands.Auth.RegisterUser
+namespace TraffiLearn.Application.Commands.Auth.RegisterAdmin
 {
-    internal sealed class RegisterUserCommandValidator 
-        : AbstractValidator<RegisterUserCommand>
+    internal sealed class RegisterAdminCommandValidator
+        : AbstractValidator<RegisterAdminCommand>
     {
-        public RegisterUserCommandValidator()
+        public RegisterAdminCommandValidator()
         {
             RuleFor(x => x.Email)
                 .SetValidator(new EmailValidator());

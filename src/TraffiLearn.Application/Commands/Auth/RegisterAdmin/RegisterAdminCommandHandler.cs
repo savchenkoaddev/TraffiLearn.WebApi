@@ -1,47 +1,77 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Errors;
 using TraffiLearn.Application.Identity;
+using TraffiLearn.Application.Options;
 using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.Enums;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Commands.Auth.RegisterUser
+namespace TraffiLearn.Application.Commands.Auth.RegisterAdmin
 {
-    internal sealed class RegisterUserCommandHandler
-        : IRequestHandler<RegisterUserCommand, Result>
+    internal sealed class RegisterAdminCommandHandler
+        : IRequestHandler<RegisterAdminCommand, Result>
     {
         private readonly IUserRepository _userRepository;
         private readonly IAuthService<ApplicationUser> _authService;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly Mapper<RegisterUserCommand, Result<User>> _commandMapper;
+        private readonly Mapper<RegisterAdminCommand, Result<User>> _commandMapper;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<RegisterUserCommandHandler> _logger;
+        private readonly RegistrationSettings _registrationSettings;
+        private readonly ILogger<RegisterAdminCommandHandler> _logger;
 
-        public RegisterUserCommandHandler(
+        public RegisterAdminCommandHandler(
             IUserRepository userRepository,
-            UserManager<ApplicationUser> userManager,
             IAuthService<ApplicationUser> authService,
-            Mapper<RegisterUserCommand, Result<User>> commandMapper,
+            UserManager<ApplicationUser> userManager,
+            Mapper<RegisterAdminCommand, Result<User>> commandMapper,
             IUnitOfWork unitOfWork,
-            ILogger<RegisterUserCommandHandler> logger)
+            IOptions<RegistrationSettings> registrationSettings,
+            ILogger<RegisterAdminCommandHandler> logger)
         {
             _userRepository = userRepository;
             _authService = authService;
             _userManager = userManager;
             _commandMapper = commandMapper;
             _unitOfWork = unitOfWork;
+            _registrationSettings = registrationSettings.Value;
             _logger = logger;
         }
 
         public async Task<Result> Handle(
-            RegisterUserCommand request,
+            RegisterAdminCommand request,
             CancellationToken cancellationToken)
         {
+            Result<Guid> creatorIdResult = _authService.GetAuthenticatedUserId();
+
+            if (creatorIdResult.IsFailure)
+            {
+                return creatorIdResult.Error;
+            }
+
+            var creatorId = creatorIdResult.Value;
+
+            var creator = await _userRepository.GetByIdAsync(
+                creatorId,
+                cancellationToken);
+
+            if (creator is null)
+            {
+                _logger.LogCritical(InternalErrors.AuthenticatedUserNotFound.Description);
+
+                return InternalErrors.AuthenticatedUserNotFound;
+            }
+
+            if (creator.Role < _registrationSettings.MinimumAllowedRoleToCreateAdminAccounts)
+            {
+                return UserErrors.NotAllowedToCreateAdmins;
+            }
+
             var mappingResult = _commandMapper.Map(request);
 
             if (mappingResult.IsFailure)
@@ -49,13 +79,12 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterUser
                 return mappingResult.Error;
             }
 
-            var newUser = mappingResult.Value;
+            var newAdmin = mappingResult.Value;
 
-            var existsSameUser = await _userRepository
-                .ExistsAsync(
-                    newUser.Username, 
-                    newUser.Email,
-                    cancellationToken);
+            var existsSameUser = await _userRepository.ExistsAsync(
+                newAdmin.Username,
+                newAdmin.Email,
+                cancellationToken);
 
             if (existsSameUser)
             {
@@ -63,14 +92,14 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterUser
             }
 
             await _userRepository.AddAsync(
-                newUser,
+                newAdmin,
                 cancellationToken);
 
-            var newIdentityUser = CreateIdentityUser(newUser);
+            var identityUser = CreateIdentityUser(newAdmin);
 
             var addResult = await AddIdentityUser(
-                newIdentityUser,
-                password: request.Password);
+                identityUser,
+                request.Password);
 
             if (addResult.IsFailure)
             {
@@ -78,8 +107,8 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterUser
             }
 
             var roleAssignmentResult = await _authService.AssignRoleToUser(
-                newIdentityUser,
-                role: Role.RegularUser);
+                identityUser,
+                role: newAdmin.Role);
 
             if (roleAssignmentResult.IsFailure)
             {
@@ -88,7 +117,7 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterUser
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Succesfully created a new user with {Email} email.", newUser.Email);
+            _logger.LogInformation("Successfully created a new admin user with {Email} email.", identityUser.Email);
 
             return Result.Success();
         }
