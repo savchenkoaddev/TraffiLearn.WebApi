@@ -1,9 +1,9 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TraffiLearn.Application.Commands.Auth.Login;
 using TraffiLearn.Application.Commands.Auth.RegisterAdmin;
 using TraffiLearn.Application.Commands.Auth.RegisterUser;
+using TraffiLearn.Application.Commands.Auth.RemoveAdminAccount;
 using TraffiLearn.WebAPI.Extensions;
 
 namespace TraffiLearn.WebAPI.Controllers
@@ -42,6 +42,14 @@ namespace TraffiLearn.WebAPI.Controllers
         public async Task<IActionResult> RegisterAdmin(RegisterAdminCommand command)
         {
             var commandResult = await _sender.Send(command);
+
+            return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
+        }
+
+        [HttpDelete("remove-admin/{adminId:guid}")]
+        public async Task<IActionResult> RemoveAdminAccount(Guid adminId)
+        {
+            var commandResult = await _sender.Send(new RemoveAdminAccountCommand(adminId));
 
             return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
         }

@@ -19,6 +19,16 @@ namespace TraffiLearn.Domain.Errors.Users
                code: "User.NotAllowedToCreateAdmins",
                description: "You are not allowed to create admin accounts.");
 
+        public static readonly Error NotAllowedToRemoveAdmins =
+           Error.Unauthorized(
+               code: "User.NotAllowedToRemoveAdmins",
+               description: "You are not allowed to remove admin accounts.");
+
+        public static readonly Error RemovedAccountIsNotAdminAccount =
+           Error.Validation(
+               code: "User.RemovedAccountIsNotAdminAccount",
+               description: "Unable to remove admin account, because the account is not an admin's one.");
+
         public static readonly Error InvalidCredentials =
             Error.Validation(
                 code: "User.InvalidCredentials",

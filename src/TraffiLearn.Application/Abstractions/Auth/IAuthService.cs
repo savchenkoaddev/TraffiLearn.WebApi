@@ -23,5 +23,7 @@ namespace TraffiLearn.Application.Abstractions.Auth
         Task<Result> AddIdentityUser(
             TUser identityUser,
             string password);
+
+        Task<Result> DeleteUser(Guid userId);
     }
 }

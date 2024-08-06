@@ -21,7 +21,7 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterAdmin
         private readonly IAuthService<ApplicationUser> _authService;
         private readonly Mapper<RegisterAdminCommand, Result<User>> _commandMapper;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly RegistrationSettings _registrationSettings;
+        private readonly AuthSettings _authSettings;
         private readonly ILogger<RegisterAdminCommandHandler> _logger;
 
         public RegisterAdminCommandHandler(
@@ -29,14 +29,14 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterAdmin
             IAuthService<ApplicationUser> authService,
             Mapper<RegisterAdminCommand, Result<User>> commandMapper,
             IUnitOfWork unitOfWork,
-            IOptions<RegistrationSettings> registrationSettings,
+            IOptions<AuthSettings> authSettings,
             ILogger<RegisterAdminCommandHandler> logger)
         {
             _userRepository = userRepository;
             _authService = authService;
             _commandMapper = commandMapper;
             _unitOfWork = unitOfWork;
-            _registrationSettings = registrationSettings.Value;
+            _authSettings = authSettings.Value;
             _logger = logger;
         }
 
@@ -44,6 +44,7 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterAdmin
             RegisterAdminCommand request,
             CancellationToken cancellationToken)
         {
+            // Transaction is required due to features of UserManager.
             using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 Result<Guid> creatorIdResult = _authService.GetAuthenticatedUserId();
@@ -66,7 +67,7 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterAdmin
                     return InternalErrors.AuthenticatedUserNotFound;
                 }
 
-                if (creator.Role < _registrationSettings.MinimumAllowedRoleToCreateAdminAccounts)
+                if (creator.Role < _authSettings.MinimumAllowedRoleToCreateAdminAccounts)
                 {
                     return UserErrors.NotAllowedToCreateAdmins;
                 }
@@ -96,6 +97,7 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterAdmin
 
                 var identityUser = CreateIdentityUser(newAdmin);
 
+                // This call persists changes to the database regardless of UoW
                 var addResult = await _authService.AddIdentityUser(
                     identityUser,
                     request.Password);

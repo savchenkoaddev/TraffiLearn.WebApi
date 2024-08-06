@@ -49,7 +49,7 @@ namespace TraffiLearn.WebAPI.Extensions
                 ErrorType.Validation => StatusCodes.Status400BadRequest,
                 ErrorType.NotFound => StatusCodes.Status404NotFound,
                 ErrorType.OperationFailure => StatusCodes.Status400BadRequest,
-                ErrorType.Unauthorized => StatusCodes.Status401Unauthorized,
+                ErrorType.Unauthorized => StatusCodes.Status403Forbidden,
 
                 _ => StatusCodes.Status500InternalServerError
             };

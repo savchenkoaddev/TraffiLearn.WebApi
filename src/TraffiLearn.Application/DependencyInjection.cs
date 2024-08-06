@@ -113,8 +113,8 @@ namespace TraffiLearn.Application
                 configuration.GetSection(QuestionsSettings.SectionName));
             services.Configure<LoginSettings>(
                 configuration.GetSection(LoginSettings.SectionName));
-            services.Configure<RegistrationSettings>(
-                configuration.GetSection(RegistrationSettings.SectionName));
+            services.Configure<AuthSettings>(
+                configuration.GetSection(AuthSettings.SectionName));
 
             return services;
         }

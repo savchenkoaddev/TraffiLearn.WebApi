@@ -5,7 +5,6 @@ using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.Enums;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
@@ -39,6 +38,7 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterUser
             RegisterUserCommand request,
             CancellationToken cancellationToken)
         {
+            // Transaction is required due to features of UserManager.
             using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 var mappingResult = _commandMapper.Map(request);
@@ -67,6 +67,7 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterUser
 
                 var newIdentityUser = CreateIdentityUser(newUser);
 
+                // This call persists changes to the database regardless of UoW
                 var addResult = await _authService.AddIdentityUser(
                     identityUser: newIdentityUser,
                     request.Password);
@@ -78,7 +79,7 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterUser
 
                 var roleAssignmentResult = await _authService.AssignRoleToUser(
                     newIdentityUser,
-                    role: Role.RegularUser);
+                    role: newUser.Role);
 
                 if (roleAssignmentResult.IsFailure)
                 {

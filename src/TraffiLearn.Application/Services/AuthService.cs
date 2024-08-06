@@ -4,7 +4,6 @@ using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Errors;
-using TraffiLearn.Application.Identity;
 using TraffiLearn.Application.Options;
 using TraffiLearn.Domain.Enums;
 using TraffiLearn.Domain.Errors.Users;
@@ -61,6 +60,27 @@ namespace TraffiLearn.Application.Services
                     InternalErrors.RoleAssigningFailure(roleName).Description);
 
                 return InternalErrors.RoleAssigningFailure(roleName);
+            }
+
+            return Result.Success();
+        }
+
+        public async Task<Result> DeleteUser(Guid userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+
+            if (user is null)
+            {
+                return UserErrors.NotFound;
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+
+            if (!result.Succeeded)
+            {
+                _logger.LogCritical("Failed to delete user from the identity storage. Errors: {Errors}", string.Join(',', result.Errors));
+
+                return Error.InternalFailure();
             }
 
             return Result.Success();
