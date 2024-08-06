@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Errors;
+using TraffiLearn.Application.Identity;
 using TraffiLearn.Application.Options;
 using TraffiLearn.Domain.Enums;
 using TraffiLearn.Domain.Errors.Users;
@@ -30,6 +31,22 @@ namespace TraffiLearn.Application.Services
             _userManager = userManager;
             _loginSettings = loginSettings.Value;
             _logger = logger;
+        }
+
+        public async Task<Result> AddIdentityUser(TUser identityUser, string password)
+        {
+            var result = await _userManager.CreateAsync(
+                identityUser,
+                password);
+
+            if (!result.Succeeded)
+            {
+                _logger.LogCritical("Failed to create identity user.");
+
+                return Error.InternalFailure();
+            }
+
+            return Result.Success();
         }
 
         public async Task<Result> AssignRoleToUser(TUser user, Role role)

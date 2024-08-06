@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using System.Transactions;
 using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Identity;
@@ -17,14 +17,12 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterUser
     {
         private readonly IUserRepository _userRepository;
         private readonly IAuthService<ApplicationUser> _authService;
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly Mapper<RegisterUserCommand, Result<User>> _commandMapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<RegisterUserCommandHandler> _logger;
 
         public RegisterUserCommandHandler(
             IUserRepository userRepository,
-            UserManager<ApplicationUser> userManager,
             IAuthService<ApplicationUser> authService,
             Mapper<RegisterUserCommand, Result<User>> commandMapper,
             IUnitOfWork unitOfWork,
@@ -32,7 +30,6 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterUser
         {
             _userRepository = userRepository;
             _authService = authService;
-            _userManager = userManager;
             _commandMapper = commandMapper;
             _unitOfWork = unitOfWork;
             _logger = logger;
@@ -42,53 +39,58 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterUser
             RegisterUserCommand request,
             CancellationToken cancellationToken)
         {
-            var mappingResult = _commandMapper.Map(request);
-
-            if (mappingResult.IsFailure)
+            using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                return mappingResult.Error;
-            }
+                var mappingResult = _commandMapper.Map(request);
 
-            var newUser = mappingResult.Value;
+                if (mappingResult.IsFailure)
+                {
+                    return mappingResult.Error;
+                }
 
-            var existsSameUser = await _userRepository
-                .ExistsAsync(
-                    newUser.Username, 
-                    newUser.Email,
+                var newUser = mappingResult.Value;
+
+                var existsSameUser = await _userRepository
+                    .ExistsAsync(
+                        newUser.Username,
+                        newUser.Email,
+                        cancellationToken);
+
+                if (existsSameUser)
+                {
+                    return UserErrors.AlreadyRegistered;
+                }
+
+                await _userRepository.AddAsync(
+                    newUser,
                     cancellationToken);
 
-            if (existsSameUser)
-            {
-                return UserErrors.AlreadyRegistered;
+                var newIdentityUser = CreateIdentityUser(newUser);
+
+                var addResult = await _authService.AddIdentityUser(
+                    identityUser: newIdentityUser,
+                    request.Password);
+
+                if (addResult.IsFailure)
+                {
+                    return addResult.Error;
+                }
+
+                var roleAssignmentResult = await _authService.AssignRoleToUser(
+                    newIdentityUser,
+                    role: Role.RegularUser);
+
+                if (roleAssignmentResult.IsFailure)
+                {
+                    return roleAssignmentResult.Error;
+                }
+
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                _logger.LogInformation("Succesfully created a new user with {Email} email.", newUser.Email);
+
+                transaction.Complete();
             }
-
-            await _userRepository.AddAsync(
-                newUser,
-                cancellationToken);
-
-            var newIdentityUser = CreateIdentityUser(newUser);
-
-            var addResult = await AddIdentityUser(
-                newIdentityUser,
-                password: request.Password);
-
-            if (addResult.IsFailure)
-            {
-                return addResult.Error;
-            }
-
-            var roleAssignmentResult = await _authService.AssignRoleToUser(
-                newIdentityUser,
-                role: Role.RegularUser);
-
-            if (roleAssignmentResult.IsFailure)
-            {
-                return roleAssignmentResult.Error;
-            }
-
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-            _logger.LogInformation("Succesfully created a new user with {Email} email.", newUser.Email);
 
             return Result.Success();
         }
@@ -101,24 +103,6 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterUser
                 Email = user.Email.Value,
                 UserName = user.Username.Value
             };
-        }
-
-        private async Task<Result> AddIdentityUser(
-            ApplicationUser identityUser,
-            string password)
-        {
-            var result = await _userManager.CreateAsync(
-                identityUser,
-                password);
-
-            if (!result.Succeeded)
-            {
-                _logger.LogCritical("Failed to create identity user.");
-
-                return Error.InternalFailure();
-            }
-
-            return Result.Success();
         }
     }
 }
