@@ -21,7 +21,7 @@ namespace TraffiLearn.Domain.Entities
             Guid id,
             Email email,
             Username username,
-            UserRole role)
+            Role role)
             : base(id)
         {
             Email = email;
@@ -32,8 +32,8 @@ namespace TraffiLearn.Domain.Entities
         public Email Email { get; private set; }
 
         public Username Username { get; private set; }
-
-        public UserRole Role { get; private set; }
+        
+        public Role Role { get; private set; }
 
         public IReadOnlyCollection<Comment> Comments => _comments;
 
@@ -141,7 +141,7 @@ namespace TraffiLearn.Domain.Entities
             Guid id,
             Email email,
             Username username,
-            UserRole role)
+            Role role)
         {
             return new User(
                 id,

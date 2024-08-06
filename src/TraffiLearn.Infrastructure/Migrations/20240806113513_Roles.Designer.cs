@@ -12,7 +12,7 @@ using TraffiLearn.Infrastructure.Database;
 namespace TraffiLearn.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240806083559_Roles")]
+    [Migration("20240806113513_Roles")]
     partial class Roles
     {
         /// <inheritdoc />

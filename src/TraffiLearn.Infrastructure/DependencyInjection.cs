@@ -14,6 +14,7 @@ using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.Infrastructure.Database;
 using TraffiLearn.Infrastructure.External;
+using TraffiLearn.Infrastructure.Helpers;
 using TraffiLearn.Infrastructure.Options;
 using TraffiLearn.Infrastructure.Repositories;
 
@@ -31,9 +32,19 @@ namespace TraffiLearn.Infrastructure
             services.AddExternalServices();
 
             services.AddPersistence();
+            SeedRoles(services).Wait();
             services.AddRepositories();
             
             return services;
+        }
+
+        private async static Task SeedRoles(IServiceCollection services)
+        {
+            using (var sp = services.BuildServiceProvider())
+            {
+                var roleManager = sp.GetRequiredService<RoleManager<IdentityRole>>();
+                await RoleSeeder.SeedRolesAsync(roleManager);
+            }
         }
 
         private static IServiceCollection AddAuthenticationServices(this IServiceCollection services)

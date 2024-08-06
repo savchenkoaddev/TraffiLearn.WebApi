@@ -1,9 +1,9 @@
 ﻿namespace TraffiLearn.Domain.Enums
 {
-    public enum UserRole
+    public enum Role
     {
         RegularUser,
-        Admin,
+        Admin, 
         Owner
     }
 }

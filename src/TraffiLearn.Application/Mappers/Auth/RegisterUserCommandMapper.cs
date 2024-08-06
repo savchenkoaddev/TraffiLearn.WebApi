@@ -32,7 +32,7 @@ namespace TraffiLearn.Application.Mapper.Auth
                 id: userId,
                 email: emailCreateResult.Value,
                 username: usernameCreateResult.Value,
-                role: UserRole.RegularUser);
+                role: Role.RegularUser);
         }
     }
 }

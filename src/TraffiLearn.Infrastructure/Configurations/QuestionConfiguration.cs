@@ -28,12 +28,6 @@ namespace TraffiLearn.Infrastructure.Configurations
                     number => number.Value,
                     value => QuestionNumber.Create(value).Value);
 
-            builder.Property(q => q.LikesCount)
-                .HasDefaultValue(0);
-
-            builder.Property(q => q.DislikesCount)
-                .HasDefaultValue(0);
-
             builder.Property(q => q.ImageUri)
                 .IsRequired(false)
                 .HasMaxLength(ImageUri.MaxLength)
