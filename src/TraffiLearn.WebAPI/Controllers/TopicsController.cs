@@ -76,7 +76,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
-        [HttpPut("{topicId:guid}/addquestion/{questionId:guid}")]
+        [HttpPut("{topicId:guid}/add-question/{questionId:guid}")]
         public async Task<IActionResult> AddQuestionToTopic(
             [FromRoute] Guid questionId,
             [FromRoute] Guid topicId)
@@ -88,7 +88,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
-        [HttpPut("{topicId:guid}/removequestion/{questionId:guid}")]
+        [HttpPut("{topicId:guid}/remove-question/{questionId:guid}")]
         public async Task<IActionResult> RemoveQuestionFromTopic(
             [FromRoute] Guid questionId,
             [FromRoute] Guid topicId)

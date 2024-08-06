@@ -2,40 +2,40 @@
 using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Application.Commands.Users.MarkQuestion;
+using TraffiLearn.Application.Commands.Users.LikeQuestion;
 using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.Errors;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Commands.Users.UnmarkQuestion
+namespace TraffiLearn.Application.Commands.Users.RemoveQuestionLike
 {
-    internal sealed class UnmarkQuestionCommandHandler
-        : IRequestHandler<UnmarkQuestionCommand, Result>
+    internal sealed class RemoveQuestionLikeCommandHandler
+        : IRequestHandler<RemoveQuestionLikeCommand, Result>
     {
         private readonly IAuthService<ApplicationUser> _authService;
-        private readonly IUserRepository _userRepository;
         private readonly IQuestionRepository _questionRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<MarkQuestionCommandHandler> _logger;
+        private readonly ILogger<LikeQuestionCommandHandler> _logger;
 
-        public UnmarkQuestionCommandHandler(
+        public RemoveQuestionLikeCommandHandler(
             IAuthService<ApplicationUser> authService,
-            IUserRepository userRepository,
             IQuestionRepository questionRepository,
+            IUserRepository userRepository,
             IUnitOfWork unitOfWork,
-            ILogger<MarkQuestionCommandHandler> logger)
+            ILogger<LikeQuestionCommandHandler> logger)
         {
             _authService = authService;
-            _userRepository = userRepository;
             _questionRepository = questionRepository;
+            _userRepository = userRepository;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
 
         public async Task<Result> Handle(
-            UnmarkQuestionCommand request,
+            RemoveQuestionLikeCommand request, 
             CancellationToken cancellationToken)
         {
             var userIdResult = _authService.GetAuthenticatedUserId();
@@ -48,7 +48,11 @@ namespace TraffiLearn.Application.Commands.Users.UnmarkQuestion
             var userId = userIdResult.Value;
 
             var question = await _questionRepository.GetByIdAsync(
-                questionId: request.QuestionId.Value);
+                questionId: request.QuestionId.Value,
+                cancellationToken,
+                includeExpressions:
+                    [question => question.LikedByUsers,
+                     question => question.DislikedByUsers]);
 
             if (question is null)
             {
@@ -58,7 +62,9 @@ namespace TraffiLearn.Application.Commands.Users.UnmarkQuestion
             var user = await _userRepository.GetByIdAsync(
                 userId,
                 cancellationToken,
-                includeExpressions: user => user.MarkedQuestions);
+                includeExpressions:
+                    [user => user.LikedQuestions,
+                     user => user.DislikedQuestions]);
 
             if (user is null)
             {
@@ -67,17 +73,21 @@ namespace TraffiLearn.Application.Commands.Users.UnmarkQuestion
                 return InternalErrors.AuthenticatedUserNotFound;
             }
 
-            var markResult = user.UnmarkQuestion(question);
+            var removeQuestionLikeResult = user.RemoveQuestionLike(question);
 
-            if (markResult.IsFailure)
+            if (removeQuestionLikeResult.IsFailure)
             {
-                return markResult.Error;
+                return removeQuestionLikeResult.Error;
             }
 
-            await _userRepository.UpdateAsync(user);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            var removeLikeResult = question.RemoveLike(user);
 
-            _logger.LogInformation("Succesfully unmarked question. User's username: {username}", user.Username.Value);
+            if (removeLikeResult.IsFailure)
+            {
+                return removeLikeResult.Error;
+            }
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
         }

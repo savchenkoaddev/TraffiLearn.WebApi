@@ -18,18 +18,22 @@ namespace TraffiLearn.WebAPI.Extensions
             {
                 Type = GetType(error.ErrorType),
                 Title = GetTitle(error.ErrorType),
-                Status = GetStatusCode(error.ErrorType),
-                Extensions = new Dictionary<string, object?>
-                {
-                    { "errors", new { code = error.Code, description = error.Description }   },
-                }
+                Status = GetStatusCode(error.ErrorType)
             };
 
-            if (result is IValidationResult validationResult)
+            if (error.ErrorType != ErrorType.InternalFailure)
             {
-                problemDetails.Extensions["errors"] = validationResult.Errors
-                    .Select(e => new { e.Code, e.Description })
-                    .ToArray();
+                problemDetails.Extensions = new Dictionary<string, object?>
+                {
+                    { "errors", new { code = error.Code, description = error.Description } }
+                };
+
+                if (result is IValidationResult validationResult)
+                {
+                    problemDetails.Extensions["errors"] = validationResult.Errors
+                        .Select(e => new { e.Code, e.Description })
+                        .ToArray();
+                }
             }
 
             return new ObjectResult(problemDetails)

@@ -5,6 +5,7 @@ using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.DTO.Comments;
 using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.Errors;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 
@@ -49,9 +50,9 @@ namespace TraffiLearn.Application.Queries.Users.GetLoggedInUserComments
 
             if (!userExists)
             {
-                _logger.LogCritical("Authenticated user has not been found. This is probably due to some data inconsistency issues.");
+                _logger.LogCritical(InternalErrors.AuthenticatedUserNotFound.Description);
 
-                return Result.Failure<IEnumerable<CommentResponse>>(Error.InternalFailure());
+                return Result.Failure<IEnumerable<CommentResponse>>(InternalErrors.AuthenticatedUserNotFound);
             }
 
             var comments = await _userRepository.GetUserCommentsWithRepliesAsync(

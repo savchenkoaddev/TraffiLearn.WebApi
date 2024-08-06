@@ -9,7 +9,11 @@ using TraffiLearn.Application.Commands.Questions.Delete;
 using TraffiLearn.Application.Commands.Questions.RemoveTicketFromQuestion;
 using TraffiLearn.Application.Commands.Questions.RemoveTopicFromQuestion;
 using TraffiLearn.Application.Commands.Questions.Update;
+using TraffiLearn.Application.Commands.Users.DislikeQuestion;
+using TraffiLearn.Application.Commands.Users.LikeQuestion;
 using TraffiLearn.Application.Commands.Users.MarkQuestion;
+using TraffiLearn.Application.Commands.Users.RemoveQuestionDislike;
+using TraffiLearn.Application.Commands.Users.RemoveQuestionLike;
 using TraffiLearn.Application.Commands.Users.UnmarkQuestion;
 using TraffiLearn.Application.Queries.Questions.GetAll;
 using TraffiLearn.Application.Queries.Questions.GetById;
@@ -17,6 +21,8 @@ using TraffiLearn.Application.Queries.Questions.GetQuestionComments;
 using TraffiLearn.Application.Queries.Questions.GetQuestionsForTheoryTest;
 using TraffiLearn.Application.Queries.Questions.GetQuestionTickets;
 using TraffiLearn.Application.Queries.Questions.GetQuestionTopics;
+using TraffiLearn.Application.Queries.Users.GetCurrentUserDislikedQuestions;
+using TraffiLearn.Application.Queries.Users.GetCurrentUserLikedQuestions;
 using TraffiLearn.Application.Queries.Users.GetMarkedQuestions;
 using TraffiLearn.WebAPI.Extensions;
 
@@ -72,7 +78,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
-        [HttpGet("theorytest")]
+        [HttpGet("theory-test")]
         public async Task<IActionResult> GetQuestionsForTheoryTest()
         {
             var queryResult = await _sender.Send(new GetQuestionsForTheoryTestQuery());
@@ -93,6 +99,22 @@ namespace TraffiLearn.WebAPI.Controllers
         public async Task<IActionResult> GetMarkedQuestions()
         {
             var queryResult = await _sender.Send(new GetMarkedQuestionsQuery());
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+
+        [HttpGet("liked")]
+        public async Task<IActionResult> GetLikedQuestions()
+        {
+            var queryResult = await _sender.Send(new GetCurrentUserLikedQuestionsQuery());
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+
+        [HttpGet("disliked")]
+        public async Task<IActionResult> GetDislikedQuestions()
+        {
+            var queryResult = await _sender.Send(new GetCurrentUserDislikedQuestionsQuery());
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
@@ -121,7 +143,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
-        [HttpPut("{questionId:guid}/addtopic/{topicId:guid}")]
+        [HttpPut("{questionId:guid}/add-topic/{topicId:guid}")]
         public async Task<IActionResult> AddTopicToQuestion(
             [FromRoute] Guid topicId,
             [FromRoute] Guid questionId)
@@ -133,7 +155,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
-        [HttpPut("{questionId:guid}/removetopic/{topicId:guid}")]
+        [HttpPut("{questionId:guid}/remove-topic/{topicId:guid}")]
         public async Task<IActionResult> RemoveTopicFromQuestion(
             [FromRoute] Guid topicId,
             [FromRoute] Guid questionId)
@@ -145,7 +167,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
-        [HttpPut("{questionId:guid}/addticket/{ticketId:guid}")]
+        [HttpPut("{questionId:guid}/add-ticket/{ticketId:guid}")]
         public async Task<IActionResult> AddTicketToQuestion(
             [FromRoute] Guid ticketId,
             [FromRoute] Guid questionId)
@@ -157,7 +179,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
-        [HttpPut("{questionId:guid}/removeticket/{ticketId:guid}")]
+        [HttpPut("{questionId:guid}/remove-ticket/{ticketId:guid}")]
         public async Task<IActionResult> RemoveTicketFromQuestion(
             [FromRoute] Guid ticketId,
             [FromRoute] Guid questionId)
@@ -178,7 +200,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
-        [HttpPost("addcomment")]
+        [HttpPost("add-comment")]
         public async Task<IActionResult> AddComment(AddCommentCommand command)
         {
             var commandResult = await _sender.Send(command);
@@ -198,6 +220,38 @@ namespace TraffiLearn.WebAPI.Controllers
         public async Task<IActionResult> UnmarkQuestion(Guid questionId)
         {
             var commandResult = await _sender.Send(new UnmarkQuestionCommand(questionId));
+
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+        }
+
+        [HttpPut("{questionId:guid}/like")]
+        public async Task<IActionResult> LikeQuestion(Guid questionId)
+        {
+            var commandResult = await _sender.Send(new LikeQuestionCommand(questionId));
+
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+        }
+
+        [HttpPut("{questionId:guid}/dislike")]
+        public async Task<IActionResult> DislikeQuestion(Guid questionId)
+        {
+            var commandResult = await _sender.Send(new DislikeQuestionCommand(questionId));
+
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+        }
+
+        [HttpPut("{questionId:guid}/remove-like")]
+        public async Task<IActionResult> RemoveQuestionLike(Guid questionId)
+        {
+            var commandResult = await _sender.Send(new RemoveQuestionLikeCommand(questionId));
+
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+        }
+
+        [HttpPut("{questionId:guid}/remove-dislike")]
+        public async Task<IActionResult> RemoveQuestionDislike(Guid questionId)
+        {
+            var commandResult = await _sender.Send(new RemoveQuestionDislikeCommand(questionId));
 
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }

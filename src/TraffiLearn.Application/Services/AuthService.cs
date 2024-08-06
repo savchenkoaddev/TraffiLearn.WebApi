@@ -1,11 +1,10 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using TraffiLearn.Application.Abstractions.Auth;
-using TraffiLearn.Application.DTO.Auth;
 using TraffiLearn.Application.Options;
+using TraffiLearn.Domain.Errors;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Users;
@@ -35,18 +34,18 @@ namespace TraffiLearn.Application.Services
 
             if (!userAuthenticated)
             {
-                _logger.LogError("The user is not authenticated. This is probably due to some authorization failures.");
+                _logger.LogError(InternalErrors.AuthorizationFailure.Description);
 
-                return Result.Failure<Email>(Error.InternalFailure());
+                return Result.Failure<Email>(InternalErrors.AuthorizationFailure);
             }
 
             var claimsEmail = _signInManager.Context.User.FindFirst(ClaimTypes.Email).Value;
 
             if (claimsEmail is null)
             {
-                _logger.LogError("Couldn't fetch the email from http context. This is probably due to the token generation issues.");
+                _logger.LogError(InternalErrors.ClaimMissing(nameof(Email)).Description);
 
-                return Result.Failure<Email>(Error.InternalFailure());
+                return Result.Failure<Email>(InternalErrors.ClaimMissing(nameof(Email)));
             }
 
             var emailCreateResult = Email.Create(claimsEmail);
@@ -67,18 +66,20 @@ namespace TraffiLearn.Application.Services
 
             if (!userAuthenticated)
             {
-                _logger.LogError("The user is not authenticated. This is probably due to some authorization failures.");
+                _logger.LogError(InternalErrors.AuthorizationFailure.Description);
 
-                return Result.Failure<Guid>(Error.InternalFailure());
+                return Result.Failure<Guid>(InternalErrors.AuthorizationFailure);
             }
 
             var claimsId = _signInManager.Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             if (claimsId is null)
             {
-                _logger.LogError("Couldn't fetch the id from http context. This is probably due to the token generation issues.");
+                var claimName = "id";
 
-                return Result.Failure<Guid>(Error.InternalFailure());
+                _logger.LogError(InternalErrors.ClaimMissing(claimName).Description);
+
+                return Result.Failure<Guid>(InternalErrors.ClaimMissing(claimName));
             }
 
             if (Guid.TryParse(claimsId, out Guid id))
@@ -92,7 +93,7 @@ namespace TraffiLearn.Application.Services
         }
 
         public async Task<Result<SignInResult>> PasswordLogin(
-            TUser user, 
+            TUser user,
             string password)
         {
             var canLogin = await _signInManager.CanSignInAsync(user);
