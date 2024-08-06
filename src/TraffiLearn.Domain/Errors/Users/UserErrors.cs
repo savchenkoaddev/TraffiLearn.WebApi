@@ -15,7 +15,7 @@ namespace TraffiLearn.Domain.Errors.Users
                 description: "The same user has already been registered.");
 
         public static readonly Error InvalidCredentials =
-            Error.OperationFailure(
+            Error.Validation(
                 code: "User.InvalidCredentials",
                 description: "The provided credentials are invalid.");
 

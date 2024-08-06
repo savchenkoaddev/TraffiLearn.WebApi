@@ -21,6 +21,8 @@ using TraffiLearn.Application.Queries.Questions.GetQuestionComments;
 using TraffiLearn.Application.Queries.Questions.GetQuestionsForTheoryTest;
 using TraffiLearn.Application.Queries.Questions.GetQuestionTickets;
 using TraffiLearn.Application.Queries.Questions.GetQuestionTopics;
+using TraffiLearn.Application.Queries.Users.GetCurrentUserDislikedQuestions;
+using TraffiLearn.Application.Queries.Users.GetCurrentUserLikedQuestions;
 using TraffiLearn.Application.Queries.Users.GetMarkedQuestions;
 using TraffiLearn.WebAPI.Extensions;
 
@@ -97,6 +99,22 @@ namespace TraffiLearn.WebAPI.Controllers
         public async Task<IActionResult> GetMarkedQuestions()
         {
             var queryResult = await _sender.Send(new GetMarkedQuestionsQuery());
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+
+        [HttpGet("liked")]
+        public async Task<IActionResult> GetLikedQuestions()
+        {
+            var queryResult = await _sender.Send(new GetCurrentUserLikedQuestionsQuery());
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+
+        [HttpGet("disliked")]
+        public async Task<IActionResult> GetDislikedQuestions()
+        {
+            var queryResult = await _sender.Send(new GetCurrentUserDislikedQuestionsQuery());
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }

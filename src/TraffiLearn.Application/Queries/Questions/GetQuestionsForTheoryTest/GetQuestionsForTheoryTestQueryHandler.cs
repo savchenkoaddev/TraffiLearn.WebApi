@@ -4,6 +4,7 @@ using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.DTO.Questions;
 using TraffiLearn.Application.Options;
 using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.Errors;
 using TraffiLearn.Domain.Errors.Questions;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
@@ -38,7 +39,7 @@ namespace TraffiLearn.Application.Queries.Questions.GetQuestionsForTheoryTest
             if (questions.Count() < neededQuestionsCount &&
                 _questionsSettings.DemandEnoughRecordsOnTheoryTestFetching)
             {
-                return Result.Failure<IEnumerable<QuestionResponse>>(QuestionErrors.NotEnoughRecords);
+                return Result.Failure<IEnumerable<QuestionResponse>>(InternalErrors.NotEnoughRecords);
             }
 
             return Result.Success(_entityToResponseMapper.Map(questions));

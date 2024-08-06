@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Identity;
+using TraffiLearn.Domain.Errors;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
@@ -61,9 +62,9 @@ namespace TraffiLearn.Application.Commands.Users.MarkQuestion
 
             if (user is null)
             {
-                _logger.LogCritical("Authenticated user has not been found. This is probably due to some data inconsistency issues.");
+                _logger.LogCritical(InternalErrors.AuthenticatedUserNotFound.Description);
 
-                return Error.InternalFailure();
+                return InternalErrors.AuthenticatedUserNotFound;
             }
 
             var markResult = user.MarkQuestion(question);

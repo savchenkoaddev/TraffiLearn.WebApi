@@ -9,21 +9,22 @@ using TraffiLearn.Domain.Errors;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Queries.Users.GetMarkedQuestions
+namespace TraffiLearn.Application.Queries.Users.GetCurrentUserDislikedQuestions
 {
-    internal sealed class GetMarkedQuestionsQueryHandler
-        : IRequestHandler<GetMarkedQuestionsQuery, Result<IEnumerable<QuestionResponse>>>
+    internal sealed class GetCurrentUserDislikedQuestionsQueryHandler
+        : IRequestHandler<GetCurrentUserDislikedQuestionsQuery,
+            Result<IEnumerable<QuestionResponse>>>
     {
         private readonly IAuthService<ApplicationUser> _authService;
         private readonly IUserRepository _userRepository;
         private readonly Mapper<Question, QuestionResponse> _questionMapper;
-        private readonly ILogger<GetMarkedQuestionsQueryHandler> _logger;
+        private readonly ILogger<GetCurrentUserDislikedQuestionsQueryHandler> _logger;
 
-        public GetMarkedQuestionsQueryHandler(
+        public GetCurrentUserDislikedQuestionsQueryHandler(
             IAuthService<ApplicationUser> authService,
             IUserRepository userRepository,
             Mapper<Question, QuestionResponse> questionMapper,
-            ILogger<GetMarkedQuestionsQueryHandler> logger)
+            ILogger<GetCurrentUserDislikedQuestionsQueryHandler> logger)
         {
             _authService = authService;
             _userRepository = userRepository;
@@ -32,7 +33,7 @@ namespace TraffiLearn.Application.Queries.Users.GetMarkedQuestions
         }
 
         public async Task<Result<IEnumerable<QuestionResponse>>> Handle(
-            GetMarkedQuestionsQuery request,
+            GetCurrentUserDislikedQuestionsQuery request,
             CancellationToken cancellationToken)
         {
             Result<Guid> userIdResult = _authService.GetAuthenticatedUserId();
@@ -44,25 +45,19 @@ namespace TraffiLearn.Application.Queries.Users.GetMarkedQuestions
 
             var userId = userIdResult.Value;
 
-            var userExists = await _userRepository.ExistsAsync(
+            var user = await _userRepository.GetByIdAsync(
                 userId,
-                cancellationToken);
+                cancellationToken,
+                includeExpressions: user => user.DislikedQuestions);
 
-            if (!userExists)
+            if (user is null)
             {
                 _logger.LogCritical(InternalErrors.AuthenticatedUserNotFound.Description);
 
                 return Result.Failure<IEnumerable<QuestionResponse>>(InternalErrors.AuthenticatedUserNotFound);
             }
 
-            var user = await _userRepository.GetByIdAsync(
-                userId,
-                cancellationToken,
-                includeExpressions: user => user.MarkedQuestions);
-
-            _logger.LogInformation("Succesfully fetched user's marked questions. Questions fetched: {0}", user.MarkedQuestions.Count);
-
-            return Result.Success(_questionMapper.Map(user.MarkedQuestions));
+            return Result.Success(_questionMapper.Map(user.DislikedQuestions));
         }
     }
 }

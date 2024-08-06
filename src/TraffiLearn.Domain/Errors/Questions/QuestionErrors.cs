@@ -103,10 +103,5 @@ namespace TraffiLearn.Domain.Errors.Questions
             Error.Validation(
                 code: "Question.CantLikeIfDislikedByUser",
                 description: "Unable to like the question, because the question has already been disliked by the user.");
-
-        public static readonly Error NotEnoughRecords =
-            Error.InternalFailure(
-                code: "Question.NotEnoughRecords",
-                description: "Cannot perform the operation because there are not enough existing records.");
     }
 }
