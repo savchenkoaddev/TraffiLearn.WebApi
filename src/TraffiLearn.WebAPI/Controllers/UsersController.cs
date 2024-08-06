@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TraffiLearn.Application.Queries.Users.GetLoggedInUserComments;
 using TraffiLearn.Application.Queries.Users.GetUserComments;
+using TraffiLearn.Application.Queries.Users.GetUserDislikedQuestions;
 using TraffiLearn.Application.Queries.Users.GetUserLikedQuestions;
 using TraffiLearn.WebAPI.Extensions;
 
@@ -35,6 +36,14 @@ namespace TraffiLearn.WebAPI.Controllers
         public async Task<IActionResult> GetUserLikedQuestions(Guid userId)
         {
             var queryResult = await _sender.Send(new GetUserLikedQuestionsQuery(userId));
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+
+        [HttpGet("{userId:guid}/disliked-questions")]
+        public async Task<IActionResult> GetUserDislikedQuestions(Guid userId)
+        {
+            var queryResult = await _sender.Send(new GetUserDislikedQuestionsQuery(userId));
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
