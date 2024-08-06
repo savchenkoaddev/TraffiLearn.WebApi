@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Linq;
 using System.Security.Claims;
 using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Errors;
@@ -166,6 +167,22 @@ namespace TraffiLearn.Application.Services
                 password: password,
                 isPersistent: _loginSettings.IsPersistent,
                 lockoutOnFailure: _loginSettings.LockoutOnFailure);
+        }
+
+        public async Task<Result> RemoveRole(TUser user, Role role)
+        {
+            var result = await _userManager.RemoveFromRoleAsync(user, role.ToString());
+
+            if (!result.Succeeded)
+            {
+                var errorsString = string.Join(',', result.Errors.Select(x => x.Description));
+
+                _logger.LogError("Failed to remove role from user. Errors: {errors}", errorsString);
+
+                return Error.InternalFailure();
+            }
+
+            return Result.Success();
         }
     }
 }

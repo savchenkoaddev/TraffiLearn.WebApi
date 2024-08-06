@@ -51,7 +51,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(new RemoveAdminAccountCommand(adminId));
 
-            return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
 

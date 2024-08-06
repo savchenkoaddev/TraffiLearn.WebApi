@@ -16,6 +16,10 @@ namespace TraffiLearn.Application.Abstractions.Auth
             TUser user,
             string password);
 
+        Task<Result> RemoveRole(
+           TUser user,
+           Role role);
+
         Task<Result> AssignRoleToUser(
             TUser user,
             Role role);

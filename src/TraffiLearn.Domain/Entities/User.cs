@@ -43,6 +43,24 @@ namespace TraffiLearn.Domain.Entities
 
         public IReadOnlyCollection<Question> DislikedQuestions => _dislikedQuestions;
 
+        public Result DowngradeRole()
+        {
+            var roles = Enum.GetValues(typeof(Role)).Cast<Role>().OrderBy(r => r).ToList();
+
+            var currentRoleIndex = roles.IndexOf(Role);
+
+            if (currentRoleIndex <= 0)
+            {
+                return UserErrors.AccountCannotBeDowngraded;
+            }
+
+            var newRole = roles[currentRoleIndex - 1];
+
+            Role = newRole;
+
+            return Result.Success();
+        }
+
         public Result AddComment(Comment comment)
         {
             if (_comments.Contains(comment))

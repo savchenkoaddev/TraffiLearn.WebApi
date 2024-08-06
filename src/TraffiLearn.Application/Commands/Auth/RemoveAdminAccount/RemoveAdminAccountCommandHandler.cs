@@ -66,27 +66,27 @@ namespace TraffiLearn.Application.Commands.Auth.RemoveAdminAccount
 
                 if (remover.Role < _authSettings.MinimumAllowedRoleToRemoveAdminAccounts)
                 {
-                    return UserErrors.NotAllowedToRemoveAdmins;
+                    return UserErrors.NotAllowedToPerformAction;
                 }
 
-                var admin = await _userRepository.GetByIdAsync(
+                var user = await _userRepository.GetByIdAsync(
                     userId: request.AdminId.Value,
                     cancellationToken);
 
-                if (admin is null)
+                if (user is null)
                 {
                     return UserErrors.NotFound;
                 }
 
-                if (admin.Role != Role.Admin)
+                if (user.Role != Role.Admin)
                 {
                     return UserErrors.RemovedAccountIsNotAdminAccount;
                 }
 
-                await _userRepository.DeleteAsync(admin);
+                await _userRepository.DeleteAsync(user);
 
                 // This call persists changes to the database regardless of UoW
-                var deleteResult = await _authService.DeleteUser(admin.Id);
+                var deleteResult = await _authService.DeleteUser(user.Id);
 
                 if (deleteResult.IsFailure)
                 {
@@ -95,7 +95,7 @@ namespace TraffiLearn.Application.Commands.Auth.RemoveAdminAccount
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                _logger.LogInformation("Successfully removed an admin account with {Email} email.", admin.Email.Value);
+                _logger.LogInformation("Successfully removed an admin account with {Email} email.", user.Email.Value);
 
                 transaction.Complete();
             }

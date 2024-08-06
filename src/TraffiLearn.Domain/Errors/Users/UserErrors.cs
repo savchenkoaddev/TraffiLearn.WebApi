@@ -1,4 +1,5 @@
-﻿using TraffiLearn.Domain.Shared;
+﻿using TraffiLearn.Domain.Enums;
+using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Domain.Errors.Users
 {
@@ -14,20 +15,20 @@ namespace TraffiLearn.Domain.Errors.Users
                 code: "User.AlreadyRegistered",
                 description: "The same user has already been registered. Use different email or username.");
 
-        public static readonly Error NotAllowedToCreateAdmins =
+        public static readonly Error NotAllowedToPerformAction =
            Error.Unauthorized(
-               code: "User.NotAllowedToCreateAdmins",
-               description: "You are not allowed to create admin accounts.");
-
-        public static readonly Error NotAllowedToRemoveAdmins =
-           Error.Unauthorized(
-               code: "User.NotAllowedToRemoveAdmins",
-               description: "You are not allowed to remove admin accounts.");
-
+               code: "User.NotAllowedToPerformAction",
+               description: "You are not allowed to perform this action.");
+        
         public static readonly Error RemovedAccountIsNotAdminAccount =
            Error.Validation(
                code: "User.RemovedAccountIsNotAdminAccount",
                description: "Unable to remove admin account, because the account is not an admin's one.");
+
+        public static readonly Error AccountCannotBeDowngraded =
+           Error.Validation(
+               code: "User.AccountCannotBeDowngraded",
+               description: $"The account cannot be downgraded further as it is already at the lowest possible level.");
 
         public static readonly Error InvalidCredentials =
             Error.Validation(

@@ -69,7 +69,7 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterAdmin
 
                 if (creator.Role < _authSettings.MinimumAllowedRoleToCreateAdminAccounts)
                 {
-                    return UserErrors.NotAllowedToCreateAdmins;
+                    return UserErrors.NotAllowedToPerformAction;
                 }
 
                 var mappingResult = _commandMapper.Map(request);

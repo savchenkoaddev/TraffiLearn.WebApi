@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TraffiLearn.Application.Commands.Users.DowngradeAccount;
 using TraffiLearn.Application.Queries.Users.GetLoggedInUserComments;
 using TraffiLearn.Application.Queries.Users.GetUserComments;
 using TraffiLearn.Application.Queries.Users.GetUserDislikedQuestions;
@@ -54,6 +55,20 @@ namespace TraffiLearn.WebAPI.Controllers
             var queryResult = await _sender.Send(new GetLoggedInUserCommentsQuery());
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+
+
+        #endregion
+
+        #region Commands
+
+
+        [HttpPut("{userId:guid}/downgrade")]
+        public async Task<IActionResult> DowngradeAccount(Guid userId)
+        {
+            var commandResult = await _sender.Send(new DowngradeAccountCommand(userId));
+
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
 

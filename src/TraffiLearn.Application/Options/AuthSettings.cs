@@ -9,5 +9,9 @@ namespace TraffiLearn.Application.Options
         public Role MinimumAllowedRoleToCreateAdminAccounts { get; set; } = Role.Owner;
 
         public Role MinimumAllowedRoleToRemoveAdminAccounts { get; set; } = Role.Owner;
+
+        public Role MinimumAllowedRoleToDowngradeAccounts { get; set; } = Role.Owner;
+
+        public Role MinimumRoleForDowngrade { get; set; } = Role.Admin;
     }
 }
