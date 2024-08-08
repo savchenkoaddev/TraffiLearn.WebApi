@@ -44,60 +44,59 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterAdmin
             RegisterAdminCommand request,
             CancellationToken cancellationToken)
         {
+            Result<Guid> creatorIdResult = _authService.GetAuthenticatedUserId();
+
+            if (creatorIdResult.IsFailure)
+            {
+                return creatorIdResult.Error;
+            }
+
+            var creatorId = creatorIdResult.Value;
+
+            var creator = await _userRepository.GetByIdAsync(
+                creatorId,
+                cancellationToken);
+
+            if (creator is null)
+            {
+                _logger.LogCritical(InternalErrors.AuthenticatedUserNotFound.Description);
+
+                return InternalErrors.AuthenticatedUserNotFound;
+            }
+
+            if (creator.Role < _authSettings.MinimumAllowedRoleToCreateAdminAccounts)
+            {
+                return UserErrors.NotAllowedToPerformAction;
+            }
+
+            var mappingResult = _commandMapper.Map(request);
+
+            if (mappingResult.IsFailure)
+            {
+                return mappingResult.Error;
+            }
+
+            var newAdmin = mappingResult.Value;
+
+            var existsSameUser = await _userRepository.ExistsAsync(
+                newAdmin.Username,
+                newAdmin.Email,
+                cancellationToken);
+
+            if (existsSameUser)
+            {
+                return UserErrors.AlreadyRegistered;
+            }
+
             // Transaction is required due to features of UserManager.
             using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                Result<Guid> creatorIdResult = _authService.GetAuthenticatedUserId();
-
-                if (creatorIdResult.IsFailure)
-                {
-                    return creatorIdResult.Error;
-                }
-
-                var creatorId = creatorIdResult.Value;
-
-                var creator = await _userRepository.GetByIdAsync(
-                    creatorId,
-                    cancellationToken);
-
-                if (creator is null)
-                {
-                    _logger.LogCritical(InternalErrors.AuthenticatedUserNotFound.Description);
-
-                    return InternalErrors.AuthenticatedUserNotFound;
-                }
-
-                if (creator.Role < _authSettings.MinimumAllowedRoleToCreateAdminAccounts)
-                {
-                    return UserErrors.NotAllowedToPerformAction;
-                }
-
-                var mappingResult = _commandMapper.Map(request);
-
-                if (mappingResult.IsFailure)
-                {
-                    return mappingResult.Error;
-                }
-
-                var newAdmin = mappingResult.Value;
-
-                var existsSameUser = await _userRepository.ExistsAsync(
-                    newAdmin.Username,
-                    newAdmin.Email,
-                    cancellationToken);
-
-                if (existsSameUser)
-                {
-                    return UserErrors.AlreadyRegistered;
-                }
-
                 await _userRepository.AddAsync(
                     newAdmin,
                     cancellationToken);
 
                 var identityUser = CreateIdentityUser(newAdmin);
 
-                // This call persists changes to the database regardless of UoW
                 var addResult = await _authService.AddIdentityUser(
                     identityUser,
                     request.Password);

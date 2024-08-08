@@ -41,51 +41,50 @@ namespace TraffiLearn.Application.Commands.Auth.RemoveAdminAccount
             RemoveAdminAccountCommand request,
             CancellationToken cancellationToken)
         {
+            Result<Guid> removerIdResult = _authService.GetAuthenticatedUserId();
+
+            if (removerIdResult.IsFailure)
+            {
+                return removerIdResult.Error;
+            }
+
+            var removerId = removerIdResult.Value;
+
+            var remover = await _userRepository.GetByIdAsync(
+                removerId,
+                cancellationToken);
+
+            if (remover is null)
+            {
+                _logger.LogCritical(InternalErrors.AuthenticatedUserNotFound.Description);
+
+                return InternalErrors.AuthenticatedUserNotFound;
+            }
+
+            if (remover.Role < _authSettings.MinimumAllowedRoleToRemoveAdminAccounts)
+            {
+                return UserErrors.NotAllowedToPerformAction;
+            }
+
+            var user = await _userRepository.GetByIdAsync(
+                userId: request.AdminId.Value,
+                cancellationToken);
+
+            if (user is null)
+            {
+                return UserErrors.NotFound;
+            }
+
+            if (user.Role != Role.Admin)
+            {
+                return UserErrors.RemovedAccountIsNotAdminAccount;
+            }
+
             // Transaction is required due to features of UserManager.
             using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                Result<Guid> removerIdResult = _authService.GetAuthenticatedUserId();
-
-                if (removerIdResult.IsFailure)
-                {
-                    return removerIdResult.Error;
-                }
-
-                var removerId = removerIdResult.Value;
-
-                var remover = await _userRepository.GetByIdAsync(
-                    removerId,
-                    cancellationToken);
-
-                if (remover is null)
-                {
-                    _logger.LogCritical(InternalErrors.AuthenticatedUserNotFound.Description);
-
-                    return InternalErrors.AuthenticatedUserNotFound;
-                }
-
-                if (remover.Role < _authSettings.MinimumAllowedRoleToRemoveAdminAccounts)
-                {
-                    return UserErrors.NotAllowedToPerformAction;
-                }
-
-                var user = await _userRepository.GetByIdAsync(
-                    userId: request.AdminId.Value,
-                    cancellationToken);
-
-                if (user is null)
-                {
-                    return UserErrors.NotFound;
-                }
-
-                if (user.Role != Role.Admin)
-                {
-                    return UserErrors.RemovedAccountIsNotAdminAccount;
-                }
-
                 await _userRepository.DeleteAsync(user);
 
-                // This call persists changes to the database regardless of UoW
                 var deleteResult = await _authService.DeleteUser(user.Id);
 
                 if (deleteResult.IsFailure)

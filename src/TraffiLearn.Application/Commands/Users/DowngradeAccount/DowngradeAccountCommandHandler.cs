@@ -44,62 +44,62 @@ namespace TraffiLearn.Application.Commands.Users.DowngradeAccount
             DowngradeAccountCommand request,
             CancellationToken cancellationToken)
         {
+            Result<Guid> downgraderIdResult = _authService.GetAuthenticatedUserId();
+
+            if (downgraderIdResult.IsFailure)
+            {
+                return downgraderIdResult.Error;
+            }
+
+            var downgraderId = downgraderIdResult.Value;
+
+            var downgrader = await _userRepository.GetByIdAsync(
+                downgraderId,
+                cancellationToken);
+
+            if (downgrader is null)
+            {
+                _logger.LogCritical(InternalErrors.AuthenticatedUserNotFound.Description);
+
+                return InternalErrors.AuthenticatedUserNotFound;
+            }
+
+            if (downgrader.Role < _authSettings.MinimumAllowedRoleToDowngradeAccounts)
+            {
+                return UserErrors.NotAllowedToPerformAction;
+            }
+
+            var user = await _userRepository.GetByIdAsync(
+                userId: request.UserId.Value,
+                cancellationToken);
+
+            if (user is null)
+            {
+                return UserErrors.NotFound;
+            }
+
+            if (user.Role < _authSettings.MinimumRoleForDowngrade)
+            {
+                return UserErrors.AccountCannotBeDowngraded;
+            }
+
+            var identityUser = await _userManager.FindByIdAsync(user.Id.ToString());
+
+            if (identityUser is null)
+            {
+                return InternalErrors.DataConsistencyError;
+            }
+
+            var previousRole = user.Role;
+            var downgradeResult = user.DowngradeRole();
+
+            if (downgradeResult.IsFailure)
+            {
+                return downgradeResult.Error;
+            }
+
             using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                Result<Guid> downgraderIdResult = _authService.GetAuthenticatedUserId();
-
-                if (downgraderIdResult.IsFailure)
-                {
-                    return downgraderIdResult.Error;
-                }
-
-                var downgraderId = downgraderIdResult.Value;
-
-                var downgrader = await _userRepository.GetByIdAsync(
-                    downgraderId,
-                    cancellationToken);
-
-                if (downgrader is null)
-                {
-                    _logger.LogCritical(InternalErrors.AuthenticatedUserNotFound.Description);
-
-                    return InternalErrors.AuthenticatedUserNotFound;
-                }
-
-                if (downgrader.Role < _authSettings.MinimumAllowedRoleToDowngradeAccounts)
-                {
-                    return UserErrors.NotAllowedToPerformAction;
-                }
-
-                var user = await _userRepository.GetByIdAsync(
-                    userId: request.UserId.Value,
-                    cancellationToken);
-
-                if (user is null)
-                {
-                    return UserErrors.NotFound;
-                }
-
-                if (user.Role < _authSettings.MinimumRoleForDowngrade)
-                {
-                    return UserErrors.AccountCannotBeDowngraded;
-                }
-
-                var identityUser = await _userManager.FindByIdAsync(user.Id.ToString());
-
-                if (identityUser is null)
-                {
-                    return InternalErrors.DataConsistencyError;
-                }
-
-                var previousRole = user.Role;
-                var downgradeResult = user.DowngradeRole();
-
-                if (downgradeResult.IsFailure)
-                {
-                    return downgradeResult.Error;
-                }
-
                 await _userRepository.UpdateAsync(user);
 
                 var removeRoleResult = await _authService.RemoveRole(
@@ -122,14 +122,16 @@ namespace TraffiLearn.Application.Commands.Users.DowngradeAccount
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                _logger.LogInformation(
-                    "Successfully downgraded an account with email {Email}. Previous role: {PreviousRole}. New role: {NewRole}",
+                transaction.Complete();
+            }
+
+            _logger.LogInformation(
+                    "Successfully downgraded an account with email: {Email}. " +
+                    "Previous role: {PreviousRole}. " +
+                    "New role: {NewRole}",
                     user.Email.Value,
                     previousRole,
                     user.Role);
-
-                transaction.Complete();
-            }
 
             return Result.Success();
         }

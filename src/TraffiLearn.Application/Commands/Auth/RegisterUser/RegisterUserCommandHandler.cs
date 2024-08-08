@@ -38,36 +38,35 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterUser
             RegisterUserCommand request,
             CancellationToken cancellationToken)
         {
+            var mappingResult = _commandMapper.Map(request);
+
+            if (mappingResult.IsFailure)
+            {
+                return mappingResult.Error;
+            }
+
+            var newUser = mappingResult.Value;
+
+            var existsSameUser = await _userRepository
+                .ExistsAsync(
+                    newUser.Username,
+                    newUser.Email,
+                    cancellationToken);
+
+            if (existsSameUser)
+            {
+                return UserErrors.AlreadyRegistered;
+            }
+
             // Transaction is required due to features of UserManager.
             using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                var mappingResult = _commandMapper.Map(request);
-
-                if (mappingResult.IsFailure)
-                {
-                    return mappingResult.Error;
-                }
-
-                var newUser = mappingResult.Value;
-
-                var existsSameUser = await _userRepository
-                    .ExistsAsync(
-                        newUser.Username,
-                        newUser.Email,
-                        cancellationToken);
-
-                if (existsSameUser)
-                {
-                    return UserErrors.AlreadyRegistered;
-                }
-
                 await _userRepository.AddAsync(
                     newUser,
                     cancellationToken);
 
                 var newIdentityUser = CreateIdentityUser(newUser);
 
-                // This call persists changes to the database regardless of UoW
                 var addResult = await _authService.AddIdentityUser(
                     identityUser: newIdentityUser,
                     request.Password);
