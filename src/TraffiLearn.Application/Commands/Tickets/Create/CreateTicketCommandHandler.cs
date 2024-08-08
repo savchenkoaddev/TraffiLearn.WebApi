@@ -4,6 +4,7 @@ using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Tickets;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Questions;
 
 namespace TraffiLearn.Application.Commands.Tickets.Create
 {
@@ -43,7 +44,7 @@ namespace TraffiLearn.Application.Commands.Tickets.Create
             foreach (var questionId in request.QuestionIds)
             {
                 var question = await _questionRepository.GetByIdAsync(
-                    questionId.Value,
+                    questionId: new QuestionId(questionId.Value),
                     cancellationToken);
 
                 if (question is null)

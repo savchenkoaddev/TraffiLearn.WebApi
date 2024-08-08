@@ -5,6 +5,7 @@ using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Comments;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Comments;
 
 namespace TraffiLearn.Application.Queries.Comments.GetCommentReplies
 {
@@ -28,7 +29,7 @@ namespace TraffiLearn.Application.Queries.Comments.GetCommentReplies
         {
             var comment = await _commentRepository
                 .GetByIdWithRepliesTwoLevelsDeepAsync(
-                    commentId: request.CommentId.Value,
+                    commentId: new CommentId(request.CommentId.Value),
                     cancellationToken,
                     includeExpressions: comment => comment.User);
 

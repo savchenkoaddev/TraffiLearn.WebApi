@@ -8,9 +8,11 @@ using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Errors;
 using TraffiLearn.Application.Identity;
 using TraffiLearn.Application.Options;
+using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Commands.Users.DowngradeAccount
 {
@@ -51,7 +53,7 @@ namespace TraffiLearn.Application.Commands.Users.DowngradeAccount
                 return downgraderIdResult.Error;
             }
 
-            var downgraderId = downgraderIdResult.Value;
+            UserId downgraderId = new(downgraderIdResult.Value);
 
             var downgrader = await _userRepository.GetByIdAsync(
                 downgraderId,
@@ -64,34 +66,37 @@ namespace TraffiLearn.Application.Commands.Users.DowngradeAccount
                 return InternalErrors.AuthenticatedUserNotFound;
             }
 
-            if (downgrader.Role < _authSettings.MinimumAllowedRoleToDowngradeAccounts)
+            if (IsNotAllowedToDowngrade(downgrader))
             {
                 return UserErrors.NotAllowedToPerformAction;
             }
 
-            var user = await _userRepository.GetByIdAsync(
-                userId: request.UserId.Value,
+            UserId affectedUserId = new(request.UserId.Value);
+
+            var affectedUser = await _userRepository.GetByIdAsync(
+                userId: affectedUserId,
                 cancellationToken);
 
-            if (user is null)
+            if (affectedUser is null)
             {
                 return UserErrors.NotFound;
             }
 
-            if (user.Role < _authSettings.MinimumRoleForDowngrade)
+            if (CannotBeDowngraded(affectedUser))
             {
                 return UserErrors.AccountCannotBeDowngraded;
             }
 
-            var identityUser = await _userManager.FindByIdAsync(user.Id.ToString());
+            var identityUser = await _userManager.FindByIdAsync(
+                userId: affectedUser.Id.ToString());
 
             if (identityUser is null)
             {
                 return InternalErrors.DataConsistencyError;
             }
 
-            var previousRole = user.Role;
-            var downgradeResult = user.DowngradeRole();
+            var previousRole = affectedUser.Role;
+            var downgradeResult = affectedUser.DowngradeRole();
 
             if (downgradeResult.IsFailure)
             {
@@ -100,7 +105,7 @@ namespace TraffiLearn.Application.Commands.Users.DowngradeAccount
 
             using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                await _userRepository.UpdateAsync(user);
+                await _userRepository.UpdateAsync(affectedUser);
 
                 var removeRoleResult = await _authService.RemoveRole(
                     identityUser,
@@ -113,7 +118,7 @@ namespace TraffiLearn.Application.Commands.Users.DowngradeAccount
 
                 var assigningResult = await _authService.AssignRoleToUser(
                     identityUser,
-                    user.Role);
+                    affectedUser.Role);
 
                 if (assigningResult.IsFailure)
                 {
@@ -129,11 +134,21 @@ namespace TraffiLearn.Application.Commands.Users.DowngradeAccount
                     "Successfully downgraded an account with email: {Email}. " +
                     "Previous role: {PreviousRole}. " +
                     "New role: {NewRole}",
-                    user.Email.Value,
+                    affectedUser.Email.Value,
                     previousRole,
-                    user.Role);
+                    affectedUser.Role);
 
             return Result.Success();
+        }
+
+        private bool IsNotAllowedToDowngrade(User downgrader)
+        {
+            return downgrader.Role < _authSettings.MinimumAllowedRoleToDowngradeAccounts;
+        }
+
+        private bool CannotBeDowngraded(User user)
+        {
+            return user.Role < _authSettings.MinimumRoleForDowngrade;
         }
     }
 }

@@ -5,9 +5,12 @@ using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Commands.Users.LikeQuestion;
 using TraffiLearn.Application.Errors;
 using TraffiLearn.Application.Identity;
+using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Questions;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Commands.Users.RemoveQuestionLike
 {
@@ -38,49 +41,40 @@ namespace TraffiLearn.Application.Commands.Users.RemoveQuestionLike
             RemoveQuestionLikeCommand request,
             CancellationToken cancellationToken)
         {
-            var userIdResult = _authService.GetAuthenticatedUserId();
+            var removerIdResult = _authService.GetAuthenticatedUserId();
 
-            if (userIdResult.IsFailure)
+            if (removerIdResult.IsFailure)
             {
-                return userIdResult.Error;
+                return removerIdResult.Error;
             }
 
-            var userId = userIdResult.Value;
-
-            var question = await _questionRepository.GetByIdAsync(
-                questionId: request.QuestionId.Value,
-                cancellationToken,
-                includeExpressions:
-                    [question => question.LikedByUsers,
-                        question => question.DislikedByUsers]);
+            var question = await GetLikedQuestion(
+                likedQuestionId: new QuestionId(request.QuestionId.Value));
 
             if (question is null)
             {
                 return UserErrors.QuestionNotFound;
             }
 
-            var user = await _userRepository.GetByIdAsync(
-                userId,
-                cancellationToken,
-                includeExpressions:
-                    [user => user.LikedQuestions,
-                        user => user.DislikedQuestions]);
+            var remover = await GetLikeRemover(
+                removerId: new UserId(removerIdResult.Value),
+                cancellationToken);
 
-            if (user is null)
+            if (remover is null)
             {
                 _logger.LogCritical(InternalErrors.AuthenticatedUserNotFound.Description);
 
                 return InternalErrors.AuthenticatedUserNotFound;
             }
 
-            var removeQuestionLikeResult = user.RemoveQuestionLike(question);
+            var removeQuestionLikeResult = remover.RemoveQuestionLike(question);
 
             if (removeQuestionLikeResult.IsFailure)
             {
                 return removeQuestionLikeResult.Error;
             }
 
-            var removeLikeResult = question.RemoveLike(user);
+            var removeLikeResult = question.RemoveLike(remover);
 
             if (removeLikeResult.IsFailure)
             {
@@ -90,6 +84,30 @@ namespace TraffiLearn.Application.Commands.Users.RemoveQuestionLike
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
+        }
+
+        private async Task<User?> GetLikeRemover(
+           UserId removerId,
+           CancellationToken cancellationToken = default)
+        {
+            return await _userRepository.GetByIdAsync(
+                removerId,
+                cancellationToken,
+                includeExpressions:
+                    [user => user.LikedQuestions,
+                        user => user.DislikedQuestions]);
+        }
+
+        private async Task<Question?> GetLikedQuestion(
+            QuestionId likedQuestionId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _questionRepository.GetByIdAsync(
+                likedQuestionId,
+                cancellationToken,
+                includeExpressions:
+                    [question => question.LikedByUsers,
+                        question => question.DislikedByUsers]);
         }
     }
 }

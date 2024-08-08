@@ -7,6 +7,7 @@ using TraffiLearn.Domain.Errors.Topics;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Questions;
+using TraffiLearn.Domain.ValueObjects.Topics;
 
 namespace TraffiLearn.Application.Commands.Questions.Create
 {
@@ -47,7 +48,8 @@ namespace TraffiLearn.Application.Commands.Questions.Create
 
             var addResult = await AddTopics(
                 question,
-                request.TopicsIds);
+                topicsIds: request.TopicsIds,
+                cancellationToken);
 
             if (addResult.IsFailure)
             {
@@ -75,11 +77,14 @@ namespace TraffiLearn.Application.Commands.Questions.Create
 
         private async Task<Result> AddTopics(
             Question question,
-            List<Guid?> topicsIds)
+            List<Guid?> topicsIds,
+            CancellationToken cancellationToken = default)
         {
             foreach (var topicId in topicsIds)
             {
-                var topic = await _topicRepository.GetByIdAsync(topicId.Value);
+                var topic = await _topicRepository.GetByIdAsync(
+                    topicId: new TopicId(topicId.Value),
+                    cancellationToken);
 
                 if (topic is null)
                 {
@@ -114,8 +119,8 @@ namespace TraffiLearn.Application.Commands.Questions.Create
                 using Stream stream = image.OpenReadStream();
 
                 var uploadResponse = await _blobService.UploadAsync(
-                stream,
-                    image.ContentType,
+                    stream,
+                    contentType: image.ContentType,
                     cancellationToken);
 
                 Result<ImageUri> imageUriResult = ImageUri.Create(uploadResponse.BlobUri);

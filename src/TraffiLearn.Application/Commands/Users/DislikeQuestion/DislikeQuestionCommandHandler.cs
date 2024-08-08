@@ -1,13 +1,17 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using System.Threading;
 using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Commands.Users.LikeQuestion;
 using TraffiLearn.Application.Errors;
 using TraffiLearn.Application.Identity;
+using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Questions;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Commands.Users.DislikeQuestion
 {
@@ -38,49 +42,41 @@ namespace TraffiLearn.Application.Commands.Users.DislikeQuestion
             DislikeQuestionCommand request,
             CancellationToken cancellationToken)
         {
-            var userIdResult = _authService.GetAuthenticatedUserId();
+            var dislikerIdResult = _authService.GetAuthenticatedUserId();
 
-            if (userIdResult.IsFailure)
+            if (dislikerIdResult.IsFailure)
             {
-                return userIdResult.Error;
+                return dislikerIdResult.Error;
             }
 
-            var userId = userIdResult.Value;
+            var questionBeingDisliked = await GetQuestionBeingDisliked(
+                questionId: new QuestionId(request.QuestionId.Value),
+                cancellationToken);
 
-            var question = await _questionRepository.GetByIdAsync(
-                questionId: request.QuestionId.Value,
-                cancellationToken,
-                includeExpressions:
-                    [question => question.LikedByUsers,
-                        question => question.DislikedByUsers]);
-
-            if (question is null)
+            if (questionBeingDisliked is null)
             {
                 return UserErrors.QuestionNotFound;
             }
 
-            var user = await _userRepository.GetByIdAsync(
-                userId,
-                cancellationToken,
-                includeExpressions:
-                    [user => user.LikedQuestions,
-                        user => user.DislikedQuestions]);
+            var disliker = await GetDisliker(
+                dislikerId: new UserId(dislikerIdResult.Value),
+                cancellationToken);
 
-            if (user is null)
+            if (disliker is null)
             {
                 _logger.LogCritical(InternalErrors.AuthenticatedUserNotFound.Description);
 
                 return InternalErrors.AuthenticatedUserNotFound;
             }
 
-            var questionDislikeResult = user.DislikeQuestion(question);
+            var questionDislikeResult = disliker.DislikeQuestion(questionBeingDisliked);
 
             if (questionDislikeResult.IsFailure)
             {
                 return questionDislikeResult.Error;
             }
 
-            var addDislikeResult = question.AddDislike(user);
+            var addDislikeResult = questionBeingDisliked.AddDislike(disliker);
 
             if (addDislikeResult.IsFailure)
             {
@@ -90,6 +86,30 @@ namespace TraffiLearn.Application.Commands.Users.DislikeQuestion
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
+        }
+
+        private async Task<Question?> GetQuestionBeingDisliked(
+            QuestionId questionId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _questionRepository.GetByIdAsync(
+                questionId,
+                cancellationToken,
+                includeExpressions:
+                    [question => question.LikedByUsers,
+                        question => question.DislikedByUsers]);
+        }
+
+        private async Task<User?> GetDisliker(
+            UserId dislikerId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _userRepository.GetByIdAsync(
+                userId: dislikerId,
+                cancellationToken,
+                includeExpressions:
+                    [user => user.LikedQuestions,
+                        user => user.DislikedQuestions]);
         }
     }
 }

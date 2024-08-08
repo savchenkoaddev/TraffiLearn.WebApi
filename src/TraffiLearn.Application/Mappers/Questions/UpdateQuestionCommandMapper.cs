@@ -44,7 +44,7 @@ namespace TraffiLearn.Application.Mapper.Questions
             }
 
             return Question.Create(
-                Guid.NewGuid(),
+                new QuestionId(Guid.NewGuid()),
                 contentResult.Value,
                 explanationResult.Value,
                 questionNumberResult.Value,

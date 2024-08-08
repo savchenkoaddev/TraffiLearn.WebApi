@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Identity;
+using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Comments;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
@@ -32,7 +33,7 @@ namespace TraffiLearn.Application.Commands.Comments.UpdateComment
             CancellationToken cancellationToken)
         {
             var comment = await _commentRepository.GetByIdAsync(
-                request.CommentId.Value,
+                commentId: new CommentId(request.CommentId.Value),
                 cancellationToken,
                 includeExpressions: comment => comment.User);
 
@@ -50,7 +51,7 @@ namespace TraffiLearn.Application.Commands.Comments.UpdateComment
 
             var id = idResult.Value;
 
-            if (comment.User.Id != id)
+            if (comment.User.Id.Value != id)
             {
                 return CommentErrors.NotAllowedToModify;
             }

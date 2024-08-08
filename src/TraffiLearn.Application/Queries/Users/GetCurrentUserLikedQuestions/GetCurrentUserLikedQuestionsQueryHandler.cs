@@ -8,6 +8,7 @@ using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Queries.Users.GetCurrentUserLikedQuestions
 {
@@ -36,17 +37,15 @@ namespace TraffiLearn.Application.Queries.Users.GetCurrentUserLikedQuestions
             GetCurrentUserLikedQuestionsQuery request,
             CancellationToken cancellationToken)
         {
-            Result<Guid> userIdResult = _authService.GetAuthenticatedUserId();
+            var userIdResult = _authService.GetAuthenticatedUserId();
 
             if (userIdResult.IsFailure)
             {
                 return Result.Failure<IEnumerable<QuestionResponse>>(userIdResult.Error);
             }
 
-            var userId = userIdResult.Value;
-
             var user = await _userRepository.GetByIdAsync(
-                userId,
+                userId: new UserId(userIdResult.Value),
                 cancellationToken,
                 includeExpressions: user => user.LikedQuestions);
 

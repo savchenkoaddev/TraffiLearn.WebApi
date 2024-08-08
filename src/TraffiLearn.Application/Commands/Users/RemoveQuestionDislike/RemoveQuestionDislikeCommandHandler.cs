@@ -5,9 +5,12 @@ using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Commands.Users.LikeQuestion;
 using TraffiLearn.Application.Errors;
 using TraffiLearn.Application.Identity;
+using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Questions;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Commands.Users.RemoveQuestionDislike
 {
@@ -34,51 +37,45 @@ namespace TraffiLearn.Application.Commands.Users.RemoveQuestionDislike
             _logger = logger;
         }
 
-        public async Task<Result> Handle(RemoveQuestionDislikeCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(
+            RemoveQuestionDislikeCommand request,
+            CancellationToken cancellationToken)
         {
-            var userIdResult = _authService.GetAuthenticatedUserId();
+            var removerIdResult = _authService.GetAuthenticatedUserId();
 
-            if (userIdResult.IsFailure)
+            if (removerIdResult.IsFailure)
             {
-                return userIdResult.Error;
+                return removerIdResult.Error;
             }
 
-            var userId = userIdResult.Value;
+            var dislikedQuestion = await GetDislikedQuestion(
+                dislikedQuestionId: new QuestionId(request.QuestionId.Value),
+                cancellationToken);
 
-            var question = await _questionRepository.GetByIdAsync(
-                questionId: request.QuestionId.Value,
-                cancellationToken,
-                includeExpressions:
-                    [question => question.LikedByUsers,
-                        question => question.DislikedByUsers]);
-
-            if (question is null)
+            if (dislikedQuestion is null)
             {
                 return UserErrors.QuestionNotFound;
             }
 
-            var user = await _userRepository.GetByIdAsync(
-                userId,
-                cancellationToken,
-                includeExpressions:
-                    [user => user.LikedQuestions,
-                        user => user.DislikedQuestions]);
+            var remover = await GetDislikeRemover(
+                removerId: new UserId(removerIdResult.Value),
+                cancellationToken);
 
-            if (user is null)
+            if (remover is null)
             {
                 _logger.LogCritical(InternalErrors.AuthenticatedUserNotFound.Description);
 
                 return InternalErrors.AuthenticatedUserNotFound;
             }
 
-            var removeQuestionDislikeResult = user.RemoveQuestionDislike(question);
+            var removeQuestionDislikeResult = remover.RemoveQuestionDislike(dislikedQuestion);
 
             if (removeQuestionDislikeResult.IsFailure)
             {
                 return removeQuestionDislikeResult.Error;
             }
 
-            var removeDislikeResult = question.RemoveDislike(user);
+            var removeDislikeResult = dislikedQuestion.RemoveDislike(remover);
 
             if (removeDislikeResult.IsFailure)
             {
@@ -88,6 +85,30 @@ namespace TraffiLearn.Application.Commands.Users.RemoveQuestionDislike
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
+        }
+
+        private async Task<User?> GetDislikeRemover(
+            UserId removerId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _userRepository.GetByIdAsync(
+                removerId,
+                cancellationToken,
+                includeExpressions:
+                    [user => user.LikedQuestions,
+                        user => user.DislikedQuestions]);
+        }
+
+        private async Task<Question?> GetDislikedQuestion(
+            QuestionId dislikedQuestionId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _questionRepository.GetByIdAsync(
+                dislikedQuestionId,
+                cancellationToken,
+                includeExpressions:
+                    [question => question.LikedByUsers,
+                        question => question.DislikedByUsers]);
         }
     }
 }

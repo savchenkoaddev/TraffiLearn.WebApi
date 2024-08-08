@@ -146,7 +146,7 @@ namespace TraffiLearn.Application.Services
                 return id;
             }
 
-            _logger.LogError("Failed to parse id from to GUID. The id: {id}", claimsId);
+            _logger.LogError("Failed to parse id to GUID. The id: {id}", claimsId);
 
             return Result.Failure<Guid>(Error.InternalFailure());
         }

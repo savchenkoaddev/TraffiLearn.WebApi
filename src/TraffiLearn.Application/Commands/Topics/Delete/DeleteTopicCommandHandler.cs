@@ -3,6 +3,7 @@ using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Domain.Errors.Topics;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Topics;
 
 namespace TraffiLearn.Application.Commands.Topics.Delete
 {
@@ -24,7 +25,7 @@ namespace TraffiLearn.Application.Commands.Topics.Delete
             CancellationToken cancellationToken)
         {
             var found = await _topicRepository.GetByIdAsync(
-                request.TopicId.Value,
+                topicId: new TopicId(request.TopicId.Value),
                 cancellationToken);
 
             if (found is null)

@@ -5,6 +5,7 @@ using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Questions;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Questions;
 
 namespace TraffiLearn.Application.Queries.Questions.GetQuestionComments
 {
@@ -27,8 +28,10 @@ namespace TraffiLearn.Application.Queries.Questions.GetQuestionComments
             GetQuestionCommentsQuery request,
             CancellationToken cancellationToken)
         {
+            QuestionId questionId = new(request.QuestionId.Value);
+
             var questionExists = await _questionRepository.ExistsAsync(
-                questionId: request.QuestionId.Value,
+                questionId,
                 cancellationToken);
 
             if (!questionExists) 
@@ -39,7 +42,7 @@ namespace TraffiLearn.Application.Queries.Questions.GetQuestionComments
 
             var comments = await _questionRepository
                 .GetQuestionCommentsWithRepliesAsync(
-                    questionId: request.QuestionId.Value,
+                    questionId,
                     cancellationToken);
 
             return Result.Success(_commentMapper.Map(comments));

@@ -8,6 +8,7 @@ using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Queries.Users.GetCurrentUserDislikedQuestions
 {
@@ -43,10 +44,8 @@ namespace TraffiLearn.Application.Queries.Users.GetCurrentUserDislikedQuestions
                 return Result.Failure<IEnumerable<QuestionResponse>>(userIdResult.Error);
             }
 
-            var userId = userIdResult.Value;
-
             var user = await _userRepository.GetByIdAsync(
-                userId,
+                userId: new UserId(userIdResult.Value),
                 cancellationToken,
                 includeExpressions: user => user.DislikedQuestions);
 

@@ -8,6 +8,7 @@ using TraffiLearn.Domain.Errors.Questions;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Comments;
+using TraffiLearn.Domain.ValueObjects.Questions;
 
 namespace TraffiLearn.Application.Commands.Questions.AddComment
 {
@@ -61,7 +62,7 @@ namespace TraffiLearn.Application.Commands.Questions.AddComment
             }
 
             var question = await _questionRepository.GetByIdAsync(
-                request.QuestionId.Value,
+                questionId: new QuestionId(request.QuestionId.Value),
                 cancellationToken,
                 includeExpressions: question => question.Comments);
 
@@ -77,10 +78,8 @@ namespace TraffiLearn.Application.Commands.Questions.AddComment
                 return contentResult.Error;
             }
 
-            var commentId = Guid.NewGuid();
-
             var commentResult = Comment.Create(
-                commentId,
+                commentId: new CommentId(Guid.NewGuid()),
                 contentResult.Value,
                 leftBy: user,
                 question);

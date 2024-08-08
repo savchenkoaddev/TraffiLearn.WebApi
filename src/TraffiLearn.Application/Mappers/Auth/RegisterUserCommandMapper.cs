@@ -26,10 +26,10 @@ namespace TraffiLearn.Application.Mapper.Auth
                 return Result.Failure<User>(usernameCreateResult.Error);
             }
 
-            var userId = Guid.NewGuid();
+            UserId userId = new(Guid.NewGuid());
 
             return User.Create(
-                id: userId,
+                userId: userId,
                 email: emailCreateResult.Value,
                 username: usernameCreateResult.Value,
                 role: Role.RegularUser);

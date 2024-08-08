@@ -12,8 +12,8 @@ namespace TraffiLearn.Application.Mapper.Comments
             bool hasReplies = source.Replies.Count > 0;
 
             return new CommentResponse(
-                CommentId: source.Id,
-                AuthorUserId: source.User.Id,
+                CommentId: source.Id.Value,
+                AuthorUserId: source.User.Id.Value,
                 AuthorUsername: source.User.Username.Value,
                 Content: source.Content.Value,
                 HasReplies: hasReplies);

@@ -6,23 +6,22 @@ using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Domain.Entities
 {
-    public sealed class User : Entity
+    public sealed class User : Entity<UserId>
     {
         private readonly HashSet<Comment> _comments = [];
         private readonly HashSet<Question> _markedQuestions = [];
         private readonly HashSet<Question> _likedQuestions = [];
         private readonly HashSet<Question> _dislikedQuestions = [];
 
-        private User(Guid id)
-            : base(id)
+        private User()
+            : base(new(Guid.Empty))
         { }
 
         private User(
-            Guid id,
+            UserId userId,
             Email email,
             Username username,
-            Role role)
-            : base(id)
+            Role role) : base(userId)
         {
             Email = email;
             Username = username;
@@ -156,13 +155,13 @@ namespace TraffiLearn.Domain.Entities
         }
 
         public static Result<User> Create(
-            Guid id,
+            UserId userId,
             Email email,
             Username username,
             Role role)
         {
             return new User(
-                id,
+                userId,
                 email,
                 username,
                 role);

@@ -9,7 +9,9 @@ namespace TraffiLearn.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<Ticket> builder)
         {
-            builder.HasKey(t => t.Id);
+            builder.Property(t => t.Id).HasConversion(
+                 id => id.Value,
+                 value => new TicketId(value));
 
             builder.Property(t => t.TicketNumber).HasConversion(
                     ticketNumber => ticketNumber.Value,

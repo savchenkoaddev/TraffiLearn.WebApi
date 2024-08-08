@@ -8,6 +8,7 @@ using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Queries.Users.GetLoggedInUserComments
 {
@@ -35,14 +36,14 @@ namespace TraffiLearn.Application.Queries.Users.GetLoggedInUserComments
             GetLoggedInUserCommentsQuery request,
             CancellationToken cancellationToken)
         {
-            Result<Guid> userIdResult = _authService.GetAuthenticatedUserId();
+            var userIdResult = _authService.GetAuthenticatedUserId();
 
             if (userIdResult.IsFailure)
             {
                 return Result.Failure<IEnumerable<CommentResponse>>(userIdResult.Error);
             }
 
-            var userId = userIdResult.Value;
+            UserId userId = new(userIdResult.Value);
 
             var userExists = await _userRepository.ExistsAsync(
                 userId,

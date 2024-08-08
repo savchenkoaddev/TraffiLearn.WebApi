@@ -4,6 +4,7 @@ using TraffiLearn.Application.Abstractions.Storage;
 using TraffiLearn.Domain.Errors.Questions;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Questions;
 
 namespace TraffiLearn.Application.Commands.Questions.Delete
 {
@@ -28,7 +29,7 @@ namespace TraffiLearn.Application.Commands.Questions.Delete
             CancellationToken cancellationToken)
         {
             var found = await _questionRepository.GetByIdAsync(
-                request.QuestionId.Value,
+                questionId: new QuestionId(request.QuestionId.Value),
                 cancellationToken);
 
             if (found is null)
@@ -38,8 +39,10 @@ namespace TraffiLearn.Application.Commands.Questions.Delete
 
             if (found.ImageUri is not null)
             {
+                var blobUri = found.ImageUri.Value;
+
                 await _blobService.DeleteAsync(
-                    blobUri: found.ImageUri.Value,
+                    blobUri,
                     cancellationToken);
             }
 

@@ -5,6 +5,7 @@ using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Queries.Users.GetUserComments
 {
@@ -26,8 +27,10 @@ namespace TraffiLearn.Application.Queries.Users.GetUserComments
             GetUserCommentsQuery request,
             CancellationToken cancellationToken)
         {
+            UserId userId = new(request.UserId.Value);
+
             var userExists = await _userRepository.ExistsAsync(
-                userId: request.UserId.Value,
+                userId,
                 cancellationToken);
 
             if (!userExists)
@@ -36,7 +39,7 @@ namespace TraffiLearn.Application.Queries.Users.GetUserComments
             }
 
             var comments = await _userRepository.GetUserCommentsWithRepliesAsync(
-                userId: request.UserId.Value,
+                userId,
                 cancellationToken);
 
             return Result.Success(_commentMapper.Map(comments));

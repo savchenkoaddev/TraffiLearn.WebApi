@@ -26,8 +26,10 @@ namespace TraffiLearn.Application.Mapper.Topics
                 return Result.Failure<Topic>(topicTitleResult.Error);
             }
 
+            TopicId topicId = new(Guid.NewGuid());
+
             return Topic.Create(
-                id: Guid.NewGuid(),
+                topicId: topicId,
                 number: topicNumberResult.Value,
                 title: topicTitleResult.Value);
         }

@@ -3,6 +3,7 @@ using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Domain.Errors.Comments;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Comments;
 
 namespace TraffiLearn.Application.Commands.Comments.DeleteComment
 {
@@ -21,11 +22,11 @@ namespace TraffiLearn.Application.Commands.Comments.DeleteComment
         }
 
         public async Task<Result> Handle(
-            DeleteCommentCommand request, 
+            DeleteCommentCommand request,
             CancellationToken cancellationToken)
         {
             var comment = await _commentRepository.GetByIdWithAllNestedRepliesAsync(
-                request.CommentId.Value,
+                commentId: new CommentId(request.CommentId.Value),
                 cancellationToken);
 
             if (comment is null)

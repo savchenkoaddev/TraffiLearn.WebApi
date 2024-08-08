@@ -12,7 +12,7 @@ namespace TraffiLearn.Application.Mappers.Auth
     {
         public override Result<User> Map(RegisterAdminCommand source)
         {
-            var userId = Guid.NewGuid();
+            UserId userId = new(Guid.NewGuid());
 
             var emailResult = Email.Create(source.Email);
 
@@ -29,7 +29,7 @@ namespace TraffiLearn.Application.Mappers.Auth
             }
 
             return User.Create(
-                id: userId,
+                userId: userId,
                 email: emailResult.Value,
                 username: usernameResult.Value,
                 role: Role.Admin);

@@ -11,7 +11,7 @@ namespace TraffiLearn.Application.Mapper.Topics
     {
         public override Result<Topic> Map(CreateTopicCommand source)
         {
-            var topicId = Guid.NewGuid();
+            TopicId topicId = new(Guid.NewGuid());
 
             Result<TopicNumber> numberCreateResult = TopicNumber.Create(source.TopicNumber.Value);
 
@@ -28,7 +28,7 @@ namespace TraffiLearn.Application.Mapper.Topics
             }
 
             return Topic.Create(
-                id: topicId,
+                topicId: topicId,
                 number: numberCreateResult.Value,
                 title: titleCreateResult.Value);
         }

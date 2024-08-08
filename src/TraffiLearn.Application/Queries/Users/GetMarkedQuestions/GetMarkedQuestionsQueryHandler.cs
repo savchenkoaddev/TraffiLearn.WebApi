@@ -8,6 +8,7 @@ using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Queries.Users.GetMarkedQuestions
 {
@@ -35,30 +36,24 @@ namespace TraffiLearn.Application.Queries.Users.GetMarkedQuestions
             GetMarkedQuestionsQuery request,
             CancellationToken cancellationToken)
         {
-            Result<Guid> userIdResult = _authService.GetAuthenticatedUserId();
+            var userIdResult = _authService.GetAuthenticatedUserId();
 
             if (userIdResult.IsFailure)
             {
                 return Result.Failure<IEnumerable<QuestionResponse>>(userIdResult.Error);
             }
 
-            var userId = userIdResult.Value;
+            var user = await _userRepository.GetByIdAsync(
+                userId: new UserId(userIdResult.Value),
+                cancellationToken,
+                includeExpressions: user => user.MarkedQuestions);
 
-            var userExists = await _userRepository.ExistsAsync(
-                userId,
-                cancellationToken);
-
-            if (!userExists)
+            if (user is null)
             {
                 _logger.LogCritical(InternalErrors.AuthenticatedUserNotFound.Description);
 
                 return Result.Failure<IEnumerable<QuestionResponse>>(InternalErrors.AuthenticatedUserNotFound);
             }
-
-            var user = await _userRepository.GetByIdAsync(
-                userId,
-                cancellationToken,
-                includeExpressions: user => user.MarkedQuestions);
 
             _logger.LogInformation("Succesfully fetched user's marked questions. Questions fetched: {0}", user.MarkedQuestions.Count);
 

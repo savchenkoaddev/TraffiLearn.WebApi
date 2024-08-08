@@ -9,6 +9,11 @@
             return obj is ValueObject other && ValuesAreEqual(other);
         }
 
+        public bool Equals(ValueObject? other)
+        {
+            return other is not null && ValuesAreEqual(other);
+        }
+
         public override int GetHashCode()
         {
             return GetAtomicValues()
@@ -21,11 +26,6 @@
         {
             return GetAtomicValues()
                 .SequenceEqual(other.GetAtomicValues());
-        }
-
-        public bool Equals(ValueObject? other)
-        {
-            return other is not null && ValuesAreEqual(other);
         }
     }
 }

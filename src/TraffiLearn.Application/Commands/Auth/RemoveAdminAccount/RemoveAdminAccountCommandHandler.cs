@@ -7,10 +7,12 @@ using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Errors;
 using TraffiLearn.Application.Identity;
 using TraffiLearn.Application.Options;
+using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Enums;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Commands.Auth.RemoveAdminAccount
 {
@@ -48,7 +50,7 @@ namespace TraffiLearn.Application.Commands.Auth.RemoveAdminAccount
                 return removerIdResult.Error;
             }
 
-            var removerId = removerIdResult.Value;
+            UserId removerId = new(removerIdResult.Value);
 
             var remover = await _userRepository.GetByIdAsync(
                 removerId,
@@ -61,21 +63,23 @@ namespace TraffiLearn.Application.Commands.Auth.RemoveAdminAccount
                 return InternalErrors.AuthenticatedUserNotFound;
             }
 
-            if (remover.Role < _authSettings.MinimumAllowedRoleToRemoveAdminAccounts)
+            if (IsNotAllowedToRemoveAdmins(remover))
             {
                 return UserErrors.NotAllowedToPerformAction;
             }
 
-            var user = await _userRepository.GetByIdAsync(
-                userId: request.AdminId.Value,
+            UserId adminId = new(request.AdminId.Value);
+
+            var admin = await _userRepository.GetByIdAsync(
+                adminId,
                 cancellationToken);
 
-            if (user is null)
+            if (admin is null)
             {
                 return UserErrors.NotFound;
             }
 
-            if (user.Role != Role.Admin)
+            if (IsNotAdmin(admin))
             {
                 return UserErrors.RemovedAccountIsNotAdminAccount;
             }
@@ -83,9 +87,9 @@ namespace TraffiLearn.Application.Commands.Auth.RemoveAdminAccount
             // Transaction is required due to features of UserManager.
             using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                await _userRepository.DeleteAsync(user);
+                await _userRepository.DeleteAsync(admin);
 
-                var deleteResult = await _authService.DeleteUser(user.Id);
+                var deleteResult = await _authService.DeleteUser(admin.Id.Value);
 
                 if (deleteResult.IsFailure)
                 {
@@ -94,12 +98,22 @@ namespace TraffiLearn.Application.Commands.Auth.RemoveAdminAccount
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                _logger.LogInformation("Successfully removed an admin account with {Email} email.", user.Email.Value);
+                _logger.LogInformation("Successfully removed an admin account with {Email} email.", admin.Email.Value);
 
                 transaction.Complete();
             }
 
             return Result.Success();
+        }
+
+        private bool IsNotAdmin(User user)
+        {
+            return user.Role != Role.Admin;
+        }
+
+        private bool IsNotAllowedToRemoveAdmins(User remover)
+        {
+            return remover.Role < _authSettings.MinimumAllowedRoleToRemoveAdminAccounts;
         }
     }
 }

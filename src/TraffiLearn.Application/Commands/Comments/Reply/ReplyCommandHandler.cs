@@ -39,7 +39,7 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
             CancellationToken cancellationToken)
         {
             var comment = await _commentRepository.GetByIdAsync(
-                request.CommentId.Value,
+                commentId: new CommentId(request.CommentId.Value),
                 cancellationToken,
                 includeExpressions: comment => comment.Question);
 
@@ -75,10 +75,10 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
                 return commentContentResult.Error;
             }
 
-            var replyCommentId = Guid.NewGuid();
+            CommentId replyCommentId = new(Guid.NewGuid());
 
             var replyCommentResult = Comment.Create(
-                id: replyCommentId,
+                commentId: replyCommentId,
                 content: commentContentResult.Value,
                 leftBy: user,
                 question: comment.Question);

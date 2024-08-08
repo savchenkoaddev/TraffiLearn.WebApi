@@ -5,6 +5,7 @@ using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Topics;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Topics;
 
 namespace TraffiLearn.Application.Queries.Topics.GetById
 {
@@ -25,7 +26,9 @@ namespace TraffiLearn.Application.Queries.Topics.GetById
             GetTopicByIdQuery request, 
             CancellationToken cancellationToken)
         {
-            var found = await _topicRepository.GetByIdAsync(request.TopicId.Value);
+            var found = await _topicRepository.GetByIdAsync(
+                topicId: new TopicId(request.TopicId.Value), 
+                cancellationToken);
 
             if (found is null)
             {

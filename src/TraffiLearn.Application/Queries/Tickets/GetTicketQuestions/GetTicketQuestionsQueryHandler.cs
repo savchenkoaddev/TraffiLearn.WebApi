@@ -5,6 +5,7 @@ using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Tickets;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Tickets;
 
 namespace TraffiLearn.Application.Queries.Tickets.GetTicketQuestions
 {
@@ -27,7 +28,7 @@ namespace TraffiLearn.Application.Queries.Tickets.GetTicketQuestions
             CancellationToken cancellationToken)
         {
             var ticket = await _ticketRepository.GetByIdAsync(
-                ticketId: request.TicketId.Value,
+                ticketId: new TicketId(request.TicketId.Value),
                 cancellationToken,
                 includeExpressions: ticket => ticket.Questions);
 

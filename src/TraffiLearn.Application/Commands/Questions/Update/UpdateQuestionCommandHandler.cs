@@ -8,6 +8,7 @@ using TraffiLearn.Domain.Errors.Topics;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Questions;
+using TraffiLearn.Domain.ValueObjects.Topics;
 
 namespace TraffiLearn.Application.Commands.Questions.Update
 {
@@ -36,7 +37,7 @@ namespace TraffiLearn.Application.Commands.Questions.Update
         public async Task<Result> Handle(UpdateQuestionCommand request, CancellationToken cancellationToken)
         {
             var question = await _questionRepository.GetByIdAsync(
-                request.QuestionId.Value,
+                questionId: new QuestionId(request.QuestionId.Value),
                 cancellationToken,
                 includeExpressions: question => question.Topics);
 
@@ -61,7 +62,8 @@ namespace TraffiLearn.Application.Commands.Questions.Update
 
             var updateTopicsResult = await UpdateTopics(
                 topicsIds: request.TopicsIds,
-                question: question);
+                question,
+                cancellationToken);
 
             if (updateTopicsResult.IsFailure)
             {
@@ -70,10 +72,13 @@ namespace TraffiLearn.Application.Commands.Questions.Update
 
             await _questionRepository.UpdateAsync(question);
 
+            var removeOldImageIfNewImageMissing =
+                request.RemoveOldImageIfNewImageMissing.Value;
+
             var imageUpdateResult = await HandleImageAsync(
                 image: request.Image,
                 question,
-                request.RemoveOldImageIfNewImageMissing.Value,
+                removeOldImageIfNewImageMissing,
                 cancellationToken);
 
             if (imageUpdateResult.IsFailure)
@@ -88,11 +93,14 @@ namespace TraffiLearn.Application.Commands.Questions.Update
 
         private async Task<Result> UpdateTopics(
             List<Guid?>? topicsIds,
-            Question question)
+            Question question,
+            CancellationToken cancellationToken = default)
         {
             foreach (var topicId in topicsIds)
             {
-                var topic = await _topicRepository.GetByIdAsync(topicId.Value);
+                var topic = await _topicRepository.GetByIdAsync(
+                    topicId: new TopicId(topicId.Value),
+                    cancellationToken);
 
                 if (topic is null)
                 {
@@ -121,7 +129,7 @@ namespace TraffiLearn.Application.Commands.Questions.Update
 
             foreach (var topic in questionTopics)
             {
-                if (!topicsIds.Contains(topic.Id))
+                if (!topicsIds.Contains(topic.Id.Value))
                 {
                     var topicRemoveResult = question.RemoveTopic(topic);
 
@@ -146,14 +154,16 @@ namespace TraffiLearn.Application.Commands.Questions.Update
             IFormFile? image,
             Question question,
             bool removeOldImageIfNewImageMissing,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken = default)
         {
+            var blobUri = question.ImageUri.Value;
+
             if (image is null)
             {
                 if (question.ImageUri is not null && removeOldImageIfNewImageMissing)
                 {
                     await _blobService.DeleteAsync(
-                        blobUri: question.ImageUri.Value,
+                        blobUri,
                         cancellationToken);
 
                     question.SetImageUri(null);
@@ -164,7 +174,7 @@ namespace TraffiLearn.Application.Commands.Questions.Update
                 if (question.ImageUri is not null)
                 {
                     await _blobService.DeleteAsync(
-                        blobUri: question.ImageUri.Value,
+                        blobUri,
                         cancellationToken);
                 }
 
@@ -172,7 +182,7 @@ namespace TraffiLearn.Application.Commands.Questions.Update
 
                 var uploadResponse = await _blobService.UploadAsync(
                     stream,
-                    image.ContentType,
+                    contentType: image.ContentType,
                     cancellationToken);
 
                 var imageUriResult = ImageUri.Create(uploadResponse.BlobUri);

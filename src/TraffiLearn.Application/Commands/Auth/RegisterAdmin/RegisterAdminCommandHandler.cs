@@ -11,6 +11,7 @@ using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Commands.Auth.RegisterAdmin
 {
@@ -51,7 +52,7 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterAdmin
                 return creatorIdResult.Error;
             }
 
-            var creatorId = creatorIdResult.Value;
+            UserId creatorId = new(creatorIdResult.Value);
 
             var creator = await _userRepository.GetByIdAsync(
                 creatorId,

@@ -33,7 +33,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<bool> ExistsAsync(
-            Guid userId,
+            UserId userId,
             CancellationToken cancellationToken = default)
         {
             return (await _dbContext.Users.FindAsync(
@@ -51,8 +51,8 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<bool> ExistsAsync(
-            Username username, 
-            Email email, 
+            Username username,
+            Email email,
             CancellationToken cancellationToken = default)
         {
             return (await _dbContext.Users.FirstOrDefaultAsync(
@@ -78,7 +78,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<User?> GetByIdAsync(
-            Guid userId,
+            UserId userId,
             CancellationToken cancellationToken = default,
             params Expression<Func<User, object>>[] includeExpressions)
         {
@@ -95,13 +95,17 @@ namespace TraffiLearn.Infrastructure.Repositories
                     cancellationToken);
         }
 
-        public Task<User?> GetByUsernameAsync(Username username, CancellationToken cancellationToken = default)
+        public Task<User?> GetByUsernameAsync(
+            Username username,
+            CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return _dbContext.Users.FirstOrDefaultAsync(
+                user => user.Username == username,
+                cancellationToken);
         }
 
         public async Task<IEnumerable<Comment>> GetUserCommentsWithRepliesAsync(
-            Guid userId,
+            UserId userId,
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Comments

@@ -25,7 +25,8 @@ namespace TraffiLearn.Application.Queries.Tickets.GetAll
             GetAllTicketsQuery request,
             CancellationToken cancellationToken)
         {
-            var tickets = await _ticketRepository.GetAllAsync();
+            var tickets = await _ticketRepository.GetAllAsync(
+                cancellationToken: cancellationToken);
 
             return Result.Success(_ticketMapper.Map(tickets));
         }

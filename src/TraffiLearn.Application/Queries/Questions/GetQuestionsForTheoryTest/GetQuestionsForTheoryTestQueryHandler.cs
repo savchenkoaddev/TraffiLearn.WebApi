@@ -39,8 +39,8 @@ namespace TraffiLearn.Application.Queries.Questions.GetQuestionsForTheoryTest
             var questions = await _questionRepository.GetRandomRecordsAsync(
                 amount: neededQuestionsCount);
 
-            if (questions.Count() < neededQuestionsCount &&
-                _questionsSettings.DemandEnoughRecordsOnTheoryTestFetching)
+            if (NotEnoughQuestions(questions) &&
+                SufficientRecordsRequired())
             {
                 _logger.LogError(InternalErrors.NotEnoughRecords.Description);
 
@@ -48,6 +48,16 @@ namespace TraffiLearn.Application.Queries.Questions.GetQuestionsForTheoryTest
             }
 
             return Result.Success(_entityToResponseMapper.Map(questions));
+        }
+
+        private bool NotEnoughQuestions(IEnumerable<Question> questions)
+        {
+            return questions.Count() < _questionsSettings.TheoryTestQuestionsCount;
+        }
+
+        private bool SufficientRecordsRequired()
+        {
+            return _questionsSettings.DemandEnoughRecordsOnTheoryTestFetching;
         }
     }
 }

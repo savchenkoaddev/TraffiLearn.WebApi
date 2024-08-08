@@ -8,6 +8,8 @@ using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Questions;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Commands.Users.UnmarkQuestion
 {
@@ -45,10 +47,9 @@ namespace TraffiLearn.Application.Commands.Users.UnmarkQuestion
                 return userIdResult.Error;
             }
 
-            var userId = userIdResult.Value;
-
             var question = await _questionRepository.GetByIdAsync(
-                questionId: request.QuestionId.Value);
+                questionId: new QuestionId(request.QuestionId.Value),
+                cancellationToken);
 
             if (question is null)
             {
@@ -56,7 +57,7 @@ namespace TraffiLearn.Application.Commands.Users.UnmarkQuestion
             }
 
             var user = await _userRepository.GetByIdAsync(
-                userId,
+                userId: new UserId(userIdResult.Value),
                 cancellationToken,
                 includeExpressions: user => user.MarkedQuestions);
 

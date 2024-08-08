@@ -5,6 +5,7 @@ using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Queries.Users.GetUserDislikedQuestions
 {
@@ -26,11 +27,10 @@ namespace TraffiLearn.Application.Queries.Users.GetUserDislikedQuestions
             GetUserDislikedQuestionsQuery request, 
             CancellationToken cancellationToken)
         {
-            var user = await _userRepository
-                .GetByIdAsync(
-                    userId: request.UserId.Value,
-                    cancellationToken,
-                    includeExpressions: user => user.DislikedQuestions);
+            var user = await _userRepository.GetByIdAsync(
+                userId: new UserId(request.UserId.Value),
+                cancellationToken,
+                includeExpressions: user => user.DislikedQuestions);
 
             if (user is null)
             {

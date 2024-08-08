@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.ValueObjects.Questions;
 using TraffiLearn.Infrastructure.Database;
 
 namespace TraffiLearn.Infrastructure.Repositories
@@ -25,7 +26,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<bool> ExistsAsync(
-            Guid questionId,
+            QuestionId questionId,
             CancellationToken cancellationToken = default)
         {
             return (await _dbContext.Questions.FindAsync(
@@ -111,7 +112,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<Question?> GetByIdAsync(
-            Guid questionId, 
+            QuestionId questionId, 
             CancellationToken cancellationToken = default, 
             params Expression<Func<Question, object>>[] includeExpressions)
         {
@@ -128,7 +129,9 @@ namespace TraffiLearn.Infrastructure.Repositories
                     cancellationToken);
         }
 
-        public async Task<IEnumerable<Comment>> GetQuestionCommentsWithRepliesAsync(Guid questionId, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<Comment>> GetQuestionCommentsWithRepliesAsync(
+            QuestionId questionId, 
+            CancellationToken cancellationToken = default)
         {
             return await _dbContext.Comments
                 .AsNoTracking()

@@ -69,7 +69,7 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterUser
 
                 var addResult = await _authService.AddIdentityUser(
                     identityUser: newIdentityUser,
-                    request.Password);
+                    password: request.Password);
 
                 if (addResult.IsFailure)
                 {

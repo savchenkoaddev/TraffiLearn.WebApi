@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.ValueObjects.Tickets;
 using TraffiLearn.Infrastructure.Database;
 
 namespace TraffiLearn.Infrastructure.Repositories
@@ -32,7 +33,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<bool> ExistsAsync(
-            Guid ticketId, 
+            TicketId ticketId, 
             CancellationToken cancellationToken = default)
         {
             return (await _dbContext.Tickets.FindAsync(
@@ -62,7 +63,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<Ticket?> GetByIdAsync(
-            Guid ticketId, 
+            TicketId ticketId, 
             CancellationToken cancellationToken = default, 
             params Expression<Func<Ticket, object>>[] includeExpressions)
         {

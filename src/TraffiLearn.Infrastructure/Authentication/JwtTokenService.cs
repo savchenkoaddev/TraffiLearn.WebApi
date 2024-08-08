@@ -82,7 +82,7 @@ namespace TraffiLearn.Infrastructure.Authentication
         {
             return
             [
-                new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new(JwtRegisteredClaimNames.Sub, user.Id.Value.ToString()),
                 new(JwtRegisteredClaimNames.Email, user.Email.Value.ToString()),
                 new("role", user.Role.ToString())
             ];
