@@ -4,7 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using TraffiLearn.Application.Abstractions.Auth;
+using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Infrastructure.Options;
 

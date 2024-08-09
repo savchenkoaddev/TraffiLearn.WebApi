@@ -3,7 +3,7 @@ using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
-using TraffiLearn.Application.Abstractions.Auth;
+using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Behaviors;
 using TraffiLearn.Application.Commands.Auth.RegisterAdmin;
@@ -52,7 +52,8 @@ namespace TraffiLearn.Application
 
         private static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            services.AddScoped<IAuthService<ApplicationUser>, AuthService<ApplicationUser>>();
+            services.AddScoped<IAuthenticationService<ApplicationUser>, AuthenticationService<ApplicationUser>>();
+            services.AddScoped<IUserManagementService, UserManagementService>();
 
             return services;
         }
@@ -101,6 +102,7 @@ namespace TraffiLearn.Application
             services.AddScoped<Mapper<Comment, CommentResponse>,
                 CommentToCommentResponseMapper>();
             services.AddScoped<Mapper<RegisterAdminCommand, Result<User>>, RegisterAdminCommandMapper>();
+            services.AddScoped<Mapper<User, ApplicationUser>, UserToApplicationUserMapper>();
 
             return services;
         }

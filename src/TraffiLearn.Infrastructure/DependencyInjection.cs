@@ -1,13 +1,10 @@
 ﻿using Azure.Storage.Blobs;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Abstractions.Storage;
 using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.RepositoryContracts;
@@ -34,7 +31,7 @@ namespace TraffiLearn.Infrastructure
             services.AddPersistence();
             SeedRoles(services).Wait();
             services.AddRepositories();
-            
+
             return services;
         }
 
@@ -60,6 +57,7 @@ namespace TraffiLearn.Infrastructure
             services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
+                    .AddRoleManager<RoleManager<IdentityRole>>()
                     .AddEntityFrameworkStores<ApplicationDbContext>();
 
             return services;

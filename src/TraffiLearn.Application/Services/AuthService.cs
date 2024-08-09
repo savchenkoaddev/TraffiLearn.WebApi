@@ -1,55 +1,105 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Claims;
-using TraffiLearn.Application.Abstractions.Auth;
+using System.Transactions;
+using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Errors;
+using TraffiLearn.Application.Identity;
 using TraffiLearn.Application.Options;
+using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Enums;
 using TraffiLearn.Domain.Errors.Users;
+using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Services
 {
-    internal sealed class AuthService<TUser> : IAuthService<TUser>
-        where TUser : class
+    internal sealed class AuthService : IAuthService
     {
-        private readonly SignInManager<TUser> _signInManager;
-        private readonly UserManager<TUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUserRepository _userRepository;
         private readonly LoginSettings _loginSettings;
-        private readonly ILogger<AuthService<TUser>> _logger;
+        private readonly Mapper<User, ApplicationUser> _userMapper;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ITokenService _tokenService;
+        private readonly ILogger<AuthService> _logger;
 
         public AuthService(
-            SignInManager<TUser> signInManager,
-            UserManager<TUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            UserManager<ApplicationUser> userManager,
+            IUserRepository userRepository,
             IOptions<LoginSettings> loginSettings,
-            ILogger<AuthService<TUser>> logger)
+            Mapper<User, ApplicationUser> userMapper,
+            IUnitOfWork unitOfWork,
+            ILogger<AuthService> logger)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _userRepository = userRepository;
             _loginSettings = loginSettings.Value;
+            _userMapper = userMapper;
+            _unitOfWork = unitOfWork;
             _logger = logger;
         }
 
-        public async Task<Result> AddIdentityUser(TUser identityUser, string password)
+        public async Task<Result> CreateUser(
+            User user,
+            string password,
+            CancellationToken cancellationToken = default)
         {
-            var result = await _userManager.CreateAsync(
-                identityUser,
-                password);
-
-            if (!result.Succeeded)
+            if (await ExistsUser(user))
             {
-                _logger.LogCritical("Failed to create identity user.");
-
-                return Error.InternalFailure();
+                return UserErrors.AlreadyRegistered;
             }
+
+            var identityUser = _userMapper.Map(user);
+
+            using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                await _userRepository.AddAsync(
+                    user,
+                    cancellationToken);
+
+                var result = await _userManager.CreateAsync(
+                    identityUser,
+                    password);
+
+                if (!result.Succeeded)
+                {
+                    var errors = GenerateErrorsString(result.Errors);
+
+                    _logger.LogCritical("Failed to create identity user. Errors: {errors}", errors);
+
+                    return Error.InternalFailure();
+                }
+
+                var roleAssignmentResult = await AssignRoleToUser(
+                    identityUser,
+                    user.Role);
+
+                if (roleAssignmentResult.IsFailure)
+                {
+                    return roleAssignmentResult.Error;
+                }
+
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                transaction.Complete();
+            }
+
+            _logger.LogInformation("Successfully created a new user with {Email} email. ", identityUser.Email);
 
             return Result.Success();
         }
 
-        public async Task<Result> AssignRoleToUser(TUser user, Role role)
+        public async Task<Result> AssignRoleToUser(
+            ApplicationUser user,
+            Role role)
         {
             var roleName = role.ToString();
 
@@ -57,8 +107,12 @@ namespace TraffiLearn.Application.Services
 
             if (!result.Succeeded)
             {
-                _logger.LogCritical(
-                    InternalErrors.RoleAssigningFailure(roleName).Description);
+                var errorMessage = string.Join(
+                    '\n',
+                    InternalErrors.RoleAssigningFailure(roleName).Description,
+                    GenerateErrorsString(result.Errors));
+
+                _logger.LogCritical(errorMessage);
 
                 return InternalErrors.RoleAssigningFailure(roleName);
             }
@@ -66,23 +120,49 @@ namespace TraffiLearn.Application.Services
             return Result.Success();
         }
 
-        public async Task<Result> DeleteUser(Guid userId)
+        public async Task<Result> DeleteUser(
+            UserId userId,
+            CancellationToken cancellationToken = default)
         {
-            var user = await _userManager.FindByIdAsync(userId.ToString());
+            var identityUser = await _userManager.FindByIdAsync(userId.Value.ToString());
 
-            if (user is null)
+            if (identityUser is null)
             {
                 return UserErrors.NotFound;
             }
 
-            var result = await _userManager.DeleteAsync(user);
+            var user = await _userRepository.GetByIdAsync(
+                userId,
+                cancellationToken);
 
-            if (!result.Succeeded)
+            if (user is null)
             {
-                _logger.LogCritical("Failed to delete user from the identity storage. Errors: {Errors}", string.Join(',', result.Errors));
+                _logger.LogCritical(InternalErrors.DataConsistencyError.Description);
 
-                return Error.InternalFailure();
+                return InternalErrors.DataConsistencyError;
             }
+
+            using (var transaction = new TransactionScope(
+                TransactionScopeAsyncFlowOption.Enabled))
+            {
+                var identityDeleteResult = await _userManager.DeleteAsync(identityUser);
+
+                if (!identityDeleteResult.Succeeded)
+                {
+                    _logger.LogCritical(
+                        "Failed to delete user from the identity storage. Errors: {Errors}",
+                        GenerateErrorsString(identityDeleteResult.Errors));
+
+                    return Error.InternalFailure();
+                }
+
+                await _userRepository.DeleteAsync(user);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                transaction.Complete();
+            }
+
+            _logger.LogInformation("Succesfully deleted user. Role: {role}. Email: {email}", user.Role, user.Email);
 
             return Result.Success();
         }
@@ -151,8 +231,36 @@ namespace TraffiLearn.Application.Services
             return Result.Failure<Guid>(Error.InternalFailure());
         }
 
+        public async Task<Result<User>> GetCurrentUser(
+            CancellationToken cancellationToken = default,
+            params Expression<Func<User, object>>[] includeExpressions)
+        {
+            Result<Guid> userIdResult = GetAuthenticatedUserId();
+
+            if (userIdResult.IsFailure)
+            {
+                return Result.Failure<User>(userIdResult.Error);
+            }
+
+            UserId userId = new(userIdResult.Value);
+
+            var user = await _userRepository.GetByIdAsync(
+                userId,
+                cancellationToken,
+                includeExpressions);
+
+            if (user is null)
+            {
+                _logger.LogCritical(InternalErrors.AuthenticatedUserNotFound.Description);
+
+                return Result.Failure<User>(InternalErrors.AuthenticatedUserNotFound);
+            }
+
+            return user;
+        }
+
         public async Task<Result<SignInResult>> PasswordLogin(
-            TUser user,
+            ApplicationUser user,
             string password)
         {
             var canLogin = await _signInManager.CanSignInAsync(user);
@@ -169,7 +277,9 @@ namespace TraffiLearn.Application.Services
                 lockoutOnFailure: _loginSettings.LockoutOnFailure);
         }
 
-        public async Task<Result> RemoveRole(TUser user, Role role)
+        public async Task<Result> RemoveRole(
+            ApplicationUser user,
+            Role role)
         {
             var result = await _userManager.RemoveFromRoleAsync(user, role.ToString());
 
@@ -183,6 +293,93 @@ namespace TraffiLearn.Application.Services
             }
 
             return Result.Success();
+        }
+
+        private string GenerateErrorsString(IEnumerable<IdentityError> errors)
+        {
+            return string.Join(',', errors.Select(error => error.Description));
+        }
+
+        private async Task<bool> ExistsUser(
+            User user,
+            CancellationToken cancellationToken = default)
+        {
+            return await _userRepository.ExistsAsync(
+                user.Username,
+                user.Email,
+                cancellationToken);
+        }
+
+        public Task<Result> DeleteUser(UserId userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Result> DeleteUser(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Result> DeleteUser(User user, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<Result<string>> Login(
+            string email,
+            string password,
+            CancellationToken cancellationToken = default)
+        {
+            var emailResult = Email.Create(email);
+
+            if (emailResult.IsFailure)
+            {
+                return Result.Failure<string>(emailResult.Error);
+            }
+
+            var identityUser = await _userManager.FindByEmailAsync(email);
+
+            if (identityUser is null)
+            {
+                return Result.Failure<string>(UserErrors.NotFound);
+            }
+
+            var user = await _userRepository.GetByEmailAsync(
+                emailResult.Value,
+                cancellationToken);
+
+            if (user is null)
+            {
+                _logger.LogCritical(InternalErrors.DataConsistencyError.Description);
+
+                return Result.Failure<string>(InternalErrors.DataConsistencyError);
+            }
+
+            var canLogin = await _signInManager.CanSignInAsync(identityUser);
+
+            if (!canLogin)
+            {
+                return Result.Failure<string>(UserErrors.CannotLogin);
+            }
+
+            var loginResult = await _signInManager.PasswordSignInAsync(
+                identityUser,
+                password: password,
+                isPersistent: _loginSettings.IsPersistent,
+                lockoutOnFailure: _loginSettings.LockoutOnFailure);
+
+            if (!loginResult.Succeeded)
+            {
+                _logger.LogError("Failed to login through SignInManager. IsLockedOut: {isLockedOut}", loginResult.IsLockedOut);
+
+                return Result.Failure<string>(UserErrors.InvalidCredentials);
+            }
+
+            var accessToken = _tokenService.GenerateAccessToken(user);
+
+            _logger.LogInformation("Succesfully logged in. Access Token generated.");
+
+            return accessToken;
         }
     }
 }

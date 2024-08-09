@@ -104,16 +104,15 @@ namespace TraffiLearn.Infrastructure.Repositories
                 cancellationToken);
         }
 
-        public async Task<IEnumerable<Comment>> GetUserCommentsWithRepliesAsync(
+        public async Task<User?> GetUserWithCommentsWithRepliesAsync(
             UserId userId,
             CancellationToken cancellationToken = default)
         {
-            return await _dbContext.Comments
-                .AsNoTracking()
-                .Where(c => c.User.Id == userId)
-                .Include(q => q.Replies)
-                .Include(q => q.User)
-                .ToListAsync(cancellationToken);
+            return await _dbContext.Users
+                .Where(c => c.Id == userId)
+                .Include(user => user.Comments)
+                .ThenInclude(user => user.Replies)
+                .FirstOrDefaultAsync(cancellationToken);
         }
 
         public Task UpdateAsync(User user)

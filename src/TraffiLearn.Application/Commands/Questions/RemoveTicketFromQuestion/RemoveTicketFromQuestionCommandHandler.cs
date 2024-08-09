@@ -1,6 +1,11 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Abstractions.Identity;
+using TraffiLearn.Application.Options;
+using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Questions;
+using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Questions;
@@ -12,15 +17,18 @@ namespace TraffiLearn.Application.Commands.Questions.RemoveTicketFromQuestion
     {
         private readonly ITicketRepository _ticketRepository;
         private readonly IQuestionRepository _questionRepository;
+        private readonly IUserManagementService _userManagementService;
         private readonly IUnitOfWork _unitOfWork;
 
         public RemoveTicketFromQuestionCommandHandler(
             ITicketRepository ticketRepository,
-            IQuestionRepository questionRepository, 
+            IQuestionRepository questionRepository,
+            IUserManagementService userManagementService,
             IUnitOfWork unitOfWork)
         {
             _ticketRepository = ticketRepository;
             _questionRepository = questionRepository;
+            _userManagementService = userManagementService;
             _unitOfWork = unitOfWork;
         }
 
@@ -28,6 +36,14 @@ namespace TraffiLearn.Application.Commands.Questions.RemoveTicketFromQuestion
             RemoveTicketFromQuestionCommand request, 
             CancellationToken cancellationToken)
         {
+            var authorizationResult = await _userManagementService.EnsureCallerCanModifyDomainObjects(
+                cancellationToken);
+
+            if (authorizationResult.IsFailure)
+            {
+                return authorizationResult.Error;
+            }
+
             var ticket = await _ticketRepository.GetByIdAsync(
                 ticketId: new TicketId(request.TicketId.Value),
                 cancellationToken,
@@ -62,6 +78,8 @@ namespace TraffiLearn.Application.Commands.Questions.RemoveTicketFromQuestion
                 return questionRemoveResult.Error;
             }
 
+            await _questionRepository.UpdateAsync(question);
+            await _ticketRepository.UpdateAsync(ticket);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();

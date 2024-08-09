@@ -1,11 +1,6 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Transactions;
-using TraffiLearn.Application.Abstractions.Auth;
-using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Application.Errors;
-using TraffiLearn.Application.Identity;
+using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Options;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Enums;
@@ -20,48 +15,32 @@ namespace TraffiLearn.Application.Commands.Auth.RemoveAdminAccount
         : IRequestHandler<RemoveAdminAccountCommand, Result>
     {
         private readonly IUserRepository _userRepository;
-        private readonly IAuthService<ApplicationUser> _authService;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserManagementService _userManagementService;
         private readonly AuthSettings _authSettings;
-        private readonly ILogger<RemoveAdminAccountCommandHandler> _logger;
 
         public RemoveAdminAccountCommandHandler(
             IUserRepository userRepository,
-            IAuthService<ApplicationUser> authService,
-            IUnitOfWork unitOfWork,
-            IOptions<AuthSettings> authSettings,
-            ILogger<RemoveAdminAccountCommandHandler> logger)
+            IUserManagementService userManagementService,
+            IOptions<AuthSettings> identitySettings)
         {
             _userRepository = userRepository;
-            _authService = authService;
-            _unitOfWork = unitOfWork;
-            _authSettings = authSettings.Value;
-            _logger = logger;
+            _userManagementService = userManagementService;
+            _authSettings = identitySettings.Value;
         }
 
         public async Task<Result> Handle(
             RemoveAdminAccountCommand request,
             CancellationToken cancellationToken)
         {
-            Result<Guid> removerIdResult = _authService.GetAuthenticatedUserId();
-
-            if (removerIdResult.IsFailure)
-            {
-                return removerIdResult.Error;
-            }
-
-            UserId removerId = new(removerIdResult.Value);
-
-            var remover = await _userRepository.GetByIdAsync(
-                removerId,
+            var removerResult = await _userManagementService.GetAuthenticatedUserAsync(
                 cancellationToken);
 
-            if (remover is null)
+            if (removerResult.IsFailure)
             {
-                _logger.LogCritical(InternalErrors.AuthenticatedUserNotFound.Description);
-
-                return InternalErrors.AuthenticatedUserNotFound;
+                return removerResult.Error;
             }
+
+            var remover = removerResult.Value;
 
             if (IsNotAllowedToRemoveAdmins(remover))
             {
@@ -84,23 +63,13 @@ namespace TraffiLearn.Application.Commands.Auth.RemoveAdminAccount
                 return UserErrors.RemovedAccountIsNotAdminAccount;
             }
 
-            // Transaction is required due to features of UserManager.
-            using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            var removeResult = await _userManagementService.DeleteUserAsync(
+                admin,
+                cancellationToken);
+
+            if (removeResult.IsFailure)
             {
-                await _userRepository.DeleteAsync(admin);
-
-                var deleteResult = await _authService.DeleteUser(admin.Id.Value);
-
-                if (deleteResult.IsFailure)
-                {
-                    return deleteResult.Error;
-                }
-
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-                _logger.LogInformation("Successfully removed an admin account with {Email} email.", admin.Email.Value);
-
-                transaction.Complete();
+                return removeResult.Error;
             }
 
             return Result.Success();
@@ -113,7 +82,7 @@ namespace TraffiLearn.Application.Commands.Auth.RemoveAdminAccount
 
         private bool IsNotAllowedToRemoveAdmins(User remover)
         {
-            return remover.Role < _authSettings.MinimumAllowedRoleToRemoveAdminAccounts;
+            return remover.Role < _authSettings.MinAllowedRoleToRemoveAdminAccounts;
         }
     }
 }

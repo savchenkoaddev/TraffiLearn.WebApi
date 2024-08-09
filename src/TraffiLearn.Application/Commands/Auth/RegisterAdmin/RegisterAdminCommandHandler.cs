@@ -1,75 +1,35 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Transactions;
-using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Application.Errors;
-using TraffiLearn.Application.Identity;
+using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Options;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Users;
-using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Commands.Auth.RegisterAdmin
 {
     internal sealed class RegisterAdminCommandHandler
         : IRequestHandler<RegisterAdminCommand, Result>
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IAuthService<ApplicationUser> _authService;
+        private readonly IUserManagementService _userManagementService;
         private readonly Mapper<RegisterAdminCommand, Result<User>> _commandMapper;
-        private readonly IUnitOfWork _unitOfWork;
         private readonly AuthSettings _authSettings;
-        private readonly ILogger<RegisterAdminCommandHandler> _logger;
 
         public RegisterAdminCommandHandler(
-            IUserRepository userRepository,
-            IAuthService<ApplicationUser> authService,
+            IUserManagementService userManagementService,
             Mapper<RegisterAdminCommand, Result<User>> commandMapper,
-            IUnitOfWork unitOfWork,
-            IOptions<AuthSettings> authSettings,
-            ILogger<RegisterAdminCommandHandler> logger)
+            IOptions<AuthSettings> authSettings)
         {
-            _userRepository = userRepository;
-            _authService = authService;
+            _userManagementService = userManagementService;
             _commandMapper = commandMapper;
-            _unitOfWork = unitOfWork;
             _authSettings = authSettings.Value;
-            _logger = logger;
         }
 
         public async Task<Result> Handle(
             RegisterAdminCommand request,
             CancellationToken cancellationToken)
         {
-            Result<Guid> creatorIdResult = _authService.GetAuthenticatedUserId();
-
-            if (creatorIdResult.IsFailure)
-            {
-                return creatorIdResult.Error;
-            }
-
-            UserId creatorId = new(creatorIdResult.Value);
-
-            var creator = await _userRepository.GetByIdAsync(
-                creatorId,
-                cancellationToken);
-
-            if (creator is null)
-            {
-                _logger.LogCritical(InternalErrors.AuthenticatedUserNotFound.Description);
-
-                return InternalErrors.AuthenticatedUserNotFound;
-            }
-
-            if (creator.Role < _authSettings.MinimumAllowedRoleToCreateAdminAccounts)
-            {
-                return UserErrors.NotAllowedToPerformAction;
-            }
-
             var mappingResult = _commandMapper.Map(request);
 
             if (mappingResult.IsFailure)
@@ -77,63 +37,39 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterAdmin
                 return mappingResult.Error;
             }
 
-            var newAdmin = mappingResult.Value;
-
-            var existsSameUser = await _userRepository.ExistsAsync(
-                newAdmin.Username,
-                newAdmin.Email,
+            var userResult = await _userManagementService.GetAuthenticatedUserAsync(
                 cancellationToken);
 
-            if (existsSameUser)
+            if (userResult.IsFailure)
             {
-                return UserErrors.AlreadyRegistered;
+                return userResult.Error;
             }
 
-            // Transaction is required due to features of UserManager.
-            using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            var creator = userResult.Value;
+
+            if (IsNotAllowedToCreateAdmins(creator))
             {
-                await _userRepository.AddAsync(
-                    newAdmin,
-                    cancellationToken);
+                return UserErrors.NotAllowedToPerformAction;
+            }
 
-                var identityUser = CreateIdentityUser(newAdmin);
+            var newAdmin = mappingResult.Value;
 
-                var addResult = await _authService.AddIdentityUser(
-                    identityUser,
-                    request.Password);
+            var createResult = await _userManagementService.CreateUserAsync(
+                user: newAdmin,
+                password: request.Password,
+                cancellationToken);
 
-                if (addResult.IsFailure)
-                {
-                    return addResult.Error;
-                }
-
-                var roleAssignmentResult = await _authService.AssignRoleToUser(
-                    identityUser,
-                    role: newAdmin.Role);
-
-                if (roleAssignmentResult.IsFailure)
-                {
-                    return roleAssignmentResult.Error;
-                }
-
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-                _logger.LogInformation("Successfully created a new admin user with {Email} email.", identityUser.Email);
-
-                transaction.Complete();
+            if (createResult.IsFailure)
+            {
+                return createResult.Error;
             }
 
             return Result.Success();
         }
 
-        private ApplicationUser CreateIdentityUser(User user)
+        private bool IsNotAllowedToCreateAdmins(User user)
         {
-            return new ApplicationUser()
-            {
-                Id = user.Id.ToString(),
-                Email = user.Email.Value,
-                UserName = user.Username.Value
-            };
+            return user.Role < _authSettings.MinAllowedRoleToCreateAdminAccounts;
         }
     }
 }

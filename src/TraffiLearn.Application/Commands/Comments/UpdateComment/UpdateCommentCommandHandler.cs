@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using TraffiLearn.Application.Abstractions.Auth;
+using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.Entities;
@@ -15,16 +15,16 @@ namespace TraffiLearn.Application.Commands.Comments.UpdateComment
         : IRequestHandler<UpdateCommentCommand, Result>
     {
         private readonly ICommentRepository _commentRepository;
-        private readonly IAuthService<ApplicationUser> _authService;
+        private readonly IUserManagementService _userManagementService;
         private readonly IUnitOfWork _unitOfWork;
 
         public UpdateCommentCommandHandler(
             ICommentRepository commentRepository,
-            IAuthService<ApplicationUser> authService,
+            IUserManagementService userManagementService,
             IUnitOfWork unitOfWork)
         {
             _commentRepository = commentRepository;
-            _authService = authService;
+            _userManagementService = userManagementService;
             _unitOfWork = unitOfWork;
         }
 
@@ -32,26 +32,26 @@ namespace TraffiLearn.Application.Commands.Comments.UpdateComment
             UpdateCommentCommand request,
             CancellationToken cancellationToken)
         {
-            var comment = await _commentRepository.GetByIdAsync(
-                commentId: new CommentId(request.CommentId.Value),
-                cancellationToken,
-                includeExpressions: comment => comment.User);
+            var userResult = await _userManagementService.GetAuthenticatedUserAsync(
+                cancellationToken);
+
+            if (userResult.IsFailure)
+            {
+                return userResult.Error;
+            }
+
+            var comment = await GetComment(
+                new CommentId(request.CommentId.Value), 
+                cancellationToken);
 
             if (comment is null)
             {
                 return CommentErrors.NotFound;
             }
 
-            var idResult = _authService.GetAuthenticatedUserId();
+            var user = userResult.Value;
 
-            if (idResult.IsFailure)
-            {
-                return idResult.Error;
-            }
-
-            var id = idResult.Value;
-
-            if (comment.User.Id.Value != id)
+            if (IsNotAllowedAllowedToUpdate(comment, user))
             {
                 return CommentErrors.NotAllowedToModify;
             }
@@ -71,6 +71,23 @@ namespace TraffiLearn.Application.Commands.Comments.UpdateComment
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
+        }
+
+        private async Task<Comment?> GetComment(
+            CommentId commentId, 
+            CancellationToken cancellationToken = default)
+        {
+            return await _commentRepository.GetByIdAsync(
+                            commentId,
+                            cancellationToken,
+                            includeExpressions: comment => comment.User);
+        }
+
+        private bool IsNotAllowedAllowedToUpdate(
+            Comment comment,
+            User user)
+        {
+            return comment.User.Id.Value != user.Id.Value;
         }
     }
 }

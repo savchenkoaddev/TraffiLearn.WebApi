@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Domain.Errors.Questions;
 using TraffiLearn.Domain.Errors.Topics;
 using TraffiLearn.Domain.RepositoryContracts;
@@ -13,15 +14,18 @@ namespace TraffiLearn.Application.Commands.Topics.AddQuestionToTopic
     {
         private readonly IQuestionRepository _questionRepository;
         private readonly ITopicRepository _topicRepository;
+        private readonly IUserManagementService _userManagementService;
         private readonly IUnitOfWork _unitOfWork;
 
         public AddQuestionToTopicCommandHandler(
             IQuestionRepository questionRepository,
             ITopicRepository topicRepository,
+            IUserManagementService userManagementService,
             IUnitOfWork unitOfWork)
         {
             _questionRepository = questionRepository;
             _topicRepository = topicRepository;
+            _userManagementService = userManagementService;
             _unitOfWork = unitOfWork;
         }
 
@@ -29,6 +33,14 @@ namespace TraffiLearn.Application.Commands.Topics.AddQuestionToTopic
             AddQuestionToTopicCommand request, 
             CancellationToken cancellationToken)
         {
+            var authorizationResult = await _userManagementService.EnsureCallerCanModifyDomainObjects(
+                cancellationToken);
+
+            if (authorizationResult.IsFailure)
+            {
+                return authorizationResult.Error;
+            }
+
             var question = await _questionRepository.GetByIdAsync(
                 questionId: new QuestionId(request.QuestionId.Value),
                 cancellationToken,

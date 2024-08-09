@@ -28,16 +28,16 @@ namespace TraffiLearn.Application.Queries.Comments.GetCommentReplies
             CancellationToken cancellationToken)
         {
             var comment = await _commentRepository
-                .GetByIdWithRepliesTwoLevelsDeepAsync(
+                .GetByIdWithRepliesWithUsersTwoLevelsDeepAsync(
                     commentId: new CommentId(request.CommentId.Value),
-                    cancellationToken,
-                    includeExpressions: comment => comment.User);
+                    cancellationToken);
 
             if (comment is null)
             {
                 return Result.Failure<IEnumerable<CommentResponse>>(
                     CommentErrors.NotFound);
             }
+
 
             return Result.Success(_commentMapper.Map(comment.Replies));
         }

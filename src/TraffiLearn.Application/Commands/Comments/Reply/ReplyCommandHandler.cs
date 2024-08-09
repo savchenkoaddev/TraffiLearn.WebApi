@@ -1,14 +1,12 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Application.Identity;
+using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Comments;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Comments;
-using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Commands.Comments.Reply
 {
@@ -16,20 +14,20 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
     {
         private readonly ICommentRepository _commentRepository;
         private readonly IUserRepository _userRepository;
-        private readonly IAuthService<ApplicationUser> _authService;
+        private readonly IUserManagementService _userManagementService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<ReplyCommandHandler> _logger;
 
         public ReplyCommandHandler(
             ICommentRepository commentRepository,
             IUserRepository userRepository,
-            IAuthService<ApplicationUser> authService,
+            IUserManagementService userManagementService,
             IUnitOfWork unitOfWork,
             ILogger<ReplyCommandHandler> logger)
         {
             _commentRepository = commentRepository;
             _userRepository = userRepository;
-            _authService = authService;
+            _userManagementService = userManagementService;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
@@ -38,6 +36,14 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
             ReplyCommand request,
             CancellationToken cancellationToken)
         {
+            var userResult = await _userManagementService.GetAuthenticatedUserAsync(
+    cancellationToken);
+
+            if (userResult.IsFailure)
+            {
+                return userResult.Error;
+            }
+
             var comment = await _commentRepository.GetByIdAsync(
                 commentId: new CommentId(request.CommentId.Value),
                 cancellationToken,
@@ -48,25 +54,7 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
                 return CommentErrors.NotFound;
             }
 
-            Result<Email> emailResult = _authService.GetAuthenticatedUserEmail();
-
-            if (emailResult.IsFailure)
-            {
-                return emailResult.Error;
-            }
-
-            var email = emailResult.Value;
-
-            var user = await _userRepository.GetByEmailAsync(
-                email,
-                cancellationToken);
-
-            if (user is null)
-            {
-                _logger.LogError("User with the context provided email hasn't been found. Seems there's some issue with the data consistency.");
-
-                return Error.InternalFailure();
-            }
+            var user = userResult.Value;
 
             var commentContentResult = CommentContent.Create(request.Content);
 
@@ -115,6 +103,7 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
                 replyComment,
                 cancellationToken);
 
+            await _userRepository.UpdateAsync(user);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Replied to the comment succesfully.");

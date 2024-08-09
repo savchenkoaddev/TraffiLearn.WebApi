@@ -11,7 +11,7 @@ namespace TraffiLearn.Domain.RepositoryContracts
             CancellationToken cancellationToken = default,
             params Expression<Func<Comment, object>>[] includeExpressions);
 
-        Task<Comment?> GetByIdWithRepliesTwoLevelsDeepAsync(
+        Task<Comment?> GetByIdWithRepliesWithUsersTwoLevelsDeepAsync(
             CommentId commentId,
             CancellationToken cancellationToken = default,
             params Expression<Func<Comment, object>>[] includeExpressions);

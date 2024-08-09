@@ -41,7 +41,7 @@ namespace TraffiLearn.Domain.RepositoryContracts
             Email email,
             CancellationToken cancellationToken = default);
 
-        Task<IEnumerable<Comment>> GetUserCommentsWithRepliesAsync(
+        Task<User?> GetUserWithCommentsWithRepliesAsync(
             UserId userId,
             CancellationToken cancellationToken = default);
     }

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Tickets;
 using TraffiLearn.Domain.RepositoryContracts;
@@ -13,17 +14,20 @@ namespace TraffiLearn.Application.Commands.Tickets.Create
     {
         private readonly ITicketRepository _ticketRepository;
         private readonly IQuestionRepository _questionRepository;
+        private readonly IUserManagementService _userManagementService;
         private readonly Mapper<CreateTicketCommand, Result<Ticket>> _ticketMapper;
         private readonly IUnitOfWork _unitOfWork;
 
         public CreateTicketCommandHandler(
             ITicketRepository ticketRepository, 
             IQuestionRepository questionRepository,
+            IUserManagementService userManagementService,
             Mapper<CreateTicketCommand, Result<Ticket>> ticketMapper, 
             IUnitOfWork unitOfWork)
         {
             _ticketRepository = ticketRepository;
             _questionRepository = questionRepository;
+            _userManagementService = userManagementService;
             _ticketMapper = ticketMapper;
             _unitOfWork = unitOfWork;
         }
@@ -32,6 +36,14 @@ namespace TraffiLearn.Application.Commands.Tickets.Create
             CreateTicketCommand request, 
             CancellationToken cancellationToken)
         {
+            var authorizationResult = await _userManagementService.EnsureCallerCanModifyDomainObjects(
+                cancellationToken);
+
+            if (authorizationResult.IsFailure)
+            {
+                return authorizationResult.Error;
+            }
+
             var mappingResult = _ticketMapper.Map(request);
 
             if (mappingResult.IsFailure)

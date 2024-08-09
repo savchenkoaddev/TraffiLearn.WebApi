@@ -1,7 +1,12 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Abstractions.Identity;
+using TraffiLearn.Application.Options;
+using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Questions;
 using TraffiLearn.Domain.Errors.Topics;
+using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Questions;
@@ -13,15 +18,18 @@ namespace TraffiLearn.Application.Commands.Questions.AddTopicToQuestion
     {
         private readonly IQuestionRepository _questionRepository;
         private readonly ITopicRepository _topicRepository;
+        private readonly IUserManagementService _userManagementService;
         private readonly IUnitOfWork _unitOfWork;
 
         public AddTopicToQuestionCommandHandler(
             IQuestionRepository questionRepository,
             ITopicRepository topicRepository,
+            IUserManagementService userManagementService,
             IUnitOfWork unitOfWork)
         {
             _questionRepository = questionRepository;
             _topicRepository = topicRepository;
+            _userManagementService = userManagementService;
             _unitOfWork = unitOfWork;
         }
 
@@ -29,6 +37,14 @@ namespace TraffiLearn.Application.Commands.Questions.AddTopicToQuestion
             AddTopicToQuestionCommand request, 
             CancellationToken cancellationToken)
         {
+            var authorizationResult = await _userManagementService.EnsureCallerCanModifyDomainObjects(
+                cancellationToken);
+
+            if (authorizationResult.IsFailure)
+            {
+                return authorizationResult.Error;
+            }
+
             var topic = await _topicRepository.GetByIdAsync(
                 topicId: new TopicId(request.TopicId.Value), 
                 cancellationToken,
@@ -63,6 +79,8 @@ namespace TraffiLearn.Application.Commands.Questions.AddTopicToQuestion
                 return questionAddResult.Error;
             }
 
+            await _questionRepository.UpdateAsync(question);
+            await _topicRepository.UpdateAsync(topic);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();

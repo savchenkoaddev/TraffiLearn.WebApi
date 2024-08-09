@@ -6,12 +6,18 @@ namespace TraffiLearn.Application.Options
     {
         public const string SectionName = nameof(AuthSettings);
 
-        public Role MinimumAllowedRoleToCreateAdminAccounts { get; set; } = Role.Owner;
+        public Role MinAllowedRoleToCreateAdminAccounts { get; set; } = Role.Owner;
 
-        public Role MinimumAllowedRoleToRemoveAdminAccounts { get; set; } = Role.Owner;
+        public Role MinAllowedRoleToRemoveAdminAccounts { get; set; } = Role.Owner;
 
-        public Role MinimumAllowedRoleToDowngradeAccounts { get; set; } = Role.Owner;
+        public Role MinAllowedRoleToDowngradeAccounts { get; set; } = Role.Owner;
 
-        public Role MinimumRoleForDowngrade { get; set; } = Role.Admin;
+        public Role MinAllowedRoleToDeleteComments { get; set; } = Role.Admin;
+
+        public Role MinAllowedRoleToGetUserComments { get; set; } = Role.Admin;
+
+        public Role MinAllowedRoleToModifyDomainObjects { get; set; } = Role.Admin;
+
+        public Role MinRoleForDowngrade { get; set; } = Role.Admin;
     }
 }

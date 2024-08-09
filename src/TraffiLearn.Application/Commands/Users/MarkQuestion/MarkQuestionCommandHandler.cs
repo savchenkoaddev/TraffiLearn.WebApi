@@ -1,34 +1,32 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Application.Errors;
-using TraffiLearn.Application.Identity;
+using TraffiLearn.Application.Abstractions.Identity;
+using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Questions;
-using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Commands.Users.MarkQuestion
 {
     internal sealed class MarkQuestionCommandHandler
         : IRequestHandler<MarkQuestionCommand, Result>
     {
-        private readonly IAuthService<ApplicationUser> _authService;
+        private readonly IUserManagementService _userManagementService;
         private readonly IUserRepository _userRepository;
         private readonly IQuestionRepository _questionRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<MarkQuestionCommandHandler> _logger;
 
         public MarkQuestionCommandHandler(
-            IAuthService<ApplicationUser> authService,
+            IUserManagementService userManagementService,
             IUserRepository userRepository,
             IQuestionRepository questionRepository,
             IUnitOfWork unitOfWork,
             ILogger<MarkQuestionCommandHandler> logger)
         {
-            _authService = authService;
+            _userManagementService = userManagementService;
             _userRepository = userRepository;
             _questionRepository = questionRepository;
             _unitOfWork = unitOfWork;
@@ -39,11 +37,11 @@ namespace TraffiLearn.Application.Commands.Users.MarkQuestion
             MarkQuestionCommand request,
             CancellationToken cancellationToken)
         {
-            var userIdResult = _authService.GetAuthenticatedUserId();
+            var callerResult = await GetCallingUser(cancellationToken);
 
-            if (userIdResult.IsFailure)
+            if (callerResult.IsFailure)
             {
-                return userIdResult.Error;
+                return callerResult.Error;
             }
 
             var questionBeingMarked = await _questionRepository.GetByIdAsync(
@@ -55,31 +53,31 @@ namespace TraffiLearn.Application.Commands.Users.MarkQuestion
                 return UserErrors.QuestionNotFound;
             }
 
-            var user = await _userRepository.GetByIdAsync(
-                userId: new UserId(userIdResult.Value),
-                cancellationToken,
-                includeExpressions: user => user.MarkedQuestions);
+            var caller = callerResult.Value;
 
-            if (user is null)
-            {
-                _logger.LogCritical(InternalErrors.AuthenticatedUserNotFound.Description);
-
-                return InternalErrors.AuthenticatedUserNotFound;
-            }
-
-            var markResult = user.MarkQuestion(questionBeingMarked);
+            var markResult = caller.MarkQuestion(questionBeingMarked);
 
             if (markResult.IsFailure)
             {
                 return markResult.Error;
             }
 
-            await _userRepository.UpdateAsync(user);
+            await _userRepository.UpdateAsync(caller);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Succesfully marked question. User's username: {username}", user.Username.Value);
+            _logger.LogInformation("Succesfully marked question. User's username: {username}", caller.Username.Value);
 
             return Result.Success();
+        }
+
+        private async Task<Result<User>> GetCallingUser(
+            CancellationToken cancellationToken = default)
+        {
+            return await _userManagementService.GetAuthenticatedUserAsync(
+                cancellationToken,
+                includeExpressions: [
+                    user => user.MarkedQuestions
+                ]);
         }
     }
 }

@@ -114,7 +114,7 @@ namespace TraffiLearn.Infrastructure.Repositories
             return Task.CompletedTask;
         }
 
-        public Task<Comment?> GetByIdWithRepliesTwoLevelsDeepAsync(
+        public Task<Comment?> GetByIdWithRepliesWithUsersTwoLevelsDeepAsync(
             CommentId commentId,
             CancellationToken cancellationToken = default,
             params Expression<Func<Comment, object>>[] includeExpressions)
@@ -129,6 +129,8 @@ namespace TraffiLearn.Infrastructure.Repositories
             return query
                 .Include(c => c.Replies)
                 .ThenInclude(c => c.Replies)
+                .Include(c => c.Replies)
+                .ThenInclude(c => c.User)
                 .FirstOrDefaultAsync(
                     comment => comment.Id == commentId,
                     cancellationToken);

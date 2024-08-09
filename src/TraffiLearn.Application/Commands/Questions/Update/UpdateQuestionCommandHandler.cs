@@ -1,10 +1,14 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Abstractions.Storage;
+using TraffiLearn.Application.Options;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Questions;
 using TraffiLearn.Domain.Errors.Topics;
+using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Questions;
@@ -17,6 +21,7 @@ namespace TraffiLearn.Application.Commands.Questions.Update
         private readonly IQuestionRepository _questionRepository;
         private readonly ITopicRepository _topicRepository;
         private readonly IBlobService _blobService;
+        private readonly IUserManagementService _userManagementService;
         private readonly Mapper<UpdateQuestionCommand, Result<Question>> _commandMapper;
         private readonly IUnitOfWork _unitOfWork;
 
@@ -24,18 +29,28 @@ namespace TraffiLearn.Application.Commands.Questions.Update
             IQuestionRepository questionRepository,
             ITopicRepository topicRepository,
             IBlobService blobService,
+            IUserManagementService userManagementService,
             Mapper<UpdateQuestionCommand, Result<Question>> commandMapper,
             IUnitOfWork unitOfWork)
         {
             _questionRepository = questionRepository;
             _topicRepository = topicRepository;
             _blobService = blobService;
+            _userManagementService = userManagementService;
             _commandMapper = commandMapper;
             _unitOfWork = unitOfWork;
         }
 
         public async Task<Result> Handle(UpdateQuestionCommand request, CancellationToken cancellationToken)
         {
+            var authorizationResult = await _userManagementService.EnsureCallerCanModifyDomainObjects(
+                cancellationToken);
+
+            if (authorizationResult.IsFailure)
+            {
+                return authorizationResult.Error;
+            }
+
             var question = await _questionRepository.GetByIdAsync(
                 questionId: new QuestionId(request.QuestionId.Value),
                 cancellationToken,

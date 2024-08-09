@@ -1,71 +1,55 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Logging;
-using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Application.Commands.Users.LikeQuestion;
-using TraffiLearn.Application.Errors;
-using TraffiLearn.Application.Identity;
+using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Questions;
-using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Commands.Users.RemoveQuestionLike
 {
     internal sealed class RemoveQuestionLikeCommandHandler
         : IRequestHandler<RemoveQuestionLikeCommand, Result>
     {
-        private readonly IAuthService<ApplicationUser> _authService;
+        private readonly IUserManagementService _userManagementService;
         private readonly IQuestionRepository _questionRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<LikeQuestionCommandHandler> _logger;
 
         public RemoveQuestionLikeCommandHandler(
-            IAuthService<ApplicationUser> authService,
+            IUserManagementService userManagementService,
             IQuestionRepository questionRepository,
             IUserRepository userRepository,
-            IUnitOfWork unitOfWork,
-            ILogger<LikeQuestionCommandHandler> logger)
+            IUnitOfWork unitOfWork)
         {
-            _authService = authService;
+            _userManagementService = userManagementService;
             _questionRepository = questionRepository;
             _userRepository = userRepository;
             _unitOfWork = unitOfWork;
-            _logger = logger;
         }
 
         public async Task<Result> Handle(
             RemoveQuestionLikeCommand request,
             CancellationToken cancellationToken)
         {
-            var removerIdResult = _authService.GetAuthenticatedUserId();
+            var removerResult = await GetLikeRemover(cancellationToken);
 
-            if (removerIdResult.IsFailure)
+            if (removerResult.IsFailure)
             {
-                return removerIdResult.Error;
+                return removerResult.Error;
             }
 
             var question = await GetLikedQuestion(
-                likedQuestionId: new QuestionId(request.QuestionId.Value));
+                likedQuestionId: new QuestionId(request.QuestionId.Value),
+                cancellationToken);
 
             if (question is null)
             {
                 return UserErrors.QuestionNotFound;
             }
 
-            var remover = await GetLikeRemover(
-                removerId: new UserId(removerIdResult.Value),
-                cancellationToken);
-
-            if (remover is null)
-            {
-                _logger.LogCritical(InternalErrors.AuthenticatedUserNotFound.Description);
-
-                return InternalErrors.AuthenticatedUserNotFound;
-            }
+            var remover = removerResult.Value;
 
             var removeQuestionLikeResult = remover.RemoveQuestionLike(question);
 
@@ -81,21 +65,22 @@ namespace TraffiLearn.Application.Commands.Users.RemoveQuestionLike
                 return removeLikeResult.Error;
             }
 
+            await _questionRepository.UpdateAsync(question);
+            await _userRepository.UpdateAsync(remover);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
         }
 
-        private async Task<User?> GetLikeRemover(
-           UserId removerId,
-           CancellationToken cancellationToken = default)
+        private async Task<Result<User>> GetLikeRemover(
+            CancellationToken cancellationToken = default)
         {
-            return await _userRepository.GetByIdAsync(
-                removerId,
+            return await _userManagementService.GetAuthenticatedUserAsync(
                 cancellationToken,
-                includeExpressions:
-                    [user => user.LikedQuestions,
-                        user => user.DislikedQuestions]);
+                includeExpressions: [
+                    user => user.LikedQuestions,
+                    user => user.DislikedQuestions
+                ]);
         }
 
         private async Task<Question?> GetLikedQuestion(
@@ -105,9 +90,10 @@ namespace TraffiLearn.Application.Commands.Users.RemoveQuestionLike
             return await _questionRepository.GetByIdAsync(
                 likedQuestionId,
                 cancellationToken,
-                includeExpressions:
-                    [question => question.LikedByUsers,
-                        question => question.DislikedByUsers]);
+                includeExpressions: [
+                    question => question.LikedByUsers,
+                    question => question.DislikedByUsers
+                ]);
         }
     }
 }

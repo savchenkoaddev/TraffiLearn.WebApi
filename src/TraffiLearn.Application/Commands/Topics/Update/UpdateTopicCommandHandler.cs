@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Topics;
 using TraffiLearn.Domain.RepositoryContracts;
@@ -11,15 +12,18 @@ namespace TraffiLearn.Application.Commands.Topics.Update
     internal sealed class UpdateTopicCommandHandler : IRequestHandler<UpdateTopicCommand, Result>
     {
         private readonly ITopicRepository _topicRepository;
+        private readonly IUserManagementService _userManagementService;
         private readonly Mapper<UpdateTopicCommand, Result<Topic>> _commandMapper;
         private readonly IUnitOfWork _unitOfWork;
 
         public UpdateTopicCommandHandler(
             ITopicRepository topicRepository,
+            IUserManagementService userManagementService,
             Mapper<UpdateTopicCommand, Result<Topic>> commandMapper,
             IUnitOfWork unitOfWork)
         {
             _topicRepository = topicRepository;
+            _userManagementService = userManagementService;
             _commandMapper = commandMapper;
             _unitOfWork = unitOfWork;
         }
@@ -28,6 +32,14 @@ namespace TraffiLearn.Application.Commands.Topics.Update
             UpdateTopicCommand request,
             CancellationToken cancellationToken)
         {
+            var authorizationResult = await _userManagementService.EnsureCallerCanModifyDomainObjects(
+                cancellationToken);
+
+            if (authorizationResult.IsFailure)
+            {
+                return authorizationResult.Error;
+            }
+
             var topic = await _topicRepository.GetByIdAsync(
                 topicId: new TopicId(request.TopicId.Value), 
                 cancellationToken);
