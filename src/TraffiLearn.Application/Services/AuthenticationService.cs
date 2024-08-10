@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Errors;
-using TraffiLearn.Application.Options;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;

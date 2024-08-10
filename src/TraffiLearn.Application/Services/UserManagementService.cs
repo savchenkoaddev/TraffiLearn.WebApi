@@ -20,7 +20,7 @@ namespace TraffiLearn.Application.Services
     internal sealed class UserManagementService : IUserManagementService
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IdentityRoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IUserRepository _userRepository;
         private readonly Mapper<User, ApplicationUser> _userMapper;
@@ -30,7 +30,7 @@ namespace TraffiLearn.Application.Services
 
         public UserManagementService(
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager,
+            IdentityRoleManager<IdentityRole> roleManager,
             SignInManager<ApplicationUser> signInManager,
             IUserRepository userRepository,
             Mapper<User, ApplicationUser> userMapper,
@@ -228,7 +228,7 @@ namespace TraffiLearn.Application.Services
             CancellationToken cancellationToken = default,
             params Expression<Func<User, object>>[] includeExpressions)
         {
-            Result<Guid> userIdResult = GetAuthenticatedUserId();
+            var userIdResult = await GetAuthenticatedUserId();
 
             if (userIdResult.IsFailure)
             {
@@ -252,9 +252,41 @@ namespace TraffiLearn.Application.Services
             return user;
         }
 
-        private string GenerateErrorsString(IEnumerable<IdentityError> errors)
+        public async Task<Result<Guid>> GetAuthenticatedUserId()
         {
-            return string.Join(',', errors.Select(error => error.Description));
+            var userClaims = _signInManager.Context.User;
+
+            if (userClaims.Identity is null || !userClaims.Identity.IsAuthenticated)
+            {
+                _logger.LogError("User is not authenticated. Identity: {Identity}", userClaims.Identity);
+
+                return Result.Failure<Guid>(InternalErrors.AuthorizationFailure);
+            }
+
+            var idClaim = userClaims.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (idClaim is null)
+            {
+                var claimName = "id";
+                _logger.LogError("Claim missing. Claim name: {ClaimName}. User Claims: {UserClaims}", claimName, userClaims.Claims);
+
+                return Result.Failure<Guid>(InternalErrors.ClaimMissing(claimName));
+            }
+
+            var idString = idClaim.Value;
+
+            if (Guid.TryParse(idString, out Guid id))
+            {
+                _logger.LogInformation("Successfully parsed user ID. User ID: {UserId}", id);
+
+                return id;
+            }
+
+            _logger.LogError("Failed to parse ID to GUID. ID: {IdString}", idString);
+
+            await Task.CompletedTask;
+
+            return Result.Failure<Guid>(Error.InternalFailure());
         }
 
         private async Task<bool> UserExists(
@@ -267,36 +299,9 @@ namespace TraffiLearn.Application.Services
                 cancellationToken);
         }
 
-        private Result<Guid> GetAuthenticatedUserId()
+        private string GenerateErrorsString(IEnumerable<IdentityError> errors)
         {
-            var userAuthenticated = _signInManager.Context.User.Identity.IsAuthenticated;
-
-            if (!userAuthenticated)
-            {
-                _logger.LogError(InternalErrors.AuthorizationFailure.Description);
-
-                return Result.Failure<Guid>(InternalErrors.AuthorizationFailure);
-            }
-
-            var claimsId = _signInManager.Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-            if (claimsId is null)
-            {
-                var claimName = "id";
-
-                _logger.LogError(InternalErrors.ClaimMissing(claimName).Description);
-
-                return Result.Failure<Guid>(InternalErrors.ClaimMissing(claimName));
-            }
-
-            if (Guid.TryParse(claimsId, out Guid id))
-            {
-                return id;
-            }
-
-            _logger.LogError("Failed to parse id to GUID. The id: {id}", claimsId);
-
-            return Result.Failure<Guid>(Error.InternalFailure());
+            return string.Join(',', errors.Select(error => error.Description));
         }
     }
 }
