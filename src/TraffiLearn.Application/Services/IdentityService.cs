@@ -1,29 +1,76 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Identity;
-using TraffiLearn.Application.Identity;
 
 namespace TraffiLearn.Application.Services
 {
-    public sealed class IdentityService : IIdentityService<ApplicationUser>
+    public sealed class IdentityService<TIdentityUser> : IIdentityService<TIdentityUser>
+        where TIdentityUser : class
     {
-        public Task CreateAsync(ApplicationUser identityUser)
+        private readonly UserManager<TIdentityUser> _userManager;
+
+        public IdentityService(UserManager<TIdentityUser> userManager)
         {
-            throw new NotImplementedException();
+            _userManager = userManager;
         }
 
-        public Task DeleteAsync(ApplicationUser identityUser)
+        public async Task CreateAsync(
+            TIdentityUser identityUser,
+            string password)
         {
-            throw new NotImplementedException();
+            ArgumentNullException.ThrowIfNull(identityUser, nameof(identityUser));
+            ArgumentException.ThrowIfNullOrWhiteSpace(password, nameof(password));
+
+            var result = await _userManager.CreateAsync(identityUser, password);
+
+            HandleIdentityResult(result, "Failed to create identity user.");
         }
 
-        public Task AddToRoleAsync(ApplicationUser user, string roleName)
+        public async Task DeleteAsync(TIdentityUser identityUser)
         {
-            throw new NotImplementedException();
+            ArgumentNullException.ThrowIfNull(identityUser, nameof(identityUser));
+
+            var result = await _userManager.DeleteAsync(identityUser);
+
+            HandleIdentityResult(result, "Failed to delete identity user.");
         }
 
-        public Task RemoveFromRoleAsync(ApplicationUser user, string roleName)
+        public async Task AddToRoleAsync(
+            TIdentityUser identityUser,
+            string roleName)
         {
-            throw new NotImplementedException();
+            ArgumentNullException.ThrowIfNull(identityUser, nameof(identityUser));
+            ArgumentException.ThrowIfNullOrWhiteSpace(roleName, nameof(roleName));
+
+            var result = await _userManager.AddToRoleAsync(identityUser, roleName);
+
+
+            HandleIdentityResult(result, "Failed to add identity user to role.");
+        }
+
+        public async Task RemoveFromRoleAsync(
+            TIdentityUser identityUser,
+            string roleName)
+        {
+            ArgumentNullException.ThrowIfNull(identityUser, nameof(identityUser));
+            ArgumentException.ThrowIfNullOrWhiteSpace(roleName, nameof(roleName));
+
+            var result = await _userManager.RemoveFromRoleAsync(identityUser, roleName);
+
+            HandleIdentityResult(result, "Failed to remove identity user from role.");
+        }
+
+        private void HandleIdentityResult(IdentityResult result, string errorMessage)
+        {
+            if (result.Succeeded)
+            {
+                return;
+            }
+
+            var errors = result.Errors.Select(x => x.Description);
+            var errorsString = string.Join(Environment.NewLine, errors);
+
+            throw new InvalidOperationException($"{errorMessage}\r\nErrors: {errorsString}");
         }
     }
 }

@@ -2,7 +2,7 @@
 {
     public interface IIdentityService<TIdentityUser>
     {
-        Task CreateAsync(TIdentityUser identityUser);
+        Task CreateAsync(TIdentityUser identityUser, string password);
 
         Task DeleteAsync(TIdentityUser identityUser);
 
