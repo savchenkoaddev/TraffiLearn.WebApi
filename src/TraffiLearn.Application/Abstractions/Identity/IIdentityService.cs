@@ -6,8 +6,8 @@
 
         Task DeleteAsync(TIdentityUser identityUser);
 
-        Task AddToRoleAsync(TIdentityUser user, string roleName);
+        Task AddToRoleAsync(TIdentityUser identityUser, string roleName);
 
-        Task RemoveFromRoleAsync(TIdentityUser user, string roleName);
+        Task RemoveFromRoleAsync(TIdentityUser identityUser, string roleName);
     }
 }

@@ -20,7 +20,7 @@ namespace TraffiLearn.Application.Services
     internal sealed class UserManagementService : IUserManagementService
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IdentityRoleManager<IdentityRole> _roleManager;
+        private readonly RoleService<IdentityRole> _roleManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IUserRepository _userRepository;
         private readonly Mapper<User, ApplicationUser> _userMapper;
@@ -30,7 +30,7 @@ namespace TraffiLearn.Application.Services
 
         public UserManagementService(
             UserManager<ApplicationUser> userManager,
-            IdentityRoleManager<IdentityRole> roleManager,
+            RoleService<IdentityRole> roleManager,
             SignInManager<ApplicationUser> signInManager,
             IUserRepository userRepository,
             Mapper<User, ApplicationUser> userMapper,

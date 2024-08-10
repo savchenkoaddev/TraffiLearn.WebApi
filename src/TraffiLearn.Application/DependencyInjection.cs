@@ -28,6 +28,7 @@ using TraffiLearn.Application.Options;
 using TraffiLearn.Application.Services;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Shared;
+using Microsoft.AspNetCore.Identity;
 
 namespace TraffiLearn.Application
 {
@@ -52,8 +53,10 @@ namespace TraffiLearn.Application
 
         private static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            services.AddScoped<IAuthenticationService<ApplicationUser>, AuthenticationService<ApplicationUser>>();
-            services.AddScoped<IUserManagementService, UserManagementService>();
+            services.AddHttpContextAccessor();
+            services.AddScoped<IUserContextService<Guid>, UserContextService>();
+            services.AddScoped<IRoleService<IdentityRole>, RoleService<IdentityRole>>();
+            services.AddScoped<IIdentityService<ApplicationUser>, IdentityService<ApplicationUser>>();
 
             return services;
         }

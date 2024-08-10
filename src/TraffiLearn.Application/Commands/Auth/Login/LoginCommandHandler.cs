@@ -8,10 +8,10 @@ namespace TraffiLearn.Application.Commands.Auth.Login
 {
     internal sealed class LoginCommandHandler : IRequestHandler<LoginCommand, Result<LoginResponse>>
     {
-        private readonly IAuthenticationService<ApplicationUser> _authenticationService;
+        private readonly IUserContextService<ApplicationUser> _authenticationService;
 
         public LoginCommandHandler(
-            IAuthenticationService<ApplicationUser> authenticationService)
+            IUserContextService<ApplicationUser> authenticationService)
         {
             _authenticationService = authenticationService;
         }

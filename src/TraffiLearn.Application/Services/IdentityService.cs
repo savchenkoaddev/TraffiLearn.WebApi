@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Identity;
 
 namespace TraffiLearn.Application.Services

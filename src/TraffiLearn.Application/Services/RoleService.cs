@@ -3,12 +3,12 @@ using TraffiLearn.Application.Abstractions.Identity;
 
 namespace TraffiLearn.Application.Services
 {
-    public sealed class IdentityRoleManager<TRole> : IRoleManager<TRole>
+    public sealed class RoleService<TRole> : IRoleService<TRole>
         where TRole : class
     {
         private readonly RoleManager<TRole> _roleManager;
 
-        public IdentityRoleManager(RoleManager<TRole> roleManager)
+        public RoleService(RoleManager<TRole> roleManager)
         {
             _roleManager = roleManager;
         }

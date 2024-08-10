@@ -1,6 +1,6 @@
 ﻿namespace TraffiLearn.Application.Abstractions.Identity
 {
-    public interface IRoleManager<TRole>
+    public interface IRoleService<TRole>
     {
         Task CreateRole(TRole role);
 
