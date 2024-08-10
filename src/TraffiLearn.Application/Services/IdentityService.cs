@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using TraffiLearn.Application.Abstractions.Identity;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Services
 {
@@ -57,6 +58,13 @@ namespace TraffiLearn.Application.Services
             var result = await _userManager.RemoveFromRoleAsync(identityUser, roleName);
 
             HandleIdentityResult(result, "Failed to remove identity user from role.");
+        }
+
+        public async Task<TIdentityUser?> GetByEmailAsync(Email email)
+        {
+            ArgumentNullException.ThrowIfNull(email, nameof(email));
+
+            return await _userManager.FindByEmailAsync(email.Value);
         }
 
         private void HandleIdentityResult(IdentityResult result, string errorMessage)

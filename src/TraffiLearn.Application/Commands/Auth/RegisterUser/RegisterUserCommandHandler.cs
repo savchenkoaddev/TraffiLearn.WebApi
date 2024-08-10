@@ -1,7 +1,12 @@
 ﻿using MediatR;
-using TraffiLearn.Application.Abstractions.Identity;
+using Microsoft.Extensions.Logging;
+using System.Transactions;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Abstractions.Identity;
+using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.Errors.Users;
+using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Commands.Auth.RegisterUser
@@ -9,21 +14,35 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterUser
     internal sealed class RegisterUserCommandHandler
         : IRequestHandler<RegisterUserCommand, Result>
     {
-        private readonly IUserManagementService _userManagementService;
+        private readonly IUserRepository _userRepository;
+        private readonly IIdentityService<ApplicationUser> _identityService;
         private readonly Mapper<RegisterUserCommand, Result<User>> _commandMapper;
+        private readonly Mapper<User, ApplicationUser> _userMapper;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<RegisterUserCommandHandler> _logger;
 
         public RegisterUserCommandHandler(
-            IUserManagementService userManagementService,
-            Mapper<RegisterUserCommand, Result<User>> commandMapper)
+            IUserRepository userRepository,
+            IIdentityService<ApplicationUser> identityService,
+            Mapper<RegisterUserCommand, Result<User>> commandMapper,
+            Mapper<User, ApplicationUser> userMapper,
+            IUnitOfWork unitOfWork,
+            ILogger<RegisterUserCommandHandler> logger)
         {
-            _userManagementService = userManagementService;
+            _userRepository = userRepository;
+            _identityService = identityService;
             _commandMapper = commandMapper;
+            _userMapper = userMapper;
+            _unitOfWork = unitOfWork;
+            _logger = logger;
         }
 
         public async Task<Result> Handle(
             RegisterUserCommand request,
             CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Handling RegisterAdminCommand");
+
             var mappingResult = _commandMapper.Map(request);
 
             if (mappingResult.IsFailure)
@@ -33,15 +52,39 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterUser
 
             var newUser = mappingResult.Value;
 
-            var createResult = await _userManagementService.CreateUserAsync(
-                newUser,
-                password: request.Password,
+            var existsSameUser = await _userRepository.ExistsAsync(
+                newUser.Username,
+                newUser.Email,
                 cancellationToken);
 
-            if (createResult.IsFailure)
+            if (existsSameUser)
             {
-                return createResult.Error;
+                return UserErrors.AlreadyRegistered;
             }
+
+            var identityUser = _userMapper.Map(newUser);
+
+            using (var transaction = new TransactionScope(
+                TransactionScopeAsyncFlowOption.Enabled))
+            {
+                await _userRepository.AddAsync(newUser);
+
+                await _identityService.CreateAsync(
+                    identityUser,
+                    password: request.Password);
+
+                await _identityService.AddToRoleAsync(
+                    identityUser,
+                    roleName: newUser.Role.ToString());
+
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                transaction.Complete();
+            }
+
+            _logger.LogInformation(
+                "Succesfully registered a new user. Username: {username}",
+                newUser.Username.Value);
 
             return Result.Success();
         }

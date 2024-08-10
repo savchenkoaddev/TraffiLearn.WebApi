@@ -1,38 +1,77 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.DTO.Auth;
+using TraffiLearn.Application.Errors;
 using TraffiLearn.Application.Identity;
+using TraffiLearn.Domain.Errors.Users;
+using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Commands.Auth.Login
 {
     internal sealed class LoginCommandHandler : IRequestHandler<LoginCommand, Result<LoginResponse>>
     {
-        private readonly IUserContextService<ApplicationUser> _authenticationService;
+        private readonly IIdentityService<ApplicationUser> _identityService;
+        private readonly IUserRepository _userRepository;
+        private readonly ITokenService _tokenService;
+        private readonly ILogger<LoginCommandHandler> _logger;
 
         public LoginCommandHandler(
-            IUserContextService<ApplicationUser> authenticationService)
+            IIdentityService<ApplicationUser> identityService,
+            IUserRepository userRepository,
+            ITokenService tokenService,
+            ILogger<LoginCommandHandler> logger)
         {
-            _authenticationService = authenticationService;
+            _identityService = identityService;
+            _userRepository = userRepository;
+            _tokenService = tokenService;
+            _logger = logger;
         }
 
         public async Task<Result<LoginResponse>> Handle(
             LoginCommand request,
             CancellationToken cancellationToken)
         {
-            var loginResult = await _authenticationService.LoginAsync(
-                email: request.Email,
-                password: request.Password,
-                cancellationToken);
+            _logger.LogInformation("Handling LoginCommand for email: {Email}", request.Email);
 
-            if (loginResult.IsFailure)
+            var emailResult = Email.Create(request.Email);
+
+            if (emailResult.IsFailure)
             {
-                return Result.Failure<LoginResponse>(loginResult.Error);
+                _logger.LogWarning("Invalid email format: {Email}", request.Email);
+                return Result.Failure<LoginResponse>(emailResult.Error);
             }
 
-            var response = new LoginResponse(loginResult.Value);
+            var email = emailResult.Value;
 
-            return Result.Success(response);
+            var identityUser = await _identityService.GetByEmailAsync(email);
+            if (identityUser is null)
+            {
+                _logger.LogWarning("User not found in identity service for email: {Email}", email);
+
+                return Result.Failure<LoginResponse>(UserErrors.InvalidCredentials);
+            }
+
+            _logger.LogInformation("User found in identity service for email: {Email}", email);
+
+            var user = await _userRepository.GetByEmailAsync(email, cancellationToken);
+
+            if (user is null)
+            {
+                _logger.LogCritical("User not found in repository for email: {Email}. Critical data consistency issue.", email);
+
+                return Result.Failure<LoginResponse>(InternalErrors.DataConsistencyError);
+            }
+
+            _logger.LogInformation("User retrieved from repository for email: {Email}", email);
+
+            var accessToken = _tokenService.GenerateAccessToken(user);
+
+            _logger.LogInformation("Successfully generated access token for user: {UserId}", user.Id);
+
+            return new LoginResponse(accessToken);
         }
     }
 }

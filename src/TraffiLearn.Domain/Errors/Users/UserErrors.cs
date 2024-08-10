@@ -23,7 +23,7 @@ namespace TraffiLearn.Domain.Errors.Users
         public static readonly Error RemovedAccountIsNotAdminAccount =
            Error.Validation(
                code: "User.RemovedAccountIsNotAdminAccount",
-               description: "Unable to remove admin account, because the account is not an admin's one.");
+               description: "Unable to remove the admin account, because the account is not an admin's one.");
 
         public static readonly Error AccountCannotBeDowngraded =
            Error.Validation(
