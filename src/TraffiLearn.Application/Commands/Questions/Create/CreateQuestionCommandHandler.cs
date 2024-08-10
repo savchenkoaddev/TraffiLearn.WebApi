@@ -1,13 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Abstractions.Storage;
-using TraffiLearn.Application.Options;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Topics;
-using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Questions;

@@ -1,30 +1,25 @@
-﻿using System.Linq.Expressions;
-using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.Enums;
+﻿using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Abstractions.Identity
 {
     public interface IUserManagementService
     {
-        Task<Result> EnsureCallerCanModifyDomainObjects(
-            CancellationToken cancellationToken = default);
-
         Task<Result> CreateUserAsync(
             User user,
             string password,
             CancellationToken cancellationToken = default);
 
         Task<Result> DeleteUserAsync(
-            User user,
+            UserId userId,
             CancellationToken cancellationToken = default);
 
-        Task<Result> UpdateIdentityUserRoleAsync(
+        Task<Result> UpdateUserRoleAsync(
             User user,
             CancellationToken cancellationToken = default);
 
         Task<Result<User>> GetAuthenticatedUserAsync(
-            CancellationToken cancellationToken = default,
-            params Expression<Func<User, object>>[] includeExpressions);
+            CancellationToken cancellationToken = default);
     }
 }

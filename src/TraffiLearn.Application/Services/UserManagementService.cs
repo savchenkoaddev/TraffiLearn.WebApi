@@ -203,7 +203,8 @@ namespace TraffiLearn.Application.Services
             return Result.Success();
         }
 
-        public async Task<Result> EnsureCallerCanModifyDomainObjects(
+        public async Task<Result> EnsureUserCanPerformAction(
+            Predicate<User> predicate,
             CancellationToken cancellationToken = default)
         {
             var authorizationResult = await GetAuthenticatedUserAsync(cancellationToken);
@@ -215,7 +216,7 @@ namespace TraffiLearn.Application.Services
 
             var caller = authorizationResult.Value;
 
-            if (caller.Role < _authSettings.MinAllowedRoleToModifyDomainObjects)
+            if (predicate(caller))
             {
                 return UserErrors.NotAllowedToPerformAction;
             }
