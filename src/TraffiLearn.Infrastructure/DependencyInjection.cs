@@ -14,6 +14,7 @@ using TraffiLearn.Infrastructure.External;
 using TraffiLearn.Infrastructure.Helpers;
 using TraffiLearn.Infrastructure.Options;
 using TraffiLearn.Infrastructure.Repositories;
+using TraffiLearn.Infrastructure.Services;
 
 namespace TraffiLearn.Infrastructure
 {
@@ -28,9 +29,20 @@ namespace TraffiLearn.Infrastructure
             services.AddAuthenticationServices();
             services.AddExternalServices();
 
+            services.AddInfrastructureServices();
+
             services.AddPersistence();
             SeedRoles(services).Wait();
             services.AddRepositories();
+
+            return services;
+        }
+
+        private static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
+        {
+            services.AddScoped<IUserContextService<Guid>, UserContextService>();
+            services.AddScoped<IRoleService<IdentityRole>, RoleService<IdentityRole>>();
+            services.AddScoped<IIdentityService<ApplicationUser>, IdentityService<ApplicationUser>>();
 
             return services;
         }
@@ -39,8 +51,8 @@ namespace TraffiLearn.Infrastructure
         {
             using (var sp = services.BuildServiceProvider())
             {
-                var roleManager = sp.GetRequiredService<RoleManager<IdentityRole>>();
-                await RoleSeeder.SeedRolesAsync(roleManager);
+                var roleService = sp.GetRequiredService<RoleService<IdentityRole>>();
+                await RoleSeeder.SeedRolesAsync(roleService);
             }
         }
 

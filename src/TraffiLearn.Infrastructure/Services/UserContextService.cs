@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using TraffiLearn.Application.Abstractions.Identity;
 
-namespace TraffiLearn.Application.Services
+namespace TraffiLearn.Infrastructure.Services
 {
     internal sealed class UserContextService : IUserContextService<Guid>
     {

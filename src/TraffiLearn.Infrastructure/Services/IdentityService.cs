@@ -2,7 +2,7 @@
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Domain.ValueObjects.Users;
 
-namespace TraffiLearn.Application.Services
+namespace TraffiLearn.Infrastructure.Services
 {
     public sealed class IdentityService<TIdentityUser> : IIdentityService<TIdentityUser>
         where TIdentityUser : class

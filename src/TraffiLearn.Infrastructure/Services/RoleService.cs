@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using TraffiLearn.Application.Abstractions.Identity;
 
-namespace TraffiLearn.Application.Services
+namespace TraffiLearn.Infrastructure.Services
 {
     public sealed class RoleService<TRole> : IRoleService<TRole>
         where TRole : class
@@ -13,7 +13,7 @@ namespace TraffiLearn.Application.Services
             _roleManager = roleManager;
         }
 
-        public async Task CreateRole(TRole role)
+        public async Task CreateAsync(TRole role)
         {
             var result = await _roleManager.CreateAsync(role);
 
@@ -27,7 +27,7 @@ namespace TraffiLearn.Application.Services
             }
         }
 
-        public async Task<bool> RoleExists(string roleName)
+        public async Task<bool> ExistsAsync(string roleName)
         {
             return await _roleManager.RoleExistsAsync(roleName);
         }

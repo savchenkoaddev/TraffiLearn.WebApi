@@ -2,13 +2,16 @@
 using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
+using TraffiLearn.Application.Errors;
 using TraffiLearn.Application.Options;
+using TraffiLearn.Application.Services;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Comments;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Comments;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Commands.Comments.DeleteComment
 {
@@ -16,6 +19,7 @@ namespace TraffiLearn.Application.Commands.Comments.DeleteComment
         : IRequestHandler<DeleteCommentCommand, Result>
     {
         private readonly ICommentRepository _commentRepository;
+        private readonly IUserContextService
         private readonly IUserManagementService _userManagementService;
         private readonly AuthSettings _authSettings;
         private readonly IUnitOfWork _unitOfWork;
@@ -36,6 +40,21 @@ namespace TraffiLearn.Application.Commands.Comments.DeleteComment
             DeleteCommentCommand request,
             CancellationToken cancellationToken)
         {
+            var callerId = _userContextService.FetchAuthenticatedUserId();
+
+            _logger.LogInformation("Succesfully fetched caller id. Caller ID: {CallerId}", callerId);
+
+            var caller = await _userRepository.GetByIdAsync(
+                new UserId(callerId),
+                cancellationToken);
+
+            if (caller is null)
+            {
+                _logger.LogCritical(InternalErrors.AuthorizationFailure.Description);
+
+                return InternalErrors.AuthorizationFailure;
+            }
+
             var userResult = await _userManagementService.GetAuthenticatedUserAsync(
                 cancellationToken);
 

@@ -41,12 +41,14 @@ namespace TraffiLearn.Application.Commands.Auth.Login
             if (emailResult.IsFailure)
             {
                 _logger.LogWarning("Invalid email format: {Email}", request.Email);
+
                 return Result.Failure<LoginResponse>(emailResult.Error);
             }
 
             var email = emailResult.Value;
 
             var identityUser = await _identityService.GetByEmailAsync(email);
+
             if (identityUser is null)
             {
                 _logger.LogWarning("User not found in identity service for email: {Email}", email);

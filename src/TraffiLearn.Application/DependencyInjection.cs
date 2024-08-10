@@ -54,9 +54,6 @@ namespace TraffiLearn.Application
         private static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddHttpContextAccessor();
-            services.AddScoped<IUserContextService<Guid>, UserContextService>();
-            services.AddScoped<IRoleService<IdentityRole>, RoleService<IdentityRole>>();
-            services.AddScoped<IIdentityService<ApplicationUser>, IdentityService<ApplicationUser>>();
 
             return services;
         }

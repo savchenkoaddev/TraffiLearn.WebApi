@@ -2,8 +2,8 @@
 {
     public interface IRoleService<TRole>
     {
-        Task CreateRole(TRole role);
+        Task CreateAsync(TRole role);
 
-        Task<bool> RoleExists(string roleName);
+        Task<bool> ExistsAsync(string roleName);
     }
 }

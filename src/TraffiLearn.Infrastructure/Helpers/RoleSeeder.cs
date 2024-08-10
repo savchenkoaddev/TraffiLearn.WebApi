@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Domain.Enums;
 
 namespace TraffiLearn.Infrastructure.Helpers
 {
     public static class RoleSeeder
     {
-        public static async Task SeedRolesAsync(RoleManager<IdentityRole> roleManager)
+        public static async Task SeedRolesAsync(IRoleService<IdentityRole> roleManager)
         {
             var roleNames = Enum.GetValues(typeof(Role))
                                 .Cast<Role>()
@@ -14,7 +15,7 @@ namespace TraffiLearn.Infrastructure.Helpers
 
             foreach (var roleName in roleNames)
             {
-                if (!await roleManager.RoleExistsAsync(roleName))
+                if (!await roleManager.ExistsAsync(roleName))
                 {
                     await roleManager.CreateAsync(new IdentityRole(roleName));
                 }
