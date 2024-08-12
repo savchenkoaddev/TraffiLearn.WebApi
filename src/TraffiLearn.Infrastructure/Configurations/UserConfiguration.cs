@@ -35,8 +35,7 @@ namespace TraffiLearn.Infrastructure.Configurations
 
             builder
                 .HasMany(user => user.Comments)
-                .WithOne(c => c.Creator)
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithOne(c => c.Creator);
 
             builder
                 .HasMany(user => user.MarkedQuestions)
@@ -52,6 +51,16 @@ namespace TraffiLearn.Infrastructure.Configurations
                 .HasMany(user => user.DislikedQuestions)
                 .WithMany(question => question.DislikedByUsers)
                 .UsingEntity(join => join.ToTable("QuestionsDislikedByUsers"));
+
+            builder
+                .HasMany(user => user.LikedComments)
+                .WithMany(comment => comment.LikedByUsers)
+                .UsingEntity(join => join.ToTable("CommentsLikedByUsers"));
+
+            builder
+                .HasMany(user => user.DislikedComments)
+                .WithMany(comment => comment.DislikedByUsers)
+                .UsingEntity(join => join.ToTable("CommentsDislikedByUsers"));
         }
     }
 }

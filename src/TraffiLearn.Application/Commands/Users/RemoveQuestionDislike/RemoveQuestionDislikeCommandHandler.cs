@@ -46,7 +46,7 @@ namespace TraffiLearn.Application.Commands.Users.RemoveQuestionDislike
 
             if (caller is null)
             {
-                throw new InvalidOperationException("Authenticated user not found.");
+                throw new InvalidOperationException("Authenticated user is not found.");
             }
 
             var dislikedQuestion = await GetDislikedQuestion(

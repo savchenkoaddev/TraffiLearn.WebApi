@@ -12,6 +12,8 @@ namespace TraffiLearn.Domain.Entities
         private readonly HashSet<Question> _markedQuestions = [];
         private readonly HashSet<Question> _likedQuestions = [];
         private readonly HashSet<Question> _dislikedQuestions = [];
+        private readonly HashSet<Comment> _likedComments = [];
+        private readonly HashSet<Comment> _dislikedComments = [];
 
         private User()
             : base(new(Guid.Empty))
@@ -41,6 +43,10 @@ namespace TraffiLearn.Domain.Entities
         public IReadOnlyCollection<Question> LikedQuestions => _likedQuestions;
 
         public IReadOnlyCollection<Question> DislikedQuestions => _dislikedQuestions;
+
+        public IReadOnlyCollection<Comment> LikedComments => _likedComments;
+
+        public IReadOnlyCollection<Comment> DislikedComments => _dislikedComments;
 
         public Result DowngradeRole()
         {
@@ -150,6 +156,64 @@ namespace TraffiLearn.Domain.Entities
             }
 
             _dislikedQuestions.Remove(question);
+
+            return Result.Success();
+        }
+
+        public Result LikeComment(Comment comment)
+        {
+            if (_likedComments.Contains(comment))
+            {
+                return UserErrors.CommentAlreadyLikedByUser;
+            }
+
+            if (_dislikedComments.Contains(comment))
+            {
+                return UserErrors.CantLikeCommentIfDisliked;
+            }
+
+            _likedComments.Add(comment);
+
+            return Result.Success();
+        }
+
+        public Result DislikeComment(Comment comment)
+        {
+            if (_dislikedComments.Contains(comment))
+            {
+                return UserErrors.CommentAlreadyDislikedByUser;
+            }
+
+            if (_likedComments.Contains(comment))
+            {
+                return UserErrors.CantDislikeCommentIfLiked;
+            }
+
+            _dislikedComments.Add(comment);
+
+            return Result.Success();
+        }
+
+        public Result RemoveCommentLike(Comment comment)
+        {
+            if (!_likedComments.Contains(comment))
+            {
+                return UserErrors.CommentNotLiked;
+            }
+
+            _likedComments.Remove(comment);
+
+            return Result.Success();
+        }
+
+        public Result RemoveCommentDislike(Comment comment)
+        {
+            if (!_dislikedComments.Contains(comment))
+            {
+                return UserErrors.CommentNotDisliked;
+            }
+
+            _dislikedComments.Remove(comment);
 
             return Result.Success();
         }
