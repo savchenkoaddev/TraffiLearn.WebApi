@@ -90,7 +90,7 @@ namespace TraffiLearn.Application.Commands.Auth.RemoveAdminAccount
 
             _logger.LogInformation(
                 "Succesfully removed the admin account. Username: {username}",
-                admin.Username);
+                admin.Username.Value);
 
             return Result.Success();
         }

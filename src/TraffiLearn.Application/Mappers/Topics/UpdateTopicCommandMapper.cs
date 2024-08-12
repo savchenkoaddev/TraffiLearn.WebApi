@@ -1,5 +1,4 @@
-﻿using MediatR;
-using TraffiLearn.Application.Abstractions.Data;
+﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Commands.Topics.Update;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Shared;

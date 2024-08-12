@@ -6,7 +6,7 @@ namespace TraffiLearn.Domain.Errors.Topics
     {
         public static Error TooSmall(int minValue) =>
             Error.Validation(
-                code: "TopicNumber.TooSmall", 
+                code: "TopicNumber.TooSmall",
                 description: $"Topic number must be greater or equal to {minValue}");
     }
 }

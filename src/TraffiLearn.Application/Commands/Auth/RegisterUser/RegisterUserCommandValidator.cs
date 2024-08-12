@@ -1,10 +1,9 @@
 ﻿using FluentValidation;
-using TraffiLearn.Application.CustomValidators;
 using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Commands.Auth.RegisterUser
 {
-    internal sealed class RegisterUserCommandValidator 
+    internal sealed class RegisterUserCommandValidator
         : AbstractValidator<RegisterUserCommand>
     {
         public RegisterUserCommandValidator()

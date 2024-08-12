@@ -18,7 +18,7 @@ namespace TraffiLearn.Infrastructure.Configurations
                 .HasConversion(
                     username => username.Value,
                     value => Username.Create(value).Value);
-            
+
             builder.Property(user => user.Email)
                 .HasMaxLength(Email.MaxLength)
                 .HasConversion(

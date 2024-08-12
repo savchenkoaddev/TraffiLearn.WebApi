@@ -2,7 +2,7 @@
 {
     public sealed class DataInconsistencyException : Exception
     {
-        public DataInconsistencyException() 
+        public DataInconsistencyException()
             : base("Critical data inconsistency failure detected. " +
                    "The state of the data does not match the expected integrity constraints.")
         { }

@@ -1,5 +1,4 @@
-﻿using TraffiLearn.Domain.Enums;
-using TraffiLearn.Domain.Shared;
+﻿using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Domain.Errors.Users
 {
@@ -19,7 +18,7 @@ namespace TraffiLearn.Domain.Errors.Users
            Error.Unauthorized(
                code: "User.NotAllowedToPerformAction",
                description: "You are not allowed to perform this action.");
-        
+
         public static readonly Error RemovedAccountIsNotAdminAccount =
            Error.Validation(
                code: "User.RemovedAccountIsNotAdminAccount",

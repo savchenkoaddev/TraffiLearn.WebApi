@@ -2,7 +2,7 @@
 
 namespace TraffiLearn.Application.Queries.Tickets.GetTicketQuestions
 {
-    internal sealed class GetTicketQuestionsQueryValidator 
+    internal sealed class GetTicketQuestionsQueryValidator
         : AbstractValidator<GetTicketQuestionsQuery>
     {
         public GetTicketQuestionsQueryValidator()

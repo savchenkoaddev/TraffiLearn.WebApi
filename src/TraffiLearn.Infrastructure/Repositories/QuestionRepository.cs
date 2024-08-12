@@ -21,7 +21,7 @@ namespace TraffiLearn.Infrastructure.Repositories
             CancellationToken cancellationToken = default)
         {
             await _dbContext.Questions.AddAsync(
-                question, 
+                question,
                 cancellationToken);
         }
 
@@ -35,7 +35,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<Question>> GetAllAsync(
-            Expression<Func<Question, object>>? orderByExpression = null, 
+            Expression<Func<Question, object>>? orderByExpression = null,
             CancellationToken cancellationToken = default,
             params Expression<Func<Question, object>>[] includeExpressions)
         {
@@ -56,7 +56,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<Question>> GetRandomRecordsAsync(
-            int amount, 
+            int amount,
             Expression<Func<Question, object>>? orderByExpression = null,
             CancellationToken cancellationToken = default,
             params Expression<Func<Question, object>>[] includeExpressions)
@@ -112,8 +112,8 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<Question?> GetByIdAsync(
-            QuestionId questionId, 
-            CancellationToken cancellationToken = default, 
+            QuestionId questionId,
+            CancellationToken cancellationToken = default,
             params Expression<Func<Question, object>>[] includeExpressions)
         {
             var query = _dbContext.Questions.AsQueryable();
@@ -130,7 +130,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<Comment>> GetQuestionCommentsWithRepliesAsync(
-            QuestionId questionId, 
+            QuestionId questionId,
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Comments

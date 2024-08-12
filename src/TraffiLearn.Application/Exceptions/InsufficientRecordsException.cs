@@ -2,7 +2,7 @@
 {
     public sealed class InsufficientRecordsException : Exception
     {
-        public InsufficientRecordsException() 
+        public InsufficientRecordsException()
             : base($"Unable to perform action due to records insufficiency in the storage.")
         { }
 

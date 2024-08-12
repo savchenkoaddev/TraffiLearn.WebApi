@@ -3,7 +3,7 @@
     public enum Role
     {
         RegularUser,
-        Admin, 
+        Admin,
         Owner
     }
 }

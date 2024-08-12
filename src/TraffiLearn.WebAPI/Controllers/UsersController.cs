@@ -66,7 +66,7 @@ namespace TraffiLearn.WebAPI.Controllers
         #region Commands
 
 
-        [HasPermission(Permission.DowngradeAccount)]
+        [HasPermission(Permission.DowngradeAccounts)]
         [HttpPut("{userId:guid}/downgrade")]
         public async Task<IActionResult> DowngradeAccount(Guid userId)
         {

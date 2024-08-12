@@ -4,10 +4,10 @@ using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Behaviors
 {
-    internal sealed class ValidationPipelineBehavior<TRequest, TResponse> 
+    internal sealed class ValidationPipelineBehavior<TRequest, TResponse>
         : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
-        where TResponse: Result
+        where TResponse : Result
     {
         private readonly IEnumerable<IValidator<TRequest>> _validators;
 
@@ -17,8 +17,8 @@ namespace TraffiLearn.Application.Behaviors
         }
 
         public async Task<TResponse> Handle(
-            TRequest request, 
-            RequestHandlerDelegate<TResponse> next, 
+            TRequest request,
+            RequestHandlerDelegate<TResponse> next,
             CancellationToken cancellationToken)
         {
             if (!_validators.Any())
@@ -64,7 +64,7 @@ namespace TraffiLearn.Application.Behaviors
                 .GetMethod(nameof(ValidationResult.WithErrors))!
                 .Invoke(null, [errors])!;
 
-            return (TResult) validationResult;
+            return (TResult)validationResult;
         }
     }
 }

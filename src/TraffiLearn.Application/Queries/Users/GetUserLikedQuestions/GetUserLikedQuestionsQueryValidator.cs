@@ -2,7 +2,7 @@
 
 namespace TraffiLearn.Application.Queries.Users.GetUserLikedQuestions
 {
-    internal sealed class GetUserLikedQuestionsQueryValidator 
+    internal sealed class GetUserLikedQuestionsQueryValidator
         : AbstractValidator<GetUserLikedQuestionsQuery>
     {
         public GetUserLikedQuestionsQueryValidator()

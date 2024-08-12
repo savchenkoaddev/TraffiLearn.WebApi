@@ -23,12 +23,12 @@ namespace TraffiLearn.Application.Queries.Topics.GetTopicQuestions
         }
 
         public async Task<Result<IEnumerable<QuestionResponse>>> Handle(
-            GetTopicQuestionsQuery request, 
+            GetTopicQuestionsQuery request,
             CancellationToken cancellationToken)
         {
             var topic = await _topicRepository.GetByIdAsync(
                 topicId: new TopicId(request.TopicId.Value),
-                cancellationToken, 
+                cancellationToken,
                 includeExpressions: topic => topic.Questions);
 
             if (topic is null)

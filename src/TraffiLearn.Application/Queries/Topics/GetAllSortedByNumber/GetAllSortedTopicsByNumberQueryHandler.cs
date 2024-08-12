@@ -21,7 +21,7 @@ namespace TraffiLearn.Application.Queries.Topics.GetAllSortedByNumber
         }
 
         public async Task<Result<IEnumerable<TopicResponse>>> Handle(
-            GetAllSortedTopicsByNumberQuery request, 
+            GetAllSortedTopicsByNumberQuery request,
             CancellationToken cancellationToken)
         {
             var sortedTopics = await _topicRepository.GetAllAsync(

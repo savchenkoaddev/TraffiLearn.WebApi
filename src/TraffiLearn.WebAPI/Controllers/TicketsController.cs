@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TraffiLearn.Application.Commands.Tickets.AddQuestionToTicket;
 using TraffiLearn.Application.Commands.Tickets.Create;

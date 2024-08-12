@@ -14,7 +14,7 @@ namespace TraffiLearn.Application.Queries.Tickets.GetAll
         private readonly Mapper<Ticket, TicketResponse> _ticketMapper;
 
         public GetAllTicketsQueryHandler(
-            ITicketRepository ticketRepository, 
+            ITicketRepository ticketRepository,
             Mapper<Ticket, TicketResponse> ticketMapper)
         {
             _ticketRepository = ticketRepository;

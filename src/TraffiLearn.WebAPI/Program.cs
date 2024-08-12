@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using TraffiLearn.Application;
@@ -27,6 +26,7 @@ namespace TraffiLearn.WebAPI
             ConfigureAuthentication(
                 builder.Services,
                 builder.Configuration);
+
             ConfigureAuthorization(builder.Services);
 
             var app = builder.Build();
@@ -70,7 +70,7 @@ namespace TraffiLearn.WebAPI
                     });
 
                 options.AddPolicy(
-                    Permission.DowngradeAccount.ToString(),
+                    Permission.DowngradeAccounts.ToString(),
                     policy =>
                     {
                         policy.RequireRole(Role.Owner.ToString());
@@ -100,7 +100,7 @@ namespace TraffiLearn.WebAPI
         }
 
         private static void ConfigureAuthentication(
-            IServiceCollection services, 
+            IServiceCollection services,
             ConfigurationManager configuration)
         {
             var jwtSettings = configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>();

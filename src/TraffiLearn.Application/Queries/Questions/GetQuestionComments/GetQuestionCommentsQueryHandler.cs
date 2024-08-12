@@ -34,7 +34,7 @@ namespace TraffiLearn.Application.Queries.Questions.GetQuestionComments
                 questionId,
                 cancellationToken);
 
-            if (!questionExists) 
+            if (!questionExists)
             {
                 return Result.Failure<IEnumerable<CommentResponse>>(
                    QuestionErrors.NotFound);

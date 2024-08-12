@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using TraffiLearn.Application.CustomValidators;
 using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Commands.Auth.RegisterAdmin

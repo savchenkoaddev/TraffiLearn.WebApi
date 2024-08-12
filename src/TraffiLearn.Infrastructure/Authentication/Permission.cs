@@ -4,7 +4,7 @@
     {
         AccessSpecificUserData,
         AccessData,
-        DowngradeAccount,
+        DowngradeAccounts,
         RegisterAdmins,
         RemoveAdmins,
         ModifyData

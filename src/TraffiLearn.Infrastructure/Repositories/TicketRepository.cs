@@ -17,11 +17,11 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task AddAsync(
-            Ticket ticket, 
+            Ticket ticket,
             CancellationToken cancellationToken = default)
         {
             await _dbContext.Tickets.AddAsync(
-                ticket, 
+                ticket,
                 cancellationToken);
         }
 
@@ -33,7 +33,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<bool> ExistsAsync(
-            TicketId ticketId, 
+            TicketId ticketId,
             CancellationToken cancellationToken = default)
         {
             return (await _dbContext.Tickets.FindAsync(
@@ -42,8 +42,8 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<Ticket>> GetAllAsync(
-            Expression<Func<Ticket, object>>? orderByExpression = null, 
-            CancellationToken cancellationToken = default, 
+            Expression<Func<Ticket, object>>? orderByExpression = null,
+            CancellationToken cancellationToken = default,
             params Expression<Func<Ticket, object>>[] includeExpressions)
         {
             IQueryable<Ticket> tickets = _dbContext.Tickets;
@@ -63,8 +63,8 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<Ticket?> GetByIdAsync(
-            TicketId ticketId, 
-            CancellationToken cancellationToken = default, 
+            TicketId ticketId,
+            CancellationToken cancellationToken = default,
             params Expression<Func<Ticket, object>>[] includeExpressions)
         {
             var query = _dbContext.Tickets.AsQueryable();

@@ -3,7 +3,7 @@ using TraffiLearn.Domain.ValueObjects.Comments;
 
 namespace TraffiLearn.Application.Commands.Comments.Reply
 {
-    internal sealed class ReplyCommandValidator 
+    internal sealed class ReplyCommandValidator
         : AbstractValidator<ReplyCommand>
     {
         public ReplyCommandValidator()

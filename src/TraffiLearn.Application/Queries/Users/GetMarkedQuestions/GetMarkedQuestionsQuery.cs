@@ -4,6 +4,6 @@ using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Queries.Users.GetMarkedQuestions
 {
-    public sealed record GetMarkedQuestionsQuery 
+    public sealed record GetMarkedQuestionsQuery
         : IRequest<Result<IEnumerable<QuestionResponse>>>;
 }

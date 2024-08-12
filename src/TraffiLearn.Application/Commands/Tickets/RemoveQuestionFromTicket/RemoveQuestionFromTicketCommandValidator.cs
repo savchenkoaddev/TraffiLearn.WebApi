@@ -2,7 +2,7 @@
 
 namespace TraffiLearn.Application.Commands.Tickets.RemoveQuestionFromTicket
 {
-    internal sealed class RemoveQuestionFromTicketCommandValidator 
+    internal sealed class RemoveQuestionFromTicketCommandValidator
         : AbstractValidator<RemoveQuestionFromTicketCommand>
     {
         public RemoveQuestionFromTicketCommandValidator()

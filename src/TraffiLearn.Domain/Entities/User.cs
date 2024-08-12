@@ -31,7 +31,7 @@ namespace TraffiLearn.Domain.Entities
         public Email Email { get; private set; }
 
         public Username Username { get; private set; }
-        
+
         public Role Role { get; private set; }
 
         public IReadOnlyCollection<Comment> Comments => _comments;

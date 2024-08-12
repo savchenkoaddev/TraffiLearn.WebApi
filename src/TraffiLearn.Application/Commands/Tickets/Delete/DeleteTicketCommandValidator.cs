@@ -2,7 +2,7 @@
 
 namespace TraffiLearn.Application.Commands.Tickets.Delete
 {
-    internal sealed class DeleteTicketCommandValidator 
+    internal sealed class DeleteTicketCommandValidator
         : AbstractValidator<DeleteTicketCommand>
     {
         public DeleteTicketCommandValidator()

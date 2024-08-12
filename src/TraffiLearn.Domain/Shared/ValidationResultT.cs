@@ -2,9 +2,9 @@
 {
     public sealed class ValidationResult<TValue> : Result<TValue>, IValidationResult
     {
-        private ValidationResult(Error[] errors): base(
-            value: default, 
-            isSuccess: false, 
+        private ValidationResult(Error[] errors) : base(
+            value: default,
+            isSuccess: false,
             error: IValidationResult.ValidationError)
         {
             Errors = errors;
