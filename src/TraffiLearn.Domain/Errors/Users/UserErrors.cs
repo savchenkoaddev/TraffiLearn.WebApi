@@ -88,5 +88,35 @@ namespace TraffiLearn.Domain.Errors.Users
             Error.Validation(
                 code: "User.CantLikeQuestionIfDisliked",
                 description: "Unable to like the question, because the question has already been disliked.");
+
+        public static readonly Error CommentAlreadyLikedByUser =
+           Error.Validation(
+               code: "User.CommentAlreadyLikedByUser",
+               description: "The comment is already liked by the user.");
+
+        public static readonly Error CommentAlreadyDislikedByUser =
+            Error.Validation(
+                code: "User.CommentAlreadyDislikedByUser",
+                description: "The comment is already disliked by the user.");
+
+        public static readonly Error CommentNotLiked =
+            Error.Validation(
+                code: "User.CommentNotLiked",
+                description: "The comment is not liked by the user.");
+
+        public static readonly Error CommentNotDisliked =
+            Error.Validation(
+                code: "User.CommentNotDisliked",
+                description: "The comment is not disliked by the user.");
+
+        public static readonly Error CantDislikeCommentIfLiked =
+            Error.Validation(
+                code: "User.CantDislikeCommentIfLiked",
+                description: "Unable to dislike the comment, because the comment has already been liked.");
+
+        public static readonly Error CantLikeCommentIfDisliked =
+            Error.Validation(
+                code: "User.CantLikeCommentIfDisliked",
+                description: "Unable to like the comment, because the comment has already been disliked.");
     }
 }
