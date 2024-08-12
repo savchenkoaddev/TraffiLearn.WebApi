@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using System.Transactions;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
-using TraffiLearn.Application.Errors;
+using TraffiLearn.Application.Exceptions;
 using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Enums;
@@ -71,9 +71,9 @@ namespace TraffiLearn.Application.Commands.Auth.RemoveAdminAccount
 
             if (identityAdmin is null)
             {
-                _logger.LogCritical(InternalErrors.DataConsistencyError.Description);
+                _logger.LogCritical("Admin has not been found in identity storage, but has been found in repository. Critical data consistency issue.");
 
-                return InternalErrors.DataConsistencyError;
+                throw new DataInconsistencyException();
             }
 
             using (var transaction = new TransactionScope(

@@ -137,7 +137,7 @@ namespace TraffiLearn.Infrastructure.Repositories
                 .AsNoTracking()
                 .Where(c => c.Question.Id == questionId && c.RootComment == null)
                 .Include(q => q.Replies)
-                .Include(q => q.User)
+                .Include(q => q.Creator)
                 .ToListAsync(cancellationToken);
         }
     }

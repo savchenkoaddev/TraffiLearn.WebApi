@@ -35,7 +35,7 @@ namespace TraffiLearn.Infrastructure.Configurations
 
             builder
                 .HasMany(user => user.Comments)
-                .WithOne(c => c.User)
+                .WithOne(c => c.Creator)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder

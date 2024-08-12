@@ -75,7 +75,7 @@ namespace TraffiLearn.Application.Commands.Questions.AddComment
             var commentResult = Comment.Create(
                 commentId: new CommentId(Guid.NewGuid()),
                 contentResult.Value,
-                leftBy: caller,
+                creator: caller,
                 question);
 
             if (commentResult.IsFailure)

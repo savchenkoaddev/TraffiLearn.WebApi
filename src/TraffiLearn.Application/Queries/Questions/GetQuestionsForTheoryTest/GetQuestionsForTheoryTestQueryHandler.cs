@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.DTO.Questions;
-using TraffiLearn.Application.Errors;
+using TraffiLearn.Application.Exceptions;
 using TraffiLearn.Application.Options;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.RepositoryContracts;
@@ -42,9 +42,9 @@ namespace TraffiLearn.Application.Queries.Questions.GetQuestionsForTheoryTest
             if (NotEnoughQuestions(questions) &&
                 SufficientRecordsRequired())
             {
-                _logger.LogError(InternalErrors.NotEnoughRecords.Description);
-
-                return Result.Failure<IEnumerable<QuestionResponse>>(InternalErrors.NotEnoughRecords);
+                throw new InsufficientRecordsException(
+                    requiredRecords: neededQuestionsCount,
+                    availableRecords: questions.Count());
             }
 
             return Result.Success(_entityToResponseMapper.Map(questions));

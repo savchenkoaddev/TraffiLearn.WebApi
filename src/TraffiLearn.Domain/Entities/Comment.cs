@@ -16,17 +16,17 @@ namespace TraffiLearn.Domain.Entities
         private Comment(
             CommentId commentId,
             CommentContent commentContent,
-            User leftBy,
+            User creator,
             Question question) : base(commentId)
         {
             Content = commentContent;
-            User = leftBy;
+            Creator = creator;
             Question = question;
         }
 
         public CommentContent Content { get; private set; }
 
-        public User User { get; private set; }
+        public User Creator { get; private set; }
 
         public Question Question { get; private set; }
 
@@ -55,13 +55,13 @@ namespace TraffiLearn.Domain.Entities
         public static Result<Comment> Create(
             CommentId commentId,
             CommentContent content,
-            User leftBy,
+            User creator,
             Question question)
         {
             return new Comment(
                 commentId,
                 content,
-                leftBy,
+                creator,
                 question);
         }
     }

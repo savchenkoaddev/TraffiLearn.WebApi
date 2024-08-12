@@ -130,7 +130,7 @@ namespace TraffiLearn.Infrastructure.Repositories
                 .Include(c => c.Replies)
                 .ThenInclude(c => c.Replies)
                 .Include(c => c.Replies)
-                .ThenInclude(c => c.User)
+                .ThenInclude(c => c.Creator)
                 .FirstOrDefaultAsync(
                     comment => comment.Id == commentId,
                     cancellationToken);

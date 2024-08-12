@@ -24,7 +24,7 @@ namespace TraffiLearn.Infrastructure.Configurations
                 .WithMany(q => q.Comments);
 
             builder
-                .HasOne(c => c.User)
+                .HasOne(c => c.Creator)
                 .WithMany(q => q.Comments);
 
             builder

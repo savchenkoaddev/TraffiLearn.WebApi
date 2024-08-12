@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.DTO.Auth;
-using TraffiLearn.Application.Errors;
+using TraffiLearn.Application.Exceptions;
 using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
@@ -51,9 +51,7 @@ namespace TraffiLearn.Application.Commands.Auth.Login
 
             if (identityUser is null)
             {
-                _logger.LogWarning("User not found in identity service for email: {Email}", email);
-
-                return Result.Failure<LoginResponse>(UserErrors.InvalidCredentials);
+                return Result.Failure<LoginResponse>(UserErrors.NotFound);
             }
 
             _logger.LogInformation("User found in identity service for email: {Email}", email);
@@ -64,13 +62,13 @@ namespace TraffiLearn.Application.Commands.Auth.Login
             {
                 _logger.LogCritical("User not found in repository for email: {Email}. Critical data consistency issue.", email);
 
-                return Result.Failure<LoginResponse>(InternalErrors.DataConsistencyError);
+                throw new DataInconsistencyException();
             }
 
             _logger.LogInformation("User retrieved from repository for email: {Email}", email);
 
             var accessToken = _tokenService.GenerateAccessToken(user);
-            
+
             _logger.LogInformation("Successfully generated access token for user: {UserId}", user.Id);
 
             return new LoginResponse(accessToken);

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using System.Transactions;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
-using TraffiLearn.Application.Errors;
+using TraffiLearn.Application.Exceptions;
 using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Enums;
@@ -67,7 +67,9 @@ namespace TraffiLearn.Application.Commands.Users.DowngradeAccount
 
             if (identityUser is null)
             {
-                return InternalErrors.DataConsistencyError;
+                _logger.LogCritical("User has not been found in repository for email: {Email}. Critical data consistency issue.", affectedUser.Email);
+
+                throw new DataInconsistencyException();
             }
 
             using (var transaction = new TransactionScope(

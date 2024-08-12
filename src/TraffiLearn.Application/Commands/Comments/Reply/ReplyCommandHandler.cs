@@ -63,7 +63,7 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
             var replyCommentResult = Comment.Create(
                 commentId: replyCommentId,
                 content: commentContentResult.Value,
-                leftBy: caller,
+                creator: caller,
                 question: comment.Question);
 
             if (replyCommentResult.IsFailure)

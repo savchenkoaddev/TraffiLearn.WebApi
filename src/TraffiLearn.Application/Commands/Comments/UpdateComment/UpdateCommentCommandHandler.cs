@@ -61,7 +61,7 @@ namespace TraffiLearn.Application.Commands.Comments.UpdateComment
             return await _commentRepository.GetByIdAsync(
                             commentId,
                             cancellationToken,
-                            includeExpressions: comment => comment.User);
+                            includeExpressions: comment => comment.Creator);
         }
     }
 }
