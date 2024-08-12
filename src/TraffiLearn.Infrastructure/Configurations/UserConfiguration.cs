@@ -9,14 +9,16 @@ namespace TraffiLearn.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.HasKey(user => user.Id);
+            builder.Property(q => q.Id).HasConversion(
+                 id => id.Value,
+                 value => new UserId(value));
 
             builder.Property(user => user.Username)
                 .HasMaxLength(Username.MaxLength)
                 .HasConversion(
                     username => username.Value,
                     value => Username.Create(value).Value);
-            
+
             builder.Property(user => user.Email)
                 .HasMaxLength(Email.MaxLength)
                 .HasConversion(
@@ -28,8 +30,12 @@ namespace TraffiLearn.Infrastructure.Configurations
                 .IsUnique();
 
             builder
+                .HasIndex(user => user.Username)
+                .IsUnique();
+
+            builder
                 .HasMany(user => user.Comments)
-                .WithOne(c => c.User)
+                .WithOne(c => c.Creator)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder

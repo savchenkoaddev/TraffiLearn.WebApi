@@ -15,7 +15,7 @@ namespace TraffiLearn.Domain.ValueObjects.Users
 
         public string Value { get; }
 
-        public static Result<Username> Create(string value)
+        public static Result<Username> Create(string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
             {

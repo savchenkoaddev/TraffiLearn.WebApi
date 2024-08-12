@@ -1,5 +1,4 @@
-﻿using MediatR;
-using TraffiLearn.Application.Abstractions.Data;
+﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Commands.Topics.Update;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Shared;
@@ -26,8 +25,10 @@ namespace TraffiLearn.Application.Mapper.Topics
                 return Result.Failure<Topic>(topicTitleResult.Error);
             }
 
+            TopicId topicId = new(Guid.NewGuid());
+
             return Topic.Create(
-                id: Guid.NewGuid(),
+                topicId: topicId,
                 number: topicNumberResult.Value,
                 title: topicTitleResult.Value);
         }

@@ -1,13 +1,12 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.DTO.Questions;
-using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.Errors;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Queries.Users.GetCurrentUserLikedQuestions
 {
@@ -15,18 +14,18 @@ namespace TraffiLearn.Application.Queries.Users.GetCurrentUserLikedQuestions
         : IRequestHandler<GetCurrentUserLikedQuestionsQuery,
             Result<IEnumerable<QuestionResponse>>>
     {
-        private readonly IAuthService<ApplicationUser> _authService;
+        private readonly IUserContextService<Guid> _userContextService;
         private readonly IUserRepository _userRepository;
         private readonly Mapper<Question, QuestionResponse> _questionMapper;
         private readonly ILogger<GetCurrentUserLikedQuestionsQueryHandler> _logger;
 
         public GetCurrentUserLikedQuestionsQueryHandler(
-            IAuthService<ApplicationUser> authService,
+            IUserContextService<Guid> userContextService,
             IUserRepository userRepository,
             Mapper<Question, QuestionResponse> questionMapper,
             ILogger<GetCurrentUserLikedQuestionsQueryHandler> logger)
         {
-            _authService = authService;
+            _userContextService = userContextService;
             _userRepository = userRepository;
             _questionMapper = questionMapper;
             _logger = logger;
@@ -36,25 +35,18 @@ namespace TraffiLearn.Application.Queries.Users.GetCurrentUserLikedQuestions
             GetCurrentUserLikedQuestionsQuery request,
             CancellationToken cancellationToken)
         {
-            Result<Guid> userIdResult = _authService.GetAuthenticatedUserId();
-
-            if (userIdResult.IsFailure)
-            {
-                return Result.Failure<IEnumerable<QuestionResponse>>(userIdResult.Error);
-            }
-
-            var userId = userIdResult.Value;
+            var userId = new UserId(_userContextService.FetchAuthenticatedUserId());
 
             var user = await _userRepository.GetByIdAsync(
                 userId,
                 cancellationToken,
-                includeExpressions: user => user.LikedQuestions);
+                includeExpressions: [
+                    user => user.LikedQuestions
+                ]);
 
             if (user is null)
             {
-                _logger.LogCritical(InternalErrors.AuthenticatedUserNotFound.Description);
-
-                return Result.Failure<IEnumerable<QuestionResponse>>(InternalErrors.AuthenticatedUserNotFound);
+                throw new InvalidOperationException("Authenticated user is not found.");
             }
 
             return Result.Success(_questionMapper.Map(user.LikedQuestions));

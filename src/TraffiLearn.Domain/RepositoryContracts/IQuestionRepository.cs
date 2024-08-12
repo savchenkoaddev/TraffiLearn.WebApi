@@ -1,17 +1,18 @@
 ﻿using System.Linq.Expressions;
 using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.ValueObjects.Questions;
 
 namespace TraffiLearn.Domain.RepositoryContracts
 {
     public interface IQuestionRepository
     {
         Task<Question?> GetByIdAsync(
-            Guid questionId,
+            QuestionId questionId,
             CancellationToken cancellationToken = default,
             params Expression<Func<Question, object>>[] includeExpressions);
 
         Task<IEnumerable<Comment>> GetQuestionCommentsWithRepliesAsync(
-            Guid questionId,
+            QuestionId questionId,
             CancellationToken cancellationToken = default);
 
         Task<IEnumerable<Question>> GetAllAsync(
@@ -26,7 +27,7 @@ namespace TraffiLearn.Domain.RepositoryContracts
             params Expression<Func<Question, object>>[] includeExpressions);
 
         Task<bool> ExistsAsync(
-            Guid questionId,
+            QuestionId questionId,
             CancellationToken cancellationToken = default);
 
         Task AddAsync(

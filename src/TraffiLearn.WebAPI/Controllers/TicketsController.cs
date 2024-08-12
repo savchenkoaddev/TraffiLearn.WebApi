@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TraffiLearn.Application.Commands.Tickets.AddQuestionToTicket;
 using TraffiLearn.Application.Commands.Tickets.Create;
@@ -9,11 +8,12 @@ using TraffiLearn.Application.Commands.Tickets.Update;
 using TraffiLearn.Application.Queries.Tickets.GetAll;
 using TraffiLearn.Application.Queries.Tickets.GetById;
 using TraffiLearn.Application.Queries.Tickets.GetTicketQuestions;
+using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
-    [Authorize]
+    [HasPermission(Permission.AccessData)]
     [Route("api/tickets")]
     [ApiController]
     public class TicketsController : ControllerBase
@@ -60,6 +60,7 @@ namespace TraffiLearn.WebAPI.Controllers
         #region Commands
 
 
+        [HasPermission(Permission.ModifyData)]
         [HttpPost]
         public async Task<IActionResult> CreateTicket(CreateTicketCommand command)
         {
@@ -68,6 +69,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
         }
 
+        [HasPermission(Permission.ModifyData)]
         [HttpPut]
         public async Task<IActionResult> UpdateTicket(UpdateTicketCommand command)
         {
@@ -76,6 +78,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
+        [HasPermission(Permission.ModifyData)]
         [HttpPut("{ticketId:guid}/add-question/{questionId:guid}")]
         public async Task<IActionResult> AddQuestionToTicket(
             [FromRoute] Guid questionId,
@@ -88,6 +91,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
+        [HasPermission(Permission.ModifyData)]
         [HttpPut("{ticketId:guid}/remove-question/{questionId:guid}")]
         public async Task<IActionResult> RemoveQuestionFromTicket(
             [FromRoute] Guid questionId,
@@ -100,6 +104,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
+        [HasPermission(Permission.ModifyData)]
         [HttpDelete("{ticketId:guid}")]
         public async Task<IActionResult> DeleteTicket(
             [FromRoute] Guid ticketId)

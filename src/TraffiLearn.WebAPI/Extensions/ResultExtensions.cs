@@ -49,6 +49,7 @@ namespace TraffiLearn.WebAPI.Extensions
                 ErrorType.Validation => StatusCodes.Status400BadRequest,
                 ErrorType.NotFound => StatusCodes.Status404NotFound,
                 ErrorType.OperationFailure => StatusCodes.Status400BadRequest,
+                ErrorType.Unauthorized => StatusCodes.Status403Forbidden,
 
                 _ => StatusCodes.Status500InternalServerError
             };
@@ -61,6 +62,7 @@ namespace TraffiLearn.WebAPI.Extensions
                 ErrorType.Validation => "Bad Request",
                 ErrorType.NotFound => "Not Found",
                 ErrorType.OperationFailure => "Bad Request",
+                ErrorType.Unauthorized => "Unauthorized",
 
                 _ => "Internal Server Error"
             };
@@ -73,6 +75,7 @@ namespace TraffiLearn.WebAPI.Extensions
                 ErrorType.Validation => "https://tools.ietf.org/html/rfc7231#section-6.5.1",
                 ErrorType.NotFound => "https://tools.ietf.org/html/rfc7231#section-6.5.4",
                 ErrorType.OperationFailure => "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+                ErrorType.Unauthorized => "https://datatracker.ietf.org/doc/html/rfc7235#section-3.1",
 
                 _ => "https://tools.ietf.org/html/rfc7231#section-6.6.1"
             };

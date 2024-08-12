@@ -5,28 +5,28 @@ using TraffiLearn.Domain.ValueObjects.Comments;
 
 namespace TraffiLearn.Domain.Entities
 {
-    public sealed class Comment : Entity
+    public sealed class Comment : Entity<CommentId>
     {
         private readonly HashSet<Comment> _replies = [];
 
-        private Comment(Guid id)
-            : base(id)
+        private Comment()
+            : base(new(Guid.Empty))
         { }
 
         private Comment(
-            Guid id,
+            CommentId commentId,
             CommentContent commentContent,
-            User leftBy, 
-            Question question) : base(id)
+            User creator,
+            Question question) : base(commentId)
         {
             Content = commentContent;
-            User = leftBy;
+            Creator = creator;
             Question = question;
         }
 
         public CommentContent Content { get; private set; }
 
-        public User User { get; private set; }
+        public User Creator { get; private set; }
 
         public Question Question { get; private set; }
 
@@ -53,15 +53,15 @@ namespace TraffiLearn.Domain.Entities
         }
 
         public static Result<Comment> Create(
-            Guid id,
+            CommentId commentId,
             CommentContent content,
-            User leftBy,
+            User creator,
             Question question)
         {
             return new Comment(
-                id, 
-                content, 
-                leftBy, 
+                commentId,
+                content,
+                creator,
                 question);
         }
     }

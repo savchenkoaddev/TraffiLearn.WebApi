@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.ValueObjects.Questions;
 using TraffiLearn.Infrastructure.Database;
 
 namespace TraffiLearn.Infrastructure.Repositories
@@ -20,12 +21,12 @@ namespace TraffiLearn.Infrastructure.Repositories
             CancellationToken cancellationToken = default)
         {
             await _dbContext.Questions.AddAsync(
-                question, 
+                question,
                 cancellationToken);
         }
 
         public async Task<bool> ExistsAsync(
-            Guid questionId,
+            QuestionId questionId,
             CancellationToken cancellationToken = default)
         {
             return (await _dbContext.Questions.FindAsync(
@@ -34,7 +35,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<Question>> GetAllAsync(
-            Expression<Func<Question, object>>? orderByExpression = null, 
+            Expression<Func<Question, object>>? orderByExpression = null,
             CancellationToken cancellationToken = default,
             params Expression<Func<Question, object>>[] includeExpressions)
         {
@@ -55,7 +56,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<Question>> GetRandomRecordsAsync(
-            int amount, 
+            int amount,
             Expression<Func<Question, object>>? orderByExpression = null,
             CancellationToken cancellationToken = default,
             params Expression<Func<Question, object>>[] includeExpressions)
@@ -111,8 +112,8 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<Question?> GetByIdAsync(
-            Guid questionId, 
-            CancellationToken cancellationToken = default, 
+            QuestionId questionId,
+            CancellationToken cancellationToken = default,
             params Expression<Func<Question, object>>[] includeExpressions)
         {
             var query = _dbContext.Questions.AsQueryable();
@@ -128,13 +129,15 @@ namespace TraffiLearn.Infrastructure.Repositories
                     cancellationToken);
         }
 
-        public async Task<IEnumerable<Comment>> GetQuestionCommentsWithRepliesAsync(Guid questionId, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<Comment>> GetQuestionCommentsWithRepliesAsync(
+            QuestionId questionId,
+            CancellationToken cancellationToken = default)
         {
             return await _dbContext.Comments
                 .AsNoTracking()
                 .Where(c => c.Question.Id == questionId && c.RootComment == null)
                 .Include(q => q.Replies)
-                .Include(q => q.User)
+                .Include(q => q.Creator)
                 .ToListAsync(cancellationToken);
         }
     }

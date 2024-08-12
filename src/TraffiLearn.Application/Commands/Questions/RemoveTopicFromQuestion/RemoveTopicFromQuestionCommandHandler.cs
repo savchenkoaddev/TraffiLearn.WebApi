@@ -4,6 +4,8 @@ using TraffiLearn.Domain.Errors.Questions;
 using TraffiLearn.Domain.Errors.Topics;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Questions;
+using TraffiLearn.Domain.ValueObjects.Topics;
 
 namespace TraffiLearn.Application.Commands.Questions.RemoveTopicFromQuestion
 {
@@ -24,11 +26,11 @@ namespace TraffiLearn.Application.Commands.Questions.RemoveTopicFromQuestion
         }
 
         public async Task<Result> Handle(
-            RemoveTopicFromQuestionCommand request, 
+            RemoveTopicFromQuestionCommand request,
             CancellationToken cancellationToken)
         {
             var topic = await _topicRepository.GetByIdAsync(
-                request.TopicId.Value,
+                topicId: new TopicId(request.TopicId.Value),
                 cancellationToken,
                 includeExpressions: topic => topic.Questions);
 
@@ -38,7 +40,7 @@ namespace TraffiLearn.Application.Commands.Questions.RemoveTopicFromQuestion
             }
 
             var question = await _questionRepository.GetByIdAsync(
-                request.QuestionId.Value,
+                questionId: new QuestionId(request.QuestionId.Value),
                 cancellationToken,
                 includeExpressions: question => question.Tickets);
 
@@ -61,6 +63,8 @@ namespace TraffiLearn.Application.Commands.Questions.RemoveTopicFromQuestion
                 return questionRemoveResult.Error;
             }
 
+            await _questionRepository.UpdateAsync(question);
+            await _topicRepository.UpdateAsync(topic);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();

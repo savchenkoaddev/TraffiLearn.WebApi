@@ -14,7 +14,7 @@ namespace TraffiLearn.Application.Queries.Tickets.GetAll
         private readonly Mapper<Ticket, TicketResponse> _ticketMapper;
 
         public GetAllTicketsQueryHandler(
-            ITicketRepository ticketRepository, 
+            ITicketRepository ticketRepository,
             Mapper<Ticket, TicketResponse> ticketMapper)
         {
             _ticketRepository = ticketRepository;
@@ -25,7 +25,8 @@ namespace TraffiLearn.Application.Queries.Tickets.GetAll
             GetAllTicketsQuery request,
             CancellationToken cancellationToken)
         {
-            var tickets = await _ticketRepository.GetAllAsync();
+            var tickets = await _ticketRepository.GetAllAsync(
+                cancellationToken: cancellationToken);
 
             return Result.Success(_ticketMapper.Map(tickets));
         }

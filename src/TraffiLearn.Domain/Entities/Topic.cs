@@ -5,18 +5,18 @@ using TraffiLearn.Domain.ValueObjects.Topics;
 
 namespace TraffiLearn.Domain.Entities
 {
-    public sealed class Topic : Entity
+    public sealed class Topic : Entity<TopicId>
     {
         private readonly HashSet<Question> _questions = [];
 
-        private Topic(Guid id)
-            : base(id)
+        private Topic()
+            : base(new(Guid.Empty))
         { }
 
         private Topic(
-            Guid id,
+            TopicId topicId,
             TopicNumber number,
-            TopicTitle title) : base(id)
+            TopicTitle title) : base(topicId)
         {
             Number = number;
             Title = title;
@@ -61,12 +61,12 @@ namespace TraffiLearn.Domain.Entities
         }
 
         public static Result<Topic> Create(
-            Guid id,
+            TopicId topicId,
             TopicNumber number,
             TopicTitle title)
         {
             return new Topic(
-                id: id,
+                topicId: topicId,
                 number: number,
                 title: title);
         }

@@ -12,7 +12,22 @@ namespace TraffiLearn.Domain.Errors.Users
         public static readonly Error AlreadyRegistered =
             Error.Validation(
                 code: "User.AlreadyRegistered",
-                description: "The same user has already been registered.");
+                description: "The same user has already been registered. Use different email or username.");
+
+        public static readonly Error NotAllowedToPerformAction =
+           Error.Unauthorized(
+               code: "User.NotAllowedToPerformAction",
+               description: "You are not allowed to perform this action.");
+
+        public static readonly Error RemovedAccountIsNotAdminAccount =
+           Error.Validation(
+               code: "User.RemovedAccountIsNotAdminAccount",
+               description: "Unable to remove the admin account, because the account is not an admin's one.");
+
+        public static readonly Error AccountCannotBeDowngraded =
+           Error.Validation(
+               code: "User.AccountCannotBeDowngraded",
+               description: $"The account cannot be downgraded further as it is already at the lowest possible level.");
 
         public static readonly Error InvalidCredentials =
             Error.Validation(

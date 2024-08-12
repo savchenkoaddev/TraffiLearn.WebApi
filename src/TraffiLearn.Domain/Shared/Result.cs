@@ -3,7 +3,7 @@
     public class Result
     {
         protected internal Result(
-            bool isSuccess, 
+            bool isSuccess,
             Error error)
         {
             if (isSuccess && error != Error.None ||

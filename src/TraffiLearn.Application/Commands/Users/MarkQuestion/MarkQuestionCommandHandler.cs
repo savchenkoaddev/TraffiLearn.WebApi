@@ -1,32 +1,32 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Application.Identity;
-using TraffiLearn.Domain.Errors;
+using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Questions;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Commands.Users.MarkQuestion
 {
     internal sealed class MarkQuestionCommandHandler
         : IRequestHandler<MarkQuestionCommand, Result>
     {
-        private readonly IAuthService<ApplicationUser> _authService;
+        private readonly IUserContextService<Guid> _userContextService;
         private readonly IUserRepository _userRepository;
         private readonly IQuestionRepository _questionRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<MarkQuestionCommandHandler> _logger;
 
         public MarkQuestionCommandHandler(
-            IAuthService<ApplicationUser> authService,
+            IUserContextService<Guid> userContextService,
             IUserRepository userRepository,
             IQuestionRepository questionRepository,
             IUnitOfWork unitOfWork,
             ILogger<MarkQuestionCommandHandler> logger)
         {
-            _authService = authService;
+            _userContextService = userContextService;
             _userRepository = userRepository;
             _questionRepository = questionRepository;
             _unitOfWork = unitOfWork;
@@ -37,47 +37,40 @@ namespace TraffiLearn.Application.Commands.Users.MarkQuestion
             MarkQuestionCommand request,
             CancellationToken cancellationToken)
         {
-            var userIdResult = _authService.GetAuthenticatedUserId();
+            var callerId = new UserId(_userContextService.FetchAuthenticatedUserId());
 
-            if (userIdResult.IsFailure)
+            var caller = await _userRepository.GetByIdAsync(
+                callerId,
+                cancellationToken,
+                includeExpressions: [
+                    user => user.MarkedQuestions
+                ]);
+
+            if (caller is null)
             {
-                return userIdResult.Error;
+                throw new InvalidOperationException("Authenticated user not found.");
             }
 
-            var userId = userIdResult.Value;
-
-            var question = await _questionRepository.GetByIdAsync(
-                questionId: request.QuestionId.Value,
+            var questionBeingMarked = await _questionRepository.GetByIdAsync(
+                questionId: new QuestionId(request.QuestionId.Value),
                 cancellationToken);
 
-            if (question is null)
+            if (questionBeingMarked is null)
             {
                 return UserErrors.QuestionNotFound;
             }
 
-            var user = await _userRepository.GetByIdAsync(
-                userId,
-                cancellationToken,
-                includeExpressions: user => user.MarkedQuestions);
-
-            if (user is null)
-            {
-                _logger.LogCritical(InternalErrors.AuthenticatedUserNotFound.Description);
-
-                return InternalErrors.AuthenticatedUserNotFound;
-            }
-
-            var markResult = user.MarkQuestion(question);
+            var markResult = caller.MarkQuestion(questionBeingMarked);
 
             if (markResult.IsFailure)
             {
                 return markResult.Error;
             }
 
-            await _userRepository.UpdateAsync(user);
+            await _userRepository.UpdateAsync(caller);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Succesfully marked question. User's username: {username}", user.Username.Value);
+            _logger.LogInformation("Succesfully marked question. User's username: {username}", caller.Username.Value);
 
             return Result.Success();
         }

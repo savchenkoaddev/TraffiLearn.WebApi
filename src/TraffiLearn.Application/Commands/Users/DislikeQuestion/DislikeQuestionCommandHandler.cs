@@ -1,95 +1,94 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Logging;
-using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Application.Commands.Users.LikeQuestion;
-using TraffiLearn.Application.Identity;
-using TraffiLearn.Domain.Errors;
+using TraffiLearn.Application.Abstractions.Identity;
+using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Questions;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Commands.Users.DislikeQuestion
 {
     internal sealed class DislikeQuestionCommandHandler
         : IRequestHandler<DislikeQuestionCommand, Result>
     {
-        private readonly IAuthService<ApplicationUser> _authService;
+        private readonly IUserContextService<Guid> _userContextService;
         private readonly IQuestionRepository _questionRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<LikeQuestionCommandHandler> _logger;
 
         public DislikeQuestionCommandHandler(
-            IAuthService<ApplicationUser> authService,
+            IUserContextService<Guid> userContextService,
             IQuestionRepository questionRepository,
             IUserRepository userRepository,
-            IUnitOfWork unitOfWork,
-            ILogger<LikeQuestionCommandHandler> logger)
+            IUnitOfWork unitOfWork)
         {
-            _authService = authService;
+            _userContextService = userContextService;
             _questionRepository = questionRepository;
             _userRepository = userRepository;
             _unitOfWork = unitOfWork;
-            _logger = logger;
         }
 
         public async Task<Result> Handle(
             DislikeQuestionCommand request,
             CancellationToken cancellationToken)
         {
-            var userIdResult = _authService.GetAuthenticatedUserId();
+            var callerId = new UserId(_userContextService.FetchAuthenticatedUserId());
 
-            if (userIdResult.IsFailure)
+            var caller = await _userRepository.GetByIdAsync(
+                callerId,
+                cancellationToken,
+                includeExpressions: [
+                    user => user.LikedQuestions,
+                    user => user.DislikedQuestions
+                ]);
+
+            if (caller is null)
             {
-                return userIdResult.Error;
+                throw new InvalidOperationException("Authenticated user not found.");
             }
 
-            var userId = userIdResult.Value;
+            var questionBeingDisliked = await GetQuestionBeingDisliked(
+                questionId: new QuestionId(request.QuestionId.Value),
+                cancellationToken);
 
-            var question = await _questionRepository.GetByIdAsync(
-                questionId: request.QuestionId.Value,
-                cancellationToken,
-                includeExpressions:
-                    [question => question.LikedByUsers,
-                     question => question.DislikedByUsers]);
-
-            if (question is null)
+            if (questionBeingDisliked is null)
             {
                 return UserErrors.QuestionNotFound;
             }
 
-            var user = await _userRepository.GetByIdAsync(
-                userId,
-                cancellationToken,
-                includeExpressions:
-                    [user => user.LikedQuestions,
-                     user => user.DislikedQuestions]);
-
-            if (user is null)
-            {
-                _logger.LogCritical(InternalErrors.AuthenticatedUserNotFound.Description);
-
-                return InternalErrors.AuthenticatedUserNotFound;
-            }
-
-            var questionDislikeResult = user.DislikeQuestion(question);
+            var questionDislikeResult = caller.DislikeQuestion(questionBeingDisliked);
 
             if (questionDislikeResult.IsFailure)
             {
                 return questionDislikeResult.Error;
             }
 
-            var addDislikeResult = question.AddDislike(user);
+            var addDislikeResult = questionBeingDisliked.AddDislike(caller);
 
             if (addDislikeResult.IsFailure)
             {
                 return addDislikeResult.Error;
             }
 
+            await _questionRepository.UpdateAsync(questionBeingDisliked);
+            await _userRepository.UpdateAsync(caller);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
+        }
+
+        private async Task<Question?> GetQuestionBeingDisliked(
+            QuestionId questionId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _questionRepository.GetByIdAsync(
+                questionId,
+                cancellationToken,
+                includeExpressions: [
+                    question => question.LikedByUsers,
+                    question => question.DislikedByUsers]);
         }
     }
 }

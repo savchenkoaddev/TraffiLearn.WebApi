@@ -3,6 +3,8 @@ using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Domain.Errors.Tickets;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Questions;
+using TraffiLearn.Domain.ValueObjects.Tickets;
 
 namespace TraffiLearn.Application.Commands.Tickets.RemoveQuestionFromTicket
 {
@@ -13,7 +15,10 @@ namespace TraffiLearn.Application.Commands.Tickets.RemoveQuestionFromTicket
         private readonly IQuestionRepository _questionRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public RemoveQuestionFromTicketCommandHandler(ITicketRepository ticketRepository, IQuestionRepository questionRepository, IUnitOfWork unitOfWork)
+        public RemoveQuestionFromTicketCommandHandler(
+            ITicketRepository ticketRepository,
+            IQuestionRepository questionRepository,
+            IUnitOfWork unitOfWork)
         {
             _ticketRepository = ticketRepository;
             _questionRepository = questionRepository;
@@ -21,11 +26,11 @@ namespace TraffiLearn.Application.Commands.Tickets.RemoveQuestionFromTicket
         }
 
         public async Task<Result> Handle(
-            RemoveQuestionFromTicketCommand request, 
+            RemoveQuestionFromTicketCommand request,
             CancellationToken cancellationToken)
         {
             var ticket = await _ticketRepository.GetByIdAsync(
-                request.TicketId.Value,
+                ticketId: new TicketId(request.TicketId.Value),
                 cancellationToken,
                 includeExpressions: ticket => ticket.Questions);
 
@@ -35,7 +40,7 @@ namespace TraffiLearn.Application.Commands.Tickets.RemoveQuestionFromTicket
             }
 
             var question = await _questionRepository.GetByIdAsync(
-                request.QuestionId.Value,
+                questionId: new QuestionId(request.QuestionId.Value),
                 cancellationToken,
                 includeExpressions: question => question.Tickets);
 
@@ -58,6 +63,8 @@ namespace TraffiLearn.Application.Commands.Tickets.RemoveQuestionFromTicket
                 return ticketRemoveResult.Error;
             }
 
+            await _questionRepository.UpdateAsync(question);
+            await _ticketRepository.UpdateAsync(ticket);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();

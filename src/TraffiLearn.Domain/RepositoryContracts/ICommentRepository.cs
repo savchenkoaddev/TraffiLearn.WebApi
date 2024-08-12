@@ -1,26 +1,27 @@
 ﻿using System.Linq.Expressions;
 using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.ValueObjects.Comments;
 
 namespace TraffiLearn.Domain.RepositoryContracts
 {
     public interface ICommentRepository
     {
         Task<Comment?> GetByIdAsync(
-            Guid commentId,
+            CommentId commentId,
             CancellationToken cancellationToken = default,
             params Expression<Func<Comment, object>>[] includeExpressions);
 
-        Task<Comment?> GetByIdWithRepliesTwoLevelsDeepAsync(
-            Guid commentId,
+        Task<Comment?> GetByIdWithRepliesWithUsersTwoLevelsDeepAsync(
+            CommentId commentId,
             CancellationToken cancellationToken = default,
             params Expression<Func<Comment, object>>[] includeExpressions);
 
         Task<Comment?> GetByIdWithAllNestedRepliesAsync(
-            Guid commentId,
+            CommentId commentId,
             CancellationToken cancellationToken = default);
 
         Task<bool> ExistsAsync(
-            Guid commentId,
+            CommentId commentId,
             CancellationToken cancellationToken = default);
 
         Task AddAsync(

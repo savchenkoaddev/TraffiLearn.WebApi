@@ -12,9 +12,9 @@ namespace TraffiLearn.Application.Mapper.Comments
             bool hasReplies = source.Replies.Count > 0;
 
             return new CommentResponse(
-                CommentId: source.Id,
-                AuthorUserId: source.User.Id,
-                AuthorUsername: source.User.Username.Value,
+                CommentId: source.Id.Value,
+                AuthorUserId: source.Creator.Id.Value,
+                AuthorUsername: source.Creator.Username.Value,
                 Content: source.Content.Value,
                 HasReplies: hasReplies);
         }

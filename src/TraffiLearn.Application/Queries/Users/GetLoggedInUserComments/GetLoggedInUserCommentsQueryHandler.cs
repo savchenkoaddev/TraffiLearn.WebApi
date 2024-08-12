@@ -1,67 +1,55 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.DTO.Comments;
-using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.Errors;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Queries.Users.GetLoggedInUserComments
 {
     internal sealed class GetLoggedInUserCommentsQueryHandler
         : IRequestHandler<GetLoggedInUserCommentsQuery, Result<IEnumerable<CommentResponse>>>
     {
-        private readonly IAuthService<ApplicationUser> _authService;
+        private readonly IUserContextService<Guid> _userContextService;
         private readonly IUserRepository _userRepository;
         private readonly Mapper<Comment, CommentResponse> _commentMapper;
         private readonly ILogger<GetLoggedInUserCommentsQueryHandler> _logger;
 
         public GetLoggedInUserCommentsQueryHandler(
-            IAuthService<ApplicationUser> authService,
+            IUserContextService<Guid> userContextService,
             IUserRepository userRepository,
             Mapper<Comment, CommentResponse> commentMapper,
             ILogger<GetLoggedInUserCommentsQueryHandler> logger)
         {
-            _authService = authService;
+            _userContextService = userContextService;
             _userRepository = userRepository;
             _commentMapper = commentMapper;
             _logger = logger;
         }
 
         public async Task<Result<IEnumerable<CommentResponse>>> Handle(
-            GetLoggedInUserCommentsQuery request, 
+            GetLoggedInUserCommentsQuery request,
             CancellationToken cancellationToken)
         {
-            Result<Guid> userIdResult = _authService.GetAuthenticatedUserId();
+            var userId = new UserId(_userContextService.FetchAuthenticatedUserId());
 
-            if (userIdResult.IsFailure)
-            {
-                return Result.Failure<IEnumerable<CommentResponse>>(userIdResult.Error);
-            }
-
-            var userId = userIdResult.Value;
-
-            var userExists = await _userRepository.ExistsAsync(
+            var user = await _userRepository.GetUserWithCommentsWithRepliesAsync(
                 userId,
                 cancellationToken);
 
-            if (!userExists)
+            if (user is null)
             {
-                _logger.LogCritical(InternalErrors.AuthenticatedUserNotFound.Description);
-
-                return Result.Failure<IEnumerable<CommentResponse>>(InternalErrors.AuthenticatedUserNotFound);
+                throw new InvalidOperationException("Authenticated user not found.");
             }
 
-            var comments = await _userRepository.GetUserCommentsWithRepliesAsync(
-                userId,
-                cancellationToken);
+            _logger.LogInformation(
+                "Succesfully fetched authenticated user comments. Comments fetched: {count}",
+                user.Comments.Count);
 
-            _logger.LogInformation("Succesfully fetched authenticated user comments. Comments fetched: {count}", comments.Count());
-
-            return Result.Success(_commentMapper.Map(comments));
+            return Result.Success(_commentMapper.Map(user.Comments));
         }
     }
 }

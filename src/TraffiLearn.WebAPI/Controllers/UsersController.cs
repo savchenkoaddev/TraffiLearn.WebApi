@@ -1,15 +1,15 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TraffiLearn.Application.Commands.Users.DowngradeAccount;
 using TraffiLearn.Application.Queries.Users.GetLoggedInUserComments;
 using TraffiLearn.Application.Queries.Users.GetUserComments;
 using TraffiLearn.Application.Queries.Users.GetUserDislikedQuestions;
 using TraffiLearn.Application.Queries.Users.GetUserLikedQuestions;
+using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
-    [Authorize]
     [Route("api/users")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -24,6 +24,7 @@ namespace TraffiLearn.WebAPI.Controllers
         #region Queries
 
 
+        [HasPermission(Permission.AccessSpecificUserData)]
         [HttpGet("{userId:guid}/comments")]
         public async Task<IActionResult> GetUserComments(Guid userId)
         {
@@ -32,6 +33,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
+        [HasPermission(Permission.AccessSpecificUserData)]
         [HttpGet("{userId:guid}/liked-questions")]
         public async Task<IActionResult> GetUserLikedQuestions(Guid userId)
         {
@@ -40,6 +42,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
+        [HasPermission(Permission.AccessSpecificUserData)]
         [HttpGet("{userId:guid}/disliked-questions")]
         public async Task<IActionResult> GetUserDislikedQuestions(Guid userId)
         {
@@ -48,12 +51,28 @@ namespace TraffiLearn.WebAPI.Controllers
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
+        [HasPermission(Permission.AccessData)]
         [HttpGet("current/comments")]
         public async Task<IActionResult> GetLoggedInUserComments()
         {
             var queryResult = await _sender.Send(new GetLoggedInUserCommentsQuery());
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+
+
+        #endregion
+
+        #region Commands
+
+
+        [HasPermission(Permission.DowngradeAccounts)]
+        [HttpPut("{userId:guid}/downgrade")]
+        public async Task<IActionResult> DowngradeAccount(Guid userId)
+        {
+            var commandResult = await _sender.Send(new DowngradeAccountCommand(userId));
+
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
 

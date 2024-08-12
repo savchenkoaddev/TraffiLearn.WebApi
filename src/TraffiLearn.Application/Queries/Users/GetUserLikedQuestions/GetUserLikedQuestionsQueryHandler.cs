@@ -5,6 +5,7 @@ using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Queries.Users.GetUserLikedQuestions
 {
@@ -15,20 +16,21 @@ namespace TraffiLearn.Application.Queries.Users.GetUserLikedQuestions
         private readonly Mapper<Question, QuestionResponse> _questionMapper;
 
         public GetUserLikedQuestionsQueryHandler(
-            IUserRepository userRepository, 
+            IUserRepository userRepository,
             Mapper<Question, QuestionResponse> questionMapper)
         {
             _userRepository = userRepository;
             _questionMapper = questionMapper;
         }
 
-
         public async Task<Result<IEnumerable<QuestionResponse>>> Handle(
             GetUserLikedQuestionsQuery request,
             CancellationToken cancellationToken)
         {
+            UserId userId = new(request.UserId.Value);
+
             var user = await _userRepository.GetByIdAsync(
-                userId: request.UserId.Value,
+                userId,
                 cancellationToken,
                 includeExpressions: user => user.LikedQuestions);
 

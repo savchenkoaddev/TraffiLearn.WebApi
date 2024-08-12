@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.ValueObjects.Tickets;
 using TraffiLearn.Infrastructure.Database;
 
 namespace TraffiLearn.Infrastructure.Repositories
@@ -16,11 +17,11 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task AddAsync(
-            Ticket ticket, 
+            Ticket ticket,
             CancellationToken cancellationToken = default)
         {
             await _dbContext.Tickets.AddAsync(
-                ticket, 
+                ticket,
                 cancellationToken);
         }
 
@@ -32,7 +33,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<bool> ExistsAsync(
-            Guid ticketId, 
+            TicketId ticketId,
             CancellationToken cancellationToken = default)
         {
             return (await _dbContext.Tickets.FindAsync(
@@ -41,8 +42,8 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<Ticket>> GetAllAsync(
-            Expression<Func<Ticket, object>>? orderByExpression = null, 
-            CancellationToken cancellationToken = default, 
+            Expression<Func<Ticket, object>>? orderByExpression = null,
+            CancellationToken cancellationToken = default,
             params Expression<Func<Ticket, object>>[] includeExpressions)
         {
             IQueryable<Ticket> tickets = _dbContext.Tickets;
@@ -62,8 +63,8 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<Ticket?> GetByIdAsync(
-            Guid ticketId, 
-            CancellationToken cancellationToken = default, 
+            TicketId ticketId,
+            CancellationToken cancellationToken = default,
             params Expression<Func<Ticket, object>>[] includeExpressions)
         {
             var query = _dbContext.Tickets.AsQueryable();

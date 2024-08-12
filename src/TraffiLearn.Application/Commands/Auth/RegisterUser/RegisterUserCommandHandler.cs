@@ -1,7 +1,8 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using System.Transactions;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Users;
@@ -14,21 +15,24 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterUser
         : IRequestHandler<RegisterUserCommand, Result>
     {
         private readonly IUserRepository _userRepository;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IIdentityService<ApplicationUser> _identityService;
         private readonly Mapper<RegisterUserCommand, Result<User>> _commandMapper;
+        private readonly Mapper<User, ApplicationUser> _userMapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<RegisterUserCommandHandler> _logger;
 
         public RegisterUserCommandHandler(
             IUserRepository userRepository,
-            UserManager<ApplicationUser> userManager,
+            IIdentityService<ApplicationUser> identityService,
             Mapper<RegisterUserCommand, Result<User>> commandMapper,
+            Mapper<User, ApplicationUser> userMapper,
             IUnitOfWork unitOfWork,
             ILogger<RegisterUserCommandHandler> logger)
         {
             _userRepository = userRepository;
-            _userManager = userManager;
+            _identityService = identityService;
             _commandMapper = commandMapper;
+            _userMapper = userMapper;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
@@ -37,6 +41,8 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterUser
             RegisterUserCommand request,
             CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Handling RegisterAdminCommand");
+
             var mappingResult = _commandMapper.Map(request);
 
             if (mappingResult.IsFailure)
@@ -44,61 +50,41 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterUser
                 return mappingResult.Error;
             }
 
-            var identityUser = await _userManager.FindByEmailAsync(request.Email);
+            var newUser = mappingResult.Value;
 
-            if (identityUser is not null)
+            var existsSameUser = await _userRepository.ExistsAsync(
+                newUser.Username,
+                newUser.Email,
+                cancellationToken);
+
+            if (existsSameUser)
             {
                 return UserErrors.AlreadyRegistered;
             }
 
-            var user = mappingResult.Value;
+            var identityUser = _userMapper.Map(newUser);
 
-            await _userRepository.AddAsync(
-                user,
-                cancellationToken);
-
-            identityUser = CreateIdentityUser(user);
-
-            var addResult = await AddIdentityUser(
-                identityUser,
-                password: request.Password);
-
-            if (addResult.IsFailure)
+            using (var transaction = new TransactionScope(
+                TransactionScopeAsyncFlowOption.Enabled))
             {
-                return addResult.Error;
+                await _userRepository.AddAsync(newUser);
+
+                await _identityService.CreateAsync(
+                    identityUser,
+                    password: request.Password);
+
+                await _identityService.AddToRoleAsync(
+                    identityUser,
+                    roleName: newUser.Role.ToString());
+
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                transaction.Complete();
             }
 
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-            _logger.LogInformation("Succesfully created a new user with {Email} email.", identityUser.Email);
-
-            return Result.Success();
-        }
-
-        private ApplicationUser CreateIdentityUser(User user)
-        {
-            return new ApplicationUser()
-            {
-                Id = user.Id.ToString(),
-                Email = user.Email.Value,
-                UserName = user.Username.Value
-            };
-        }
-
-        private async Task<Result> AddIdentityUser(
-            ApplicationUser identityUser,
-            string password)
-        {
-            var result = await _userManager.CreateAsync(
-                identityUser,
-                password);
-
-            if (!result.Succeeded)
-            {
-                _logger.LogCritical("Failed to create identity user.");
-
-                return Error.InternalFailure();
-            }
+            _logger.LogInformation(
+                "Succesfully registered a new user. Username: {username}",
+                newUser.Username.Value);
 
             return Result.Success();
         }

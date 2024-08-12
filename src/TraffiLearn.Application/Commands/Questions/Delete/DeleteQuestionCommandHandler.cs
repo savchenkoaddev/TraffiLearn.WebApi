@@ -4,6 +4,7 @@ using TraffiLearn.Application.Abstractions.Storage;
 using TraffiLearn.Domain.Errors.Questions;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Questions;
 
 namespace TraffiLearn.Application.Commands.Questions.Delete
 {
@@ -24,26 +25,28 @@ namespace TraffiLearn.Application.Commands.Questions.Delete
         }
 
         public async Task<Result> Handle(
-            DeleteQuestionCommand request, 
+            DeleteQuestionCommand request,
             CancellationToken cancellationToken)
         {
-            var found = await _questionRepository.GetByIdAsync(
-                request.QuestionId.Value,
+            var question = await _questionRepository.GetByIdAsync(
+                questionId: new QuestionId(request.QuestionId.Value),
                 cancellationToken);
 
-            if (found is null)
+            if (question is null)
             {
                 return QuestionErrors.NotFound;
             }
 
-            if (found.ImageUri is not null)
+            if (question.ImageUri is not null)
             {
+                var blobUri = question.ImageUri.Value;
+
                 await _blobService.DeleteAsync(
-                    blobUri: found.ImageUri.Value,
+                    blobUri,
                     cancellationToken);
             }
 
-            await _questionRepository.DeleteAsync(found);
+            await _questionRepository.DeleteAsync(question);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();

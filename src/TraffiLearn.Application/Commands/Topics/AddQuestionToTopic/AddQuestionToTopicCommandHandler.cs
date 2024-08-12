@@ -4,6 +4,8 @@ using TraffiLearn.Domain.Errors.Questions;
 using TraffiLearn.Domain.Errors.Topics;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Questions;
+using TraffiLearn.Domain.ValueObjects.Topics;
 
 namespace TraffiLearn.Application.Commands.Topics.AddQuestionToTopic
 {
@@ -24,11 +26,11 @@ namespace TraffiLearn.Application.Commands.Topics.AddQuestionToTopic
         }
 
         public async Task<Result> Handle(
-            AddQuestionToTopicCommand request, 
+            AddQuestionToTopicCommand request,
             CancellationToken cancellationToken)
         {
             var question = await _questionRepository.GetByIdAsync(
-                request.QuestionId.Value,
+                questionId: new QuestionId(request.QuestionId.Value),
                 cancellationToken,
                 includeExpressions: question => question.Topics);
 
@@ -38,7 +40,7 @@ namespace TraffiLearn.Application.Commands.Topics.AddQuestionToTopic
             }
 
             var topic = await _topicRepository.GetByIdAsync(
-                request.TopicId.Value,
+                topicId: new TopicId(request.TopicId.Value),
                 cancellationToken,
                 includeExpressions: topic => topic.Questions);
 

@@ -3,9 +3,10 @@ using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
-using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Behaviors;
+using TraffiLearn.Application.Commands.Auth.RegisterAdmin;
 using TraffiLearn.Application.Commands.Auth.RegisterUser;
 using TraffiLearn.Application.Commands.Questions.Create;
 using TraffiLearn.Application.Commands.Questions.Update;
@@ -22,6 +23,7 @@ using TraffiLearn.Application.Mapper.Comments;
 using TraffiLearn.Application.Mapper.Questions;
 using TraffiLearn.Application.Mapper.Tickets;
 using TraffiLearn.Application.Mapper.Topics;
+using TraffiLearn.Application.Mappers.Auth;
 using TraffiLearn.Application.Options;
 using TraffiLearn.Application.Services;
 using TraffiLearn.Domain.Entities;
@@ -50,7 +52,8 @@ namespace TraffiLearn.Application
 
         private static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            services.AddScoped<IAuthService<ApplicationUser>, AuthService<ApplicationUser>>();
+            services.AddHttpContextAccessor();
+            services.AddScoped<IAuthenticatedUserService, AuthenticatedUserService>();
 
             return services;
         }
@@ -98,6 +101,8 @@ namespace TraffiLearn.Application
                 UpdateTopicCommandMapper>();
             services.AddScoped<Mapper<Comment, CommentResponse>,
                 CommentToCommentResponseMapper>();
+            services.AddScoped<Mapper<RegisterAdminCommand, Result<User>>, RegisterAdminCommandMapper>();
+            services.AddScoped<Mapper<User, ApplicationUser>, UserToApplicationUserMapper>();
 
             return services;
         }
@@ -106,8 +111,10 @@ namespace TraffiLearn.Application
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.Configure<QuestionsSettings>(configuration.GetRequiredSection(QuestionsSettings.SectionName));
-            services.Configure<LoginSettings>(configuration.GetRequiredSection(LoginSettings.SectionName));
+            services.Configure<QuestionsSettings>(
+                configuration.GetSection(QuestionsSettings.SectionName));
+            services.Configure<LoginSettings>(
+                configuration.GetSection(LoginSettings.SectionName));
 
             return services;
         }

@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.ValueObjects.Comments;
 using TraffiLearn.Infrastructure.Database;
 
 namespace TraffiLearn.Infrastructure.Repositories
@@ -20,12 +21,12 @@ namespace TraffiLearn.Infrastructure.Repositories
             CancellationToken cancellationToken = default)
         {
             await _dbContext.Comments.AddAsync(
-                comment, 
+                comment,
                 cancellationToken);
         }
 
         public async Task<bool> ExistsAsync(
-            Guid commentId,
+            CommentId commentId,
             CancellationToken cancellationToken = default)
         {
             return (await _dbContext.Comments.FindAsync(
@@ -34,7 +35,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<Comment?> GetByIdAsync(
-            Guid commentId,
+            CommentId commentId,
             CancellationToken cancellationToken = default,
             params Expression<Func<Comment, object>>[] includeExpressions)
         {
@@ -47,12 +48,12 @@ namespace TraffiLearn.Infrastructure.Repositories
 
             return await query
                 .FirstOrDefaultAsync(
-                    c => c.Id == commentId, 
+                    c => c.Id == commentId,
                     cancellationToken);
         }
 
         public async Task<Comment?> GetByIdWithAllNestedRepliesAsync(
-            Guid commentId,
+            CommentId commentId,
             CancellationToken cancellationToken = default)
         {
             var sql = """
@@ -113,9 +114,9 @@ namespace TraffiLearn.Infrastructure.Repositories
             return Task.CompletedTask;
         }
 
-        public Task<Comment?> GetByIdWithRepliesTwoLevelsDeepAsync(
-            Guid commentId,
-            CancellationToken cancellationToken = default, 
+        public Task<Comment?> GetByIdWithRepliesWithUsersTwoLevelsDeepAsync(
+            CommentId commentId,
+            CancellationToken cancellationToken = default,
             params Expression<Func<Comment, object>>[] includeExpressions)
         {
             IQueryable<Comment> query = _dbContext.Comments;
@@ -128,6 +129,8 @@ namespace TraffiLearn.Infrastructure.Repositories
             return query
                 .Include(c => c.Replies)
                 .ThenInclude(c => c.Replies)
+                .Include(c => c.Replies)
+                .ThenInclude(c => c.Creator)
                 .FirstOrDefaultAsync(
                     comment => comment.Id == commentId,
                     cancellationToken);

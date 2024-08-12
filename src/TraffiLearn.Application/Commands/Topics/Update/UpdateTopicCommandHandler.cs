@@ -4,6 +4,7 @@ using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Topics;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Topics;
 
 namespace TraffiLearn.Application.Commands.Topics.Update
 {
@@ -28,7 +29,7 @@ namespace TraffiLearn.Application.Commands.Topics.Update
             CancellationToken cancellationToken)
         {
             var topic = await _topicRepository.GetByIdAsync(
-                request.TopicId.Value, 
+                topicId: new TopicId(request.TopicId.Value),
                 cancellationToken);
 
             if (topic is null)

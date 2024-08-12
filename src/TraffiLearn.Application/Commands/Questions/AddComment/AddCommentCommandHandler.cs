@@ -1,13 +1,14 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Application.Identity;
+using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Questions;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Comments;
+using TraffiLearn.Domain.ValueObjects.Questions;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Commands.Questions.AddComment
 {
@@ -16,7 +17,7 @@ namespace TraffiLearn.Application.Commands.Questions.AddComment
         private readonly ICommentRepository _commentRepository;
         private readonly IUserRepository _userRepository;
         private readonly IQuestionRepository _questionRepository;
-        private readonly IAuthService<ApplicationUser> _authService;
+        private readonly IUserContextService<Guid> _userContextService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<AddCommentCommandHandler> _logger;
 
@@ -24,14 +25,14 @@ namespace TraffiLearn.Application.Commands.Questions.AddComment
             ICommentRepository commentRepository,
             IUserRepository userRepository,
             IQuestionRepository questionRepository,
-            IAuthService<ApplicationUser> authService,
+            IUserContextService<Guid> userContextService,
             IUnitOfWork unitOfWork,
             ILogger<AddCommentCommandHandler> logger)
         {
             _commentRepository = commentRepository;
             _userRepository = userRepository;
             _questionRepository = questionRepository;
-            _authService = authService;
+            _userContextService = userContextService;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
@@ -40,28 +41,22 @@ namespace TraffiLearn.Application.Commands.Questions.AddComment
             AddCommentCommand request,
             CancellationToken cancellationToken)
         {
-            var emailResult = _authService.GetAuthenticatedUserEmail();
+            var callerId = new UserId(_userContextService.FetchAuthenticatedUserId());
 
-            if (emailResult.IsFailure)
+            var caller = await _userRepository.GetByIdAsync(
+                callerId,
+                cancellationToken,
+                includeExpressions: [
+                    user => user.Comments
+                ]);
+
+            if (caller is null)
             {
-                return emailResult.Error;
-            }
-
-            var email = emailResult.Value;
-
-            var user = await _userRepository.GetByEmailAsync(
-                email,
-                cancellationToken);
-
-            if (user is null)
-            {
-                _logger.LogError("User with the context provided email has not been found.");
-
-                return Error.InternalFailure();
+                throw new InvalidOperationException("Authenticated user not found.");
             }
 
             var question = await _questionRepository.GetByIdAsync(
-                request.QuestionId.Value,
+                questionId: new QuestionId(request.QuestionId.Value),
                 cancellationToken,
                 includeExpressions: question => question.Comments);
 
@@ -77,12 +72,10 @@ namespace TraffiLearn.Application.Commands.Questions.AddComment
                 return contentResult.Error;
             }
 
-            var commentId = Guid.NewGuid();
-
             var commentResult = Comment.Create(
-                commentId,
+                commentId: new CommentId(Guid.NewGuid()),
                 contentResult.Value,
-                leftBy: user,
+                creator: caller,
                 question);
 
             if (commentResult.IsFailure)
@@ -92,7 +85,7 @@ namespace TraffiLearn.Application.Commands.Questions.AddComment
 
             var comment = commentResult.Value;
 
-            var userAddCommentResult = user.AddComment(comment);
+            var userAddCommentResult = caller.AddComment(comment);
 
             if (userAddCommentResult.IsFailure)
             {
@@ -109,10 +102,12 @@ namespace TraffiLearn.Application.Commands.Questions.AddComment
             await _commentRepository.AddAsync(
                 comment,
                 cancellationToken);
+            await _questionRepository.UpdateAsync(question);
+            await _userRepository.UpdateAsync(caller);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Added comment succesfully.");
+            _logger.LogInformation("Added the comment to the question succesfully.");
 
             return Result.Success();
         }

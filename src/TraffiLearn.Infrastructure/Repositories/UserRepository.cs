@@ -17,11 +17,11 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task AddAsync(
-            User user, 
+            User user,
             CancellationToken cancellationToken = default)
         {
             await _dbContext.Users.AddAsync(
-                user, 
+                user,
                 cancellationToken);
         }
 
@@ -33,7 +33,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<bool> ExistsAsync(
-            Guid userId,
+            UserId userId,
             CancellationToken cancellationToken = default)
         {
             return (await _dbContext.Users.FindAsync(
@@ -41,9 +41,28 @@ namespace TraffiLearn.Infrastructure.Repositories
                 cancellationToken: cancellationToken)) is not null;
         }
 
+        public async Task<bool> ExistsAsync(
+            Username username,
+            CancellationToken cancellationToken = default)
+        {
+            return (await _dbContext.Users.FirstOrDefaultAsync(
+                user => user.Username == username,
+                cancellationToken: cancellationToken)) is not null;
+        }
+
+        public async Task<bool> ExistsAsync(
+            Username username,
+            Email email,
+            CancellationToken cancellationToken = default)
+        {
+            return (await _dbContext.Users.FirstOrDefaultAsync(
+                user => user.Username == username || user.Email == email,
+                cancellationToken: cancellationToken)) is not null;
+        }
+
         public Task<User?> GetByEmailAsync(
-            Email email, 
-            CancellationToken cancellationToken = default, 
+            Email email,
+            CancellationToken cancellationToken = default,
             params Expression<Func<User, object>>[] includeExpressions)
         {
             IQueryable<User> query = _dbContext.Users;
@@ -59,8 +78,8 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<User?> GetByIdAsync(
-            Guid userId, 
-            CancellationToken cancellationToken = default, 
+            UserId userId,
+            CancellationToken cancellationToken = default,
             params Expression<Func<User, object>>[] includeExpressions)
         {
             var query = _dbContext.Users.AsQueryable();
@@ -76,16 +95,24 @@ namespace TraffiLearn.Infrastructure.Repositories
                     cancellationToken);
         }
 
-        public async Task<IEnumerable<Comment>> GetUserCommentsWithRepliesAsync(
-            Guid userId, 
+        public Task<User?> GetByUsernameAsync(
+            Username username,
             CancellationToken cancellationToken = default)
         {
-            return await _dbContext.Comments
-                .AsNoTracking()
-                .Where(c => c.User.Id == userId)
-                .Include(q => q.Replies)
-                .Include(q => q.User)
-                .ToListAsync(cancellationToken);
+            return _dbContext.Users.FirstOrDefaultAsync(
+                user => user.Username == username,
+                cancellationToken);
+        }
+
+        public async Task<User?> GetUserWithCommentsWithRepliesAsync(
+            UserId userId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Users
+                .Where(c => c.Id == userId)
+                .Include(user => user.Comments)
+                .ThenInclude(user => user.Replies)
+                .FirstOrDefaultAsync(cancellationToken);
         }
 
         public Task UpdateAsync(User user)

@@ -9,7 +9,9 @@ namespace TraffiLearn.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<Question> builder)
         {
-            builder.HasKey(q => q.Id);
+            builder.Property(q => q.Id).HasConversion(
+                 id => id.Value,
+                 value => new QuestionId(value));
 
             builder.Property(q => q.Content)
                 .HasMaxLength(QuestionContent.MaxLength)
@@ -27,12 +29,6 @@ namespace TraffiLearn.Infrastructure.Configurations
                 .HasConversion(
                     number => number.Value,
                     value => QuestionNumber.Create(value).Value);
-
-            builder.Property(q => q.LikesCount)
-                .HasDefaultValue(0);
-
-            builder.Property(q => q.DislikesCount)
-                .HasDefaultValue(0);
 
             builder.Property(q => q.ImageUri)
                 .IsRequired(false)

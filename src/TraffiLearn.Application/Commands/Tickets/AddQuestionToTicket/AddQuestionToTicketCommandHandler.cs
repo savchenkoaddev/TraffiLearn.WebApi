@@ -3,6 +3,8 @@ using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Domain.Errors.Tickets;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Questions;
+using TraffiLearn.Domain.ValueObjects.Tickets;
 
 namespace TraffiLearn.Application.Commands.Tickets.AddQuestionToTicket
 {
@@ -24,11 +26,11 @@ namespace TraffiLearn.Application.Commands.Tickets.AddQuestionToTicket
         }
 
         public async Task<Result> Handle(
-            AddQuestionToTicketCommand request, 
+            AddQuestionToTicketCommand request,
             CancellationToken cancellationToken)
         {
             var ticket = await _ticketRepository.GetByIdAsync(
-                request.TicketId.Value,
+                ticketId: new TicketId(request.TicketId.Value),
                 cancellationToken,
                 includeExpressions: ticket => ticket.Questions);
 
@@ -38,7 +40,7 @@ namespace TraffiLearn.Application.Commands.Tickets.AddQuestionToTicket
             }
 
             var question = await _questionRepository.GetByIdAsync(
-                request.QuestionId.Value,
+                questionId: new QuestionId(request.QuestionId.Value),
                 cancellationToken,
                 includeExpressions: question => question.Tickets);
 
@@ -61,6 +63,8 @@ namespace TraffiLearn.Application.Commands.Tickets.AddQuestionToTicket
                 return ticketAddResult.Error;
             }
 
+            await _questionRepository.UpdateAsync(question);
+            await _ticketRepository.UpdateAsync(ticket);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();

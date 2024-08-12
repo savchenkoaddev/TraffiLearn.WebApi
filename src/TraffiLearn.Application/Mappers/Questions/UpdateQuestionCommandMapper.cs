@@ -1,5 +1,4 @@
-﻿using MediatR;
-using TraffiLearn.Application.Abstractions.Data;
+﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Commands.Questions.Update;
 using TraffiLearn.Application.DTO.Answers;
 using TraffiLearn.Domain.Entities;
@@ -44,7 +43,7 @@ namespace TraffiLearn.Application.Mapper.Questions
             }
 
             return Question.Create(
-                Guid.NewGuid(),
+                new QuestionId(Guid.NewGuid()),
                 contentResult.Value,
                 explanationResult.Value,
                 questionNumberResult.Value,

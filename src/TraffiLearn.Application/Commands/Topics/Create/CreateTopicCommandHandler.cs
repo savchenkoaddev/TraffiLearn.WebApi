@@ -18,12 +18,12 @@ namespace TraffiLearn.Application.Commands.Topics.Create
             IUnitOfWork unitOfWork)
         {
             _topicRepository = topicRepository;
-            _unitOfWork = unitOfWork;
             _topicMapper = topicMapper;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Result> Handle(
-            CreateTopicCommand request, 
+            CreateTopicCommand request,
             CancellationToken cancellationToken)
         {
             var mappingResult = _topicMapper.Map(request);
@@ -36,7 +36,7 @@ namespace TraffiLearn.Application.Commands.Topics.Create
             var topic = mappingResult.Value;
 
             await _topicRepository.AddAsync(
-                topic, 
+                topic,
                 cancellationToken);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);

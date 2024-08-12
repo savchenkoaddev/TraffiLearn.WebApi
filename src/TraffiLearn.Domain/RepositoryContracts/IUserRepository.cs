@@ -7,7 +7,7 @@ namespace TraffiLearn.Domain.RepositoryContracts
     public interface IUserRepository
     {
         Task<User?> GetByIdAsync(
-            Guid userId,
+            UserId userId,
             CancellationToken cancellationToken = default,
             params Expression<Func<User, object>>[] includeExpressions);
 
@@ -15,6 +15,10 @@ namespace TraffiLearn.Domain.RepositoryContracts
             Email email,
             CancellationToken cancellationToken = default,
             params Expression<Func<User, object>>[] includeExpressions);
+
+        Task<User?> GetByUsernameAsync(
+            Username username,
+            CancellationToken cancellationToken = default);
 
         Task AddAsync(
             User user,
@@ -25,11 +29,20 @@ namespace TraffiLearn.Domain.RepositoryContracts
         Task UpdateAsync(User user);
 
         Task<bool> ExistsAsync(
-            Guid userId,
+            UserId userId,
             CancellationToken cancellationToken = default);
 
-        Task<IEnumerable<Comment>> GetUserCommentsWithRepliesAsync(
-            Guid userId,
+        Task<bool> ExistsAsync(
+            Username username,
+            CancellationToken cancellationToken = default);
+
+        Task<bool> ExistsAsync(
+            Username username,
+            Email email,
+            CancellationToken cancellationToken = default);
+
+        Task<User?> GetUserWithCommentsWithRepliesAsync(
+            UserId userId,
             CancellationToken cancellationToken = default);
     }
 }

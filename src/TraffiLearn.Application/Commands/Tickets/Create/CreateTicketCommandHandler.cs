@@ -4,6 +4,7 @@ using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Tickets;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Questions;
 
 namespace TraffiLearn.Application.Commands.Tickets.Create
 {
@@ -16,9 +17,9 @@ namespace TraffiLearn.Application.Commands.Tickets.Create
         private readonly IUnitOfWork _unitOfWork;
 
         public CreateTicketCommandHandler(
-            ITicketRepository ticketRepository, 
+            ITicketRepository ticketRepository,
             IQuestionRepository questionRepository,
-            Mapper<CreateTicketCommand, Result<Ticket>> ticketMapper, 
+            Mapper<CreateTicketCommand, Result<Ticket>> ticketMapper,
             IUnitOfWork unitOfWork)
         {
             _ticketRepository = ticketRepository;
@@ -28,7 +29,7 @@ namespace TraffiLearn.Application.Commands.Tickets.Create
         }
 
         public async Task<Result> Handle(
-            CreateTicketCommand request, 
+            CreateTicketCommand request,
             CancellationToken cancellationToken)
         {
             var mappingResult = _ticketMapper.Map(request);
@@ -43,7 +44,7 @@ namespace TraffiLearn.Application.Commands.Tickets.Create
             foreach (var questionId in request.QuestionIds)
             {
                 var question = await _questionRepository.GetByIdAsync(
-                    questionId.Value,
+                    questionId: new QuestionId(questionId.Value),
                     cancellationToken);
 
                 if (question is null)

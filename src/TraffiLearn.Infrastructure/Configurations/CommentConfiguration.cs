@@ -9,7 +9,9 @@ namespace TraffiLearn.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<Comment> builder)
         {
-            builder.HasKey(x => x.Id);
+            builder.Property(c => c.Id).HasConversion(
+                id => id.Value,
+                value => new CommentId(value));
 
             builder.Property(c => c.Content)
                 .HasMaxLength(CommentContent.MaxLength)
@@ -22,7 +24,7 @@ namespace TraffiLearn.Infrastructure.Configurations
                 .WithMany(q => q.Comments);
 
             builder
-                .HasOne(c => c.User)
+                .HasOne(c => c.Creator)
                 .WithMany(q => q.Comments);
 
             builder

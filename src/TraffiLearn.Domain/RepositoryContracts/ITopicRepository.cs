@@ -1,12 +1,13 @@
 ﻿using System.Linq.Expressions;
 using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.ValueObjects.Topics;
 
 namespace TraffiLearn.Domain.RepositoryContracts
 {
     public interface ITopicRepository
     {
         Task<Topic?> GetByIdAsync(
-            Guid topicId,
+            TopicId topicId,
             CancellationToken cancellationToken = default,
             params Expression<Func<Topic, object>>[] includeExpressions);
 
@@ -16,7 +17,7 @@ namespace TraffiLearn.Domain.RepositoryContracts
             params Expression<Func<Topic, object>>[] includeExpressions);
 
         Task<bool> ExistsAsync(
-            Guid topicId,
+            TopicId topicId,
             CancellationToken cancellationToken = default);
 
         Task AddAsync(

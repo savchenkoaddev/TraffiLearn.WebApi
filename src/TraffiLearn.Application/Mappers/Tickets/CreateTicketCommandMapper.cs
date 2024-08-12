@@ -21,7 +21,7 @@ namespace TraffiLearn.Application.Mapper.Tickets
             var ticketId = Guid.NewGuid();
 
             return Ticket.Create(
-                ticketId,
+                new TicketId(ticketId),
                 numberCreateResult.Value);
         }
     }

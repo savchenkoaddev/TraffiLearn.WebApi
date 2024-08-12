@@ -1,94 +1,95 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Logging;
-using TraffiLearn.Application.Abstractions.Auth;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Application.Identity;
-using TraffiLearn.Domain.Errors;
+using TraffiLearn.Application.Abstractions.Identity;
+using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Questions;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Commands.Users.LikeQuestion
 {
     internal sealed class LikeQuestionCommandHandler
         : IRequestHandler<LikeQuestionCommand, Result>
     {
-        private readonly IAuthService<ApplicationUser> _authService;
+        private readonly IUserContextService<Guid> _userContextService;
         private readonly IQuestionRepository _questionRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<LikeQuestionCommandHandler> _logger;
 
         public LikeQuestionCommandHandler(
-            IAuthService<ApplicationUser> authService,
+            IUserContextService<Guid> userContextService,
             IQuestionRepository questionRepository,
             IUserRepository userRepository,
-            IUnitOfWork unitOfWork,
-            ILogger<LikeQuestionCommandHandler> logger)
+            IUnitOfWork unitOfWork)
         {
-            _authService = authService;
+            _userContextService = userContextService;
             _questionRepository = questionRepository;
             _userRepository = userRepository;
             _unitOfWork = unitOfWork;
-            _logger = logger;
         }
 
         public async Task<Result> Handle(
-            LikeQuestionCommand request, 
+            LikeQuestionCommand request,
             CancellationToken cancellationToken)
         {
-            var userIdResult = _authService.GetAuthenticatedUserId();
+            var callerId = new UserId(_userContextService.FetchAuthenticatedUserId());
 
-            if (userIdResult.IsFailure)
+            var caller = await _userRepository.GetByIdAsync(
+                callerId,
+                cancellationToken,
+                includeExpressions: [
+                    user => user.LikedQuestions,
+                    user => user.DislikedQuestions
+                ]);
+
+            if (caller is null)
             {
-                return userIdResult.Error;
+                throw new InvalidOperationException("Authenticated user not found.");
             }
 
-            var userId = userIdResult.Value;
-
-            var question = await _questionRepository.GetByIdAsync(
-                questionId: request.QuestionId.Value,
-                cancellationToken,
-                includeExpressions: 
-                    [question => question.LikedByUsers,
-                    question => question.DislikedByUsers]);
+            var question = await GetQuestionBeingLiked(
+                questionId: new QuestionId(request.QuestionId.Value),
+                cancellationToken);
 
             if (question is null)
             {
                 return UserErrors.QuestionNotFound;
             }
 
-            var user = await _userRepository.GetByIdAsync(
-                userId,
-                cancellationToken,
-                includeExpressions:
-                    [user => user.LikedQuestions, 
-                    user => user.DislikedQuestions]);
-
-            if (user is null)
-            {
-                _logger.LogCritical(InternalErrors.AuthenticatedUserNotFound.Description);
-
-                return InternalErrors.AuthenticatedUserNotFound;
-            }
-
-            var questionLikeResult = user.LikeQuestion(question);
+            var questionLikeResult = caller.LikeQuestion(question);
 
             if (questionLikeResult.IsFailure)
             {
                 return questionLikeResult.Error;
             }
 
-            var addLikeResult = question.AddLike(user);
+            var addLikeResult = question.AddLike(caller);
 
             if (addLikeResult.IsFailure)
             {
                 return addLikeResult.Error;
             }
 
+            await _questionRepository.UpdateAsync(question);
+            await _userRepository.UpdateAsync(caller);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
+        }
+
+        private async Task<Question?> GetQuestionBeingLiked(
+            QuestionId questionId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _questionRepository.GetByIdAsync(
+                questionId,
+                cancellationToken,
+                includeExpressions: [
+                    question => question.LikedByUsers,
+                    question => question.DislikedByUsers
+                ]);
         }
     }
 }

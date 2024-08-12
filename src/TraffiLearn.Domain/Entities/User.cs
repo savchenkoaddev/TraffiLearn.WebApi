@@ -1,34 +1,38 @@
-﻿using TraffiLearn.Domain.Errors.Users;
+﻿using TraffiLearn.Domain.Enums;
+using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Domain.Entities
 {
-    public sealed class User : Entity
+    public sealed class User : Entity<UserId>
     {
         private readonly HashSet<Comment> _comments = [];
         private readonly HashSet<Question> _markedQuestions = [];
         private readonly HashSet<Question> _likedQuestions = [];
         private readonly HashSet<Question> _dislikedQuestions = [];
 
-        private User(Guid id)
-            : base(id)
+        private User()
+            : base(new(Guid.Empty))
         { }
 
         private User(
-            Guid id,
+            UserId userId,
             Email email,
-            Username username)
-            : base(id)
+            Username username,
+            Role role) : base(userId)
         {
             Email = email;
             Username = username;
+            Role = role;
         }
 
         public Email Email { get; private set; }
 
         public Username Username { get; private set; }
+
+        public Role Role { get; private set; }
 
         public IReadOnlyCollection<Comment> Comments => _comments;
 
@@ -37,6 +41,24 @@ namespace TraffiLearn.Domain.Entities
         public IReadOnlyCollection<Question> LikedQuestions => _likedQuestions;
 
         public IReadOnlyCollection<Question> DislikedQuestions => _dislikedQuestions;
+
+        public Result DowngradeRole()
+        {
+            var roles = Enum.GetValues(typeof(Role)).Cast<Role>().OrderBy(r => r).ToList();
+
+            var currentRoleIndex = roles.IndexOf(Role);
+
+            if (currentRoleIndex <= 0)
+            {
+                return UserErrors.AccountCannotBeDowngraded;
+            }
+
+            var newRole = roles[currentRoleIndex - 1];
+
+            Role = newRole;
+
+            return Result.Success();
+        }
 
         public Result AddComment(Comment comment)
         {
@@ -133,14 +155,16 @@ namespace TraffiLearn.Domain.Entities
         }
 
         public static Result<User> Create(
-            Guid id,
+            UserId userId,
             Email email,
-            Username username)
+            Username username,
+            Role role)
         {
             return new User(
-                id,
+                userId,
                 email,
-                username);
+                username,
+                role);
         }
     }
 }

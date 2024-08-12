@@ -22,7 +22,8 @@ namespace TraffiLearn.Application.Queries.Questions.GetAll
 
         public async Task<Result<IEnumerable<QuestionResponse>>> Handle(GetAllQuestionsQuery request, CancellationToken cancellationToken)
         {
-            var questions = await _questionRepository.GetAllAsync();
+            var questions = await _questionRepository.GetAllAsync(
+                cancellationToken: cancellationToken);
 
             return Result.Success(_questionMapper.Map(questions));
         }

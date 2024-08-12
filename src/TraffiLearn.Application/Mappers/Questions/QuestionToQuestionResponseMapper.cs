@@ -9,7 +9,7 @@ namespace TraffiLearn.Application.Mapper.Questions
         public override QuestionResponse Map(Question source)
         {
             return new QuestionResponse(
-                Id: source.Id,
+                Id: source.Id.Value,
                 Content: source.Content.Value,
                 Explanation: source.Explanation.Value,
                 ImageUri: source.ImageUri?.Value,

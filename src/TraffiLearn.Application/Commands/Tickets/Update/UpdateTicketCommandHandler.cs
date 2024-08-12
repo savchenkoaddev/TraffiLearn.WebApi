@@ -4,6 +4,7 @@ using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Tickets;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Questions;
 using TraffiLearn.Domain.ValueObjects.Tickets;
 
 namespace TraffiLearn.Application.Commands.Tickets.Update
@@ -30,7 +31,7 @@ namespace TraffiLearn.Application.Commands.Tickets.Update
             CancellationToken cancellationToken)
         {
             var ticket = await _ticketRepository.GetByIdAsync(
-                request.TicketId.Value,
+                ticketId: new TicketId(request.TicketId.Value),
                 cancellationToken,
                 includeExpressions: ticket => ticket.Questions);
 
@@ -55,7 +56,8 @@ namespace TraffiLearn.Application.Commands.Tickets.Update
 
             var updateQuestionsResult = await UpdateQuestions(
                 ticket,
-                request.QuestionsIds);
+                request.QuestionsIds,
+                cancellationToken);
 
             if (updateQuestionsResult.IsFailure)
             {
@@ -69,13 +71,15 @@ namespace TraffiLearn.Application.Commands.Tickets.Update
         }
 
         private async Task<Result> UpdateQuestions(
-            Ticket ticket, 
-            IEnumerable<Guid?>? questionsIds)
+            Ticket ticket,
+            IEnumerable<Guid?>? questionsIds,
+            CancellationToken cancellationToken = default)
         {
             foreach (var questionId in questionsIds)
             {
                 var question = await _questionRepository.GetByIdAsync(
-                    questionId.Value);
+                    questionId: new QuestionId(questionId.Value),
+                    cancellationToken);
 
                 if (question is null)
                 {
@@ -104,7 +108,7 @@ namespace TraffiLearn.Application.Commands.Tickets.Update
 
             foreach (var question in ticketQuestions)
             {
-                if (!questionsIds.Contains(question.Id))
+                if (!questionsIds.Contains(question.Id.Value))
                 {
                     var questionRemoveResult = ticket.RemoveQuestion(question);
 

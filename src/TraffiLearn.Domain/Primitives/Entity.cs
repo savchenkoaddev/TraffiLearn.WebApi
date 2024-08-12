@@ -1,64 +1,57 @@
 ﻿namespace TraffiLearn.Domain.Primitives
 {
-    public abstract class Entity : IEquatable<Entity>
+    public abstract class Entity<TId> : IEquatable<Entity<TId>>
     {
-        protected Entity(Guid id)
+        protected Entity(TId id)
         {
             Id = id;
         }
 
-        public Guid Id { get; private init; }
+        public TId Id { get; private init; }
 
-        public static bool operator ==(Entity? first, Entity? second)
+        public static bool operator ==(Entity<TId>? first, Entity<TId>? second)
         {
-            return first is not null &&
-                   second is not null &&
-                   first.Equals(second);
+            if (first is null && second is null)
+            {
+                return true;
+            }
+
+            if (first is null || second is null)
+            {
+                return false;
+            }
+
+            return first.Equals(second);
         }
 
-        public static bool operator !=(Entity? first, Entity? second)
+        public static bool operator !=(Entity<TId>? first, Entity<TId>? second)
         {
             return !(first == second);
         }
 
         public override bool Equals(object? obj)
         {
-            if (obj is null)
+            if (obj is Entity<TId> entity)
             {
-                return false;
+                return Equals(entity);
             }
 
-            if (obj.GetType() != GetType())
-            {
-                return false;
-            }
-
-            if (obj is not Entity entity)
-            {
-                return false;
-            }
-
-            return entity.Id == Id;
+            return false;
         }
 
-        public bool Equals(Entity? other)
+        public bool Equals(Entity<TId>? other)
         {
-            if (other is null)
+            if (other is null || other.GetType() != GetType())
             {
                 return false;
             }
 
-            if (other.GetType() != GetType())
-            {
-                return false;
-            }
-
-            return other.Id == Id;  
+            return EqualityComparer<TId>.Default.Equals(Id, other.Id);
         }
 
         public override int GetHashCode()
         {
-            return Id.GetHashCode();
+            return EqualityComparer<TId>.Default.GetHashCode(Id);
         }
     }
 }

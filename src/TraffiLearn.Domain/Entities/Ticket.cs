@@ -5,16 +5,16 @@ using TraffiLearn.Domain.ValueObjects.Tickets;
 
 namespace TraffiLearn.Domain.Entities
 {
-    public sealed class Ticket : Entity
+    public sealed class Ticket : Entity<TicketId>
     {
         private readonly HashSet<Question> _questions = [];
 
-        private Ticket(Guid id)
-            : base(id)
+        private Ticket()
+            : base(new(Guid.Empty))
         { }
 
         private Ticket(
-            Guid ticketId,
+            TicketId ticketId,
             TicketNumber ticketNumber)
             : base(ticketId)
         {
@@ -57,7 +57,7 @@ namespace TraffiLearn.Domain.Entities
         }
 
         public static Result<Ticket> Create(
-            Guid ticketId,
+            TicketId ticketId,
             TicketNumber ticketNumber)
         {
             return new Ticket(

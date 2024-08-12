@@ -3,6 +3,7 @@ using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Domain.Errors.Tickets;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Tickets;
 
 namespace TraffiLearn.Application.Commands.Tickets.Delete
 {
@@ -13,7 +14,7 @@ namespace TraffiLearn.Application.Commands.Tickets.Delete
         private readonly IUnitOfWork _unitOfWork;
 
         public DeleteTicketCommandHandler(
-            ITicketRepository ticketRepository, 
+            ITicketRepository ticketRepository,
             IUnitOfWork unitOfWork)
         {
             _ticketRepository = ticketRepository;
@@ -21,11 +22,11 @@ namespace TraffiLearn.Application.Commands.Tickets.Delete
         }
 
         public async Task<Result> Handle(
-            DeleteTicketCommand request, 
+            DeleteTicketCommand request,
             CancellationToken cancellationToken)
         {
             var ticket = await _ticketRepository.GetByIdAsync(
-                request.TicketId.Value, 
+                ticketId: new TicketId(request.TicketId.Value),
                 cancellationToken);
 
             if (ticket is null)

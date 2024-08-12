@@ -1,11 +1,11 @@
 ﻿using System.Security.Claims;
-using TraffiLearn.Application.Identity;
+using TraffiLearn.Domain.Entities;
 
-namespace TraffiLearn.Application.Abstractions.Auth
+namespace TraffiLearn.Application.Abstractions.Identity
 {
     public interface ITokenService
     {
-        string GenerateAccessToken(ApplicationUser identityUser);
+        string GenerateAccessToken(User user);
 
         string GenerateRefreshToken();
 

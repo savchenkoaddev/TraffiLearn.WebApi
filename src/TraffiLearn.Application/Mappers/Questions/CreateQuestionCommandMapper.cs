@@ -12,7 +12,7 @@ namespace TraffiLearn.Application.Mapper.Questions
     {
         public override Result<Question> Map(CreateQuestionCommand source)
         {
-            var questionId = Guid.NewGuid();
+            QuestionId questionId = new(Guid.NewGuid());
 
             var answersResult = ParseAnswers(source.Answers);
 

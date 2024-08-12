@@ -13,10 +13,5 @@ namespace TraffiLearn.Domain.Errors.Comments
             Error.Validation(
                 code: "Comment.CommentAlreadyAdded",
                 description: "The same comment has already been added within the root comment.");
-
-        public static readonly Error NotAllowedToModify =
-            Error.Validation(
-                code: "Comment.NotAllowedToModify",
-                description: "Your are not allowed to modify the comment.");
     }
 }

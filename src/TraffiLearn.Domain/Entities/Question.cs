@@ -1,12 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using TraffiLearn.Domain.Errors.Questions;
+﻿using TraffiLearn.Domain.Errors.Questions;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Questions;
 
 namespace TraffiLearn.Domain.Entities
 {
-    public sealed class Question : Entity
+    public sealed class Question : Entity<QuestionId>
     {
         private List<Answer> _answers = [];
         private readonly HashSet<Topic> _topics = [];
@@ -15,17 +14,17 @@ namespace TraffiLearn.Domain.Entities
         private readonly HashSet<User> _likedByUsers = [];
         private readonly HashSet<User> _dislikedByUsers = [];
 
-        private Question(Guid id)
-            : base(id)
+        private Question()
+            : base(new(Guid.Empty))
         { }
 
         private Question(
-            Guid id,
+            QuestionId questionId,
             QuestionContent content,
             QuestionExplanation explanation,
             QuestionNumber questionNumber,
             List<Answer> answers,
-            ImageUri? imageUri) : base(id)
+            ImageUri? imageUri) : base(questionId)
         {
             Content = content;
             Explanation = explanation;
@@ -229,7 +228,7 @@ namespace TraffiLearn.Domain.Entities
         }
 
         public static Result<Question> Create(
-            Guid id,
+            QuestionId questionId,
             QuestionContent content,
             QuestionExplanation explanation,
             QuestionNumber questionNumber,
@@ -244,7 +243,7 @@ namespace TraffiLearn.Domain.Entities
             }
 
             return new Question(
-                id,
+                questionId,
                 content,
                 explanation,
                 questionNumber,
