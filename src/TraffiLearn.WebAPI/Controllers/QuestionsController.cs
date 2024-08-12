@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TraffiLearn.Application.Commands.Questions.AddComment;
 using TraffiLearn.Application.Commands.Questions.AddTicketToQuestion;
@@ -24,11 +23,12 @@ using TraffiLearn.Application.Queries.Questions.GetQuestionTopics;
 using TraffiLearn.Application.Queries.Users.GetCurrentUserDislikedQuestions;
 using TraffiLearn.Application.Queries.Users.GetCurrentUserLikedQuestions;
 using TraffiLearn.Application.Queries.Users.GetMarkedQuestions;
+using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
-    [Authorize]
+    [HasPermission(Permission.AccessData)]
     [Route("api/questions")]
     [ApiController]
     public class QuestionsController : ControllerBase
@@ -124,7 +124,7 @@ namespace TraffiLearn.WebAPI.Controllers
 
         #region Commands
 
-
+        [HasPermission(Permission.ModifyData)]
         [HttpPost]
         public async Task<IActionResult> CreateQuestion(
             [FromForm] CreateQuestionCommand command)
@@ -134,6 +134,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
         }
 
+        [HasPermission(Permission.ModifyData)]
         [HttpPut]
         public async Task<IActionResult> UpdateQuestion(
             [FromForm] UpdateQuestionCommand command)
@@ -143,6 +144,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
+        [HasPermission(Permission.ModifyData)]
         [HttpPut("{questionId:guid}/add-topic/{topicId:guid}")]
         public async Task<IActionResult> AddTopicToQuestion(
             [FromRoute] Guid topicId,
@@ -155,6 +157,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
+        [HasPermission(Permission.ModifyData)]
         [HttpPut("{questionId:guid}/remove-topic/{topicId:guid}")]
         public async Task<IActionResult> RemoveTopicFromQuestion(
             [FromRoute] Guid topicId,
@@ -167,6 +170,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
+        [HasPermission(Permission.ModifyData)]
         [HttpPut("{questionId:guid}/add-ticket/{ticketId:guid}")]
         public async Task<IActionResult> AddTicketToQuestion(
             [FromRoute] Guid ticketId,
@@ -179,6 +183,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
+        [HasPermission(Permission.ModifyData)]
         [HttpPut("{questionId:guid}/remove-ticket/{ticketId:guid}")]
         public async Task<IActionResult> RemoveTicketFromQuestion(
             [FromRoute] Guid ticketId,
@@ -191,6 +196,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
+        [HasPermission(Permission.ModifyData)]
         [HttpDelete("{questionId:guid}")]
         public async Task<IActionResult> DeleteQuestion(
             [FromRoute] Guid questionId)
@@ -200,6 +206,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
+        [HasPermission(Permission.ModifyData)]
         [HttpPost("add-comment")]
         public async Task<IActionResult> AddComment(AddCommentCommand command)
         {
@@ -208,6 +215,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
         }
 
+        [HasPermission(Permission.ModifyData)]
         [HttpPut("{questionId:guid}/mark")]
         public async Task<IActionResult> MarkQuestion(Guid questionId)
         {
@@ -216,6 +224,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
+        [HasPermission(Permission.ModifyData)]
         [HttpPut("{questionId:guid}/unmark")]
         public async Task<IActionResult> UnmarkQuestion(Guid questionId)
         {
@@ -224,6 +233,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
+        [HasPermission(Permission.ModifyData)]
         [HttpPut("{questionId:guid}/like")]
         public async Task<IActionResult> LikeQuestion(Guid questionId)
         {
@@ -232,6 +242,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
+        [HasPermission(Permission.ModifyData)]
         [HttpPut("{questionId:guid}/dislike")]
         public async Task<IActionResult> DislikeQuestion(Guid questionId)
         {
@@ -240,6 +251,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
+        [HasPermission(Permission.ModifyData)]
         [HttpPut("{questionId:guid}/remove-like")]
         public async Task<IActionResult> RemoveQuestionLike(Guid questionId)
         {
@@ -248,6 +260,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
+        [HasPermission(Permission.ModifyData)]
         [HttpPut("{questionId:guid}/remove-dislike")]
         public async Task<IActionResult> RemoveQuestionDislike(Guid questionId)
         {

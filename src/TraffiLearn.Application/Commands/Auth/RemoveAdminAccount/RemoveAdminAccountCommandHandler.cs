@@ -48,9 +48,9 @@ namespace TraffiLearn.Application.Commands.Auth.RemoveAdminAccount
 
             if (IsNotAllowedToRemoveAdmins(caller))
             {
-                _logger.LogWarning("Caller tried to remove an admin account not having enough permissions. Caller role: {role}", caller.Role.ToString());
+                _logger.LogCritical("Caller tried to remove an admin account not having enough permissions. Caller role: {role}", caller.Role.ToString());
 
-                return UserErrors.NotAllowedToPerformAction;
+                throw new AuthorizationFailureException();
             }
 
             var admin = await _userRepository.GetByIdAsync(

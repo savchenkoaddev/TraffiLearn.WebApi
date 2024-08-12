@@ -1,15 +1,15 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TraffiLearn.Application.Commands.Comments.DeleteComment;
 using TraffiLearn.Application.Commands.Comments.Reply;
 using TraffiLearn.Application.Commands.Comments.UpdateComment;
 using TraffiLearn.Application.Queries.Comments.GetCommentReplies;
+using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
-    [Authorize]
+    [HasPermission(Permission.AccessData)]
     [Route("api/comments")]
     [ApiController]
     public class CommentsController : ControllerBase
@@ -46,6 +46,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
         }
 
+        [HasPermission(Permission.ModifyData)]
         [HttpPut]
         public async Task<IActionResult> UpdateComment(UpdateCommentCommand command)
         {
@@ -54,6 +55,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
+        [HasPermission(Permission.ModifyData)]
         [HttpDelete("{commentId:guid}")]
         public async Task<IActionResult> DeleteComment(Guid commentId)
         {

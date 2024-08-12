@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using System.Transactions;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
+using TraffiLearn.Application.Exceptions;
 using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Enums;
@@ -59,9 +60,9 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterAdmin
 
             if (IsNotAllowedToCreateAdmins(caller))
             {
-                _logger.LogWarning("Caller tried to create an admin account not having enough permissions. Caller role: {role}", caller.Role.ToString());
+                _logger.LogCritical("Caller tried to create an admin account not having enough permissions. Caller role: {role}", caller.Role.ToString());
 
-                return UserErrors.NotAllowedToPerformAction;
+                throw new AuthorizationFailureException();
             }
 
             var newUser = mappingResult.Value;

@@ -3,7 +3,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using TraffiLearn.Application;
+using TraffiLearn.Domain.Enums;
 using TraffiLearn.Infrastructure;
+using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.Infrastructure.Options;
 using TraffiLearn.WebAPI.Middleware;
 
@@ -22,31 +24,10 @@ namespace TraffiLearn.WebAPI
             builder.Services.AddApplication(builder.Configuration);
             builder.Services.AddInfrastructure(builder.Configuration);
 
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                var jwtSettings = builder.Configuration.GetRequiredSection(JwtSettings.SectionName).Get<JwtSettings>();
-
-                var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey));
-
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = jwtSettings.Issuer,
-                    ValidAudience = jwtSettings.Audience,
-                    IssuerSigningKey = signingKey
-                };
-            });
-
-            builder.Services.AddAuthorizationBuilder();
+            ConfigureAuthentication(
+                builder.Services,
+                builder.Configuration);
+            ConfigureAuthorization(builder.Services);
 
             var app = builder.Build();
 
@@ -68,6 +49,82 @@ namespace TraffiLearn.WebAPI
             app.MapControllers();
 
             app.Run();
+        }
+
+        private static void ConfigureAuthorization(IServiceCollection services)
+        {
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(
+                    Permission.AccessSpecificUserData.ToString(),
+                    policy =>
+                    {
+                        policy.RequireRole(Role.Admin.ToString());
+                    });
+
+                options.AddPolicy(
+                    Permission.AccessData.ToString(),
+                    policy =>
+                    {
+                        policy.RequireAuthenticatedUser();
+                    });
+
+                options.AddPolicy(
+                    Permission.DowngradeAccount.ToString(),
+                    policy =>
+                    {
+                        policy.RequireRole(Role.Owner.ToString());
+                    });
+
+                options.AddPolicy(
+                    Permission.RegisterAdmins.ToString(),
+                    policy =>
+                    {
+                        policy.RequireRole(Role.Owner.ToString());
+                    });
+
+                options.AddPolicy(
+                    Permission.RemoveAdmins.ToString(),
+                    policy =>
+                    {
+                        policy.RequireRole(Role.Owner.ToString());
+                    });
+
+                options.AddPolicy(
+                    Permission.ModifyData.ToString(),
+                    policy =>
+                    {
+                        policy.RequireRole(Role.Admin.ToString());
+                    });
+            });
+        }
+
+        private static void ConfigureAuthentication(
+            IServiceCollection services, 
+            ConfigurationManager configuration)
+        {
+            var jwtSettings = configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>();
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey));
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtSettings.Issuer,
+                    ValidAudience = jwtSettings.Audience,
+                    IssuerSigningKey = signingKey
+                };
+            });
         }
     }
 }

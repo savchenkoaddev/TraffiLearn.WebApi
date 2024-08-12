@@ -4,6 +4,7 @@ using TraffiLearn.Application.Commands.Auth.Login;
 using TraffiLearn.Application.Commands.Auth.RegisterAdmin;
 using TraffiLearn.Application.Commands.Auth.RegisterUser;
 using TraffiLearn.Application.Commands.Auth.RemoveAdminAccount;
+using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
 
 namespace TraffiLearn.WebAPI.Controllers
@@ -31,13 +32,14 @@ namespace TraffiLearn.WebAPI.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterUser(RegisterUserCommand command)
+        public async Task<IActionResult> Register(RegisterUserCommand command)
         {
             var commandResult = await _sender.Send(command);
 
             return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
         }
 
+        [HasPermission(Permission.RegisterAdmins)]
         [HttpPost("register-admin")]
         public async Task<IActionResult> RegisterAdmin(RegisterAdminCommand command)
         {
@@ -46,6 +48,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
         }
 
+        [HasPermission(Permission.RemoveAdmins)]
         [HttpDelete("remove-admin/{adminId:guid}")]
         public async Task<IActionResult> RemoveAdminAccount(Guid adminId)
         {

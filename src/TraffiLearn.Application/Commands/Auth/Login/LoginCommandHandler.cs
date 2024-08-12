@@ -54,22 +54,22 @@ namespace TraffiLearn.Application.Commands.Auth.Login
                 return Result.Failure<LoginResponse>(UserErrors.NotFound);
             }
 
-            _logger.LogInformation("User found in identity service for email: {Email}", email);
+            _logger.LogInformation("User found in identity service for email: {Email}", email.Value);
 
             var user = await _userRepository.GetByEmailAsync(email, cancellationToken);
 
             if (user is null)
             {
-                _logger.LogCritical("User not found in repository for email: {Email}. Critical data consistency issue.", email);
+                _logger.LogCritical("User not found in repository for email: {Email}. Critical data consistency issue.", email.Value);
 
                 throw new DataInconsistencyException();
             }
 
-            _logger.LogInformation("User retrieved from repository for email: {Email}", email);
+            _logger.LogInformation("User retrieved from repository for email: {Email}", email.Value);
 
             var accessToken = _tokenService.GenerateAccessToken(user);
 
-            _logger.LogInformation("Successfully generated access token for user: {UserId}", user.Id);
+            _logger.LogInformation("Successfully generated access token for user: {UserId}", user.Id.Value);
 
             return new LoginResponse(accessToken);
         }
