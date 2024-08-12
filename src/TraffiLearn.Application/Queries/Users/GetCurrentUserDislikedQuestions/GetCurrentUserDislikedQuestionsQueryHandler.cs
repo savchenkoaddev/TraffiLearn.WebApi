@@ -4,7 +4,9 @@ using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.DTO.Questions;
 using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Queries.Users.GetCurrentUserDislikedQuestions
 {
@@ -12,16 +14,19 @@ namespace TraffiLearn.Application.Queries.Users.GetCurrentUserDislikedQuestions
         : IRequestHandler<GetCurrentUserDislikedQuestionsQuery,
             Result<IEnumerable<QuestionResponse>>>
     {
-        private readonly IUserManagementService _userManagementService;
+        private readonly IUserContextService<Guid> _userContextService;
+        private readonly IUserRepository _userRepository;
         private readonly Mapper<Question, QuestionResponse> _questionMapper;
         private readonly ILogger<GetCurrentUserDislikedQuestionsQueryHandler> _logger;
 
         public GetCurrentUserDislikedQuestionsQueryHandler(
-            IUserManagementService userManagementService,
+            IUserContextService<Guid> userContextService,
+            IUserRepository userRepository,
             Mapper<Question, QuestionResponse> questionMapper,
             ILogger<GetCurrentUserDislikedQuestionsQueryHandler> logger)
         {
-            _userManagementService = userManagementService;
+            _userContextService = userContextService;
+            _userRepository = userRepository;
             _questionMapper = questionMapper;
             _logger = logger;
         }
@@ -30,26 +35,21 @@ namespace TraffiLearn.Application.Queries.Users.GetCurrentUserDislikedQuestions
             GetCurrentUserDislikedQuestionsQuery request,
             CancellationToken cancellationToken)
         {
-            var userResult = await GetCurrentUser(cancellationToken);
+            var userId = new UserId(_userContextService.FetchAuthenticatedUserId());
 
-            if (userResult.IsFailure)
-            {
-                return Result.Failure<IEnumerable<QuestionResponse>>(userResult.Error);
-            }
-
-            var user = userResult.Value;
-
-            return Result.Success(_questionMapper.Map(user.DislikedQuestions));
-        }
-
-        private async Task<Result<User>> GetCurrentUser(
-            CancellationToken cancellationToken = default)
-        {
-            return await _userManagementService.GetAuthenticatedUserAsync(
+            var user = await _userRepository.GetByIdAsync(
+                userId,
                 cancellationToken,
                 includeExpressions: [
                     user => user.DislikedQuestions
                 ]);
+
+            if (user is null)
+            {
+                throw new InvalidOperationException("Authenticated user is not found.");
+            }
+
+            return Result.Success(_questionMapper.Map(user.DislikedQuestions));
         }
     }
 }

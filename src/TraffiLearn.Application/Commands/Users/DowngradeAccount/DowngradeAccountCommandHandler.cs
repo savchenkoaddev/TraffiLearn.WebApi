@@ -1,11 +1,12 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System.Transactions;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
-using TraffiLearn.Application.Options;
+using TraffiLearn.Application.Errors;
+using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.Enums;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
@@ -17,21 +18,18 @@ namespace TraffiLearn.Application.Commands.Users.DowngradeAccount
         : IRequestHandler<DowngradeAccountCommand, Result>
     {
         private readonly IUserRepository _userRepository;
-        private readonly IUserManagementService _userManagementService;
-        private readonly AuthSettings _authSettings;
+        private readonly IIdentityService<ApplicationUser> _identityService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<DowngradeAccountCommandHandler> _logger;
 
         public DowngradeAccountCommandHandler(
             IUserRepository userRepository,
-            IUserManagementService userManagementService,
-            IOptions<AuthSettings> authSettings,
+            IIdentityService<ApplicationUser> identityService,
             IUnitOfWork unitOfWork,
             ILogger<DowngradeAccountCommandHandler> logger)
         {
             _userRepository = userRepository;
-            _userManagementService = userManagementService;
-            _authSettings = authSettings.Value;
+            _identityService = identityService;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
@@ -40,21 +38,6 @@ namespace TraffiLearn.Application.Commands.Users.DowngradeAccount
             DowngradeAccountCommand request,
             CancellationToken cancellationToken)
         {
-            var downgraderResult = await _userManagementService.GetAuthenticatedUserAsync(
-                cancellationToken);
-
-            if (downgraderResult.IsFailure)
-            {
-                return downgraderResult.Error;
-            }
-
-            var downgrader = downgraderResult.Value;
-
-            if (IsNotAllowedToDowngrade(downgrader))
-            {
-                return UserErrors.NotAllowedToPerformAction;
-            }
-
             UserId affectedUserId = new(request.UserId.Value);
 
             var affectedUser = await _userRepository.GetByIdAsync(
@@ -71,25 +54,32 @@ namespace TraffiLearn.Application.Commands.Users.DowngradeAccount
                 return UserErrors.AccountCannotBeDowngraded;
             }
 
-            var previousRole = affectedUser.Role;
+            string previousRole = affectedUser.Role.ToString();
             var downgradeResult = affectedUser.DowngradeRole();
+            string newRole = affectedUser.Role.ToString();
 
             if (downgradeResult.IsFailure)
             {
                 return downgradeResult.Error;
             }
 
+            var identityUser = await _identityService.GetByEmailAsync(affectedUser.Email);
+
+            if (identityUser is null)
+            {
+                return InternalErrors.DataConsistencyError;
+            }
+
             using (var transaction = new TransactionScope(
                 TransactionScopeAsyncFlowOption.Enabled))
             {
-                var assignRoleResult = await _userManagementService.UpdateIdentityUserRoleAsync(
-                    affectedUser,
-                    cancellationToken);
+                await _identityService.RemoveFromRoleAsync(
+                    identityUser,
+                    previousRole);
 
-                if (assignRoleResult.IsFailure)
-                {
-                    return assignRoleResult.Error;
-                }
+                await _identityService.AddToRoleAsync(
+                    identityUser,
+                    newRole);
 
                 await _userRepository.UpdateAsync(affectedUser);
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -108,14 +98,9 @@ namespace TraffiLearn.Application.Commands.Users.DowngradeAccount
             return Result.Success();
         }
 
-        private bool IsNotAllowedToDowngrade(User downgrader)
-        {
-            return downgrader.Role < _authSettings.MinAllowedRoleToDowngradeAccounts;
-        }
-
         private bool CannotBeDowngraded(User user)
         {
-            return user.Role < _authSettings.MinRoleForDowngrade;
+            return user.Role == Role.RegularUser;
         }
     }
 }

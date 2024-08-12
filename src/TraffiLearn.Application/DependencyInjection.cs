@@ -54,6 +54,7 @@ namespace TraffiLearn.Application
         private static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddHttpContextAccessor();
+            services.AddScoped<IAuthenticatedUserService, AuthenticatedUserService>();
 
             return services;
         }
@@ -115,8 +116,6 @@ namespace TraffiLearn.Application
                 configuration.GetSection(QuestionsSettings.SectionName));
             services.Configure<LoginSettings>(
                 configuration.GetSection(LoginSettings.SectionName));
-            services.Configure<AuthSettings>(
-                configuration.GetSection(AuthSettings.SectionName));
 
             return services;
         }

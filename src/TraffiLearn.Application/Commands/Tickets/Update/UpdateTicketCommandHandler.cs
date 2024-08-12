@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Tickets;
 using TraffiLearn.Domain.RepositoryContracts;
@@ -15,18 +14,15 @@ namespace TraffiLearn.Application.Commands.Tickets.Update
     {
         private readonly ITicketRepository _ticketRepository;
         private readonly IQuestionRepository _questionRepository;
-        private readonly IUserManagementService _userManagementService;
         private readonly IUnitOfWork _unitOfWork;
 
         public UpdateTicketCommandHandler(
             ITicketRepository ticketRepository,
             IQuestionRepository questionRepository,
-            IUserManagementService userManagementService,
             IUnitOfWork unitOfWork)
         {
             _ticketRepository = ticketRepository;
             _questionRepository = questionRepository;
-            _userManagementService = userManagementService;
             _unitOfWork = unitOfWork;
         }
 
@@ -34,14 +30,6 @@ namespace TraffiLearn.Application.Commands.Tickets.Update
             UpdateTicketCommand request,
             CancellationToken cancellationToken)
         {
-            var authorizationResult = await _userManagementService.EnsureCallerCanModifyDomainObjects(
-                cancellationToken);
-
-            if (authorizationResult.IsFailure)
-            {
-                return authorizationResult.Error;
-            }
-
             var ticket = await _ticketRepository.GetByIdAsync(
                 ticketId: new TicketId(request.TicketId.Value),
                 cancellationToken,
@@ -83,7 +71,7 @@ namespace TraffiLearn.Application.Commands.Tickets.Update
         }
 
         private async Task<Result> UpdateQuestions(
-            Ticket ticket, 
+            Ticket ticket,
             IEnumerable<Guid?>? questionsIds,
             CancellationToken cancellationToken = default)
         {

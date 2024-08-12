@@ -6,6 +6,7 @@ using TraffiLearn.Application.DTO.Questions;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Queries.Users.GetCurrentUserLikedQuestions
 {
@@ -13,16 +14,19 @@ namespace TraffiLearn.Application.Queries.Users.GetCurrentUserLikedQuestions
         : IRequestHandler<GetCurrentUserLikedQuestionsQuery,
             Result<IEnumerable<QuestionResponse>>>
     {
-        private readonly IUserManagementService _userManagementService;
+        private readonly IUserContextService<Guid> _userContextService;
+        private readonly IUserRepository _userRepository;
         private readonly Mapper<Question, QuestionResponse> _questionMapper;
         private readonly ILogger<GetCurrentUserLikedQuestionsQueryHandler> _logger;
 
         public GetCurrentUserLikedQuestionsQueryHandler(
-            IUserManagementService userManagementService,
+            IUserContextService<Guid> userContextService,
+            IUserRepository userRepository,
             Mapper<Question, QuestionResponse> questionMapper,
             ILogger<GetCurrentUserLikedQuestionsQueryHandler> logger)
         {
-            _userManagementService = userManagementService;
+            _userContextService = userContextService;
+            _userRepository = userRepository;
             _questionMapper = questionMapper;
             _logger = logger;
         }
@@ -31,26 +35,21 @@ namespace TraffiLearn.Application.Queries.Users.GetCurrentUserLikedQuestions
             GetCurrentUserLikedQuestionsQuery request,
             CancellationToken cancellationToken)
         {
-            var userResult = await GetCurrentUser(cancellationToken);
+            var userId = new UserId(_userContextService.FetchAuthenticatedUserId());
 
-            if (userResult.IsFailure)
-            {
-                return Result.Failure<IEnumerable<QuestionResponse>>(userResult.Error);
-            }
-
-            var user = userResult.Value;
-
-            return Result.Success(_questionMapper.Map(user.LikedQuestions));
-        }
-
-        private async Task<Result<User>> GetCurrentUser(
-           CancellationToken cancellationToken = default)
-        {
-            return await _userManagementService.GetAuthenticatedUserAsync(
+            var user = await _userRepository.GetByIdAsync(
+                userId,
                 cancellationToken,
                 includeExpressions: [
                     user => user.LikedQuestions
                 ]);
+
+            if (user is null)
+            {
+                throw new InvalidOperationException("Authenticated user is not found.");
+            }
+
+            return Result.Success(_questionMapper.Map(user.LikedQuestions));
         }
     }
 }

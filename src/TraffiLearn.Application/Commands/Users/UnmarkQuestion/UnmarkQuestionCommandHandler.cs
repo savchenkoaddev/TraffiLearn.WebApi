@@ -8,26 +8,27 @@ using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Questions;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Commands.Users.UnmarkQuestion
 {
     internal sealed class UnmarkQuestionCommandHandler
         : IRequestHandler<UnmarkQuestionCommand, Result>
     {
-        private readonly IUserManagementService _userManagementService;
+        private readonly IUserContextService<Guid> _userContextService;
         private readonly IUserRepository _userRepository;
         private readonly IQuestionRepository _questionRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<MarkQuestionCommandHandler> _logger;
 
         public UnmarkQuestionCommandHandler(
-            IUserManagementService userManagementService,
+            IUserContextService<Guid> userContextService,
             IUserRepository userRepository,
             IQuestionRepository questionRepository,
             IUnitOfWork unitOfWork,
             ILogger<MarkQuestionCommandHandler> logger)
         {
-            _userManagementService = userManagementService;
+            _userContextService = userContextService;
             _userRepository = userRepository;
             _questionRepository = questionRepository;
             _unitOfWork = unitOfWork;
@@ -38,11 +39,18 @@ namespace TraffiLearn.Application.Commands.Users.UnmarkQuestion
             UnmarkQuestionCommand request,
             CancellationToken cancellationToken)
         {
-            var userResult = await GetCaller(cancellationToken);
+            var callerId = new UserId(_userContextService.FetchAuthenticatedUserId());
 
-            if (userResult.IsFailure)
+            var caller = await _userRepository.GetByIdAsync(
+                callerId,
+                cancellationToken,
+                includeExpressions: [
+                    user => user.MarkedQuestions
+                ]);
+
+            if (caller is null)
             {
-                return userResult.Error;
+                throw new InvalidOperationException("Authenticated user not found.");
             }
 
             var question = await _questionRepository.GetByIdAsync(
@@ -54,32 +62,20 @@ namespace TraffiLearn.Application.Commands.Users.UnmarkQuestion
                 return UserErrors.QuestionNotFound;
             }
 
-            var user = userResult.Value;
-
-            var markResult = user.UnmarkQuestion(question);
+            var markResult = caller.UnmarkQuestion(question);
 
             if (markResult.IsFailure)
             {
                 return markResult.Error;
             }
 
-            await _userRepository.UpdateAsync(user);
+            await _userRepository.UpdateAsync(caller);
             await _questionRepository.UpdateAsync(question);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Succesfully unmarked question. User's username: {username}", user.Username.Value);
+            _logger.LogInformation("Succesfully unmarked question. User's username: {username}", caller.Username.Value);
 
             return Result.Success();
-        }
-
-        private async Task<Result<User>> GetCaller(
-            CancellationToken cancellationToken = default)
-        {
-            return await _userManagementService.GetAuthenticatedUserAsync(
-                cancellationToken,
-                includeExpressions: [
-                    user => user.MarkedQuestions
-                ]);
         }
     }
 }

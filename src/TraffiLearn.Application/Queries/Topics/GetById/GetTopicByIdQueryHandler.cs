@@ -26,16 +26,16 @@ namespace TraffiLearn.Application.Queries.Topics.GetById
             GetTopicByIdQuery request, 
             CancellationToken cancellationToken)
         {
-            var found = await _topicRepository.GetByIdAsync(
+            var topic = await _topicRepository.GetByIdAsync(
                 topicId: new TopicId(request.TopicId.Value), 
                 cancellationToken);
 
-            if (found is null)
+            if (topic is null)
             {
                 return Result.Failure<TopicResponse>(TopicErrors.NotFound);
             }
 
-            return _topicMapper.Map(found);
+            return _topicMapper.Map(topic);
         }
     }
 }

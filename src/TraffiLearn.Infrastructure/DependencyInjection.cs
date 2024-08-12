@@ -8,7 +8,6 @@ using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Abstractions.Storage;
 using TraffiLearn.Application.Identity;
 using TraffiLearn.Domain.RepositoryContracts;
-using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.Infrastructure.Database;
 using TraffiLearn.Infrastructure.External;
 using TraffiLearn.Infrastructure.Helpers;
@@ -26,7 +25,6 @@ namespace TraffiLearn.Infrastructure
         {
             services.AddOptions(configuration);
 
-            services.AddAuthenticationServices();
             services.AddExternalServices();
 
             services.AddInfrastructureServices();
@@ -43,6 +41,7 @@ namespace TraffiLearn.Infrastructure
             services.AddScoped<IUserContextService<Guid>, UserContextService>();
             services.AddScoped<IRoleService<IdentityRole>, RoleService<IdentityRole>>();
             services.AddScoped<IIdentityService<ApplicationUser>, IdentityService<ApplicationUser>>();
+            services.AddScoped<ITokenService, JwtTokenService>();
 
             return services;
         }
@@ -51,16 +50,9 @@ namespace TraffiLearn.Infrastructure
         {
             using (var sp = services.BuildServiceProvider())
             {
-                var roleService = sp.GetRequiredService<RoleService<IdentityRole>>();
+                var roleService = sp.GetRequiredService<IRoleService<IdentityRole>>();
                 await RoleSeeder.SeedRolesAsync(roleService);
             }
-        }
-
-        private static IServiceCollection AddAuthenticationServices(this IServiceCollection services)
-        {
-            services.AddScoped<ITokenService, JwtTokenService>();
-
-            return services;
         }
 
         private static IServiceCollection AddPersistence(this IServiceCollection services)

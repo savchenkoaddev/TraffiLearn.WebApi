@@ -4,7 +4,7 @@ using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Infrastructure.Services
 {
-    public sealed class IdentityService<TIdentityUser> : IIdentityService<TIdentityUser>
+    internal sealed class IdentityService<TIdentityUser> : IIdentityService<TIdentityUser>
         where TIdentityUser : class
     {
         private readonly UserManager<TIdentityUser> _userManager;

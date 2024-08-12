@@ -1,9 +1,6 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.DTO.Comments;
-using TraffiLearn.Application.Options;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
@@ -17,54 +14,32 @@ namespace TraffiLearn.Application.Queries.Users.GetUserComments
     {
         private readonly IUserRepository _userRepository;
         private readonly Mapper<Comment, CommentResponse> _commentMapper;
-        private readonly IUserManagementService _userManagementService;
-        private readonly AuthSettings _authSettings;
 
         public GetUserCommentsQueryHandler(
             IUserRepository userRepository,
-            Mapper<Comment, CommentResponse> commentMapper,
-            IUserManagementService userManagementService,
-            IOptions<AuthSettings> authSettings)
+            Mapper<Comment, CommentResponse> commentMapper)
         {
             _userRepository = userRepository;
             _commentMapper = commentMapper;
-            _userManagementService = userManagementService;
-            _authSettings = authSettings.Value;
         }
 
         public async Task<Result<IEnumerable<CommentResponse>>> Handle(
             GetUserCommentsQuery request,
             CancellationToken cancellationToken)
         {
-            var userResult = await _userManagementService.GetAuthenticatedUserAsync(
-                cancellationToken);
+            var userId = new UserId(request.UserId.Value);
 
-            if (userResult.IsFailure)
-            {
-                return Result.Failure<IEnumerable<CommentResponse>>(userResult.Error);
-            }
-
-            UserId userId = new(request.UserId.Value);
-
-            var callingUser = userResult.Value;
-
-            if (IsNotAllowedToGet(userId, callingUser))
-            {
-                return Result.Failure<IEnumerable<CommentResponse>>(
-                    UserErrors.NotAllowedToPerformAction);
-            }
-
-            var userBeingLooked = await _userRepository.GetUserWithCommentsWithRepliesAsync(
+            var user = await _userRepository.GetUserWithCommentsWithRepliesAsync(
                 userId,
                 cancellationToken);
 
-            return Result.Success(_commentMapper.Map(userBeingLooked!.Comments));
-        }
+            if (user is null)
+            {
+                return Result.Failure<IEnumerable<CommentResponse>>(
+                    UserErrors.NotFound);
+            }
 
-        private bool IsNotAllowedToGet(UserId userBeingLookedId, User callingUser)
-        {
-            return callingUser.Role < _authSettings.MinAllowedRoleToGetUserComments &&
-                callingUser.Id != userBeingLookedId;
+            return Result.Success(_commentMapper.Map(user.Comments));
         }
     }
 }

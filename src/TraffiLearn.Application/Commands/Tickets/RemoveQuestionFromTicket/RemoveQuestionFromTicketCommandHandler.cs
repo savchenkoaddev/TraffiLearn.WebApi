@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Domain.Errors.Tickets;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
@@ -14,18 +13,15 @@ namespace TraffiLearn.Application.Commands.Tickets.RemoveQuestionFromTicket
     {
         private readonly ITicketRepository _ticketRepository;
         private readonly IQuestionRepository _questionRepository;
-        private readonly IUserManagementService _userManagementService;
         private readonly IUnitOfWork _unitOfWork;
 
         public RemoveQuestionFromTicketCommandHandler(
-            ITicketRepository ticketRepository, 
+            ITicketRepository ticketRepository,
             IQuestionRepository questionRepository,
-            IUserManagementService userManagementService,
             IUnitOfWork unitOfWork)
         {
             _ticketRepository = ticketRepository;
             _questionRepository = questionRepository;
-            _userManagementService = userManagementService;
             _unitOfWork = unitOfWork;
         }
 
@@ -33,14 +29,6 @@ namespace TraffiLearn.Application.Commands.Tickets.RemoveQuestionFromTicket
             RemoveQuestionFromTicketCommand request,
             CancellationToken cancellationToken)
         {
-            var authorizationResult = await _userManagementService.EnsureCallerCanModifyDomainObjects(
-                cancellationToken);
-
-            if (authorizationResult.IsFailure)
-            {
-                return authorizationResult.Error;
-            }
-
             var ticket = await _ticketRepository.GetByIdAsync(
                 ticketId: new TicketId(request.TicketId.Value),
                 cancellationToken,

@@ -1,31 +1,30 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
-using TraffiLearn.Application.Commands.Users.LikeQuestion;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Questions;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Commands.Users.RemoveQuestionDislike
 {
     internal sealed class RemoveQuestionDislikeCommandHandler
         : IRequestHandler<RemoveQuestionDislikeCommand, Result>
     {
-        private readonly IUserManagementService _userManagementService;
+        private readonly IUserContextService<Guid> _userContextService;
         private readonly IQuestionRepository _questionRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
 
         public RemoveQuestionDislikeCommandHandler(
-            IUserManagementService userManagementService,
+            IUserContextService<Guid> userContextService,
             IQuestionRepository questionRepository,
             IUserRepository userRepository,
             IUnitOfWork unitOfWork)
         {
-            _userManagementService = userManagementService;
+            _userContextService = userContextService;
             _questionRepository = questionRepository;
             _userRepository = userRepository;
             _unitOfWork = unitOfWork;
@@ -35,11 +34,19 @@ namespace TraffiLearn.Application.Commands.Users.RemoveQuestionDislike
             RemoveQuestionDislikeCommand request,
             CancellationToken cancellationToken)
         {
-            var removerResult = await GetDislikeRemover(cancellationToken);
+            var callerId = new UserId(_userContextService.FetchAuthenticatedUserId());
 
-            if (removerResult.IsFailure)
+            var caller = await _userRepository.GetByIdAsync(
+                callerId,
+                cancellationToken,
+                includeExpressions: [
+                    user => user.LikedQuestions,
+                    user => user.DislikedQuestions
+                ]);
+
+            if (caller is null)
             {
-                return removerResult.Error;
+                throw new InvalidOperationException("Authenticated user not found.");
             }
 
             var dislikedQuestion = await GetDislikedQuestion(
@@ -51,16 +58,14 @@ namespace TraffiLearn.Application.Commands.Users.RemoveQuestionDislike
                 return UserErrors.QuestionNotFound;
             }
 
-            var remover = removerResult.Value;
-
-            var removeQuestionDislikeResult = remover.RemoveQuestionDislike(dislikedQuestion);
+            var removeQuestionDislikeResult = caller.RemoveQuestionDislike(dislikedQuestion);
 
             if (removeQuestionDislikeResult.IsFailure)
             {
                 return removeQuestionDislikeResult.Error;
             }
 
-            var removeDislikeResult = dislikedQuestion.RemoveDislike(remover);
+            var removeDislikeResult = dislikedQuestion.RemoveDislike(caller);
 
             if (removeDislikeResult.IsFailure)
             {
@@ -68,21 +73,10 @@ namespace TraffiLearn.Application.Commands.Users.RemoveQuestionDislike
             }
 
             await _questionRepository.UpdateAsync(dislikedQuestion);
-            await _userRepository.UpdateAsync(remover);
+            await _userRepository.UpdateAsync(caller);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
-        }
-
-        private async Task<Result<User>> GetDislikeRemover(
-            CancellationToken cancellationToken = default)
-        {
-            return await _userManagementService.GetAuthenticatedUserAsync(
-                cancellationToken,
-                includeExpressions: [
-                    user => user.LikedQuestions,
-                    user => user.DislikedQuestions
-                ]);
         }
 
         private async Task<Question?> GetDislikedQuestion(

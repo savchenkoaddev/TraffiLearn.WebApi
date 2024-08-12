@@ -3,7 +3,7 @@ using TraffiLearn.Application.Abstractions.Identity;
 
 namespace TraffiLearn.Infrastructure.Services
 {
-    public sealed class RoleService<TRole> : IRoleService<TRole>
+    internal sealed class RoleService<TRole> : IRoleService<TRole>
         where TRole : class
     {
         private readonly RoleManager<TRole> _roleManager;

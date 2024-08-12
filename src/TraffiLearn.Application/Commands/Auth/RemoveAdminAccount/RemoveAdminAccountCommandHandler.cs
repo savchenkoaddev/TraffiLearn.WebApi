@@ -17,22 +17,22 @@ namespace TraffiLearn.Application.Commands.Auth.RemoveAdminAccount
     internal sealed class RemoveAdminAccountCommandHandler
         : IRequestHandler<RemoveAdminAccountCommand, Result>
     {
+        private readonly IAuthenticatedUserService _authenticatedUserService;
         private readonly IUserRepository _userRepository;
         private readonly IIdentityService<ApplicationUser> _identityService;
-        private readonly IUserContextService<Guid> _userContextService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<RemoveAdminAccountCommandHandler> _logger;
 
         public RemoveAdminAccountCommandHandler(
+            IAuthenticatedUserService authenticatedUserService,
             IUserRepository userRepository,
             IIdentityService<ApplicationUser> identityService,
-            IUserContextService<Guid> userContextService,
             IUnitOfWork unitOfWork,
             ILogger<RemoveAdminAccountCommandHandler> logger)
         {
+            _authenticatedUserService = authenticatedUserService;
             _userRepository = userRepository;
             _identityService = identityService;
-            _userContextService = userContextService;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
@@ -43,20 +43,8 @@ namespace TraffiLearn.Application.Commands.Auth.RemoveAdminAccount
         {
             _logger.LogInformation("Handling RemoveAdminAccountCommand");
 
-            var callerId = _userContextService.FetchAuthenticatedUserId();
-
-            _logger.LogInformation("Succesfully fetched caller id. Caller ID: {CallerId}", callerId);
-
-            var caller = await _userRepository.GetByIdAsync(
-                new UserId(callerId),
-                cancellationToken);
-
-            if (caller is null)
-            {
-                _logger.LogCritical(InternalErrors.AuthorizationFailure.Description);
-
-                return InternalErrors.AuthorizationFailure;
-            }
+            var caller = await _authenticatedUserService
+                .GetAuthenticatedUserAsync(cancellationToken);
 
             if (IsNotAllowedToRemoveAdmins(caller))
             {

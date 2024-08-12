@@ -13,18 +13,18 @@ namespace TraffiLearn.Application.Queries.Users.GetLoggedInUserComments
     internal sealed class GetLoggedInUserCommentsQueryHandler
         : IRequestHandler<GetLoggedInUserCommentsQuery, Result<IEnumerable<CommentResponse>>>
     {
-        private readonly IUserManagementService _userManagementService;
+        private readonly IUserContextService<Guid> _userContextService;
         private readonly IUserRepository _userRepository;
         private readonly Mapper<Comment, CommentResponse> _commentMapper;
         private readonly ILogger<GetLoggedInUserCommentsQueryHandler> _logger;
 
         public GetLoggedInUserCommentsQueryHandler(
-            IUserManagementService userManagementService,
+            IUserContextService<Guid> userContextService,
             IUserRepository userRepository,
             Mapper<Comment, CommentResponse> commentMapper,
             ILogger<GetLoggedInUserCommentsQueryHandler> logger)
         {
-            _userManagementService = userManagementService;
+            _userContextService = userContextService;
             _userRepository = userRepository;
             _commentMapper = commentMapper;
             _logger = logger;
@@ -34,25 +34,22 @@ namespace TraffiLearn.Application.Queries.Users.GetLoggedInUserComments
             GetLoggedInUserCommentsQuery request,
             CancellationToken cancellationToken)
         {
-            var userResult = await _userManagementService.GetAuthenticatedUserAsync(
-                cancellationToken);
-
-            if (userResult.IsFailure)
-            {
-                return Result.Failure<IEnumerable<CommentResponse>>(userResult.Error);
-            }
-
-            UserId userId = userResult.Value.Id;
+            var userId = new UserId(_userContextService.FetchAuthenticatedUserId());
 
             var user = await _userRepository.GetUserWithCommentsWithRepliesAsync(
                 userId,
                 cancellationToken);
 
+            if (user is null)
+            {
+                throw new InvalidOperationException("Authenticated user not found.");
+            }
+
             _logger.LogInformation(
                 "Succesfully fetched authenticated user comments. Comments fetched: {count}",
-                user!.Comments.Count);
+                user.Comments.Count);
 
-            return Result.Success(_commentMapper.Map(user!.Comments));
+            return Result.Success(_commentMapper.Map(user.Comments));
         }
     }
 }

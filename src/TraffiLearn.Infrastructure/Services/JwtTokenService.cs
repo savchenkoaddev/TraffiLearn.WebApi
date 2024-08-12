@@ -8,7 +8,7 @@ using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Infrastructure.Options;
 
-namespace TraffiLearn.Infrastructure.Authentication
+namespace TraffiLearn.Infrastructure.Services
 {
     internal sealed class JwtTokenService : ITokenService
     {

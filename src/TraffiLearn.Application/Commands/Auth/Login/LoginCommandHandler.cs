@@ -70,7 +70,7 @@ namespace TraffiLearn.Application.Commands.Auth.Login
             _logger.LogInformation("User retrieved from repository for email: {Email}", email);
 
             var accessToken = _tokenService.GenerateAccessToken(user);
-
+            
             _logger.LogInformation("Successfully generated access token for user: {UserId}", user.Id);
 
             return new LoginResponse(accessToken);

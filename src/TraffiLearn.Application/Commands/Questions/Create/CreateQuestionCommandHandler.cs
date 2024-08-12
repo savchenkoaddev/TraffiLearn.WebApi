@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Abstractions.Storage;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Errors.Topics;
@@ -18,21 +17,18 @@ namespace TraffiLearn.Application.Commands.Questions.Create
         private readonly ITopicRepository _topicRepository;
         private readonly IBlobService _blobService;
         private readonly Mapper<CreateQuestionCommand, Result<Question>> _questionMapper;
-        private readonly IUserManagementService _userManagementService;
         private readonly IUnitOfWork _unitOfWork;
 
         public CreateQuestionCommandHandler(
             IQuestionRepository questionRepository,
             ITopicRepository topicRepository,
             IBlobService blobService,
-            IUserManagementService userManagementService,
             Mapper<CreateQuestionCommand, Result<Question>> questionMapper,
             IUnitOfWork unitOfWork)
         {
             _questionRepository = questionRepository;
             _topicRepository = topicRepository;
             _blobService = blobService;
-            _userManagementService = userManagementService;
             _questionMapper = questionMapper;
             _unitOfWork = unitOfWork;
         }
@@ -41,14 +37,6 @@ namespace TraffiLearn.Application.Commands.Questions.Create
         CreateQuestionCommand request,
             CancellationToken cancellationToken)
         {
-            var authorizationResult = await _userManagementService.EnsureCallerCanModifyDomainObjects(
-                cancellationToken);
-
-            if (authorizationResult.IsFailure)
-            {
-                return authorizationResult.Error;
-            }
-
             var mappingResult = _questionMapper.Map(request);
 
             if (mappingResult.IsFailure)

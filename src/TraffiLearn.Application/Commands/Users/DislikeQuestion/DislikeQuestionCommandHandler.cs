@@ -6,24 +6,25 @@ using TraffiLearn.Domain.Errors.Users;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Domain.ValueObjects.Questions;
+using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Commands.Users.DislikeQuestion
 {
     internal sealed class DislikeQuestionCommandHandler
         : IRequestHandler<DislikeQuestionCommand, Result>
     {
-        private readonly IUserManagementService _userManagementService;
+        private readonly IUserContextService<Guid> _userContextService;
         private readonly IQuestionRepository _questionRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
 
         public DislikeQuestionCommandHandler(
-            IUserManagementService userManagementService,
+            IUserContextService<Guid> userContextService,
             IQuestionRepository questionRepository,
             IUserRepository userRepository,
             IUnitOfWork unitOfWork)
         {
-            _userManagementService = userManagementService;
+            _userContextService = userContextService;
             _questionRepository = questionRepository;
             _userRepository = userRepository;
             _unitOfWork = unitOfWork;
@@ -33,12 +34,19 @@ namespace TraffiLearn.Application.Commands.Users.DislikeQuestion
             DislikeQuestionCommand request,
             CancellationToken cancellationToken)
         {
-            var dislikerResult = await GetDisliker(
-                cancellationToken);
+            var callerId = new UserId(_userContextService.FetchAuthenticatedUserId());
 
-            if (dislikerResult.IsFailure)
+            var caller = await _userRepository.GetByIdAsync(
+                callerId,
+                cancellationToken,
+                includeExpressions: [
+                    user => user.LikedQuestions,
+                    user => user.DislikedQuestions
+                ]);
+
+            if (caller is null)
             {
-                return dislikerResult.Error;
+                throw new InvalidOperationException("Authenticated user not found.");
             }
 
             var questionBeingDisliked = await GetQuestionBeingDisliked(
@@ -50,16 +58,14 @@ namespace TraffiLearn.Application.Commands.Users.DislikeQuestion
                 return UserErrors.QuestionNotFound;
             }
 
-            var disliker = dislikerResult.Value;
-
-            var questionDislikeResult = disliker.DislikeQuestion(questionBeingDisliked);
+            var questionDislikeResult = caller.DislikeQuestion(questionBeingDisliked);
 
             if (questionDislikeResult.IsFailure)
             {
                 return questionDislikeResult.Error;
             }
 
-            var addDislikeResult = questionBeingDisliked.AddDislike(disliker);
+            var addDislikeResult = questionBeingDisliked.AddDislike(caller);
 
             if (addDislikeResult.IsFailure)
             {
@@ -67,20 +73,10 @@ namespace TraffiLearn.Application.Commands.Users.DislikeQuestion
             }
 
             await _questionRepository.UpdateAsync(questionBeingDisliked);
-            await _userRepository.UpdateAsync(disliker);
+            await _userRepository.UpdateAsync(caller);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
-        }
-
-        private async Task<Result<User>> GetDisliker(
-            CancellationToken cancellationToken = default)
-        {
-            return await _userManagementService.GetAuthenticatedUserAsync(
-                cancellationToken,
-                includeExpressions: [
-                    user => user.LikedQuestions,
-                    user => user.DislikedQuestions]);
         }
 
         private async Task<Question?> GetQuestionBeingDisliked(
