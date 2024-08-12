@@ -21,7 +21,7 @@ namespace TraffiLearn.Domain.ValueObjects.Questions
         public bool IsCorrect { get; }
 
         public static Result<Answer> Create(
-            string text,
+            string? text,
             bool isCorrect)
         {
             if (string.IsNullOrWhiteSpace(text))

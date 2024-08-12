@@ -16,7 +16,7 @@ namespace TraffiLearn.Domain.ValueObjects.Users
 
         public string Value { get; }
 
-        public static Result<Email> Create(string value)
+        public static Result<Email> Create(string? value)
         {
             var validationResult = ValidateEmailString(value);
 
@@ -25,7 +25,7 @@ namespace TraffiLearn.Domain.ValueObjects.Users
                 return Result.Failure<Email>(validationResult.Error);
             }
 
-            return new Email(value);
+            return new Email(value!);
         }
 
         public override IEnumerable<object> GetAtomicValues()
@@ -33,7 +33,7 @@ namespace TraffiLearn.Domain.ValueObjects.Users
             yield return Value;
         }
 
-        private static Result ValidateEmailString(string email)
+        private static Result ValidateEmailString(string? email)
         {
             if (string.IsNullOrWhiteSpace(email))
             {
@@ -42,8 +42,8 @@ namespace TraffiLearn.Domain.ValueObjects.Users
 
             if (email.Length > MaxLength)
             {
-                return Result.Failure<Email>(EmailErrors.TooLong(
-                    maxLength: MaxLength));
+                return EmailErrors.TooLong(
+                    maxLength: MaxLength);
             }
 
             var emailRegex = new Regex(

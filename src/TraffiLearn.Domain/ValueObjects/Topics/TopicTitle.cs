@@ -15,7 +15,7 @@ namespace TraffiLearn.Domain.ValueObjects.Topics
 
         public string Value { get; }
 
-        public static Result<TopicTitle> Create(string value)
+        public static Result<TopicTitle> Create(string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
             {

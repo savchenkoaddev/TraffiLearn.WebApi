@@ -20,7 +20,7 @@ namespace TraffiLearn.Domain.ValueObjects.Comments
             yield return Value;
         }
 
-        public static Result<CommentContent> Create(string value) 
+        public static Result<CommentContent> Create(string? value) 
         {
             if (string.IsNullOrWhiteSpace(value))
             {

@@ -3,8 +3,8 @@ using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
-using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Behaviors;
 using TraffiLearn.Application.Commands.Auth.RegisterAdmin;
 using TraffiLearn.Application.Commands.Auth.RegisterUser;
@@ -28,7 +28,6 @@ using TraffiLearn.Application.Options;
 using TraffiLearn.Application.Services;
 using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.Shared;
-using Microsoft.AspNetCore.Identity;
 
 namespace TraffiLearn.Application
 {
