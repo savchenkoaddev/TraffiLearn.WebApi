@@ -49,6 +49,11 @@ namespace TraffiLearn.Domain.Errors.Users
                 code: "User.QuestionNotFound",
                 description: "The question has not been found.");
 
+        public static readonly Error CommentNotFound =
+           Error.Validation(
+               code: "User.CommentNotFound",
+               description: "The comment has not been found.");
+
         public static readonly Error QuestionAlreadyMarked =
             Error.Validation(
                 code: "User.QuestionAlreadyMarked",

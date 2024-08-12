@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TraffiLearn.Application.Commands.Comments.DeleteComment;
 using TraffiLearn.Application.Commands.Comments.Reply;
 using TraffiLearn.Application.Commands.Comments.UpdateComment;
+using TraffiLearn.Application.Commands.Users.LikeComment;
 using TraffiLearn.Application.Queries.Comments.GetCommentReplies;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
@@ -60,6 +61,14 @@ namespace TraffiLearn.WebAPI.Controllers
         public async Task<IActionResult> DeleteComment(Guid commentId)
         {
             var commandResult = await _sender.Send(new DeleteCommentCommand(commentId));
+
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+        }
+
+        [HttpPut("{commentId:guid}/like")]
+        public async Task<IActionResult> LikeComment(Guid commentId)
+        {
+            var commandResult = await _sender.Send(new LikeCommentCommand(commentId));
 
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
