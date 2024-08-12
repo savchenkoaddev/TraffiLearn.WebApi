@@ -34,6 +34,10 @@ namespace TraffiLearn.Domain.Entities
 
         public Comment? RootComment { get; private set; }
 
+        public int LikesCount => _likedByUsers.Count;
+
+        public int DislikesCount => _dislikedByUsers.Count;
+
         public IReadOnlyCollection<Comment> Replies => _replies;
 
         public IReadOnlyCollection<User> LikedByUsers => _likedByUsers;
