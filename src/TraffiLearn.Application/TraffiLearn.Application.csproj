@@ -18,7 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\Users\DislikeComment\" />
     <Folder Include="Commands\Users\RemoveCommentDislike\" />
     <Folder Include="Commands\Users\RemoveCommentLike\" />
   </ItemGroup>
