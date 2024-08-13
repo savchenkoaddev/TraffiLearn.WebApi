@@ -7,6 +7,8 @@ namespace TraffiLearn.Domain.Entities
 {
     public sealed class Topic : Entity<TopicId>
     {
+        private TopicNumber _topicNumber;
+        private TopicTitle _topicTitle;
         private readonly HashSet<Question> _questions = [];
 
         private Topic()
@@ -22,14 +24,40 @@ namespace TraffiLearn.Domain.Entities
             Title = title;
         }
 
-        public TopicNumber Number { get; private set; }
+        public TopicNumber Number
+        {
+            get 
+            {
+                return _topicNumber; 
+            }
+            private set
+            {
+                ArgumentNullException.ThrowIfNull(value, nameof(value));
 
-        public TopicTitle Title { get; private set; }
+                _topicNumber = value;
+            }
+        }
 
+        public TopicTitle Title
+        {
+            get
+            {
+                return _topicTitle;
+            }
+            private set
+            {
+                ArgumentNullException.ThrowIfNull(value, nameof(value));
+
+                _topicTitle = value;
+            }
+        }
+        
         public IReadOnlyCollection<Question> Questions => _questions;
 
         public Result AddQuestion(Question question)
         {
+            ArgumentNullException.ThrowIfNull(question, nameof(question));
+
             if (_questions.Contains(question))
             {
                 return TopicErrors.QuestionAlreadyAdded;
@@ -42,6 +70,8 @@ namespace TraffiLearn.Domain.Entities
 
         public Result RemoveQuestion(Question question)
         {
+            ArgumentNullException.ThrowIfNull(question, nameof(question));
+
             if (!_questions.Contains(question))
             {
                 return TopicErrors.QuestionNotFound;
@@ -52,10 +82,12 @@ namespace TraffiLearn.Domain.Entities
             return Result.Success();
         }
 
-        public Result Update(Topic topic)
+        public Result Update(
+            TopicNumber topicNumber,
+            TopicTitle topicTitle)
         {
-            Number = topic.Number;
-            Title = topic.Title;
+            Number = topicNumber;
+            Title = topicTitle;
 
             return Result.Success();
         }

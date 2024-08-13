@@ -45,7 +45,8 @@ namespace TraffiLearn.Application.Commands.Topics.Update
             }
 
             Result updateResult = topic.Update(
-                topic: mappingResult.Value);
+                topicNumber: mappingResult.Value.Number,
+                topicTitle: mappingResult.Value.Title);
 
             if (updateResult.IsFailure)
             {
