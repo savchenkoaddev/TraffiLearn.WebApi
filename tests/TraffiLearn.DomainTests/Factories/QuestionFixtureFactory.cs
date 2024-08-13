@@ -31,6 +31,11 @@ namespace TraffiLearn.DomainTests.Factories
             return QuestionNumber.Create(QuestionNumber.MinValue).Value;
         }
 
+        public static Answer CreateAnswer()
+        {
+            return Answer.Create("new-answer", true).Value;
+        }
+
         public static List<Answer> CreateAnswers()
         {
             return [

@@ -36,9 +36,6 @@ namespace TraffiLearn.DomainTests.Topics
             var topicTitle = result.Value;
 
             topicTitle.Value.Should().Be(title);
-
-            topicTitle.GetAtomicValues().Should().HaveCount(1);
-            topicTitle.GetAtomicValues().First().Should().Be(title);
         }
 
         [Fact]

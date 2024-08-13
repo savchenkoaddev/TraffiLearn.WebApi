@@ -7,12 +7,15 @@ namespace TraffiLearn.Domain.Entities
 {
     public sealed class Question : Entity<QuestionId>
     {
-        private List<Answer> _answers = [];
         private readonly HashSet<Topic> _topics = [];
         private readonly HashSet<Ticket> _tickets = [];
         private readonly HashSet<Comment> _comments = [];
         private readonly HashSet<User> _likedByUsers = [];
         private readonly HashSet<User> _dislikedByUsers = [];
+        private HashSet<Answer> _answers = [];
+        private QuestionContent _content;
+        private QuestionExplanation _explanation;
+        private QuestionNumber _questionNumber;
 
         private Question()
             : base(new(Guid.Empty))
@@ -23,7 +26,7 @@ namespace TraffiLearn.Domain.Entities
             QuestionContent content,
             QuestionExplanation explanation,
             QuestionNumber questionNumber,
-            List<Answer> answers,
+            HashSet<Answer> answers,
             ImageUri? imageUri) : base(questionId)
         {
             Content = content;
@@ -33,11 +36,47 @@ namespace TraffiLearn.Domain.Entities
             ImageUri = imageUri;
         }
 
-        public QuestionContent Content { get; private set; }
+        public QuestionContent Content
+        {
+            get
+            {
+                return _content;
+            }
+            private set
+            {
+                ArgumentNullException.ThrowIfNull(value, nameof(value));
 
-        public QuestionExplanation Explanation { get; private set; }
+                _content = value;
+            }
+        }
 
-        public QuestionNumber QuestionNumber { get; private set; }
+        public QuestionExplanation Explanation 
+        {
+            get
+            {
+                return _explanation;
+            }
+            private set
+            {
+                ArgumentNullException.ThrowIfNull(value, nameof(value));
+
+                _explanation = value;
+            }
+        }
+
+        public QuestionNumber QuestionNumber
+        {
+            get
+            {
+                return _questionNumber;
+            }
+            private set
+            {
+                ArgumentNullException.ThrowIfNull(value, nameof(value));
+
+                _questionNumber = value;
+            }
+        }
 
         public ImageUri? ImageUri { get; private set; }
 
@@ -55,10 +94,12 @@ namespace TraffiLearn.Domain.Entities
 
         public IReadOnlyCollection<User> LikedByUsers => _likedByUsers;
 
-        public IReadOnlyCollection<User> DislikedByUsers => _likedByUsers;
+        public IReadOnlyCollection<User> DislikedByUsers => _dislikedByUsers;
 
         public Result AddLike(User user)
         {
+            ArgumentNullException.ThrowIfNull(user, nameof(user));
+
             if (_likedByUsers.Contains(user))
             {
                 return QuestionErrors.AlreadyLikedByUser;
@@ -76,6 +117,8 @@ namespace TraffiLearn.Domain.Entities
 
         public Result AddDislike(User user)
         {
+            ArgumentNullException.ThrowIfNull(user, nameof(user));
+
             if (_dislikedByUsers.Contains(user))
             {
                 return QuestionErrors.AlreadyDislikedByUser;
@@ -93,6 +136,8 @@ namespace TraffiLearn.Domain.Entities
 
         public Result RemoveLike(User user)
         {
+            ArgumentNullException.ThrowIfNull(user, nameof(user));
+
             if (!_likedByUsers.Contains(user))
             {
                 return QuestionErrors.NotLikedByUser;
@@ -105,6 +150,8 @@ namespace TraffiLearn.Domain.Entities
 
         public Result RemoveDislike(User user)
         {
+            ArgumentNullException.ThrowIfNull(user, nameof(user));
+
             if (!_dislikedByUsers.Contains(user))
             {
                 return QuestionErrors.NotDislikedByUser;
@@ -117,6 +164,8 @@ namespace TraffiLearn.Domain.Entities
 
         public Result AddComment(Comment comment)
         {
+            ArgumentNullException.ThrowIfNull(comment, nameof(comment));
+
             if (_comments.Contains(comment))
             {
                 return QuestionErrors.CommentAlreadyAdded;
@@ -129,6 +178,8 @@ namespace TraffiLearn.Domain.Entities
 
         public Result AddAnswer(Answer answer)
         {
+            ArgumentNullException.ThrowIfNull(answer, nameof(answer));
+
             if (_answers.Contains(answer))
             {
                 return QuestionErrors.AnswerAlreadyAdded;
@@ -147,6 +198,8 @@ namespace TraffiLearn.Domain.Entities
 
         public Result RemoveAnswer(Answer answer)
         {
+            ArgumentNullException.ThrowIfNull(answer, nameof(answer));
+
             if (!_answers.Contains(answer))
             {
                 return QuestionErrors.AnswerNotFound;
@@ -165,6 +218,8 @@ namespace TraffiLearn.Domain.Entities
 
         public Result AddTopic(Topic topic)
         {
+            ArgumentNullException.ThrowIfNull(topic, nameof(topic));
+
             if (_topics.Contains(topic))
             {
                 return QuestionErrors.TopicAlreadyAdded;
@@ -177,6 +232,8 @@ namespace TraffiLearn.Domain.Entities
 
         public Result RemoveTopic(Topic topic)
         {
+            ArgumentNullException.ThrowIfNull(topic, nameof(topic));
+
             if (!_topics.Contains(topic))
             {
                 return QuestionErrors.TopicNotFound;
@@ -189,6 +246,8 @@ namespace TraffiLearn.Domain.Entities
 
         public Result AddTicket(Ticket ticket)
         {
+            ArgumentNullException.ThrowIfNull(ticket, nameof(ticket));
+
             if (_tickets.Contains(ticket))
             {
                 return QuestionErrors.TicketAlreadyAdded;
@@ -201,12 +260,14 @@ namespace TraffiLearn.Domain.Entities
 
         public Result RemoveTicket(Ticket ticket)
         {
+            ArgumentNullException.ThrowIfNull(ticket, nameof(ticket));
+
             if (!_tickets.Contains(ticket))
             {
                 return QuestionErrors.TicketNotFound;
             }
 
-            _tickets.Add(ticket);
+            _tickets.Remove(ticket);
 
             return Result.Success();
         }
@@ -216,13 +277,27 @@ namespace TraffiLearn.Domain.Entities
             ImageUri = imageUri;
         }
 
-        public Result Update(Question question)
+        public Result Update(
+            QuestionContent content,
+            QuestionExplanation explanation,
+            QuestionNumber number,
+            List<Answer> answers,
+            ImageUri? imageUri)
         {
-            Content = question.Content;
-            Explanation = question.Explanation;
-            QuestionNumber = question.QuestionNumber;
-            _answers = question.Answers.ToList();
-            ImageUri = question.ImageUri;
+            ArgumentNullException.ThrowIfNull(answers, nameof(answers));
+
+            var answersValidationResult = ValidateAnswers(answers);
+
+            if (answersValidationResult.IsFailure)
+            {
+                return answersValidationResult.Error;
+            }
+
+            Content = content;
+            Explanation = explanation;
+            QuestionNumber = number;
+            _answers = answers.ToHashSet();
+            ImageUri = imageUri;
 
             return Result.Success();
         }
@@ -235,6 +310,8 @@ namespace TraffiLearn.Domain.Entities
             List<Answer> answers,
             ImageUri? imageUri)
         {
+            ArgumentNullException.ThrowIfNull(answers, nameof(answers));
+
             var answersValidationResult = ValidateAnswers(answers);
 
             if (answersValidationResult.IsFailure)
@@ -247,7 +324,7 @@ namespace TraffiLearn.Domain.Entities
                 content,
                 explanation,
                 questionNumber,
-                answers,
+                answers.ToHashSet(),
                 imageUri);
         }
 

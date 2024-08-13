@@ -2,17 +2,16 @@
 using System.Reflection;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects.Tickets;
-using TraffiLearn.Domain.ValueObjects.Topics;
+using TraffiLearn.Domain.ValueObjects.Questions;
 
-namespace TraffiLearn.DomainTests.Tickets
+namespace TraffiLearn.DomainTests.Questions
 {
-    public sealed class TicketNumberTests
+    public sealed class NumberTests
     {
         [Fact]
         public void Create_IfPassedInvalidArgs_ShouldReturnError()
         {
-            var result = TicketNumber.Create(TicketNumber.MinValue - 1);
+            var result = QuestionNumber.Create(QuestionNumber.MinValue - 1);
 
             result.IsFailure.Should().BeTrue();
             result.Error.Should().NotBe(Error.None);
@@ -21,19 +20,20 @@ namespace TraffiLearn.DomainTests.Tickets
         [Fact]
         public void Create_IfPassedValidArgs_ShouldBeSuccesful()
         {
-            var result = TicketNumber.Create(TicketNumber.MinValue);
+            var value = QuestionNumber.MinValue;
+            var result = QuestionNumber.Create(value);
 
             result.IsSuccess.Should().BeTrue();
 
-            var number = result.Value;
+            var content = result.Value;
 
-            number.Value.Should().Be(TicketNumber.MinValue);
+            content.Value.Should().Be(value);
         }
 
         [Fact]
-        public void TicketNumber_ShouldBeImmutable()
+        public void Number_ShouldBeImmutable()
         {
-            var type = typeof(TicketNumber);
+            var type = typeof(QuestionNumber);
             var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
             foreach (var property in properties)
@@ -43,12 +43,12 @@ namespace TraffiLearn.DomainTests.Tickets
         }
 
         [Fact]
-        public void TicketNumber_ShouldInheritFromValueObject()
+        public void Number_ShouldInheritFromValueObject()
         {
-            var type = typeof(TicketNumber);
+            var type = typeof(QuestionNumber);
 
             var isValueObject = typeof(ValueObject).IsAssignableFrom(type);
-            isValueObject.Should().BeTrue("TicketNumber should inherit from ValueObject.");
+            isValueObject.Should().BeTrue("Number should inherit from ValueObject.");
         }
     }
 }

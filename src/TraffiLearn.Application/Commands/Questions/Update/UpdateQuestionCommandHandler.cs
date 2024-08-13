@@ -53,7 +53,14 @@ namespace TraffiLearn.Application.Commands.Questions.Update
                 return mappingResult.Error;
             }
 
-            var updateResult = question.Update(mappingResult.Value);
+            var newQuestion = mappingResult.Value;
+
+            var updateResult = question.Update(
+                newQuestion.Content,
+                newQuestion.Explanation,
+                newQuestion.QuestionNumber,
+                newQuestion.Answers.ToList(),
+                imageUri: null);
 
             if (updateResult.IsFailure)
             {
