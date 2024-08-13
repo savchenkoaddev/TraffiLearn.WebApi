@@ -9,7 +9,7 @@ namespace TraffiLearn.DomainTests.Topics
     public sealed class TopicTitleTests
     {
         [Fact]
-        public void TopicTitle_IfPassedInvalidParams_ShouldReturnError()
+        public void TopicTitle_IfPassedInvalidArgs_ShouldReturnError()
         {
             var nullResult = TopicTitle.Create(null);
 
@@ -25,7 +25,7 @@ namespace TraffiLearn.DomainTests.Topics
         }
 
         [Fact]
-        public void TopicTitle_IfPassedValidParams_ShouldReturnValidTopicTitle()
+        public void TopicTitle_IfPassedValidArgs_ShouldReturnValidTopicTitle()
         {
             var title = new string('x', TopicTitle.MaxLength - 1);
 

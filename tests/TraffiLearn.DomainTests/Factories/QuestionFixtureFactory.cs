@@ -3,35 +3,35 @@ using TraffiLearn.Domain.ValueObjects.Questions;
 
 namespace TraffiLearn.DomainTests.Factories
 {
-    internal sealed class QuestionFixtureFactory
+    internal static class QuestionFixtureFactory
     {
-        public static Question CreateValidQuestion()
+        public static Question CreateQuestion()
         {
             return Question.Create(
                 new QuestionId(Guid.NewGuid()),
-                CreateValidContent(),
-                CreateValidExplanation(),
-                CreateValidNumber(),
-                CreateValidAnswers(),
-                CreateValidImageUri()).Value;
+                CreateContent(),
+                CreateExplanation(),
+                CreateNumber(),
+                CreateAnswers(),
+                CreateImageUri()).Value;
         }
 
-        public static QuestionContent CreateValidContent()
+        public static QuestionContent CreateContent()
         {
             return QuestionContent.Create("value").Value;
         }
 
-        public static QuestionExplanation CreateValidExplanation()
+        public static QuestionExplanation CreateExplanation()
         {
             return QuestionExplanation.Create("value").Value;
         }
 
-        public static QuestionNumber CreateValidNumber()
+        public static QuestionNumber CreateNumber()
         {
             return QuestionNumber.Create(QuestionNumber.MinValue).Value;
         }
 
-        public static List<Answer> CreateValidAnswers()
+        public static List<Answer> CreateAnswers()
         {
             return [
                 Answer.Create("text1", true).Value,
@@ -39,7 +39,7 @@ namespace TraffiLearn.DomainTests.Factories
             ];
         }
 
-        public static ImageUri CreateValidImageUri()
+        public static ImageUri CreateImageUri()
         {
             return ImageUri.Create("http://127.0.0.1:10000/devstoreaccount1").Value;
         }

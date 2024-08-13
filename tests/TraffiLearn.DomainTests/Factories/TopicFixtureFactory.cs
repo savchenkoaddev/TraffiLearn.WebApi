@@ -3,22 +3,22 @@ using TraffiLearn.Domain.ValueObjects.Topics;
 
 namespace TraffiLearn.DomainTests.Factories
 {
-    internal sealed class TopicFixtureFactory
+    internal static class TopicFixtureFactory
     {
-        public static Topic CreateValidTopic()
+        public static Topic CreateTopic()
         {
             return Topic.Create(
                 new TopicId(Guid.NewGuid()),
-                CreateValidNumber(),
-                CreateValidTitle()).Value;
+                CreateNumber(),
+                CreateTitle()).Value;
         }
 
-        public static TopicNumber CreateValidNumber()
+        public static TopicNumber CreateNumber()
         {
             return TopicNumber.Create(TopicNumber.MinValue).Value;
         }
 
-        public static TopicTitle CreateValidTitle()
+        public static TopicTitle CreateTitle()
         {
             return TopicTitle.Create("Title").Value;
         }

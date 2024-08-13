@@ -8,6 +8,7 @@ namespace TraffiLearn.Domain.Entities
     public sealed class Ticket : Entity<TicketId>
     {
         private readonly HashSet<Question> _questions = [];
+        private TicketNumber _ticketNumber;
 
         private Ticket()
             : base(new(Guid.Empty))
@@ -21,12 +22,26 @@ namespace TraffiLearn.Domain.Entities
             TicketNumber = ticketNumber;
         }
 
-        public TicketNumber TicketNumber { get; private set; }
+        public TicketNumber TicketNumber
+        {
+            get
+            {
+                return _ticketNumber;
+            }
+            private set
+            {
+                ArgumentNullException.ThrowIfNull(value, nameof(value));
+
+                _ticketNumber = value;
+            }
+        }
 
         public IReadOnlyCollection<Question> Questions => _questions;
 
         public Result AddQuestion(Question question)
         {
+            ArgumentNullException.ThrowIfNull(question, nameof(question));
+
             if (_questions.Contains(question))
             {
                 return TicketErrors.QuestionAlreadyAdded;
@@ -39,6 +54,8 @@ namespace TraffiLearn.Domain.Entities
 
         public Result RemoveQuestion(Question question)
         {
+            ArgumentNullException.ThrowIfNull(question, nameof(question));
+
             if (!_questions.Contains(question))
             {
                 return TicketErrors.QuestionNotFound;

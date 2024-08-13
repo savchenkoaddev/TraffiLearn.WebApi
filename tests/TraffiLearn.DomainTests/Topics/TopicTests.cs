@@ -10,7 +10,7 @@ namespace TraffiLearn.DomainTests.Topics
     public class TopicTests
     {
         [Fact]
-        public void Create_NullParameters_ShouldThrowArgumentNullException()
+        public void Create_IfPassedNullArgs_ShouldThrowArgumentNullException()
         {
             Action[] actions = [
                 () =>
@@ -40,10 +40,10 @@ namespace TraffiLearn.DomainTests.Topics
         }
 
         [Fact]
-        public void Create_Valid_ShouldBeSuccesful()
+        public void Create_IfPassedValidArgs_ShouldBeSuccesful()
         {
-            var validTopicTitle = TopicFixtureFactory.CreateValidTitle();
-            var validTopicNumber = TopicFixtureFactory.CreateValidNumber();
+            var validTopicTitle = TopicFixtureFactory.CreateTitle();
+            var validTopicNumber = TopicFixtureFactory.CreateNumber();
             var validId = new TopicId(Guid.NewGuid());
 
             var result = Topic.Create(
@@ -72,9 +72,9 @@ namespace TraffiLearn.DomainTests.Topics
         }
 
         [Fact]
-        public void AddQuestion_NullParameter_ShouldThrowArgumentNullException()
+        public void AddQuestion_IfPassedNullArgs_ShouldThrowArgumentNullException()
         {
-            var topic = TopicFixtureFactory.CreateValidTopic();
+            var topic = TopicFixtureFactory.CreateTopic();
 
             Action action = () =>
             {
@@ -88,9 +88,9 @@ namespace TraffiLearn.DomainTests.Topics
         [Fact]
         public void AddQuestion_IfAlreadyAddedSameQuestion_ShouldReturnError()
         {
-            var topic = TopicFixtureFactory.CreateValidTopic();
+            var topic = TopicFixtureFactory.CreateTopic();
 
-            var question = QuestionFixtureFactory.CreateValidQuestion();
+            var question = QuestionFixtureFactory.CreateQuestion();
 
             topic.AddQuestion(question);
 
@@ -101,22 +101,23 @@ namespace TraffiLearn.DomainTests.Topics
         }
 
         [Fact]
-        public void AddQuestion_Valid_ShouldBeSuccesful()
+        public void AddQuestion_IfPassedValidArgs_ShouldBeSuccesful()
         {
-            var topic = TopicFixtureFactory.CreateValidTopic();
+            var topic = TopicFixtureFactory.CreateTopic();
 
-            var question = QuestionFixtureFactory.CreateValidQuestion();
+            var question = QuestionFixtureFactory.CreateQuestion();
 
             var addResult = topic.AddQuestion(question);
 
             addResult.IsSuccess.Should().BeTrue();
+            topic.Questions.Should().HaveCount(1);
             topic.Questions.Should().Contain(question);
         }
 
         [Fact]
-        public void RemoveQuestion_NullParameter_ShouldThrowArgumentNullException()
+        public void RemoveQuestion_IfPassedNullArgs_ShouldThrowArgumentNullException()
         {
-            var topic = TopicFixtureFactory.CreateValidTopic();
+            var topic = TopicFixtureFactory.CreateTopic();
 
             Action action = () =>
             {
@@ -129,9 +130,9 @@ namespace TraffiLearn.DomainTests.Topics
         [Fact]
         public void RemoveQuestion_IfQuestionNotPresent_ShouldReturnError()
         {
-            var topic = TopicFixtureFactory.CreateValidTopic();
+            var topic = TopicFixtureFactory.CreateTopic();
 
-            var question = QuestionFixtureFactory.CreateValidQuestion();
+            var question = QuestionFixtureFactory.CreateQuestion();
 
             var removeResult = topic.RemoveQuestion(question);
 
@@ -140,26 +141,26 @@ namespace TraffiLearn.DomainTests.Topics
         }
 
         [Fact]
-        public void RemoveQuestion_Valid_ShouldBeSuccesful()
+        public void RemoveQuestion_IfPassedValidArgs_ShouldBeSuccesful()
         {
-            var topic = TopicFixtureFactory.CreateValidTopic();
+            var topic = TopicFixtureFactory.CreateTopic();
 
-            var question = QuestionFixtureFactory.CreateValidQuestion();
+            var question = QuestionFixtureFactory.CreateQuestion();
 
             topic.AddQuestion(question);
 
             var removeResult = topic.RemoveQuestion(question);
 
             removeResult.IsSuccess.Should().BeTrue();
-            topic.Questions.Should().NotContain(question);
+            topic.Questions.Should().BeEmpty();
         }
 
         [Fact]
-        public void Update_NullParameters_ShouldThrowArgumentNullException()
+        public void Update_IfPassedNullArgs_ShouldThrowArgumentNullException()
         {
-            var validTopic = TopicFixtureFactory.CreateValidTopic();
-            var validNumber = TopicFixtureFactory.CreateValidNumber();
-            var validTitle = TopicFixtureFactory.CreateValidTitle();
+            var validTopic = TopicFixtureFactory.CreateTopic();
+            var validNumber = TopicFixtureFactory.CreateNumber();
+            var validTitle = TopicFixtureFactory.CreateTitle();
 
             Action[] actions = [
                 () => { validTopic.Update(null, null); },
@@ -172,9 +173,9 @@ namespace TraffiLearn.DomainTests.Topics
         }
 
         [Fact]
-        public void Update_Valid_ShouldBeSuccesful()
+        public void Update_IfPassedValidArgs_ShouldBeSuccesful()
         {
-            var validTopic = TopicFixtureFactory.CreateValidTopic();
+            var validTopic = TopicFixtureFactory.CreateTopic();
 
             var newNumber = TopicNumber.Create(validTopic.Number.Value + 1).Value;
             var newTitle = TopicTitle.Create(validTopic.Title.Value + '1').Value;

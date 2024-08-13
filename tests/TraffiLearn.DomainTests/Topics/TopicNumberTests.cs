@@ -9,7 +9,7 @@ namespace TraffiLearn.DomainTests.Topics
     public sealed class TopicNumberTests
     {
         [Fact]
-        public void CreateTopicNumber_IfPassedInvalidParams_ShouldReturnError()
+        public void Create_IfPassedInvalidArgs_ShouldReturnError()
         {
             int tooSmallNumber = TopicNumber.MinValue - 1;
 
@@ -21,7 +21,7 @@ namespace TraffiLearn.DomainTests.Topics
         }
 
         [Fact]
-        public void CreateTopicNumber_IfPassedValidParams_ShouldReturnValidTopicNumber()
+        public void Create_IfPassedValidArgs_ShouldReturnValidTopicNumber()
         {
             int validNumber = TopicNumber.MinValue;
 
