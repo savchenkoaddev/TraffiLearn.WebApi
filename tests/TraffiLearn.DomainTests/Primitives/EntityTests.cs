@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using System.Reflection;
+using TraffiLearn.Domain.Primitives;
 
 namespace TraffiLearn.DomainTests.Primitives
 {
@@ -93,6 +94,20 @@ namespace TraffiLearn.DomainTests.Primitives
             var propertyInfo = typeof(TestEntity).GetProperty(nameof(TestEntity.Id), BindingFlags.Public | BindingFlags.Instance);
 
             propertyInfo?.CanWrite.Should().BeFalse();
+        }
+
+        private sealed class TestEntity : Entity<Guid>
+        {
+            public TestEntity(Guid id)
+                : base(id)
+            { }
+        }
+
+        private sealed class AnotherTestEntity : Entity<Guid>
+        {
+            public AnotherTestEntity(Guid id)
+                : base(id)
+            { }
         }
     }
 }
