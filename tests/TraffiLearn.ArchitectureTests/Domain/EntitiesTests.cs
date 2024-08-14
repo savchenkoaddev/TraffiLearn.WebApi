@@ -44,6 +44,5 @@ namespace TraffiLearn.ArchitectureTests.Domain
 
             failingTypes.Should().BeEmpty();
         }
-
     }
 }
