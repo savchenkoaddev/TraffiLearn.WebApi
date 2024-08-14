@@ -12,7 +12,7 @@ namespace TraffiLearn.DomainTests.Factories
                 new UserId(Guid.NewGuid()),
                 CreateEmail(),
                 CreateUsername(),
-                Role.RegularUser).Value;
+                CreateRole()).Value;
         }
 
         public static Username CreateUsername()
@@ -24,6 +24,11 @@ namespace TraffiLearn.DomainTests.Factories
         {
             return Email.Create(
                 "email@email.com").Value;
+        }
+
+        public static Role CreateRole()
+        {
+            return Role.RegularUser;
         }
     }
 }

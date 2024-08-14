@@ -63,15 +63,6 @@ namespace TraffiLearn.DomainTests.Topics
         }
 
         [Fact]
-        public void Topic_ShouldInheritFromEntity()
-        {
-            var type = typeof(Topic);
-
-            var isValueObject = typeof(Entity<TopicId>).IsAssignableFrom(type);
-            isValueObject.Should().BeTrue("Topic should inherit from Entity.");
-        }
-
-        [Fact]
         public void AddQuestion_IfPassedNullArgs_ShouldThrowArgumentNullException()
         {
             var topic = TopicFixtureFactory.CreateTopic();
@@ -188,6 +179,15 @@ namespace TraffiLearn.DomainTests.Topics
 
             validTopic.Number.Should().Be(newNumber);
             validTopic.Title.Should().Be(newTitle);
+        }
+
+        [Fact]
+        public void Topic_ShouldInheritFromEntity()
+        {
+            var type = typeof(Topic);
+
+            var isValueObject = typeof(Entity<TopicId>).IsAssignableFrom(type);
+            isValueObject.Should().BeTrue("Topic should inherit from Entity.");
         }
     }
 }
