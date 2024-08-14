@@ -10,6 +10,9 @@ namespace TraffiLearn.Domain.Entities
         private readonly HashSet<Comment> _replies = [];
         private readonly HashSet<User> _likedByUsers = [];
         private readonly HashSet<User> _dislikedByUsers = [];
+        private CommentContent _content;
+        private User _creator;
+        private Question _question;
 
         private Comment()
             : base(new(Guid.Empty))
@@ -26,11 +29,47 @@ namespace TraffiLearn.Domain.Entities
             Question = question;
         }
 
-        public CommentContent Content { get; private set; }
+        public CommentContent Content
+        {
+            get
+            {
+                return _content;
+            }
+            private set
+            {
+                ArgumentNullException.ThrowIfNull(value, nameof(value));
 
-        public User Creator { get; private set; }
+                _content = value;
+            }
+        }
 
-        public Question Question { get; private set; }
+        public User Creator
+        {
+            get
+            {
+                return _creator;
+            }
+            private set
+            {
+                ArgumentNullException.ThrowIfNull(value, nameof(value));
+
+                _creator = value;
+            }
+        }
+
+        public Question Question
+        {
+            get
+            {
+                return _question;
+            }
+            private set
+            {
+                ArgumentNullException.ThrowIfNull(value, nameof(value));
+
+                _question = value;
+            }
+        }
 
         public Comment? RootComment { get; private set; }
 
@@ -42,10 +81,12 @@ namespace TraffiLearn.Domain.Entities
 
         public IReadOnlyCollection<User> LikedByUsers => _likedByUsers;
 
-        public IReadOnlyCollection<User> DislikedByUsers => _likedByUsers;
+        public IReadOnlyCollection<User> DislikedByUsers => _dislikedByUsers;
 
         public Result AddLike(User user)
         {
+            ArgumentNullException.ThrowIfNull(user, nameof(user));
+
             if (_likedByUsers.Contains(user))
             {
                 return CommentErrors.AlreadyLikedByUser;
@@ -63,6 +104,8 @@ namespace TraffiLearn.Domain.Entities
 
         public Result RemoveLike(User user)
         {
+            ArgumentNullException.ThrowIfNull(user, nameof(user));
+
             if (!_likedByUsers.Contains(user))
             {
                 return CommentErrors.NotLikedByUser;
@@ -75,6 +118,8 @@ namespace TraffiLearn.Domain.Entities
 
         public Result AddDislike(User user)
         {
+            ArgumentNullException.ThrowIfNull(user, nameof(user));
+
             if (_dislikedByUsers.Contains(user))
             {
                 return CommentErrors.AlreadyDislikedByUser;
@@ -92,21 +137,29 @@ namespace TraffiLearn.Domain.Entities
 
         public Result RemoveDislike(User user)
         {
+            ArgumentNullException.ThrowIfNull(user, nameof(user));
+
             if (!_dislikedByUsers.Contains(user))
             {
                 return CommentErrors.NotDislikedByUser;
             }
 
+            _dislikedByUsers.Remove(user);
+
             return Result.Success();
         }
 
-        public void UpdateContent(CommentContent content)
+        public Result Update(CommentContent content)
         {
             Content = content;
+
+            return Result.Success();
         }
 
         public Result Reply(Comment comment)
         {
+            ArgumentNullException.ThrowIfNull(comment, nameof(comment));
+
             if (_replies.Contains(comment))
             {
                 return CommentErrors.CommentAlreadyAdded;
