@@ -44,7 +44,12 @@ namespace TraffiLearn.Application.Commands.Comments.UpdateComment
 
             var newContent = newContentResult.Value;
 
-            comment.UpdateContent(newContent);
+            var updateResult = comment.Update(newContent);
+
+            if (updateResult.IsFailure)
+            {
+                return updateResult.Error;
+            }
 
             await _commentRepository.UpdateAsync(comment);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
