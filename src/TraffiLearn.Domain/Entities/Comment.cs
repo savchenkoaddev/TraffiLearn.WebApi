@@ -13,7 +13,7 @@ namespace TraffiLearn.Domain.Entities
         private CommentContent _content;
         private User _creator;
         private Question _question;
-
+        
         private Comment()
             : base(new(Guid.Empty))
         { }
