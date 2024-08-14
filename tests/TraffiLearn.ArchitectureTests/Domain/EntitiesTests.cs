@@ -7,8 +7,6 @@ namespace TraffiLearn.ArchitectureTests.Domain
 {
     public sealed class EntitiesTests : BaseTest
     {
-        private const string FactoryMethodName = "Create";
-
         [Fact]
         public void Entities_ShouldBeSealed()
         {
@@ -88,7 +86,7 @@ namespace TraffiLearn.ArchitectureTests.Domain
                     BindingFlags.Public |
                     BindingFlags.Static);
 
-                if (!methods.Any(m => m.Name == FactoryMethodName))
+                if (!methods.Any(m => m.Name == Constants.FactoryMethodName))
                 {
                     failingTypes.Add(entityType);
                 }
@@ -117,7 +115,7 @@ namespace TraffiLearn.ArchitectureTests.Domain
                 {
                     var setterMethod = property.GetSetMethod(true);
 
-                    if (setterMethod != null && setterMethod.IsPublic)
+                    if (setterMethod != null && !setterMethod.IsPrivate)
                     {
                         failingTypes.Add(entityType);
                     }
@@ -128,7 +126,7 @@ namespace TraffiLearn.ArchitectureTests.Domain
         }
 
         [Fact]
-        public void Entities_ShouldHaveReadOnlyCollections()
+        public void Entities_ShouldHaveOnlyReadOnlyCollections()
         {
             var entityTypes = Types.InAssembly(DomainAssembly)
                 .That()
