@@ -7,7 +7,7 @@ namespace TraffiLearn.ArchitectureTests
     {
         protected static readonly Assembly DomainAssembly = typeof(Entity<>).Assembly;
 
-        protected static readonly Assembly ApplicationAssembly = typeof(Application.DependencyInjection).Assembly;
+        protected static readonly Assembly ApplicationAssembly = typeof(TraffiLearn.Application.DependencyInjection).Assembly;
 
         protected static readonly Assembly InfrastructureAssembly = typeof(Infrastructure.Database.ApplicationDbContext).Assembly;
 

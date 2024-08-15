@@ -35,7 +35,7 @@ namespace TraffiLearn.Application.Commands.Auth.Login
             CancellationToken cancellationToken)
         {
             _logger.LogInformation("Handling LoginCommand for email: {Email}", request.Email);
-
+            
             var emailResult = Email.Create(request.Email);
 
             if (emailResult.IsFailure)
