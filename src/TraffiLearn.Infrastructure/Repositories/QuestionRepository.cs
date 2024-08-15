@@ -61,9 +61,9 @@ namespace TraffiLearn.Infrastructure.Repositories
             CancellationToken cancellationToken = default,
             params Expression<Func<Question, object>>[] includeExpressions)
         {
-            if (amount < 0)
+            if (amount < 1)
             {
-                throw new ArgumentException("Amount of random records cannot be less than zero.", nameof(amount));
+                throw new ArgumentException("Amount of random records cannot be less than one.", nameof(amount));
             }
 
             //REQUIRES FURTHER OPTIMIZATION
