@@ -2,7 +2,8 @@
 
 namespace TraffiLearn.Application.Queries.Questions.GetRandomQuestions
 {
-    internal sealed class GetRandomQuestionsQueryValidator : AbstractValidator<GetRandomQuestionsQuery>
+    internal sealed class GetRandomQuestionsQueryValidator 
+        : AbstractValidator<GetRandomQuestionsQuery>
     {
         public GetRandomQuestionsQueryValidator()
         {

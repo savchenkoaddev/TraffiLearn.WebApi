@@ -52,15 +52,16 @@ namespace TraffiLearn.WebAPI.Controllers
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
-        [HttpGet("random-question")]
-        public async Task<IActionResult> GetRandomQuestion()
+        [HttpGet("questions/random")]
+        public async Task<IActionResult> GetRandomQuestion(
+            [FromQuery] int amount = 1)
         {
-            var queryResult = await _sender.Send(new GetRandomQuestionsQuery(1));
+            var queryResult = await _sender.Send(new GetRandomQuestionsQuery(amount));
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
-        [HttpGet("random-questions")]
+        [HttpGet("questions/random")]
         public async Task<IActionResult> GetRandomQuestions(
             [FromBody] int amount)
         {

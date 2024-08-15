@@ -4,5 +4,6 @@ using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Queries.Tickets.GetRandomTicketWithQuestions
 {
-    public sealed record GetRandomTicketWithQuestionsQuery : IRequest<Result<TicketWithQuestionsResponse>>;
+    public sealed record GetRandomTicketWithQuestionsQuery 
+        : IRequest<Result<TicketWithQuestionsResponse>>;
 }

@@ -8,7 +8,9 @@ using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Queries.Tickets.GetRandomTicketWithQuestions
 {
-    internal sealed class GetRandomTicketWithQuestionsQueryHandler : IRequestHandler<GetRandomTicketWithQuestionsQuery, Result<TicketWithQuestionsResponse>>
+    internal sealed class GetRandomTicketWithQuestionsQueryHandler 
+        : IRequestHandler<GetRandomTicketWithQuestionsQuery,
+            Result<TicketWithQuestionsResponse>>
     {
         private readonly ITicketRepository _ticketRepository;
         private readonly Mapper<Ticket, TicketWithQuestionsResponse> _ticketMapper;
@@ -25,12 +27,16 @@ namespace TraffiLearn.Application.Queries.Tickets.GetRandomTicketWithQuestions
             GetRandomTicketWithQuestionsQuery request,
             CancellationToken cancellationToken)
         {
-            var randomTicket = await _ticketRepository.GetRandomRecordAsync(cancellationToken, 
+            var randomTicket = await _ticketRepository.GetRandomRecordAsync(
+                cancellationToken, 
                 t => t.Questions);
 
-            return randomTicket is null
-               ? Result.Failure<TicketWithQuestionsResponse>(TicketErrors.NotFound)
-               : _ticketMapper.Map(randomTicket);
+            if (randomTicket is null)
+            {
+                return Result.Failure<TicketWithQuestionsResponse>(TicketErrors.NotFound);
+            }
+            
+            return Result.Success(_ticketMapper.Map(randomTicket));
         }
     }
 }

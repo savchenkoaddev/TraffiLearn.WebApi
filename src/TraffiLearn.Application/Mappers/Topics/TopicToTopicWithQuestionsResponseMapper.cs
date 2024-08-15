@@ -4,7 +4,8 @@ using TraffiLearn.Domain.Entities;
 
 namespace TraffiLearn.Application.Mappers.Topics
 {
-    internal sealed class TopicToTopicWithQuestionsResponseMapper : Mapper<Topic, TopicWithQuestionsResponse>
+    internal sealed class TopicToTopicWithQuestionsResponseMapper 
+        : Mapper<Topic, TopicWithQuestionsResponse>
     {
         public override TopicWithQuestionsResponse Map(Topic source)
         {

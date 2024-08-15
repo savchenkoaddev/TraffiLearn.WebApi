@@ -8,7 +8,9 @@ using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Queries.Questions.GetRandomQuestions
 {
-    internal sealed class GetRandomQuestionsQueryHandler : IRequestHandler<GetRandomQuestionsQuery, Result<IEnumerable<QuestionResponse>>>
+    internal sealed class GetRandomQuestionsQueryHandler 
+        : IRequestHandler<GetRandomQuestionsQuery,
+            Result<IEnumerable<QuestionResponse>>>
     {
         private readonly IQuestionRepository _questionRepository;
         private readonly Mapper<Question, QuestionResponse> _questionMapper;
@@ -21,13 +23,21 @@ namespace TraffiLearn.Application.Queries.Questions.GetRandomQuestions
             _questionMapper = questionMapper;
         }
 
-        public async Task<Result<IEnumerable<QuestionResponse>>> Handle(GetRandomQuestionsQuery request, CancellationToken cancellationToken)
+        public async Task<Result<IEnumerable<QuestionResponse>>> Handle(
+            GetRandomQuestionsQuery request,
+            CancellationToken cancellationToken)
         {
-            var randomQuestions = await _questionRepository.GetRandomRecordsAsync(request.Amount, cancellationToken: cancellationToken);
+            var randomQuestions = await _questionRepository.GetRandomRecordsAsync(
+                request.Amount!.Value,
+                cancellationToken: cancellationToken);
 
-            return randomQuestions is null
-                ? Result.Failure<IEnumerable<QuestionResponse>>(QuestionErrors.NotFound)
-                : Result.Success(_questionMapper.Map(randomQuestions));
+            if (randomQuestions is null)
+            {
+                return Result.Failure<IEnumerable<QuestionResponse>>(
+                    QuestionErrors.NotFound);
+            }
+
+            return Result.Success(_questionMapper.Map(randomQuestions));
         }
     }
 }
