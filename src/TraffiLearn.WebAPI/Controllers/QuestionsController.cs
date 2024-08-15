@@ -20,6 +20,7 @@ using TraffiLearn.Application.Queries.Questions.GetQuestionComments;
 using TraffiLearn.Application.Queries.Questions.GetQuestionsForTheoryTest;
 using TraffiLearn.Application.Queries.Questions.GetQuestionTickets;
 using TraffiLearn.Application.Queries.Questions.GetQuestionTopics;
+using TraffiLearn.Application.Queries.Questions.GetRandomQuestions;
 using TraffiLearn.Application.Queries.Users.GetCurrentUserDislikedQuestions;
 using TraffiLearn.Application.Queries.Users.GetCurrentUserLikedQuestions;
 using TraffiLearn.Application.Queries.Users.GetMarkedQuestions;
@@ -47,6 +48,24 @@ namespace TraffiLearn.WebAPI.Controllers
         public async Task<IActionResult> GetAllQuestions()
         {
             var queryResult = await _sender.Send(new GetAllQuestionsQuery());
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+
+        [HttpGet("questions/random")]
+        public async Task<IActionResult> GetRandomQuestion(
+            [FromQuery] int amount = 1)
+        {
+            var queryResult = await _sender.Send(new GetRandomQuestionsQuery(amount));
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+
+        [HttpGet("questions/random")]
+        public async Task<IActionResult> GetRandomQuestions(
+            [FromBody] int amount)
+        {
+            var queryResult = await _sender.Send(new GetRandomQuestionsQuery(amount));
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }

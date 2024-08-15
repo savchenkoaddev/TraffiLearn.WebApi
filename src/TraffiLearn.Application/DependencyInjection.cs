@@ -24,6 +24,8 @@ using TraffiLearn.Application.Mapper.Questions;
 using TraffiLearn.Application.Mapper.Tickets;
 using TraffiLearn.Application.Mapper.Topics;
 using TraffiLearn.Application.Mappers.Auth;
+using TraffiLearn.Application.Mappers.Tickets;
+using TraffiLearn.Application.Mappers.Topics;
 using TraffiLearn.Application.Options;
 using TraffiLearn.Application.Services;
 using TraffiLearn.Domain.Entities;
@@ -85,6 +87,10 @@ namespace TraffiLearn.Application
         {
             services.AddScoped<Mapper<Question, QuestionResponse>,
                 QuestionToQuestionResponseMapper>();
+            services.AddScoped<Mapper<Topic, TopicWithQuestionsResponse>,
+                TopicToTopicWithQuestionsResponseMapper>();
+            services.AddScoped<Mapper<Ticket, TicketWithQuestionsResponse>,
+                TicketToTicketWithQuestionsResponseMapper>();
             services.AddScoped<Mapper<Topic, TopicResponse>, TopicToTopicResponseMapper>();
             services.AddScoped<Mapper<CreateTopicCommand, Result<Topic>>,
                 CreateTopicCommandMapper>();

@@ -16,6 +16,10 @@ namespace TraffiLearn.Domain.RepositoryContracts
             CancellationToken cancellationToken = default,
             params Expression<Func<Topic, object>>[] includeExpressions);
 
+        Task<Topic?> GetRandomRecordAsync(
+            CancellationToken cancellationToken = default,
+            params Expression<Func<Topic, object>>[] includeExpressions);
+
         Task<bool> ExistsAsync(
             TopicId topicId,
             CancellationToken cancellationToken = default);

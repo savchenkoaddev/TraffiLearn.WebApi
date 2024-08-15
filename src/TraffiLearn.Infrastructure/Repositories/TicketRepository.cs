@@ -4,6 +4,7 @@ using TraffiLearn.Domain.Entities;
 using TraffiLearn.Domain.RepositoryContracts;
 using TraffiLearn.Domain.ValueObjects.Tickets;
 using TraffiLearn.Infrastructure.Database;
+using TraffiLearn.Infrastructure.Migrations;
 
 namespace TraffiLearn.Infrastructure.Repositories
 {
@@ -60,6 +61,32 @@ namespace TraffiLearn.Infrastructure.Repositories
 
             return await tickets
                 .ToListAsync(cancellationToken);
+        }
+
+        public async Task<Ticket?> GetRandomRecordAsync(
+            CancellationToken cancellationToken = default,
+            params Expression<Func<Ticket, object>>[] includeExpressions)
+        {
+            var sql = """
+                SELECT TOP 1 *
+                FROM {0}
+                ORDER BY NEWID()
+            """;
+
+            var formattedSql = string.Format(
+               sql,
+               nameof(ApplicationDbContext.Tickets));
+
+            var query = _dbContext.Tickets
+                .FromSqlRaw(formattedSql);
+
+            foreach (var includeExpression in includeExpressions)
+            {
+                query = query.Include(includeExpression);
+            }
+
+            return await query
+                .FirstOrDefaultAsync(cancellationToken);
         }
 
         public async Task<Ticket?> GetByIdAsync(
