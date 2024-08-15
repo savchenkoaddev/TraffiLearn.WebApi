@@ -62,6 +62,32 @@ namespace TraffiLearn.Infrastructure.Repositories
                 .ToListAsync(cancellationToken);
         }
 
+        public Task<Topic?> GetRandomRecordAsync(
+            CancellationToken cancellationToken = default,
+            params Expression<Func<Topic, object>>[] includeExpressions)
+        {
+            var sql = """
+                SELECT TOP 1 *
+                FROM {0}
+                ORDER BY NEWID()
+            """;
+
+            var formattedSql = string.Format(
+               sql,
+               nameof(ApplicationDbContext.Topics));
+
+            var query = _dbContext.Topics
+                .FromSqlRaw(formattedSql);
+
+            foreach (var includeExpression in includeExpressions)
+            {
+                query = query.Include(includeExpression);
+            }
+
+            return query
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
         public async Task<Topic?> GetByIdAsync(
             TopicId topicId,
             CancellationToken cancellationToken = default,

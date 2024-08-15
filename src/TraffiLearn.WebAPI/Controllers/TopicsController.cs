@@ -7,6 +7,7 @@ using TraffiLearn.Application.Commands.Topics.RemoveQuestionFromTopic;
 using TraffiLearn.Application.Commands.Topics.Update;
 using TraffiLearn.Application.Queries.Topics.GetAllSortedByNumber;
 using TraffiLearn.Application.Queries.Topics.GetById;
+using TraffiLearn.Application.Queries.Topics.GetRandomTopicWithQuestions;
 using TraffiLearn.Application.Queries.Topics.GetTopicQuestions;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
@@ -32,6 +33,14 @@ namespace TraffiLearn.WebAPI.Controllers
         public async Task<IActionResult> GetAllSortedTopicsByNumber()
         {
             var queryResult = await _sender.Send(new GetAllSortedTopicsByNumberQuery());
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+
+        [HttpGet("random-topic-with-questions")]
+        public async Task<IActionResult> GetRandomTopicWithQuestions()
+        {
+            var queryResult = await _sender.Send(new GetRandomTopicWithQuestionsQuery());
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
