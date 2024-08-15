@@ -7,6 +7,7 @@ using TraffiLearn.Application.Commands.Tickets.RemoveQuestionFromTicket;
 using TraffiLearn.Application.Commands.Tickets.Update;
 using TraffiLearn.Application.Queries.Tickets.GetAll;
 using TraffiLearn.Application.Queries.Tickets.GetById;
+using TraffiLearn.Application.Queries.Tickets.GetRandomTicketWithQuestions;
 using TraffiLearn.Application.Queries.Tickets.GetTicketQuestions;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
@@ -32,6 +33,14 @@ namespace TraffiLearn.WebAPI.Controllers
         public async Task<IActionResult> GetAllTickets()
         {
             var queryResult = await _sender.Send(new GetAllTicketsQuery());
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+
+        [HttpGet("random-ticket-with-questions")]
+        public async Task<IActionResult> GetRandomTicketWithQuestions()
+        {
+            var queryResult = await _sender.Send(new GetRandomTicketWithQuestionsQuery());
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
