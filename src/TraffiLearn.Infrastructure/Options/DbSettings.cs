@@ -2,9 +2,9 @@
 
 namespace TraffiLearn.Infrastructure.Options
 {
-    public sealed class SqlServerSettings
+    public sealed class DbSettings
     {
-        public const string SectionName = nameof(SqlServerSettings);
+        public const string SectionName = nameof(DbSettings);
 
         [Required]
         public string? ConnectionString { get; set; }

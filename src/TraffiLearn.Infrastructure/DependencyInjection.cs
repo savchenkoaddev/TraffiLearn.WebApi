@@ -71,7 +71,7 @@ namespace TraffiLearn.Infrastructure
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.Configure<SqlServerSettings>(configuration.GetRequiredSection(SqlServerSettings.SectionName));
+            services.Configure<DbSettings>(configuration.GetRequiredSection(DbSettings.SectionName));
             services.Configure<AzureBlobStorageSettings>(configuration.GetRequiredSection(AzureBlobStorageSettings.SectionName));
             services.Configure<JwtSettings>(configuration.GetRequiredSection(JwtSettings.SectionName));
 

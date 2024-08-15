@@ -10,14 +10,14 @@ namespace TraffiLearn.Infrastructure.Database
 {
     public sealed class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IUnitOfWork
     {
-        private readonly SqlServerSettings _sqlServerSettings;
+        private readonly DbSettings _dbSettings;
 
         public ApplicationDbContext(
             DbContextOptions options,
-            IOptions<SqlServerSettings> sqlServerSettings)
+            IOptions<DbSettings> dbSettings)
             : base(options)
         {
-            _sqlServerSettings = sqlServerSettings.Value;
+            _dbSettings = dbSettings.Value;
         }
 
         public DbSet<Question> Questions { get; set; }
@@ -41,7 +41,7 @@ namespace TraffiLearn.Infrastructure.Database
         {
             base.OnConfiguring(optionsBuilder);
 
-            optionsBuilder.UseSqlServer(_sqlServerSettings.ConnectionString);
+            optionsBuilder.UseSqlServer(_dbSettings.ConnectionString);
         }
     }
 }
