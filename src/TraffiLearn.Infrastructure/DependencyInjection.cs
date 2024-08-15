@@ -20,10 +20,9 @@ namespace TraffiLearn.Infrastructure
     public static class DependencyInjection
     {
         public static IServiceCollection AddInfrastructure(
-            this IServiceCollection services,
-            IConfiguration configuration)
+            this IServiceCollection services)
         {
-            services.AddOptions(configuration);
+            services.AddOptions();
 
             services.AddExternalServices();
 
@@ -68,12 +67,24 @@ namespace TraffiLearn.Infrastructure
         }
 
         private static IServiceCollection AddOptions(
-            this IServiceCollection services,
-            IConfiguration configuration)
+            this IServiceCollection services)
         {
-            services.Configure<SqlServerSettings>(configuration.GetRequiredSection(SqlServerSettings.SectionName));
-            services.Configure<AzureBlobStorageSettings>(configuration.GetRequiredSection(AzureBlobStorageSettings.SectionName));
-            services.Configure<JwtSettings>(configuration.GetRequiredSection(JwtSettings.SectionName));
+            services.ConfigureValidatableOnStartOptions<DbSettings>(DbSettings.SectionName);
+            services.ConfigureValidatableOnStartOptions<AzureBlobStorageSettings>(AzureBlobStorageSettings.SectionName);
+            services.ConfigureValidatableOnStartOptions<JwtSettings>(JwtSettings.SectionName);
+
+            return services;
+        }
+
+        private static IServiceCollection ConfigureValidatableOnStartOptions<TOptions>(
+            this IServiceCollection services, 
+            string configSectionPath)
+            where TOptions : class
+        {
+            services.AddOptions<TOptions>()
+                .BindConfiguration(configSectionPath)
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
 
             return services;
         }
