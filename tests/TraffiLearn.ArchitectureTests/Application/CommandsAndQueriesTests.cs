@@ -52,7 +52,7 @@ namespace TraffiLearn.ArchitectureTests.Application
         }
 
         [Fact]
-        public void QueriesAndCommands_ShouldBePublic()
+        public void CommandsAndQueries_ShouldBePublic()
         {
             var result = Types.InAssembly(ApplicationAssembly)
                 .That()
@@ -67,7 +67,7 @@ namespace TraffiLearn.ArchitectureTests.Application
         }
 
         [Fact]
-        public void QueriesAndCommands_ShouldHaveOnlyNullableMembers()
+        public void CommandsAndQueries_ShouldHaveOnlyNullableMembers()
         {
             var result = Types.InAssembly(ApplicationAssembly)
                 .That()
@@ -82,7 +82,7 @@ namespace TraffiLearn.ArchitectureTests.Application
         }
 
         [Fact]
-        public void QueriesAndCommands_ShouldBeRecords()
+        public void CommandsAndQueries_ShouldBeRecords()
         {
             var types = Types.InAssembly(ApplicationAssembly)
                 .That()
