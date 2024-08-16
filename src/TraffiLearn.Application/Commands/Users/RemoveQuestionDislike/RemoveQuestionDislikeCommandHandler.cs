@@ -2,9 +2,9 @@
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Domain.Aggregates.Questions;
+using TraffiLearn.Domain.Aggregates.Questions.Errors;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Users;
-using TraffiLearn.Domain.Aggregates.Users.Errors;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
@@ -36,44 +36,31 @@ namespace TraffiLearn.Application.Commands.Users.RemoveQuestionDislike
         {
             var callerId = new UserId(_userContextService.FetchAuthenticatedUserId());
 
-            var caller = await _userRepository.GetByIdAsync(
+            var caller = await _userRepository.GetByIdWithLikedAndDislikedQuestionsIdsAsync(
                 callerId,
-                cancellationToken,
-                includeExpressions: [
-                    user => user.LikedQuestions,
-                    user => user.DislikedQuestions
-                ]);
+                cancellationToken);
 
             if (caller is null)
             {
                 throw new InvalidOperationException("Authenticated user is not found.");
             }
 
-            var dislikedQuestion = await GetDislikedQuestion(
-                dislikedQuestionId: new QuestionId(request.QuestionId.Value),
+            var question = await _questionRepository.GetByIdAsync(
+                questionId: new QuestionId(request.QuestionId.Value),
                 cancellationToken);
 
-            if (dislikedQuestion is null)
+            if (question is null)
             {
-                return UserErrors.QuestionNotFound;
+                return QuestionErrors.NotFound;
             }
 
-            var removeQuestionDislikeResult = caller.RemoveQuestionDislike(dislikedQuestion);
-
-            if (removeQuestionDislikeResult.IsFailure)
-            {
-                return removeQuestionDislikeResult.Error;
-            }
-
-            var removeDislikeResult = dislikedQuestion.RemoveDislike(caller);
+            var removeDislikeResult = caller.RemoveQuestionDislike(question.Id);
 
             if (removeDislikeResult.IsFailure)
             {
                 return removeDislikeResult.Error;
             }
 
-            await _questionRepository.UpdateAsync(dislikedQuestion);
-            await _userRepository.UpdateAsync(caller);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();

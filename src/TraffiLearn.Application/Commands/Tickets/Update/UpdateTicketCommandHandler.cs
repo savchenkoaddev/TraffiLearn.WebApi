@@ -30,10 +30,9 @@ namespace TraffiLearn.Application.Commands.Tickets.Update
             UpdateTicketCommand request,
             CancellationToken cancellationToken)
         {
-            var ticket = await _ticketRepository.GetByIdAsync(
+            var ticket = await _ticketRepository.GetByIdWithQuestionsAsync(
                 ticketId: new TicketId(request.TicketId.Value),
-                cancellationToken,
-                includeExpressions: ticket => ticket.Questions);
+                cancellationToken);
 
             if (ticket is null)
             {
@@ -56,7 +55,7 @@ namespace TraffiLearn.Application.Commands.Tickets.Update
 
             var updateQuestionsResult = await UpdateQuestions(
                 ticket,
-                request.QuestionsIds,
+                request.QuestionIds,
                 cancellationToken);
 
             if (updateQuestionsResult.IsFailure)
@@ -72,13 +71,13 @@ namespace TraffiLearn.Application.Commands.Tickets.Update
 
         private async Task<Result> UpdateQuestions(
             Ticket ticket,
-            IEnumerable<Guid?>? questionsIds,
+            IEnumerable<Guid>? questionIds,
             CancellationToken cancellationToken = default)
         {
-            foreach (var questionId in questionsIds)
+            foreach (var questionId in questionIds)
             {
                 var question = await _questionRepository.GetByIdAsync(
-                    questionId: new QuestionId(questionId.Value),
+                    questionId: new QuestionId(questionId),
                     cancellationToken);
 
                 if (question is null)
@@ -86,42 +85,28 @@ namespace TraffiLearn.Application.Commands.Tickets.Update
                     return TicketErrors.QuestionNotFound;
                 }
 
-                if (!ticket.Questions.Contains(question))
+                if (!ticket.QuestionIds.Contains(question.Id))
                 {
-                    var questionAddResult = ticket.AddQuestion(question);
+                    var questionAddResult = ticket.AddQuestion(question.Id);
 
                     if (questionAddResult.IsFailure)
                     {
                         return questionAddResult.Error;
                     }
-
-                    var ticketAddResult = question.AddTicket(ticket);
-
-                    if (ticketAddResult.IsFailure)
-                    {
-                        return ticketAddResult.Error;
-                    }
                 }
             }
 
-            var ticketQuestions = ticket.Questions.ToList();
+            var ticketQuestionsIds = ticket.QuestionIds.ToList();
 
-            foreach (var question in ticketQuestions)
+            foreach (var questionId in ticketQuestionsIds)
             {
-                if (!questionsIds.Contains(question.Id.Value))
+                if (!questionIds.Contains(questionId.Value))
                 {
-                    var questionRemoveResult = ticket.RemoveQuestion(question);
+                    var questionRemoveResult = ticket.RemoveQuestion(questionId);
 
                     if (questionRemoveResult.IsFailure)
                     {
                         return questionRemoveResult.Error;
-                    }
-
-                    var ticketRemoveResult = question.RemoveTicket(ticket);
-
-                    if (ticketRemoveResult.IsFailure)
-                    {
-                        return ticketRemoveResult.Error;
                     }
                 }
             }

@@ -1,6 +1,9 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.DTO.Questions;
 using TraffiLearn.Application.DTO.Topics;
+using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Topics;
 using TraffiLearn.Domain.Aggregates.Topics.Errors;
 using TraffiLearn.Domain.Shared;
@@ -12,14 +15,20 @@ namespace TraffiLearn.Application.Queries.Topics.GetRandomTopicWithQuestions
             Result<TopicWithQuestionsResponse>>
     {
         private readonly ITopicRepository _topicRepository;
-        private readonly Mapper<Topic, TopicWithQuestionsResponse> _topicMapper;
+        private readonly IQuestionRepository _questionRepository;
+        private readonly Mapper<Question, QuestionResponse> _questionMapper;
+        private readonly ILogger<GetRandomTopicWithQuestionsQueryHandler> _logger;
 
         public GetRandomTopicWithQuestionsQueryHandler(
             ITopicRepository topicRepository,
-            Mapper<Topic, TopicWithQuestionsResponse> topicMapper)
+            IQuestionRepository questionRepository,
+            Mapper<Question, QuestionResponse> questionMapper,
+            ILogger<GetRandomTopicWithQuestionsQueryHandler> logger)
         {
             _topicRepository = topicRepository;
-            _topicMapper = topicMapper;
+            _questionRepository = questionRepository;
+            _questionMapper = questionMapper;
+            _logger = logger;
         }
 
         public async Task<Result<TopicWithQuestionsResponse>> Handle(
@@ -27,15 +36,24 @@ namespace TraffiLearn.Application.Queries.Topics.GetRandomTopicWithQuestions
             CancellationToken cancellationToken)
         {
             var randomTopic = await _topicRepository.GetRandomRecordAsync(
-                cancellationToken,
-                t => t.Questions);
+                cancellationToken);
 
             if (randomTopic is null)
             {
-                return Result.Failure<TopicWithQuestionsResponse>(TopicErrors.NotFound);
+                _logger.LogError("Failed to fetch a random topic from the storage.");
+
+                return Result.Failure<TopicWithQuestionsResponse>(Error.InternalFailure());
             }
 
-            return Result.Success(_topicMapper.Map(randomTopic));
+            var questions = await _questionRepository.GetManyByTopicIdAsync(randomTopic.Id);
+
+            var response = new TopicWithQuestionsResponse(
+                TopicId: randomTopic.Id.Value,
+                TopicNumber: randomTopic.Number.Value,
+                Title: randomTopic.Title.Value,
+                Questions: _questionMapper.Map(questions));
+
+            return Result.Success(response);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.DTO.Comments;
 using TraffiLearn.Domain.Aggregates.Comments;
 using TraffiLearn.Domain.Aggregates.Users;
@@ -13,13 +14,16 @@ namespace TraffiLearn.Application.Queries.Users.GetUserComments
         : IRequestHandler<GetUserCommentsQuery, Result<IEnumerable<CommentResponse>>>
     {
         private readonly IUserRepository _userRepository;
+        private readonly ICommentRepository _commentRepository;
         private readonly Mapper<Comment, CommentResponse> _commentMapper;
 
         public GetUserCommentsQueryHandler(
             IUserRepository userRepository,
+            ICommentRepository commentRepository,
             Mapper<Comment, CommentResponse> commentMapper)
         {
             _userRepository = userRepository;
+            _commentRepository = commentRepository;
             _commentMapper = commentMapper;
         }
 
@@ -29,17 +33,20 @@ namespace TraffiLearn.Application.Queries.Users.GetUserComments
         {
             var userId = new UserId(request.UserId.Value);
 
-            var user = await _userRepository.GetUserWithCommentsWithRepliesAsync(
+            var userExists = await _userRepository.ExistsAsync(
                 userId,
                 cancellationToken);
 
-            if (user is null)
+            if (!userExists)
             {
-                return Result.Failure<IEnumerable<CommentResponse>>(
-                    UserErrors.NotFound);
+                return Result.Failure<IEnumerable<CommentResponse>>(UserErrors.NotFound);
             }
 
-            return Result.Success(_commentMapper.Map(user.Comments));
+            var userComments = await _commentRepository.GetUserCommentsAsync(
+                userId,
+                cancellationToken);
+
+            return Result.Success(_commentMapper.Map(userComments));
         }
     }
 }

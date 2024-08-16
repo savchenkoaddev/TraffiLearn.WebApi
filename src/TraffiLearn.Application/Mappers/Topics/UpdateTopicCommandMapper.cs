@@ -3,7 +3,7 @@ using TraffiLearn.Application.Commands.Topics.Update;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Mapper.Topics
+namespace TraffiLearn.Application.Mappers.Topics
 {
     internal sealed class UpdateTopicCommandMapper
         : Mapper<UpdateTopicCommand, Result<Domain.Aggregates.Topics.Topic>>
@@ -24,7 +24,7 @@ namespace TraffiLearn.Application.Mapper.Topics
                 return Result.Failure<Domain.Aggregates.Topics.Topic>(topicTitleResult.Error);
             }
 
-            Domain.Aggregates.Topics.ValueObjects.TopicId topicId = new(Guid.NewGuid());
+            TopicId topicId = new(Guid.NewGuid());
 
             return TopicId.Create(
                 topicId: topicId,

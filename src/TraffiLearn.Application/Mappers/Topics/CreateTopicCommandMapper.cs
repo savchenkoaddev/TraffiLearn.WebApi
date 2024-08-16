@@ -3,14 +3,14 @@ using TraffiLearn.Application.Commands.Topics.Create;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Mapper.Topics
+namespace TraffiLearn.Application.Mappers.Topics
 {
     internal sealed class CreateTopicCommandMapper
         : Mapper<CreateTopicCommand, Result<Domain.Aggregates.Topics.Topic>>
     {
         public override Result<Domain.Aggregates.Topics.Topic> Map(CreateTopicCommand source)
         {
-            Domain.Aggregates.Topics.ValueObjects.TopicId topicId = new(Guid.NewGuid());
+            TopicId topicId = new(Guid.NewGuid());
 
             Result<TopicNumber> numberCreateResult = TopicNumber.Create(source.TopicNumber.Value);
 

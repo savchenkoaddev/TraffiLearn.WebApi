@@ -7,18 +7,21 @@ using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Tickets;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Queries.Questions.GetQuestionTickets
+namespace TraffiLearn.Application.Queries.Tickets.GetQuestionTickets
 {
     internal sealed class GetQuestionTicketsQueryHandler
         : IRequestHandler<GetQuestionTicketsQuery, Result<IEnumerable<TicketResponse>>>
     {
+        private readonly ITicketRepository _ticketRepository;
         private readonly IQuestionRepository _questionRepository;
         private readonly Mapper<Ticket, TicketResponse> _ticketMapper;
 
         public GetQuestionTicketsQueryHandler(
+            ITicketRepository ticketRepository,
             IQuestionRepository questionRepository,
             Mapper<Ticket, TicketResponse> ticketMapper)
         {
+            _ticketRepository = ticketRepository;
             _questionRepository = questionRepository;
             _ticketMapper = ticketMapper;
         }
@@ -27,17 +30,22 @@ namespace TraffiLearn.Application.Queries.Questions.GetQuestionTickets
             GetQuestionTicketsQuery request,
             CancellationToken cancellationToken)
         {
-            var question = await _questionRepository.GetByIdAsync(
-                questionId: new QuestionId(request.QuestionId.Value),
-                cancellationToken,
-                includeExpressions: question => question.TicketIds);
+            var questionId = new QuestionId(request.QuestionId.Value);
 
-            if (question is null)
+            var exists = await _questionRepository.ExistsAsync(
+                questionId,
+                cancellationToken);
+
+            if (!exists)
             {
                 return Result.Failure<IEnumerable<TicketResponse>>(QuestionErrors.NotFound);
             }
 
-            return Result.Success(_ticketMapper.Map(question.TicketIds));
+            var tickets = await _ticketRepository.GetManyByQuestionIdAsync(
+                questionId,
+                cancellationToken);
+
+            return Result.Success(_ticketMapper.Map(tickets));
         }
     }
 }

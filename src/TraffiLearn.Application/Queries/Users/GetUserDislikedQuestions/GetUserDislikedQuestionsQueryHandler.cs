@@ -1,5 +1,7 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Abstractions.Identity;
+using TraffiLearn.Application.DTO.Comments;
 using TraffiLearn.Application.DTO.Questions;
 using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Users;
@@ -13,13 +15,16 @@ namespace TraffiLearn.Application.Queries.Users.GetUserDislikedQuestions
         : IRequestHandler<GetUserDislikedQuestionsQuery, Result<IEnumerable<QuestionResponse>>>
     {
         private readonly IUserRepository _userRepository;
+        private readonly IQuestionRepository _questionRepository;
         private readonly Mapper<Question, QuestionResponse> _questionMapper;
 
         public GetUserDislikedQuestionsQueryHandler(
             IUserRepository userRepository,
+            IQuestionRepository questionRepository,
             Mapper<Question, QuestionResponse> questionMapper)
         {
             _userRepository = userRepository;
+            _questionRepository = questionRepository;
             _questionMapper = questionMapper;
         }
 
@@ -27,19 +32,22 @@ namespace TraffiLearn.Application.Queries.Users.GetUserDislikedQuestions
             GetUserDislikedQuestionsQuery request,
             CancellationToken cancellationToken)
         {
-            UserId userId = new(request.UserId.Value);
+            var userId = new UserId(request.UserId.Value);
 
-            var user = await _userRepository.GetByIdAsync(
-                userId: new UserId(request.UserId.Value),
-                cancellationToken,
-                includeExpressions: user => user.DislikedQuestions);
+            var userExists = await _userRepository.ExistsAsync(
+                userId,
+                cancellationToken);
 
-            if (user is null)
+            if (!userExists)
             {
                 return Result.Failure<IEnumerable<QuestionResponse>>(UserErrors.NotFound);
             }
 
-            return Result.Success(_questionMapper.Map(user.DislikedQuestions));
+            var dislikedQuestions = await _questionRepository.GetUserDislikedQuestionsAsync(
+                userId,
+                cancellationToken);
+
+            return Result.Success(_questionMapper.Map(dislikedQuestions));
         }
     }
 }

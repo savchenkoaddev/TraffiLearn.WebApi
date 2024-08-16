@@ -4,7 +4,7 @@ using TraffiLearn.Domain.Aggregates.Tickets;
 using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Mapper.Tickets
+namespace TraffiLearn.Application.Mappers.Tickets
 {
     internal sealed class CreateTicketCommandMapper
         : Mapper<CreateTicketCommand, Result<Ticket>>

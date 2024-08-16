@@ -34,7 +34,7 @@ namespace TraffiLearn.Application.Commands.Questions.Create
         }
 
         public async Task<Result> Handle(
-        CreateQuestionCommand request,
+            CreateQuestionCommand request,
             CancellationToken cancellationToken)
         {
             var mappingResult = _questionMapper.Map(request);
@@ -46,9 +46,9 @@ namespace TraffiLearn.Application.Commands.Questions.Create
 
             var question = mappingResult.Value;
 
-            var addResult = await AddTopics(
+            var addResult = await HandleTopics(
                 question,
-                topicsIds: request.TopicsIds,
+                topicsIds: request.TopicIds,
                 cancellationToken);
 
             if (addResult.IsFailure)
@@ -75,15 +75,15 @@ namespace TraffiLearn.Application.Commands.Questions.Create
             return Result.Success();
         }
 
-        private async Task<Result> AddTopics(
+        private async Task<Result> HandleTopics(
             Question question,
-            List<Guid?> topicsIds,
+            List<Guid>? topicsIds,
             CancellationToken cancellationToken = default)
         {
             foreach (var topicId in topicsIds)
             {
                 var topic = await _topicRepository.GetByIdAsync(
-                    topicId: new TopicId(topicId.Value),
+                    topicId: new TopicId(topicId),
                     cancellationToken);
 
                 if (topic is null)
@@ -91,18 +91,11 @@ namespace TraffiLearn.Application.Commands.Questions.Create
                     return TopicErrors.NotFound;
                 }
 
-                Result topicAddResult = question.AddTopic(topic);
+                var topicAddResult = question.AddTopic(topic.Id);
 
                 if (topicAddResult.IsFailure)
                 {
                     return topicAddResult.Error;
-                }
-
-                Result questionAddResult = topic.AddQuestion(question);
-
-                if (questionAddResult.IsFailure)
-                {
-                    return questionAddResult.Error;
                 }
             }
 

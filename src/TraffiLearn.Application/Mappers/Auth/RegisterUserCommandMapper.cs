@@ -4,7 +4,7 @@ using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Mapper.Auth
+namespace TraffiLearn.Application.Mappers.Auth
 {
     internal sealed class RegisterUserCommandMapper
         : Mapper<RegisterUserCommand, Result<Domain.Aggregates.Users.UserId>>
@@ -25,7 +25,7 @@ namespace TraffiLearn.Application.Mapper.Auth
                 return Result.Failure<Domain.Aggregates.Users.UserId>(usernameCreateResult.Error);
             }
 
-            Domain.Aggregates.Users.ValueObjects.UserId userId = new(Guid.NewGuid());
+            UserId userId = new(Guid.NewGuid());
 
             return UserId.Create(
                 userId: userId,

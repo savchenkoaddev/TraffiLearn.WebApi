@@ -1,16 +1,16 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Domain.Aggregates.Questions;
-using TraffiLearn.Domain.Aggregates.Questions.Errors;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Tickets.Errors;
 using TraffiLearn.Domain.Aggregates.Topics;
-using TraffiLearn.Domain.Aggregates.Topics.Errors;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Commands.Topics.RemoveQuestionFromTopic
 {
-    internal sealed class RemoveQuestionFromTopicCommandHandler : IRequestHandler<RemoveQuestionFromTopicCommand, Result>
+    internal sealed class RemoveQuestionFromTopicCommandHandler
+        : IRequestHandler<RemoveQuestionFromTopicCommand, Result>
     {
         private readonly ITopicRepository _topicRepository;
         private readonly IQuestionRepository _questionRepository;
@@ -30,42 +30,31 @@ namespace TraffiLearn.Application.Commands.Topics.RemoveQuestionFromTopic
             RemoveQuestionFromTopicCommand request,
             CancellationToken cancellationToken)
         {
-            var topic = await _topicRepository.GetByIdAsync(
+            var topic = await _topicRepository.GetByIdWithQuestionsAsync(
                 topicId: new TopicId(request.TopicId.Value),
-                cancellationToken,
-                includeExpressions: topic => topic.Questions);
+                cancellationToken);
 
             if (topic is null)
             {
-                return TopicErrors.NotFound;
+                return TicketErrors.NotFound;
             }
 
             var question = await _questionRepository.GetByIdAsync(
                 questionId: new QuestionId(request.QuestionId.Value),
-                cancellationToken,
-                includeExpressions: question => question.TopicIds);
+                cancellationToken);
 
             if (question is null)
             {
-                return QuestionErrors.NotFound;
+                return TicketErrors.QuestionNotFound;
             }
 
-            Result questionRemoveResult = topic.RemoveQuestion(question);
+            var questionRemoveResult = topic.RemoveQuestion(question.Id);
 
             if (questionRemoveResult.IsFailure)
             {
                 return questionRemoveResult.Error;
             }
 
-            Result topicRemoveResult = question.RemoveTopic(topic);
-
-            if (topicRemoveResult.IsFailure)
-            {
-                return topicRemoveResult.Error;
-            }
-
-            await _questionRepository.UpdateAsync(question);
-            await _topicRepository.UpdateAsync(topic);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();

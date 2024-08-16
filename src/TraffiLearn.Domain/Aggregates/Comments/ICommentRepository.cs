@@ -1,5 +1,6 @@
-﻿using System.Linq.Expressions;
-using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
+﻿using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 
 namespace TraffiLearn.Domain.Aggregates.Comments
 {
@@ -7,8 +8,7 @@ namespace TraffiLearn.Domain.Aggregates.Comments
     {
         Task<Comment?> GetByIdAsync(
             CommentId commentId,
-            CancellationToken cancellationToken = default,
-            params Expression<Func<Comment, object>>[] includeExpressions);
+            CancellationToken cancellationToken = default);
 
         Task<Comment?> GetByIdWithRepliesWithUsersTwoLevelsDeepAsync(
             CommentId commentId,
@@ -16,6 +16,14 @@ namespace TraffiLearn.Domain.Aggregates.Comments
 
         Task<Comment?> GetByIdWithAllNestedRepliesAsync(
             CommentId commentId,
+            CancellationToken cancellationToken = default);
+
+        Task<IEnumerable<Comment>> GetManyByQuestionIdAsync(
+            QuestionId questionId,
+            CancellationToken cancellationToken = default);
+
+        Task<IEnumerable<Comment>> GetUserCommentsAsync(
+            UserId userId,
             CancellationToken cancellationToken = default);
 
         Task<bool> ExistsAsync(

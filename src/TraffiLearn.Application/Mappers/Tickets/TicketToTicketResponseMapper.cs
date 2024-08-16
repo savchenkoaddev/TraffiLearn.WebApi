@@ -2,7 +2,7 @@
 using TraffiLearn.Application.DTO.Tickets;
 using TraffiLearn.Domain.Aggregates.Tickets;
 
-namespace TraffiLearn.Application.Mapper.Tickets
+namespace TraffiLearn.Application.Mappers.Tickets
 {
     internal sealed class TicketToTicketResponseMapper : Mapper<Ticket, TicketResponse>
     {

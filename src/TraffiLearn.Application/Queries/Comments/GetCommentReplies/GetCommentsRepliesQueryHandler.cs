@@ -37,7 +37,6 @@ namespace TraffiLearn.Application.Queries.Comments.GetCommentReplies
                     CommentErrors.NotFound);
             }
 
-
             return Result.Success(_commentMapper.Map(comment.Replies));
         }
     }

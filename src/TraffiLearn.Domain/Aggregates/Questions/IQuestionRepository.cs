@@ -1,6 +1,8 @@
 ﻿using System.Linq.Expressions;
-using TraffiLearn.Domain.Aggregates.Comments;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 
 namespace TraffiLearn.Domain.Aggregates.Questions
 {
@@ -8,11 +10,38 @@ namespace TraffiLearn.Domain.Aggregates.Questions
     {
         Task<Question?> GetByIdAsync(
             QuestionId questionId,
-            CancellationToken cancellationToken = default,
-            params Expression<Func<Question, object>>[] includeExpressions);
+            CancellationToken cancellationToken = default);
 
-        Task<IEnumerable<Comment>> GetQuestionCommentsWithRepliesAsync(
+        Task<Question?> GetByIdWithTicketsAsync(
             QuestionId questionId,
+            CancellationToken cancellationToken = default);
+
+        Task<Question?> GetByIdWithTopicsAsync(
+            QuestionId questionId,
+            CancellationToken cancellationToken = default);
+
+        Task<Question?> GetByIdWithCommentsAndTheirRepliesAsync(
+            QuestionId questionId,
+            CancellationToken cancellationToken = default);
+
+        Task<IEnumerable<Question>> GetManyByTicketIdAsync(
+            TicketId ticketId,
+            CancellationToken cancellationToken = default);
+
+        Task<IEnumerable<Question>> GetManyByTopicIdAsync(
+            TopicId topicId,
+            CancellationToken cancellationToken = default);
+
+        Task<IEnumerable<Question>> GetUserDislikedQuestionsAsync(
+            UserId userId,
+            CancellationToken cancellationToken = default);
+
+        Task<IEnumerable<Question>> GetUserLikedQuestionsAsync(
+            UserId userId,
+            CancellationToken cancellationToken = default);
+
+        Task<IEnumerable<Question>> GetUserMarkedQuestionsAsync(
+            UserId userId,
             CancellationToken cancellationToken = default);
 
         Task<IEnumerable<Question>> GetAllAsync(

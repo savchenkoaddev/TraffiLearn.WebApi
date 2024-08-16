@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace TraffiLearn.Application.Queries.Questions.GetQuestionTickets
+namespace TraffiLearn.Application.Queries.Tickets.GetQuestionTickets
 {
     internal sealed class GetQuestionTicketsQueryValidator
         : AbstractValidator<GetQuestionTicketsQuery>

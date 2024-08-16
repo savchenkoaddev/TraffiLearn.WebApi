@@ -30,10 +30,9 @@ namespace TraffiLearn.Application.Commands.Tickets.AddQuestionToTicket
             AddQuestionToTicketCommand request,
             CancellationToken cancellationToken)
         {
-            var ticket = await _ticketRepository.GetByIdAsync(
+            var ticket = await _ticketRepository.GetByIdWithQuestionsAsync(
                 ticketId: new TicketId(request.TicketId.Value),
-                cancellationToken,
-                includeExpressions: ticket => ticket.Questions);
+                cancellationToken);
 
             if (ticket is null)
             {
@@ -42,30 +41,20 @@ namespace TraffiLearn.Application.Commands.Tickets.AddQuestionToTicket
 
             var question = await _questionRepository.GetByIdAsync(
                 questionId: new QuestionId(request.QuestionId.Value),
-                cancellationToken,
-                includeExpressions: question => question.TicketIds);
+                cancellationToken);
 
             if (question is null)
             {
                 return TicketErrors.QuestionNotFound;
             }
 
-            var questionAddResult = ticket.AddQuestion(question);
+            var questionAddResult = ticket.AddQuestion(question.Id);
 
             if (questionAddResult.IsFailure)
             {
                 return questionAddResult.Error;
             }
 
-            var ticketAddResult = question.AddTicket(ticket);
-
-            if (ticketAddResult.IsFailure)
-            {
-                return ticketAddResult.Error;
-            }
-
-            await _questionRepository.UpdateAsync(question);
-            await _ticketRepository.UpdateAsync(ticket);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();

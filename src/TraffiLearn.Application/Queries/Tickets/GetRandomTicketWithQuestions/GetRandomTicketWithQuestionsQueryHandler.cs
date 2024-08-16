@@ -1,8 +1,10 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.DTO.Questions;
 using TraffiLearn.Application.DTO.Tickets;
+using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Tickets;
-using TraffiLearn.Domain.Aggregates.Tickets.Errors;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Queries.Tickets.GetRandomTicketWithQuestions
@@ -12,14 +14,20 @@ namespace TraffiLearn.Application.Queries.Tickets.GetRandomTicketWithQuestions
             Result<TicketWithQuestionsResponse>>
     {
         private readonly ITicketRepository _ticketRepository;
-        private readonly Mapper<Ticket, TicketWithQuestionsResponse> _ticketMapper;
+        private readonly IQuestionRepository _questionRepository;
+        private readonly Mapper<Question, QuestionResponse> _questionMapper;
+        private readonly ILogger<GetRandomTicketWithQuestionsQueryHandler> _logger;
 
         public GetRandomTicketWithQuestionsQueryHandler(
             ITicketRepository ticketRepository,
-            Mapper<Ticket, TicketWithQuestionsResponse> ticketMapper)
+            IQuestionRepository questionRepository,
+            Mapper<Question, QuestionResponse> questionMapper,
+            ILogger<GetRandomTicketWithQuestionsQueryHandler> logger)
         {
             _ticketRepository = ticketRepository;
-            _ticketMapper = ticketMapper;
+            _questionRepository = questionRepository;
+            _questionMapper = questionMapper;
+            _logger = logger;
         }
 
         public async Task<Result<TicketWithQuestionsResponse>> Handle(
@@ -27,15 +35,26 @@ namespace TraffiLearn.Application.Queries.Tickets.GetRandomTicketWithQuestions
             CancellationToken cancellationToken)
         {
             var randomTicket = await _ticketRepository.GetRandomRecordAsync(
-                cancellationToken,
-                t => t.Questions);
+                cancellationToken);
 
             if (randomTicket is null)
             {
-                return Result.Failure<TicketWithQuestionsResponse>(TicketErrors.NotFound);
+                _logger.LogError("Failed to fetch a random ticket from the storage.");
+
+                return Result.Failure<TicketWithQuestionsResponse>(Error.InternalFailure());
             }
 
-            return Result.Success(_ticketMapper.Map(randomTicket));
+            var ticketQuestions = await _questionRepository
+                .GetManyByTicketIdAsync(
+                    randomTicket.Id,
+                    cancellationToken);
+
+            var response = new TicketWithQuestionsResponse(
+                TicketId: randomTicket.Id.Value,
+                TicketNumber: randomTicket.TicketNumber.Value,
+                Questions: _questionMapper.Map(ticketQuestions));
+
+            return Result.Success(response);
         }
     }
 }

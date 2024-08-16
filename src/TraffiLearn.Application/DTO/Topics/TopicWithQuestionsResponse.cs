@@ -1,4 +1,5 @@
-﻿using TraffiLearn.Domain.Aggregates.Questions;
+﻿using TraffiLearn.Application.DTO.Questions;
+using TraffiLearn.Domain.Aggregates.Questions;
 
 namespace TraffiLearn.Application.DTO.Topics
 {
@@ -6,5 +7,5 @@ namespace TraffiLearn.Application.DTO.Topics
         Guid TopicId,
         int TopicNumber,
         string Title,
-        IEnumerable<Question> Questions);
+        IEnumerable<QuestionResponse> Questions);
 }

@@ -15,17 +15,20 @@ namespace TraffiLearn.Application.Queries.Users.GetMarkedQuestions
     {
         private readonly IUserContextService<Guid> _userContextService;
         private readonly IUserRepository _userRepository;
+        private readonly IQuestionRepository _questionRepository;
         private readonly Mapper<Question, QuestionResponse> _questionMapper;
         private readonly ILogger<GetMarkedQuestionsQueryHandler> _logger;
 
         public GetMarkedQuestionsQueryHandler(
             IUserContextService<Guid> userContextService,
             IUserRepository userRepository,
+            IQuestionRepository questionRepository,
             Mapper<Question, QuestionResponse> questionMapper,
             ILogger<GetMarkedQuestionsQueryHandler> logger)
         {
             _userContextService = userContextService;
             _userRepository = userRepository;
+            _questionRepository = questionRepository;
             _questionMapper = questionMapper;
             _logger = logger;
         }
@@ -34,25 +37,22 @@ namespace TraffiLearn.Application.Queries.Users.GetMarkedQuestions
             GetMarkedQuestionsQuery request,
             CancellationToken cancellationToken)
         {
-            var callerId = new UserId(_userContextService.FetchAuthenticatedUserId());
+            var userId = new UserId(_userContextService.FetchAuthenticatedUserId());
 
-            var caller = await _userRepository.GetByIdAsync(
-                callerId,
-                cancellationToken,
-                includeExpressions: [
-                    user => user.MarkedQuestions
-                ]);
+            var userExists = await _userRepository.ExistsAsync(
+                userId,
+                cancellationToken);
 
-            if (caller is null)
+            if (!userExists)
             {
                 throw new InvalidOperationException("Authenticated user is not found.");
             }
 
-            _logger.LogInformation(
-                "Succesfully fetched user's marked questions. Questions fetched: {0}",
-                caller.MarkedQuestions.Count);
+            var markedQuestions = await _questionRepository.GetUserMarkedQuestionsAsync(
+                userId,
+                cancellationToken);
 
-            return Result.Success(_questionMapper.Map(caller.MarkedQuestions));
+            return Result.Success(_questionMapper.Map(markedQuestions));
         }
     }
 }

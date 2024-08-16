@@ -1,25 +1,31 @@
 ﻿using System.Linq.Expressions;
+using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 
 namespace TraffiLearn.Domain.Aggregates.Topics
 {
     public interface ITopicRepository
     {
         Task<Topic?> GetByIdAsync(
-            Topic topicId,
-            CancellationToken cancellationToken = default,
-            params Expression<Func<Topic, object>>[] includeExpressions);
+            TopicId topicId,
+            CancellationToken cancellationToken = default);
 
-        Task<IEnumerable<Topic>> GetAllAsync(
-            Expression<Func<Topic, object>>? orderByExpression = null,
-            CancellationToken cancellationToken = default,
-            params Expression<Func<Topic, object>>[] includeExpressions);
+        Task<Topic?> GetByIdWithQuestionsAsync(
+            TopicId topicId,
+            CancellationToken cancellationToken = default);
 
+        Task<IEnumerable<Topic>> GetManyByQuestionIdAsync(
+            QuestionId questionId,
+            CancellationToken cancellationToken = default);
+
+        Task<IEnumerable<Topic>> GetAllSortedByNumberAsync(
+            CancellationToken cancellationToken = default);
+        
         Task<Topic?> GetRandomRecordAsync(
-            CancellationToken cancellationToken = default,
-            params Expression<Func<Topic, object>>[] includeExpressions);
+            CancellationToken cancellationToken = default);
 
         Task<bool> ExistsAsync(
-            Topic topicId,
+            TopicId topicId,
             CancellationToken cancellationToken = default);
 
         Task AddAsync(

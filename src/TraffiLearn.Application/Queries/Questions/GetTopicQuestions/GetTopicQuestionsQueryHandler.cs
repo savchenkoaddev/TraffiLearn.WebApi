@@ -1,24 +1,28 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.DTO.Questions;
+using TraffiLearn.Application.Queries.Topics.GetTopicQuestions;
 using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Topics;
 using TraffiLearn.Domain.Aggregates.Topics.Errors;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Queries.Topics.GetTopicQuestions
+namespace TraffiLearn.Application.Queries.Questions.GetTopicQuestions
 {
     internal sealed class GetTopicQuestionsQueryHandler : IRequestHandler<GetTopicQuestionsQuery, Result<IEnumerable<QuestionResponse>>>
     {
         private readonly ITopicRepository _topicRepository;
+        private readonly IQuestionRepository _questionRepository;
         private readonly Mapper<Question, QuestionResponse> _questionMapper;
 
         public GetTopicQuestionsQueryHandler(
             ITopicRepository topicRepository,
+            IQuestionRepository questionRepository,
             Mapper<Question, QuestionResponse> questionMapper)
         {
             _topicRepository = topicRepository;
+            _questionRepository = questionRepository;
             _questionMapper = questionMapper;
         }
 
@@ -26,17 +30,22 @@ namespace TraffiLearn.Application.Queries.Topics.GetTopicQuestions
             GetTopicQuestionsQuery request,
             CancellationToken cancellationToken)
         {
-            var topic = await _topicRepository.GetByIdAsync(
-                topicId: new TopicId(request.TopicId.Value),
-                cancellationToken,
-                includeExpressions: topic => topic.Questions);
+            var topicId = new TopicId(request.TopicId.Value);
 
-            if (topic is null)
+            var topicExists = await _topicRepository.ExistsAsync(
+                topicId,
+                cancellationToken);
+
+            if (!topicExists)
             {
                 return Result.Failure<IEnumerable<QuestionResponse>>(TopicErrors.NotFound);
             }
 
-            return Result.Success(_questionMapper.Map(topic.Questions));
+            var questions = await _questionRepository.GetManyByTopicIdAsync(
+                topicId,
+                cancellationToken);
+
+            return Result.Success(_questionMapper.Map(questions));
         }
     }
 }

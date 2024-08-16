@@ -16,17 +16,20 @@ namespace TraffiLearn.Application.Queries.Users.GetCurrentUserLikedQuestions
     {
         private readonly IUserContextService<Guid> _userContextService;
         private readonly IUserRepository _userRepository;
+        private readonly IQuestionRepository _questionRepository;
         private readonly Mapper<Question, QuestionResponse> _questionMapper;
         private readonly ILogger<GetCurrentUserLikedQuestionsQueryHandler> _logger;
 
         public GetCurrentUserLikedQuestionsQueryHandler(
             IUserContextService<Guid> userContextService,
             IUserRepository userRepository,
+            IQuestionRepository questionRepository,
             Mapper<Question, QuestionResponse> questionMapper,
             ILogger<GetCurrentUserLikedQuestionsQueryHandler> logger)
         {
             _userContextService = userContextService;
             _userRepository = userRepository;
+            _questionRepository = questionRepository;
             _questionMapper = questionMapper;
             _logger = logger;
         }
@@ -37,19 +40,20 @@ namespace TraffiLearn.Application.Queries.Users.GetCurrentUserLikedQuestions
         {
             var userId = new UserId(_userContextService.FetchAuthenticatedUserId());
 
-            var user = await _userRepository.GetByIdAsync(
+            var userExists = await _userRepository.ExistsAsync(
                 userId,
-                cancellationToken,
-                includeExpressions: [
-                    user => user.LikedQuestions
-                ]);
+                cancellationToken);
 
-            if (user is null)
+            if (!userExists)
             {
                 throw new InvalidOperationException("Authenticated user is not found.");
             }
 
-            return Result.Success(_questionMapper.Map(user.LikedQuestions));
+            var likedQuestions = await _questionRepository.GetUserLikedQuestionsAsync(
+                userId,
+                cancellationToken);
+
+            return Result.Success(_questionMapper.Map(likedQuestions));
         }
     }
 }

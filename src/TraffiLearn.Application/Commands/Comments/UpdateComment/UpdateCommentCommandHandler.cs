@@ -25,7 +25,7 @@ namespace TraffiLearn.Application.Commands.Comments.UpdateComment
             UpdateCommentCommand request,
             CancellationToken cancellationToken)
         {
-            var comment = await GetComment(
+            var comment = await _commentRepository.GetByIdAsync(
                 new CommentId(request.CommentId.Value),
                 cancellationToken);
 
@@ -54,16 +54,6 @@ namespace TraffiLearn.Application.Commands.Comments.UpdateComment
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
-        }
-
-        private async Task<Comment?> GetComment(
-            CommentId commentId,
-            CancellationToken cancellationToken = default)
-        {
-            return await _commentRepository.GetByIdAsync(
-                            commentId,
-                            cancellationToken,
-                            includeExpressions: comment => comment.CreatorId);
         }
     }
 }

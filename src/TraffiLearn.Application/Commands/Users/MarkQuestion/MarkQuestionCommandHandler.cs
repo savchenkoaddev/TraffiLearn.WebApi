@@ -3,9 +3,9 @@ using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Domain.Aggregates.Questions;
+using TraffiLearn.Domain.Aggregates.Questions.Errors;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Users;
-using TraffiLearn.Domain.Aggregates.Users.Errors;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
@@ -40,38 +40,32 @@ namespace TraffiLearn.Application.Commands.Users.MarkQuestion
         {
             var callerId = new UserId(_userContextService.FetchAuthenticatedUserId());
 
-            var caller = await _userRepository.GetByIdAsync(
+            var caller = await _userRepository.GetByIdWithMarkedQuestionsIdsAsync(
                 callerId,
-                cancellationToken,
-                includeExpressions: [
-                    user => user.MarkedQuestions
-                ]);
+                cancellationToken);
 
             if (caller is null)
             {
-                throw new InvalidOperationException("Authenticated user not found.");
+                throw new InvalidOperationException("Authenticated user is not found.");
             }
 
-            var questionBeingMarked = await _questionRepository.GetByIdAsync(
+            var question = await _questionRepository.GetByIdAsync(
                 questionId: new QuestionId(request.QuestionId.Value),
                 cancellationToken);
 
-            if (questionBeingMarked is null)
+            if (question is null)
             {
-                return UserErrors.QuestionNotFound;
+                return QuestionErrors.NotFound;
             }
 
-            var markResult = caller.MarkQuestion(questionBeingMarked);
+            var markQuestionResult = caller.MarkQuestion(question.Id);
 
-            if (markResult.IsFailure)
+            if (markQuestionResult.IsFailure)
             {
-                return markResult.Error;
+                return markQuestionResult.Error;
             }
 
-            await _userRepository.UpdateAsync(caller);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-            _logger.LogInformation("Succesfully marked question. User's username: {username}", caller.Username.Value);
 
             return Result.Success();
         }

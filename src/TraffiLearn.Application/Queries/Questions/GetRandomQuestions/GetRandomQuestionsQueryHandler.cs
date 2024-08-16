@@ -27,7 +27,7 @@ namespace TraffiLearn.Application.Queries.Questions.GetRandomQuestions
             CancellationToken cancellationToken)
         {
             var randomQuestions = await _questionRepository.GetRandomRecordsAsync(
-                request.Amount!.Value,
+                request.Amount.Value,
                 cancellationToken: cancellationToken);
 
             if (randomQuestions is null)

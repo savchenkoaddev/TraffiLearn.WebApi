@@ -15,17 +15,20 @@ namespace TraffiLearn.Application.Queries.Users.GetLoggedInUserComments
     {
         private readonly IUserContextService<Guid> _userContextService;
         private readonly IUserRepository _userRepository;
+        private readonly ICommentRepository _commentRepository;
         private readonly Mapper<Comment, CommentResponse> _commentMapper;
         private readonly ILogger<GetLoggedInUserCommentsQueryHandler> _logger;
 
         public GetLoggedInUserCommentsQueryHandler(
             IUserContextService<Guid> userContextService,
             IUserRepository userRepository,
+            ICommentRepository commentRepository,
             Mapper<Comment, CommentResponse> commentMapper,
             ILogger<GetLoggedInUserCommentsQueryHandler> logger)
         {
             _userContextService = userContextService;
             _userRepository = userRepository;
+            _commentRepository = commentRepository;
             _commentMapper = commentMapper;
             _logger = logger;
         }
@@ -36,20 +39,20 @@ namespace TraffiLearn.Application.Queries.Users.GetLoggedInUserComments
         {
             var userId = new UserId(_userContextService.FetchAuthenticatedUserId());
 
-            var user = await _userRepository.GetUserWithCommentsWithRepliesAsync(
+            var userExists = await _userRepository.ExistsAsync(
                 userId,
                 cancellationToken);
 
-            if (user is null)
+            if (!userExists)
             {
-                throw new InvalidOperationException("Authenticated user not found.");
+                throw new InvalidOperationException("Authenticated user is not found.");
             }
 
-            _logger.LogInformation(
-                "Succesfully fetched authenticated user comments. Comments fetched: {count}",
-                user.Comments.Count);
+            var userComments = await _commentRepository.GetUserCommentsAsync(
+                userId,
+                cancellationToken);
 
-            return Result.Success(_commentMapper.Map(user.Comments));
+            return Result.Success(_commentMapper.Map(userComments));
         }
     }
 }

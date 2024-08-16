@@ -1,11 +1,11 @@
 ﻿using System.Security.Claims;
-using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Users;
 
 namespace TraffiLearn.Application.Abstractions.Identity
 {
     public interface ITokenService
     {
-        string GenerateAccessToken(UserId user);
+        string GenerateAccessToken(User user);
 
         string GenerateRefreshToken();
 

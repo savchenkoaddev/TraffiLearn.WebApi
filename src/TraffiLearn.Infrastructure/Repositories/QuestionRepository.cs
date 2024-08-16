@@ -129,7 +129,7 @@ namespace TraffiLearn.Infrastructure.Repositories
                     cancellationToken);
         }
 
-        public async Task<IEnumerable<Comment>> GetQuestionCommentsWithRepliesAsync(
+        public async Task<IEnumerable<Comment>> GetQuestionWithCommentsAndTheirRepliesAsync(
             QuestionId questionId,
             CancellationToken cancellationToken = default)
         {

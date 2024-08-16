@@ -5,7 +5,6 @@ using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Domain.Aggregates.Comments;
 using TraffiLearn.Domain.Aggregates.Comments.Errors;
 using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
-using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Commands.Comments.Reply
@@ -13,20 +12,17 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
     internal sealed class ReplyCommandHandler : IRequestHandler<ReplyCommand, Result>
     {
         private readonly ICommentRepository _commentRepository;
-        private readonly IUserRepository _userRepository;
         private readonly IAuthenticatedUserService _authenticatedUserService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<ReplyCommandHandler> _logger;
 
         public ReplyCommandHandler(
             ICommentRepository commentRepository,
-            IUserRepository userRepository,
             IAuthenticatedUserService authenticatedUserService,
             IUnitOfWork unitOfWork,
             ILogger<ReplyCommandHandler> logger)
         {
             _commentRepository = commentRepository;
-            _userRepository = userRepository;
             _authenticatedUserService = authenticatedUserService;
             _unitOfWork = unitOfWork;
             _logger = logger;
@@ -41,10 +37,7 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
 
             var comment = await _commentRepository.GetByIdAsync(
                 commentId: new CommentId(request.CommentId.Value),
-                cancellationToken,
-                includeExpressions: [
-                    comment => comment.QuestionId
-                ]);
+                cancellationToken);
 
             if (comment is null)
             {
@@ -63,8 +56,8 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
             var replyCommentResult = Comment.Create(
                 commentId: replyCommentId,
                 content: commentContentResult.Value,
-                creator: caller,
-                question: comment.QuestionId);
+                creatorId: caller.Id,
+                questionId: comment.QuestionId);
 
             if (replyCommentResult.IsFailure)
             {
@@ -80,25 +73,10 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
                 return replyResult.Error;
             }
 
-            var userAddCommentResult = caller.AddComment(replyComment);
-
-            if (userAddCommentResult.IsFailure)
-            {
-                return userAddCommentResult.Error;
-            }
-
-            var questionAddCommentResult = comment.QuestionId.AddComment(replyComment);
-
-            if (questionAddCommentResult.IsFailure)
-            {
-                return questionAddCommentResult.Error;
-            }
-
             await _commentRepository.AddAsync(
                 replyComment,
                 cancellationToken);
 
-            await _userRepository.UpdateAsync(caller);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Replied to the comment succesfully.");

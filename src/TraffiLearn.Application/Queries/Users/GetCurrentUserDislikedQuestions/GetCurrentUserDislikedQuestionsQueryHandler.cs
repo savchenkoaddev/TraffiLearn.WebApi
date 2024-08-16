@@ -16,17 +16,20 @@ namespace TraffiLearn.Application.Queries.Users.GetCurrentUserDislikedQuestions
     {
         private readonly IUserContextService<Guid> _userContextService;
         private readonly IUserRepository _userRepository;
+        private readonly IQuestionRepository _questionRepository;
         private readonly Mapper<Question, QuestionResponse> _questionMapper;
         private readonly ILogger<GetCurrentUserDislikedQuestionsQueryHandler> _logger;
 
         public GetCurrentUserDislikedQuestionsQueryHandler(
             IUserContextService<Guid> userContextService,
             IUserRepository userRepository,
+            IQuestionRepository questionRepository,
             Mapper<Question, QuestionResponse> questionMapper,
             ILogger<GetCurrentUserDislikedQuestionsQueryHandler> logger)
         {
             _userContextService = userContextService;
             _userRepository = userRepository;
+            _questionRepository = questionRepository;
             _questionMapper = questionMapper;
             _logger = logger;
         }
@@ -37,19 +40,20 @@ namespace TraffiLearn.Application.Queries.Users.GetCurrentUserDislikedQuestions
         {
             var userId = new UserId(_userContextService.FetchAuthenticatedUserId());
 
-            var user = await _userRepository.GetByIdAsync(
+            var userExists = await _userRepository.ExistsAsync(
                 userId,
-                cancellationToken,
-                includeExpressions: [
-                    user => user.DislikedQuestions
-                ]);
+                cancellationToken);
 
-            if (user is null)
+            if (!userExists)
             {
                 throw new InvalidOperationException("Authenticated user is not found.");
             }
 
-            return Result.Success(_questionMapper.Map(user.DislikedQuestions));
+            var dislikedQuestions = await _questionRepository.GetUserDislikedQuestionsAsync(
+                userId, 
+                cancellationToken);
+
+            return Result.Success(_questionMapper.Map(dislikedQuestions));
         }
     }
 }

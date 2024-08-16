@@ -8,7 +8,7 @@ namespace TraffiLearn.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<Domain.Aggregates.Topics.Topic> builder)
         {
-            builder.Property((System.Linq.Expressions.Expression<Func<Domain.Aggregates.Topics.Topic, Domain.Aggregates.Topics.ValueObjects.TopicId>>)(q => (Domain.Aggregates.Topics.ValueObjects.TopicId)q.Id)).HasConversion(
+            builder.Property(q => q.Id).HasConversion(
                   id => id.Value,
                   value => new Domain.Aggregates.Topics.ValueObjects.TopicId(value));
 

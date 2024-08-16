@@ -1,12 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TraffiLearn.Application.Commands.Questions.AddComment;
-using TraffiLearn.Application.Commands.Questions.AddTicketToQuestion;
-using TraffiLearn.Application.Commands.Questions.AddTopicToQuestion;
 using TraffiLearn.Application.Commands.Questions.Create;
 using TraffiLearn.Application.Commands.Questions.Delete;
-using TraffiLearn.Application.Commands.Questions.RemoveTicketFromQuestion;
-using TraffiLearn.Application.Commands.Questions.RemoveTopicFromQuestion;
 using TraffiLearn.Application.Commands.Questions.Update;
 using TraffiLearn.Application.Commands.Users.DislikeQuestion;
 using TraffiLearn.Application.Commands.Users.LikeQuestion;

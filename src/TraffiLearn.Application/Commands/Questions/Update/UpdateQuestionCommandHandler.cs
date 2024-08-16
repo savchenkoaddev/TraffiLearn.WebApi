@@ -34,12 +34,13 @@ namespace TraffiLearn.Application.Commands.Questions.Update
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result> Handle(UpdateQuestionCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(
+            UpdateQuestionCommand request,
+            CancellationToken cancellationToken)
         {
-            var question = await _questionRepository.GetByIdAsync(
+            var question = await _questionRepository.GetByIdWithTopicsAsync(
                 questionId: new QuestionId(request.QuestionId.Value),
-                cancellationToken,
-                includeExpressions: question => question.TopicIds);
+                cancellationToken);
 
             if (question is null)
             {
@@ -68,7 +69,7 @@ namespace TraffiLearn.Application.Commands.Questions.Update
             }
 
             var updateTopicsResult = await UpdateTopics(
-                topicsIds: request.TopicsIds,
+                topicIds: request.TopicIds,
                 question,
                 cancellationToken);
 
@@ -99,14 +100,14 @@ namespace TraffiLearn.Application.Commands.Questions.Update
         }
 
         private async Task<Result> UpdateTopics(
-            List<Guid?>? topicsIds,
+            List<Guid>? topicIds,
             Question question,
             CancellationToken cancellationToken = default)
         {
-            foreach (var topicId in topicsIds)
+            foreach (var topicId in topicIds)
             {
                 var topic = await _topicRepository.GetByIdAsync(
-                    topicId: new TopicId(topicId.Value),
+                    topicId: new TopicId(topicId),
                     cancellationToken);
 
                 if (topic is null)
@@ -114,42 +115,28 @@ namespace TraffiLearn.Application.Commands.Questions.Update
                     return TopicErrors.NotFound;
                 }
 
-                if (!question.TopicIds.Contains(topic))
+                if (!question.TopicIds.Contains(topic.Id))
                 {
-                    var topicAddResult = question.AddTopic(topic);
+                    var topicAddResult = question.AddTopic(topic.Id);
 
                     if (topicAddResult.IsFailure)
                     {
                         return topicAddResult.Error;
                     }
-
-                    var questionAddResult = topic.AddQuestion(question);
-
-                    if (questionAddResult.IsFailure)
-                    {
-                        return questionAddResult.Error;
-                    }
                 }
             }
 
-            var questionTopics = question.TopicIds.ToList();
+            var questionTopicsIds = question.TopicIds.ToList();
 
-            foreach (var topic in questionTopics)
+            foreach (var topicId in questionTopicsIds)
             {
-                if (!topicsIds.Contains(topic.Id.Value))
+                if (!topicIds.Contains(topicId.Value))
                 {
-                    var topicRemoveResult = question.RemoveTopic(topic);
+                    var topicRemoveResult = question.RemoveTopic(topicId);
 
                     if (topicRemoveResult.IsFailure)
                     {
                         return topicRemoveResult.Error;
-                    }
-
-                    var questionRemoveResult = topic.RemoveQuestion(question);
-
-                    if (questionRemoveResult.IsFailure)
-                    {
-                        return questionRemoveResult.Error;
                     }
                 }
             }

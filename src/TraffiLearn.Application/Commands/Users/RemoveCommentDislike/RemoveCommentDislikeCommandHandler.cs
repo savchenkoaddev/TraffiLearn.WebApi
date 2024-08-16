@@ -2,9 +2,9 @@
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Domain.Aggregates.Comments;
+using TraffiLearn.Domain.Aggregates.Comments.Errors;
 using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Users;
-using TraffiLearn.Domain.Aggregates.Users.Errors;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
@@ -36,50 +36,30 @@ namespace TraffiLearn.Application.Commands.Users.RemoveCommentDislike
         {
             var callerId = new UserId(_userContextService.FetchAuthenticatedUserId());
 
-            var caller = await _userRepository.GetByIdAsync(
+            var caller = await _userRepository.GetByIdWithLikedAndDislikedCommentsIdsAsync(
                 callerId,
-                cancellationToken,
-                includeExpressions: [
-                    user => user.LikedComments,
-                    user => user.DislikedComments
-                ]);
+                cancellationToken);
 
             if (caller is null)
             {
                 throw new InvalidOperationException("Authenticated user is not found.");
             }
 
-            var commentId = new CommentId(request.CommentId.Value);
-
             var comment = await _commentRepository.GetByIdAsync(
-                commentId,
-                cancellationToken,
-                includeExpressions: [
-                    comment => comment.LikedByUsers,
-                    comment => comment.DislikedByUsers
-                ]);
+                commentId: new CommentId(request.CommentId.Value),
+                cancellationToken);
 
             if (comment is null)
             {
-                return UserErrors.CommentNotFound;
+                return CommentErrors.NotFound;
             }
 
-            var removeCommentDislikeResult = caller.RemoveCommentDislike(comment);
-
-            if (removeCommentDislikeResult.IsFailure)
-            {
-                return removeCommentDislikeResult.Error;
-            }
-
-            var removeDislikeResult = comment.RemoveDislike(caller);
+            var removeDislikeResult = caller.RemoveCommentDislike(comment.Id);
 
             if (removeDislikeResult.IsFailure)
             {
                 return removeDislikeResult.Error;
             }
-
-            await _commentRepository.UpdateAsync(comment);
-            await _userRepository.UpdateAsync(caller);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

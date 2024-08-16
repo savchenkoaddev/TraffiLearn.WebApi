@@ -23,8 +23,7 @@ namespace TraffiLearn.Application.Queries.Topics.GetAllSortedByNumber
             GetAllSortedTopicsByNumberQuery request,
             CancellationToken cancellationToken)
         {
-            var sortedTopics = await _topicRepository.GetAllAsync(
-                orderByExpression: topic => topic.Number,
+            var sortedTopics = await _topicRepository.GetAllSortedByNumberAsync(
                 cancellationToken);
 
             return Result.Success(_topicMapper.Map(sortedTopics));

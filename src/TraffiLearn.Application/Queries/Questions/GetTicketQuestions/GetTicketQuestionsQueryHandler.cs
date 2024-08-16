@@ -7,19 +7,22 @@ using TraffiLearn.Domain.Aggregates.Tickets.Errors;
 using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Queries.Tickets.GetTicketQuestions
+namespace TraffiLearn.Application.Queries.Questions.GetTicketQuestions
 {
     internal sealed class GetTicketQuestionsQueryHandler
         : IRequestHandler<GetTicketQuestionsQuery, Result<IEnumerable<QuestionResponse>>>
     {
         private readonly ITicketRepository _ticketRepository;
+        private readonly IQuestionRepository _questionRepository;
         private readonly Mapper<Question, QuestionResponse> _questionMapper;
 
         public GetTicketQuestionsQueryHandler(
             ITicketRepository ticketRepository,
+            IQuestionRepository questionRepository,
             Mapper<Question, QuestionResponse> questionMapper)
         {
             _ticketRepository = ticketRepository;
+            _questionRepository = questionRepository;
             _questionMapper = questionMapper;
         }
 
@@ -27,17 +30,22 @@ namespace TraffiLearn.Application.Queries.Tickets.GetTicketQuestions
             GetTicketQuestionsQuery request,
             CancellationToken cancellationToken)
         {
-            var ticket = await _ticketRepository.GetByIdAsync(
-                ticketId: new TicketId(request.TicketId.Value),
-                cancellationToken,
-                includeExpressions: ticket => ticket.Questions);
+            var ticketId = new TicketId(request.TicketId.Value);
 
-            if (ticket is null)
+            var ticketExists = await _ticketRepository.ExistsAsync(
+                ticketId,
+                cancellationToken);
+
+            if (!ticketExists)
             {
-                return Result.Failure<IEnumerable<QuestionResponse>>(TicketErrors.QuestionNotFound);
+                return Result.Failure<IEnumerable<QuestionResponse>>(TicketErrors.NotFound);
             }
 
-            return Result.Success(_questionMapper.Map(ticket.Questions));
+            var questions = await _questionRepository.GetManyByTicketIdAsync(
+                ticketId,
+                cancellationToken);
+
+            return Result.Success(_questionMapper.Map(questions));
         }
     }
 }
