@@ -10,12 +10,12 @@ namespace TraffiLearn.Application.Commands.Topics.Update
     internal sealed class UpdateTopicCommandHandler : IRequestHandler<UpdateTopicCommand, Result>
     {
         private readonly ITopicRepository _topicRepository;
-        private readonly Mapper<UpdateTopicCommand, Result<Topic>> _commandMapper;
+        private readonly Mapper<UpdateTopicCommand, Result<Domain.Aggregates.Topics.Topic>> _commandMapper;
         private readonly IUnitOfWork _unitOfWork;
 
         public UpdateTopicCommandHandler(
             ITopicRepository topicRepository,
-            Mapper<UpdateTopicCommand, Result<Topic>> commandMapper,
+            Mapper<UpdateTopicCommand, Result<Domain.Aggregates.Topics.Topic>> commandMapper,
             IUnitOfWork unitOfWork)
         {
             _topicRepository = topicRepository;

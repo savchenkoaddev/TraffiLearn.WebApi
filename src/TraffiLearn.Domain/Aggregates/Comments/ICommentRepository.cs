@@ -12,8 +12,7 @@ namespace TraffiLearn.Domain.Aggregates.Comments
 
         Task<Comment?> GetByIdWithRepliesWithUsersTwoLevelsDeepAsync(
             CommentId commentId,
-            CancellationToken cancellationToken = default,
-            params Expression<Func<Comment, object>>[] includeExpressions);
+            CancellationToken cancellationToken = default);
 
         Task<Comment?> GetByIdWithAllNestedRepliesAsync(
             CommentId commentId,

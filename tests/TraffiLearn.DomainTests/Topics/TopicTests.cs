@@ -1,5 +1,4 @@
 using FluentAssertions;
-using TraffiLearn.Domain.Aggregates.Topics;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
@@ -15,21 +14,21 @@ namespace TraffiLearn.DomainTests.Topics
             Action[] actions = [
                 () =>
                 {
-                    Topic.Create(
+                    TopicId.Create(
                     new TopicId(Guid.NewGuid()),
                     null,
                     null);
                 },
                 () =>
                 {
-                    Topic.Create(
+                    TopicId.Create(
                     new TopicId(Guid.NewGuid()),
                     null,
                     TopicTitle.Create("Value").Value);
                 },
                 () =>
                 {
-                    Topic.Create(
+                    TopicId.Create(
                     new TopicId(Guid.NewGuid()),
                     TopicNumber.Create(1).Value,
                     null);
@@ -44,9 +43,9 @@ namespace TraffiLearn.DomainTests.Topics
         {
             var validTopicTitle = TopicFixtureFactory.CreateTitle();
             var validTopicNumber = TopicFixtureFactory.CreateNumber();
-            var validId = new TopicId(Guid.NewGuid());
+            var validId = new Domain.Aggregates.Topics.ValueObjects.TopicId(Guid.NewGuid());
 
-            var result = Topic.Create(
+            var result = TopicId.Create(
                 validId,
                 validTopicNumber,
                 validTopicTitle);
@@ -184,9 +183,9 @@ namespace TraffiLearn.DomainTests.Topics
         [Fact]
         public void Topic_ShouldInheritFromEntity()
         {
-            var type = typeof(Topic);
+            var type = typeof(Domain.Aggregates.Topics.Topic);
 
-            var isValueObject = typeof(Entity<TopicId>).IsAssignableFrom(type);
+            var isValueObject = typeof(Entity<Domain.Aggregates.Topics.ValueObjects.TopicId>).IsAssignableFrom(type);
             isValueObject.Should().BeTrue("Topic should inherit from Entity.");
         }
     }

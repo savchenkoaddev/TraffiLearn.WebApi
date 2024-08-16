@@ -87,8 +87,8 @@ namespace TraffiLearn.Application.Commands.Users.RemoveQuestionLike
                 likedQuestionId,
                 cancellationToken,
                 includeExpressions: [
-                    question => question.LikedByUsers,
-                    question => question.DislikedByUsers
+                    question => question.LikedByUsersIds,
+                    question => question.DislikedByUsersIds
                 ]);
         }
     }

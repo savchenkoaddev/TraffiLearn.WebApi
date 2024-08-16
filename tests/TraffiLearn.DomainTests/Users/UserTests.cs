@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Primitives;
@@ -16,7 +15,7 @@ namespace TraffiLearn.DomainTests.Users
             Action[] actions = [
                 () =>
                 {
-                    User.Create(
+                    UserId.Create(
                     new UserId(Guid.NewGuid()),
                     UserFixtureFactory.CreateEmail(),
                     null,
@@ -24,7 +23,7 @@ namespace TraffiLearn.DomainTests.Users
                 },
                 () =>
                 {
-                    User.Create(
+                    UserId.Create(
                     new UserId(Guid.NewGuid()),
                     null,
                     UserFixtureFactory.CreateUsername(),
@@ -39,12 +38,12 @@ namespace TraffiLearn.DomainTests.Users
         [Fact]
         public void Create_IfPassedValidArgs_ShouldBeSuccesful()
         {
-            var id = new UserId(Guid.NewGuid());
+            var id = new Domain.Aggregates.Users.ValueObjects.UserId(Guid.NewGuid());
             var email = UserFixtureFactory.CreateEmail();
             var username = UserFixtureFactory.CreateUsername();
             var role = UserFixtureFactory.CreateRole();
 
-            var result = User.Create(
+            var result = UserId.Create(
                 id,
                 email,
                 username,
@@ -72,7 +71,7 @@ namespace TraffiLearn.DomainTests.Users
             var email = UserFixtureFactory.CreateEmail();
             var username = UserFixtureFactory.CreateUsername();
 
-            var user = User.Create(
+            var user = UserId.Create(
                 new UserId(Guid.NewGuid()),
                 email,
                 username,
@@ -97,7 +96,7 @@ namespace TraffiLearn.DomainTests.Users
             var email = UserFixtureFactory.CreateEmail();
             var username = UserFixtureFactory.CreateUsername();
 
-            var user = User.Create(
+            var user = UserId.Create(
                 new UserId(Guid.NewGuid()),
                 email,
                 username,
@@ -634,9 +633,9 @@ namespace TraffiLearn.DomainTests.Users
         [Fact]
         public void User_ShouldInheritFromEntity()
         {
-            var type = typeof(User);
+            var type = typeof(Domain.Aggregates.Users.UserId);
 
-            var isValueObject = typeof(Entity<UserId>).IsAssignableFrom(type);
+            var isValueObject = typeof(Entity<Domain.Aggregates.Users.ValueObjects.UserId>).IsAssignableFrom(type);
             isValueObject.Should().BeTrue("User should inherit from Entity.");
         }
     }

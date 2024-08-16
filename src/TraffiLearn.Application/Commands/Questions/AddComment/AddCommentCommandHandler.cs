@@ -59,7 +59,7 @@ namespace TraffiLearn.Application.Commands.Questions.AddComment
             var question = await _questionRepository.GetByIdAsync(
                 questionId: new QuestionId(request.QuestionId.Value),
                 cancellationToken,
-                includeExpressions: question => question.Comments);
+                includeExpressions: question => question.CommentIds);
 
             if (question is null)
             {

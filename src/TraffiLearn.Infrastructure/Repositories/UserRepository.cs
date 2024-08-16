@@ -16,7 +16,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task AddAsync(
-            User user,
+            Domain.Aggregates.Users.UserId user,
             CancellationToken cancellationToken = default)
         {
             await _dbContext.Users.AddAsync(
@@ -24,7 +24,7 @@ namespace TraffiLearn.Infrastructure.Repositories
                 cancellationToken);
         }
 
-        public Task DeleteAsync(User user)
+        public Task DeleteAsync(Domain.Aggregates.Users.UserId user)
         {
             _dbContext.Users.Remove(user);
 
@@ -32,7 +32,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<bool> ExistsAsync(
-            UserId userId,
+            Domain.Aggregates.Users.ValueObjects.UserId userId,
             CancellationToken cancellationToken = default)
         {
             return (await _dbContext.Users.FindAsync(
@@ -59,12 +59,12 @@ namespace TraffiLearn.Infrastructure.Repositories
                 cancellationToken: cancellationToken)) is not null;
         }
 
-        public Task<User?> GetByEmailAsync(
+        public Task<Domain.Aggregates.Users.UserId?> GetByEmailAsync(
             Email email,
             CancellationToken cancellationToken = default,
-            params Expression<Func<User, object>>[] includeExpressions)
+            params Expression<Func<Domain.Aggregates.Users.UserId, object>>[] includeExpressions)
         {
-            IQueryable<User> query = _dbContext.Users;
+            IQueryable<Domain.Aggregates.Users.UserId> query = _dbContext.Users;
 
             foreach (var includeExpression in includeExpressions)
             {
@@ -76,10 +76,10 @@ namespace TraffiLearn.Infrastructure.Repositories
                 cancellationToken);
         }
 
-        public async Task<User?> GetByIdAsync(
-            UserId userId,
+        public async Task<Domain.Aggregates.Users.UserId?> GetByIdAsync(
+            Domain.Aggregates.Users.ValueObjects.UserId userId,
             CancellationToken cancellationToken = default,
-            params Expression<Func<User, object>>[] includeExpressions)
+            params Expression<Func<Domain.Aggregates.Users.UserId, object>>[] includeExpressions)
         {
             var query = _dbContext.Users.AsQueryable();
 
@@ -94,7 +94,7 @@ namespace TraffiLearn.Infrastructure.Repositories
                     cancellationToken);
         }
 
-        public Task<User?> GetByUsernameAsync(
+        public Task<Domain.Aggregates.Users.UserId?> GetByUsernameAsync(
             Username username,
             CancellationToken cancellationToken = default)
         {
@@ -103,8 +103,8 @@ namespace TraffiLearn.Infrastructure.Repositories
                 cancellationToken);
         }
 
-        public async Task<User?> GetUserWithCommentsWithRepliesAsync(
-            UserId userId,
+        public async Task<Domain.Aggregates.Users.UserId?> GetUserWithCommentsWithRepliesAsync(
+            Domain.Aggregates.Users.ValueObjects.UserId userId,
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Users
@@ -114,7 +114,7 @@ namespace TraffiLearn.Infrastructure.Repositories
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
-        public Task UpdateAsync(User user)
+        public Task UpdateAsync(Domain.Aggregates.Users.UserId user)
         {
             _dbContext.Users.Update(user);
 

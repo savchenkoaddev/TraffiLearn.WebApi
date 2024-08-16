@@ -62,8 +62,8 @@ namespace TraffiLearn.DomainTests.Comments
             var comment = result.Value;
 
             comment.Content.Should().Be(content);
-            comment.Creator.Should().Be(creator);
-            comment.Question.Should().Be(question);
+            comment.CreatorId.Should().Be(creator);
+            comment.QuestionId.Should().Be(question);
             comment.Id.Should().Be(id);
 
             comment.DislikesCount.Should().Be(0);

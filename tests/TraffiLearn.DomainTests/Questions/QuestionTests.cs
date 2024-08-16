@@ -156,11 +156,11 @@ namespace TraffiLearn.DomainTests.Questions
             nullUriResult.Value.ImageUri.Should().BeNull();
             nullUriResult.Value.LikesCount.Should().Be(0);
             nullUriResult.Value.DislikesCount.Should().Be(0);
-            nullUriResult.Value.LikedByUsers.Should().BeEmpty();
-            nullUriResult.Value.DislikedByUsers.Should().BeEmpty();
-            nullUriResult.Value.Comments.Should().BeEmpty();
-            nullUriResult.Value.Tickets.Should().BeEmpty();
-            nullUriResult.Value.Topics.Should().BeEmpty();
+            nullUriResult.Value.LikedByUsersIds.Should().BeEmpty();
+            nullUriResult.Value.DislikedByUsersIds.Should().BeEmpty();
+            nullUriResult.Value.CommentIds.Should().BeEmpty();
+            nullUriResult.Value.TicketIds.Should().BeEmpty();
+            nullUriResult.Value.TopicIds.Should().BeEmpty();
 
             notNullUriResult.Value.ImageUri.Should().Be(imageUri);
         }
@@ -436,15 +436,15 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var countBefore = question.Topics.Count();
+            var countBefore = question.TopicIds.Count();
 
             var topic = TopicFixtureFactory.CreateTopic();
 
             var result = question.AddTopic(topic);
 
             result.IsSuccess.Should().BeTrue();
-            question.Topics.Should().HaveCount(countBefore + 1);
-            question.Topics.Should().Contain(topic);
+            question.TopicIds.Should().HaveCount(countBefore + 1);
+            question.TopicIds.Should().Contain(topic);
         }
 
         [Fact]
@@ -482,13 +482,13 @@ namespace TraffiLearn.DomainTests.Questions
 
             question.AddTopic(topic);
 
-            var countBefore = question.Topics.Count();
+            var countBefore = question.TopicIds.Count();
 
             var result = question.RemoveTopic(topic);
 
             result.IsSuccess.Should().BeTrue();
-            question.Topics.Should().HaveCount(countBefore - 1);
-            question.Topics.Should().NotContain(topic);
+            question.TopicIds.Should().HaveCount(countBefore - 1);
+            question.TopicIds.Should().NotContain(topic);
         }
 
         [Fact]
@@ -523,15 +523,15 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var countBefore = question.Tickets.Count();
+            var countBefore = question.TicketIds.Count();
 
             var ticket = TicketFixtureFactory.CreateTicket();
 
             var result = question.AddTicket(ticket);
 
             result.IsSuccess.Should().BeTrue();
-            question.Tickets.Should().HaveCount(countBefore + 1);
-            question.Tickets.Should().Contain(ticket);
+            question.TicketIds.Should().HaveCount(countBefore + 1);
+            question.TicketIds.Should().Contain(ticket);
         }
 
         [Fact]
@@ -569,13 +569,13 @@ namespace TraffiLearn.DomainTests.Questions
 
             question.AddTicket(ticket);
 
-            var countBefore = question.Tickets.Count();
+            var countBefore = question.TicketIds.Count();
 
             var result = question.RemoveTicket(ticket);
 
             result.IsSuccess.Should().BeTrue();
-            question.Tickets.Should().HaveCount(countBefore - 1);
-            question.Tickets.Should().NotContain(ticket);
+            question.TicketIds.Should().HaveCount(countBefore - 1);
+            question.TicketIds.Should().NotContain(ticket);
         }
 
         [Fact]
@@ -624,7 +624,7 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var countBefore = question.LikedByUsers.Count();
+            var countBefore = question.LikedByUsersIds.Count();
             var likesBefore = question.LikesCount;
 
             var user = UserFixtureFactory.CreateUser();
@@ -632,8 +632,8 @@ namespace TraffiLearn.DomainTests.Questions
             var result = question.AddLike(user);
 
             result.IsSuccess.Should().BeTrue();
-            question.LikedByUsers.Should().HaveCount(countBefore + 1);
-            question.LikedByUsers.Should().Contain(user);
+            question.LikedByUsersIds.Should().HaveCount(countBefore + 1);
+            question.LikedByUsersIds.Should().Contain(user);
             question.LikesCount.Should().Be(likesBefore + 1);
         }
 
@@ -683,7 +683,7 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var countBefore = question.DislikedByUsers.Count();
+            var countBefore = question.DislikedByUsersIds.Count();
             var dislikesBefore = question.DislikesCount;
 
             var user = UserFixtureFactory.CreateUser();
@@ -691,8 +691,8 @@ namespace TraffiLearn.DomainTests.Questions
             var result = question.AddDislike(user);
 
             result.IsSuccess.Should().BeTrue();
-            question.DislikedByUsers.Should().HaveCount(countBefore + 1);
-            question.DislikedByUsers.Should().Contain(user);
+            question.DislikedByUsersIds.Should().HaveCount(countBefore + 1);
+            question.DislikedByUsersIds.Should().Contain(user);
             question.DislikesCount.Should().Be(dislikesBefore + 1);
         }
 
@@ -731,15 +731,15 @@ namespace TraffiLearn.DomainTests.Questions
 
             question.AddLike(user);
 
-            var countBefore = question.LikedByUsers.Count();
+            var countBefore = question.LikedByUsersIds.Count();
             var likesBefore = question.LikesCount;
 
             var result = question.RemoveLike(user);
 
             result.IsSuccess.Should().BeTrue();
 
-            question.LikedByUsers.Should().HaveCount(countBefore - 1);
-            question.LikedByUsers.Should().NotContain(user);
+            question.LikedByUsersIds.Should().HaveCount(countBefore - 1);
+            question.LikedByUsersIds.Should().NotContain(user);
 
             question.LikesCount.Should().Be(likesBefore - 1);
         }
@@ -779,15 +779,15 @@ namespace TraffiLearn.DomainTests.Questions
 
             question.AddDislike(user);
 
-            var countBefore = question.DislikedByUsers.Count();
+            var countBefore = question.DislikedByUsersIds.Count();
             var dislikesBefore = question.DislikesCount;
 
             var result = question.RemoveDislike(user);
 
             result.IsSuccess.Should().BeTrue();
 
-            question.DislikedByUsers.Should().HaveCount(countBefore - 1);
-            question.DislikedByUsers.Should().NotContain(user);
+            question.DislikedByUsersIds.Should().HaveCount(countBefore - 1);
+            question.DislikedByUsersIds.Should().NotContain(user);
 
             question.DislikesCount.Should().Be(dislikesBefore - 1);
         }
@@ -824,15 +824,15 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var countBefore = question.Comments.Count();
+            var countBefore = question.CommentIds.Count();
 
             var comment = CommentFixtureFactory.CreateComment();
 
             var result = question.AddComment(comment);
 
             result.IsSuccess.Should().BeTrue();
-            question.Comments.Should().HaveCount(countBefore + 1);
-            question.Comments.Should().Contain(comment);
+            question.CommentIds.Should().HaveCount(countBefore + 1);
+            question.CommentIds.Should().Contain(comment);
         }
 
         [Fact]

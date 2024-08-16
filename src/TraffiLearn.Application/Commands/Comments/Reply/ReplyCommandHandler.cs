@@ -43,7 +43,7 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
                 commentId: new CommentId(request.CommentId.Value),
                 cancellationToken,
                 includeExpressions: [
-                    comment => comment.Question
+                    comment => comment.QuestionId
                 ]);
 
             if (comment is null)
@@ -64,7 +64,7 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
                 commentId: replyCommentId,
                 content: commentContentResult.Value,
                 creator: caller,
-                question: comment.Question);
+                question: comment.QuestionId);
 
             if (replyCommentResult.IsFailure)
             {
@@ -87,7 +87,7 @@ namespace TraffiLearn.Application.Commands.Comments.Reply
                 return userAddCommentResult.Error;
             }
 
-            var questionAddCommentResult = comment.Question.AddComment(replyComment);
+            var questionAddCommentResult = comment.QuestionId.AddComment(replyComment);
 
             if (questionAddCommentResult.IsFailure)
             {

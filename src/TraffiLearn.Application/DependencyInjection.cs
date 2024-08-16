@@ -32,7 +32,6 @@ using TraffiLearn.Domain.Aggregates.Comments;
 using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Tickets;
 using TraffiLearn.Domain.Aggregates.Topics;
-using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application
@@ -103,7 +102,7 @@ namespace TraffiLearn.Application
             services.AddScoped<Mapper<CreateTicketCommand, Result<Ticket>>, CreateTicketCommandMapper>();
             services.AddScoped<Mapper<Ticket, TicketResponse>,
                 TicketToTicketResponseMapper>();
-            services.AddScoped<Mapper<RegisterUserCommand, Result<User>>,
+            services.AddScoped<Mapper<RegisterUserCommand, Result<UserId>>,
                 RegisterUserCommandMapper>();
             services.AddScoped<Mapper<UpdateQuestionCommand, Result<Question>>,
                 UpdateQuestionCommandMapper>();
@@ -111,8 +110,8 @@ namespace TraffiLearn.Application
                 UpdateTopicCommandMapper>();
             services.AddScoped<Mapper<Comment, CommentResponse>,
                 CommentToCommentResponseMapper>();
-            services.AddScoped<Mapper<RegisterAdminCommand, Result<User>>, RegisterAdminCommandMapper>();
-            services.AddScoped<Mapper<User, ApplicationUser>, UserToApplicationUserMapper>();
+            services.AddScoped<Mapper<RegisterAdminCommand, Result<UserId>>, RegisterAdminCommandMapper>();
+            services.AddScoped<Mapper<UserId, ApplicationUser>, UserToApplicationUserMapper>();
 
             return services;
         }

@@ -39,7 +39,7 @@ namespace TraffiLearn.Application.Commands.Questions.Update
             var question = await _questionRepository.GetByIdAsync(
                 questionId: new QuestionId(request.QuestionId.Value),
                 cancellationToken,
-                includeExpressions: question => question.Topics);
+                includeExpressions: question => question.TopicIds);
 
             if (question is null)
             {
@@ -114,7 +114,7 @@ namespace TraffiLearn.Application.Commands.Questions.Update
                     return TopicErrors.NotFound;
                 }
 
-                if (!question.Topics.Contains(topic))
+                if (!question.TopicIds.Contains(topic))
                 {
                     var topicAddResult = question.AddTopic(topic);
 
@@ -132,7 +132,7 @@ namespace TraffiLearn.Application.Commands.Questions.Update
                 }
             }
 
-            var questionTopics = question.Topics.ToList();
+            var questionTopics = question.TopicIds.ToList();
 
             foreach (var topic in questionTopics)
             {

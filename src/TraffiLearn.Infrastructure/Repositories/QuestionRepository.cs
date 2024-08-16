@@ -135,9 +135,9 @@ namespace TraffiLearn.Infrastructure.Repositories
         {
             return await _dbContext.Comments
                 .AsNoTracking()
-                .Where(c => c.Question.Id == questionId && c.RootComment == null)
+                .Where(c => c.QuestionId.Id == questionId && c.RootComment == null)
                 .Include(q => q.Replies)
-                .Include(q => q.Creator)
+                .Include(q => q.CreatorId)
                 .ToListAsync(cancellationToken);
         }
     }

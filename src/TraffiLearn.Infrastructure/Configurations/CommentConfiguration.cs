@@ -20,11 +20,11 @@ namespace TraffiLearn.Infrastructure.Configurations
                     value => CommentContent.Create(value).Value);
 
             builder
-                .HasOne(c => c.Question)
+                .HasOne(c => c.QuestionId)
                 .WithMany(q => q.Comments);
 
             builder
-                .HasOne(c => c.Creator)
+                .HasOne(c => c.CreatorId)
                 .WithMany(q => q.Comments)
                 .OnDelete(DeleteBehavior.ClientCascade);
 

@@ -7,7 +7,6 @@ using TraffiLearn.Domain.Aggregates.Comments;
 using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Tickets;
 using TraffiLearn.Domain.Aggregates.Topics;
-using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Infrastructure.Options;
 
 namespace TraffiLearn.Infrastructure.Database
@@ -32,7 +31,7 @@ namespace TraffiLearn.Infrastructure.Database
 
         public DbSet<Comment> Comments { get; set; }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<UserId> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

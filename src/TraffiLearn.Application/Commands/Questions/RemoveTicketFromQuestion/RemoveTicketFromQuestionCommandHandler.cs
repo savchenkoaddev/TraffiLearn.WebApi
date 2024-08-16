@@ -42,7 +42,7 @@ namespace TraffiLearn.Application.Commands.Questions.RemoveTicketFromQuestion
             var question = await _questionRepository.GetByIdAsync(
                 questionId: new QuestionId(request.QuestionId.Value),
                 cancellationToken,
-                includeExpressions: question => question.Tickets);
+                includeExpressions: question => question.TicketIds);
 
             if (question is null)
             {

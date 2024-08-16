@@ -1,12 +1,11 @@
 ﻿using System.Linq.Expressions;
-using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 
 namespace TraffiLearn.Domain.Aggregates.Topics
 {
     public interface ITopicRepository
     {
         Task<Topic?> GetByIdAsync(
-            TopicId topicId,
+            Topic topicId,
             CancellationToken cancellationToken = default,
             params Expression<Func<Topic, object>>[] includeExpressions);
 
@@ -20,7 +19,7 @@ namespace TraffiLearn.Domain.Aggregates.Topics
             params Expression<Func<Topic, object>>[] includeExpressions);
 
         Task<bool> ExistsAsync(
-            TopicId topicId,
+            Topic topicId,
             CancellationToken cancellationToken = default);
 
         Task AddAsync(

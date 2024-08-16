@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using TraffiLearn.Domain.Aggregates.Topics;
-using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 using TraffiLearn.Infrastructure.Database;
 
 namespace TraffiLearn.Infrastructure.Repositories
@@ -16,7 +15,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task AddAsync(
-            Topic topic,
+            Domain.Aggregates.Topics.Topic topic,
             CancellationToken cancellationToken = default)
         {
             await _dbContext.Topics.AddAsync(
@@ -24,7 +23,7 @@ namespace TraffiLearn.Infrastructure.Repositories
                 cancellationToken);
         }
 
-        public Task DeleteAsync(Topic topic)
+        public Task DeleteAsync(Domain.Aggregates.Topics.Topic topic)
         {
             _dbContext.Topics.Remove(topic);
 
@@ -32,7 +31,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<bool> ExistsAsync(
-            TopicId topicId,
+            Domain.Aggregates.Topics.ValueObjects.TopicId topicId,
             CancellationToken cancellationToken = default)
         {
             return (await _dbContext.Topics.FindAsync(
@@ -40,12 +39,12 @@ namespace TraffiLearn.Infrastructure.Repositories
                 cancellationToken)) is not null;
         }
 
-        public async Task<IEnumerable<Topic>> GetAllAsync(
-            Expression<Func<Topic, object>>? orderByExpression = null,
+        public async Task<IEnumerable<Domain.Aggregates.Topics.Topic>> GetAllAsync(
+            Expression<Func<Domain.Aggregates.Topics.Topic, object>>? orderByExpression = null,
             CancellationToken cancellationToken = default,
-            params Expression<Func<Topic, object>>[] includeExpressions)
+            params Expression<Func<Domain.Aggregates.Topics.Topic, object>>[] includeExpressions)
         {
-            IQueryable<Topic> topics = _dbContext.Topics;
+            IQueryable<Domain.Aggregates.Topics.Topic> topics = _dbContext.Topics;
 
             foreach (var includeExpression in includeExpressions)
             {
@@ -61,9 +60,9 @@ namespace TraffiLearn.Infrastructure.Repositories
                 .ToListAsync(cancellationToken);
         }
 
-        public Task<Topic?> GetRandomRecordAsync(
+        public Task<Domain.Aggregates.Topics.Topic?> GetRandomRecordAsync(
             CancellationToken cancellationToken = default,
-            params Expression<Func<Topic, object>>[] includeExpressions)
+            params Expression<Func<Domain.Aggregates.Topics.Topic, object>>[] includeExpressions)
         {
             var sql = """
                 SELECT TOP 1 *
@@ -87,10 +86,10 @@ namespace TraffiLearn.Infrastructure.Repositories
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<Topic?> GetByIdAsync(
-            TopicId topicId,
+        public async Task<Domain.Aggregates.Topics.Topic?> GetByIdAsync(
+            Domain.Aggregates.Topics.ValueObjects.TopicId topicId,
             CancellationToken cancellationToken = default,
-            params Expression<Func<Topic, object>>[] includeExpressions)
+            params Expression<Func<Domain.Aggregates.Topics.Topic, object>>[] includeExpressions)
         {
             var query = _dbContext.Topics.AsQueryable();
 
@@ -105,7 +104,7 @@ namespace TraffiLearn.Infrastructure.Repositories
                     cancellationToken);
         }
 
-        public Task UpdateAsync(Topic topic)
+        public Task UpdateAsync(Domain.Aggregates.Topics.Topic topic)
         {
             _dbContext.Topics.Update(topic);
 

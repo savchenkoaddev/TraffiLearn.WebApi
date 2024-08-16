@@ -11,11 +11,11 @@ namespace TraffiLearn.Application.Queries.Topics.GetById
     internal sealed class GetTopicByIdQueryHandler : IRequestHandler<GetTopicByIdQuery, Result<TopicResponse>>
     {
         private readonly ITopicRepository _topicRepository;
-        private readonly Mapper<Topic, TopicResponse> _topicMapper;
+        private readonly Mapper<Domain.Aggregates.Topics.Topic, TopicResponse> _topicMapper;
 
         public GetTopicByIdQueryHandler(
             ITopicRepository topicRepository,
-            Mapper<Topic, TopicResponse> topicMapper)
+            Mapper<Domain.Aggregates.Topics.Topic, TopicResponse> topicMapper)
         {
             _topicRepository = topicRepository;
             _topicMapper = topicMapper;

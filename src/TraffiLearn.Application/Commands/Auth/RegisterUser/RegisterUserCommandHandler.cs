@@ -66,7 +66,9 @@ namespace TraffiLearn.Application.Commands.Auth.RegisterUser
             using (var transaction = new TransactionScope(
                 TransactionScopeAsyncFlowOption.Enabled))
             {
-                await _userRepository.AddAsync(newUser);
+                await _userRepository.AddAsync(
+                    newUser,
+                    cancellationToken);
 
                 await _identityService.CreateAsync(
                     identityUser,

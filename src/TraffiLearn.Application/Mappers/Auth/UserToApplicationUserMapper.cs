@@ -1,13 +1,12 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Identity;
-using TraffiLearn.Domain.Aggregates.Users;
 
 namespace TraffiLearn.Application.Mappers.Auth
 {
     internal sealed class UserToApplicationUserMapper
-        : Mapper<User, ApplicationUser>
+        : Mapper<UserId, ApplicationUser>
     {
-        public override ApplicationUser Map(User source)
+        public override ApplicationUser Map(UserId source)
         {
             return new ApplicationUser()
             {

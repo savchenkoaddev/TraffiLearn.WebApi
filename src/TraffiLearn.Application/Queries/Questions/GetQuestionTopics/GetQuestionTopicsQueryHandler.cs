@@ -29,7 +29,7 @@ namespace TraffiLearn.Application.Queries.Questions.GetQuestionTopics
             var question = await _questionRepository.GetByIdAsync(
                 questionId: new QuestionId(request.QuestionId.Value),
                 cancellationToken,
-                includeExpressions: question => question.Topics);
+                includeExpressions: question => question.TopicIds);
 
             if (question is null)
             {
@@ -37,7 +37,7 @@ namespace TraffiLearn.Application.Queries.Questions.GetQuestionTopics
                     QuestionErrors.NotFound);
             }
 
-            return Result.Success(_topicMapper.Map(question.Topics));
+            return Result.Success(_topicMapper.Map(question.TopicIds));
         }
     }
 }

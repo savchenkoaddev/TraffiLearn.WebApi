@@ -1,7 +1,7 @@
 ﻿using TraffiLearn.Domain.Aggregates.Comments.Errors;
 using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
-using TraffiLearn.Domain.Aggregates.Questions;
-using TraffiLearn.Domain.Aggregates.Users;
+using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 
@@ -10,11 +10,11 @@ namespace TraffiLearn.Domain.Aggregates.Comments
     public sealed class Comment : AggregateRoot<CommentId>
     {
         private readonly HashSet<Comment> _replies = [];
-        private readonly HashSet<User> _likedByUsers = [];
-        private readonly HashSet<User> _dislikedByUsers = [];
+        private readonly HashSet<UserId> _likedByUsers = [];
+        private readonly HashSet<UserId> _dislikedByUsers = [];
         private CommentContent _content;
-        private User _creator;
-        private Question _question;
+        private UserId _creatorId;
+        private QuestionId _questionId;
 
         private Comment()
             : base(new(Guid.Empty))
@@ -23,12 +23,12 @@ namespace TraffiLearn.Domain.Aggregates.Comments
         private Comment(
             CommentId commentId,
             CommentContent commentContent,
-            User creator,
-            Question question) : base(commentId)
+            UserId creatorId,
+            QuestionId questionId) : base(commentId)
         {
             Content = commentContent;
-            Creator = creator;
-            Question = question;
+            CreatorId = creatorId;
+            QuestionId = questionId;
         }
 
         public CommentContent Content
@@ -45,33 +45,9 @@ namespace TraffiLearn.Domain.Aggregates.Comments
             }
         }
 
-        public User Creator
-        {
-            get
-            {
-                return _creator;
-            }
-            private set
-            {
-                ArgumentNullException.ThrowIfNull(value, nameof(value));
+        public UserId CreatorId { get; private set; }
 
-                _creator = value;
-            }
-        }
-
-        public Question Question
-        {
-            get
-            {
-                return _question;
-            }
-            private set
-            {
-                ArgumentNullException.ThrowIfNull(value, nameof(value));
-
-                _question = value;
-            }
-        }
+        public QuestionId QuestionId { get; private set; }
 
         public Comment? RootComment { get; private set; }
 
@@ -81,72 +57,64 @@ namespace TraffiLearn.Domain.Aggregates.Comments
 
         public IReadOnlyCollection<Comment> Replies => _replies;
 
-        public IReadOnlyCollection<User> LikedByUsers => _likedByUsers;
+        public IReadOnlyCollection<UserId> LikedByUsers => _likedByUsers;
 
-        public IReadOnlyCollection<User> DislikedByUsers => _dislikedByUsers;
+        public IReadOnlyCollection<UserId> DislikedByUsers => _dislikedByUsers;
 
-        public Result AddLike(User user)
+        public Result AddLike(UserId userId)
         {
-            ArgumentNullException.ThrowIfNull(user, nameof(user));
-
-            if (_likedByUsers.Contains(user))
+            if (_likedByUsers.Contains(userId))
             {
                 return CommentErrors.AlreadyLikedByUser;
             }
 
-            if (_dislikedByUsers.Contains(user))
+            if (_dislikedByUsers.Contains(userId))
             {
                 return CommentErrors.CantLikeIfDislikedByUser;
             }
 
-            _likedByUsers.Add(user);
+            _likedByUsers.Add(userId);
 
             return Result.Success();
         }
 
-        public Result RemoveLike(User user)
+        public Result RemoveLike(UserId userId)
         {
-            ArgumentNullException.ThrowIfNull(user, nameof(user));
-
-            if (!_likedByUsers.Contains(user))
+            if (!_likedByUsers.Contains(userId))
             {
                 return CommentErrors.NotLikedByUser;
             }
 
-            _likedByUsers.Remove(user);
+            _likedByUsers.Remove(userId);
 
             return Result.Success();
         }
 
-        public Result AddDislike(User user)
+        public Result AddDislike(UserId userId)
         {
-            ArgumentNullException.ThrowIfNull(user, nameof(user));
-
-            if (_dislikedByUsers.Contains(user))
+            if (_dislikedByUsers.Contains(userId))
             {
                 return CommentErrors.AlreadyDislikedByUser;
             }
 
-            if (_likedByUsers.Contains(user))
+            if (_likedByUsers.Contains(userId))
             {
                 return CommentErrors.CantDislikeIfLikedByUser;
             }
 
-            _dislikedByUsers.Add(user);
+            _dislikedByUsers.Add(userId);
 
             return Result.Success();
         }
 
-        public Result RemoveDislike(User user)
+        public Result RemoveDislike(UserId userId)
         {
-            ArgumentNullException.ThrowIfNull(user, nameof(user));
-
-            if (!_dislikedByUsers.Contains(user))
+            if (!_dislikedByUsers.Contains(userId))
             {
                 return CommentErrors.NotDislikedByUser;
             }
 
-            _dislikedByUsers.Remove(user);
+            _dislikedByUsers.Remove(userId);
 
             return Result.Success();
         }
@@ -160,8 +128,6 @@ namespace TraffiLearn.Domain.Aggregates.Comments
 
         public Result Reply(Comment comment)
         {
-            ArgumentNullException.ThrowIfNull(comment, nameof(comment));
-
             if (_replies.Contains(comment))
             {
                 return CommentErrors.CommentAlreadyAdded;
@@ -176,14 +142,14 @@ namespace TraffiLearn.Domain.Aggregates.Comments
         public static Result<Comment> Create(
             CommentId commentId,
             CommentContent content,
-            User creator,
-            Question question)
+            UserId creatorId,
+            QuestionId questionId)
         {
             return new Comment(
                 commentId,
                 content,
-                creator,
-                question);
+                creatorId,
+                questionId);
         }
     }
 }

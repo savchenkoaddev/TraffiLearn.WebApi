@@ -43,7 +43,7 @@ namespace TraffiLearn.Application.Commands.Questions.AddTopicToQuestion
             var question = await _questionRepository.GetByIdAsync(
                 questionId: new QuestionId(request.QuestionId.Value),
                 cancellationToken,
-                includeExpressions: question => question.Topics);
+                includeExpressions: question => question.TopicIds);
 
             if (question is null)
             {

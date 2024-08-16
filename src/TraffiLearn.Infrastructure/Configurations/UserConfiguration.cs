@@ -9,7 +9,7 @@ namespace TraffiLearn.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.Property(q => q.Id).HasConversion(
+            builder.Property(user => user.Id).HasConversion(
                  id => id.Value,
                  value => new UserId(value));
 

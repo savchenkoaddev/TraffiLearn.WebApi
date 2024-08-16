@@ -1,17 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TraffiLearn.Domain.Aggregates.Topics;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 
 namespace TraffiLearn.Infrastructure.Configurations
 {
-    internal sealed class TopicConfiguration : IEntityTypeConfiguration<Topic>
+    internal sealed class TopicConfiguration : IEntityTypeConfiguration<Domain.Aggregates.Topics.Topic>
     {
-        public void Configure(EntityTypeBuilder<Topic> builder)
+        public void Configure(EntityTypeBuilder<Domain.Aggregates.Topics.Topic> builder)
         {
-            builder.Property(q => q.Id).HasConversion(
+            builder.Property((System.Linq.Expressions.Expression<Func<Domain.Aggregates.Topics.Topic, Domain.Aggregates.Topics.ValueObjects.TopicId>>)(q => (Domain.Aggregates.Topics.ValueObjects.TopicId)q.Id)).HasConversion(
                   id => id.Value,
-                  value => new TopicId(value));
+                  value => new Domain.Aggregates.Topics.ValueObjects.TopicId(value));
 
             builder.Property(t => t.Number).HasConversion(
                 number => number.Value,
