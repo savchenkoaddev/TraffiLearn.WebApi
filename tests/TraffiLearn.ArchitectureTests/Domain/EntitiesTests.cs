@@ -13,6 +13,7 @@ namespace TraffiLearn.ArchitectureTests.Domain
             var result = Types.InAssembly(DomainAssembly)
                 .That()
                 .Inherit(typeof(Entity<>))
+                .And().AreNotAbstract()
                 .Should()
                 .BeSealed()
                 .GetResult();
@@ -26,6 +27,7 @@ namespace TraffiLearn.ArchitectureTests.Domain
             var entityTypes = Types.InAssembly(DomainAssembly)
                 .That()
                 .Inherit(typeof(Entity<>))
+                .And().AreNotAbstract()
                 .GetTypes();
 
             var failingTypes = new List<Type>();
@@ -51,6 +53,7 @@ namespace TraffiLearn.ArchitectureTests.Domain
             var entityTypes = Types.InAssembly(DomainAssembly)
                 .That()
                 .Inherit(typeof(Entity<>))
+                .And().AreNotAbstract()
                 .GetTypes();
 
             var failingTypes = new List<Type>();
@@ -76,6 +79,7 @@ namespace TraffiLearn.ArchitectureTests.Domain
             var entityTypes = Types.InAssembly(DomainAssembly)
                 .That()
                 .Inherit(typeof(Entity<>))
+                .And().AreNotAbstract()
                 .GetTypes();
 
             var failingTypes = new List<Type>();
@@ -101,6 +105,7 @@ namespace TraffiLearn.ArchitectureTests.Domain
             var entityTypes = Types.InAssembly(DomainAssembly)
                .That()
                .Inherit(typeof(Entity<>))
+               .And().AreNotAbstract()
                .GetTypes();
 
             var failingTypes = new List<Type>();
@@ -131,6 +136,7 @@ namespace TraffiLearn.ArchitectureTests.Domain
             var entityTypes = Types.InAssembly(DomainAssembly)
                 .That()
                 .Inherit(typeof(Entity<>))
+                .And().AreNotAbstract()
                 .GetTypes();
 
             var failingTypes = new List<Type>();
@@ -169,6 +175,7 @@ namespace TraffiLearn.ArchitectureTests.Domain
             var entityTypes = Types.InAssembly(DomainAssembly)
                 .That()
                 .Inherit(typeof(Entity<>))
+                .And().AreNotAbstract()
                 .GetTypes();
 
             List<Type> failingTypes = [];
