@@ -4,9 +4,8 @@ using System.Transactions;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Identity;
-using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.Errors.Users;
-using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.Aggregates.Users;
+using TraffiLearn.Domain.Aggregates.Users.Errors;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Commands.Auth.RegisterUser

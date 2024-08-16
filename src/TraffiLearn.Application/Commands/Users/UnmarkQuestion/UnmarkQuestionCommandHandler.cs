@@ -3,11 +3,12 @@ using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Commands.Users.MarkQuestion;
-using TraffiLearn.Domain.Errors.Users;
-using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.Aggregates.Questions;
+using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Users;
+using TraffiLearn.Domain.Aggregates.Users.Errors;
+using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects.Questions;
-using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Commands.Users.UnmarkQuestion
 {

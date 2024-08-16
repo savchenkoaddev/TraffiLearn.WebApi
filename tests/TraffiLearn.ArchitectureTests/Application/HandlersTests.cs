@@ -72,7 +72,7 @@ namespace TraffiLearn.ArchitectureTests.Application
             foreach (var type in types)
             {
                 var publicFields = type.GetFields(
-                    BindingFlags.Public | 
+                    BindingFlags.Public |
                     BindingFlags.Instance);
 
                 publicFields.Should().BeEmpty();
@@ -113,13 +113,13 @@ namespace TraffiLearn.ArchitectureTests.Application
             foreach (var type in types)
             {
                 var staticFields = type.GetFields(
-                    BindingFlags.NonPublic | 
-                    BindingFlags.Public | 
+                    BindingFlags.NonPublic |
+                    BindingFlags.Public |
                     BindingFlags.Static);
 
                 var staticProperties = type.GetProperties(
                     BindingFlags.NonPublic |
-                    BindingFlags.Public | 
+                    BindingFlags.Public |
                     BindingFlags.Static);
 
                 staticFields.Should().BeEmpty();

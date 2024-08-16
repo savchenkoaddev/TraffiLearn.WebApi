@@ -1,6 +1,6 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.DTO.Tickets;
-using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.Aggregates.Tickets;
 
 namespace TraffiLearn.Application.Mapper.Tickets
 {

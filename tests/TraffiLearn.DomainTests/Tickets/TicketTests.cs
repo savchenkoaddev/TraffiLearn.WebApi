@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
-using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.Aggregates.Tickets;
+using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects.Tickets;
 using TraffiLearn.DomainTests.Factories;
 
 namespace TraffiLearn.DomainTests.Tickets

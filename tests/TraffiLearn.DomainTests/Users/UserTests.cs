@@ -1,9 +1,9 @@
 ﻿using FluentAssertions;
-using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.Enums;
+using TraffiLearn.Domain.Aggregates.Users;
+using TraffiLearn.Domain.Aggregates.Users.Enums;
+using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects.Users;
 using TraffiLearn.DomainTests.Factories;
 
 namespace TraffiLearn.DomainTests.Users
@@ -36,7 +36,7 @@ namespace TraffiLearn.DomainTests.Users
                 action.Should().Throw<ArgumentNullException>());
         }
 
-        [Fact]  
+        [Fact]
         public void Create_IfPassedValidArgs_ShouldBeSuccesful()
         {
             var id = new UserId(Guid.NewGuid());
@@ -45,9 +45,9 @@ namespace TraffiLearn.DomainTests.Users
             var role = UserFixtureFactory.CreateRole();
 
             var result = User.Create(
-                id, 
-                email, 
-                username, 
+                id,
+                email,
+                username,
                 role);
 
             result.IsSuccess.Should().BeTrue();

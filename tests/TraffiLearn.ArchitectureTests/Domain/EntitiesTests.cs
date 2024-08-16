@@ -177,7 +177,7 @@ namespace TraffiLearn.ArchitectureTests.Domain
             {
                 var fields = entityType.GetFields(
                     BindingFlags.Public |
-                    BindingFlags.NonPublic | 
+                    BindingFlags.NonPublic |
                     BindingFlags.Instance);
 
                 if (fields.Any(field => !field.IsPrivate && !field.IsInitOnly))

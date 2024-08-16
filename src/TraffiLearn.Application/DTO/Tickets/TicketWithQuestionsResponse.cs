@@ -1,4 +1,4 @@
-﻿using TraffiLearn.Domain.Entities;
+﻿using TraffiLearn.Domain.Aggregates.Questions;
 
 namespace TraffiLearn.Application.DTO.Tickets
 {

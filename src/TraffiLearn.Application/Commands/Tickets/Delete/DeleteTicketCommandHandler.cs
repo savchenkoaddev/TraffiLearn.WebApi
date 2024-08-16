@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Domain.Errors.Tickets;
-using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.Aggregates.Tickets;
+using TraffiLearn.Domain.Aggregates.Tickets.Errors;
+using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects.Tickets;
 
 namespace TraffiLearn.Application.Commands.Tickets.Delete
 {

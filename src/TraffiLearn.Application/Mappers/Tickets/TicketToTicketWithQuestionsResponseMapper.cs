@@ -1,10 +1,10 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.DTO.Tickets;
-using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.Aggregates.Tickets;
 
 namespace TraffiLearn.Application.Mappers.Tickets
 {
-    internal sealed class TicketToTicketWithQuestionsResponseMapper 
+    internal sealed class TicketToTicketWithQuestionsResponseMapper
         : Mapper<Ticket, TicketWithQuestionsResponse>
     {
         public override TicketWithQuestionsResponse Map(Ticket source)

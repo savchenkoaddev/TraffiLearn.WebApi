@@ -1,8 +1,7 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.DTO.Topics;
-using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.Aggregates.Topics;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Queries.Topics.GetAllSortedByNumber

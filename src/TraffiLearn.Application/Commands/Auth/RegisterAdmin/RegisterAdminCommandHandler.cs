@@ -5,10 +5,9 @@ using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Exceptions;
 using TraffiLearn.Application.Identity;
-using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.Enums;
-using TraffiLearn.Domain.Errors.Users;
-using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.Aggregates.Users;
+using TraffiLearn.Domain.Aggregates.Users.Enums;
+using TraffiLearn.Domain.Aggregates.Users.Errors;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Commands.Auth.RegisterAdmin

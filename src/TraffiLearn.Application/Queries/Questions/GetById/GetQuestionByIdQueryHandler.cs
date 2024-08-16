@@ -1,11 +1,10 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.DTO.Questions;
-using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.Errors.Questions;
-using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.Aggregates.Questions;
+using TraffiLearn.Domain.Aggregates.Questions.Errors;
+using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects.Questions;
 
 namespace TraffiLearn.Application.Queries.Questions.GetById
 {

@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using TraffiLearn.Application;
-using TraffiLearn.Domain.Enums;
+using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.Infrastructure;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.Infrastructure.Options;

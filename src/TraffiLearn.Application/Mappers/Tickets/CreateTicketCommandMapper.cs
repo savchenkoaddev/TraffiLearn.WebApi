@@ -1,8 +1,8 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Commands.Tickets.Create;
-using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.Aggregates.Tickets;
+using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects.Tickets;
 
 namespace TraffiLearn.Application.Mapper.Tickets
 {

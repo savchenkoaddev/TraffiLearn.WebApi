@@ -28,7 +28,11 @@ using TraffiLearn.Application.Mappers.Tickets;
 using TraffiLearn.Application.Mappers.Topics;
 using TraffiLearn.Application.Options;
 using TraffiLearn.Application.Services;
-using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.Aggregates.Comments;
+using TraffiLearn.Domain.Aggregates.Questions;
+using TraffiLearn.Domain.Aggregates.Tickets;
+using TraffiLearn.Domain.Aggregates.Topics;
+using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application

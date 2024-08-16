@@ -1,11 +1,11 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.DTO.Comments;
-using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.Errors.Users;
-using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.Aggregates.Comments;
+using TraffiLearn.Domain.Aggregates.Users;
+using TraffiLearn.Domain.Aggregates.Users.Errors;
+using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Queries.Users.GetUserComments
 {

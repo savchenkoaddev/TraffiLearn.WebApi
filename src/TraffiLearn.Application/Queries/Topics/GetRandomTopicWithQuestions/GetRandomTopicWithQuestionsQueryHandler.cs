@@ -1,15 +1,14 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.DTO.Topics;
-using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.Errors.Topics;
-using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.Aggregates.Topics;
+using TraffiLearn.Domain.Aggregates.Topics.Errors;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Queries.Topics.GetRandomTopicWithQuestions
 {
-    internal sealed class GetRandomTopicWithQuestionsQueryHandler 
-        : IRequestHandler<GetRandomTopicWithQuestionsQuery, 
+    internal sealed class GetRandomTopicWithQuestionsQueryHandler
+        : IRequestHandler<GetRandomTopicWithQuestionsQuery,
             Result<TopicWithQuestionsResponse>>
     {
         private readonly ITopicRepository _topicRepository;
@@ -28,7 +27,7 @@ namespace TraffiLearn.Application.Queries.Topics.GetRandomTopicWithQuestions
             CancellationToken cancellationToken)
         {
             var randomTopic = await _topicRepository.GetRandomRecordAsync(
-                cancellationToken, 
+                cancellationToken,
                 t => t.Questions);
 
             if (randomTopic is null)

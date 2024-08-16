@@ -10,9 +10,9 @@ namespace TraffiLearn.ArchitectureTests
         {
             var result = Types.InAssemblies(
                 [
-                    DomainAssembly, 
-                    ApplicationAssembly, 
-                    InfrastructureAssembly, 
+                    DomainAssembly,
+                    ApplicationAssembly,
+                    InfrastructureAssembly,
                     WebApiAssembly
                 ])
                 .That()

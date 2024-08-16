@@ -1,14 +1,13 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.DTO.Tickets;
-using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.Errors.Tickets;
-using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.Aggregates.Tickets;
+using TraffiLearn.Domain.Aggregates.Tickets.Errors;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Queries.Tickets.GetRandomTicketWithQuestions
 {
-    internal sealed class GetRandomTicketWithQuestionsQueryHandler 
+    internal sealed class GetRandomTicketWithQuestionsQueryHandler
         : IRequestHandler<GetRandomTicketWithQuestionsQuery,
             Result<TicketWithQuestionsResponse>>
     {
@@ -28,14 +27,14 @@ namespace TraffiLearn.Application.Queries.Tickets.GetRandomTicketWithQuestions
             CancellationToken cancellationToken)
         {
             var randomTicket = await _ticketRepository.GetRandomRecordAsync(
-                cancellationToken, 
+                cancellationToken,
                 t => t.Questions);
 
             if (randomTicket is null)
             {
                 return Result.Failure<TicketWithQuestionsResponse>(TicketErrors.NotFound);
             }
-            
+
             return Result.Success(_ticketMapper.Map(randomTicket));
         }
     }

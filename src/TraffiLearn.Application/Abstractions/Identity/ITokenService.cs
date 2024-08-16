@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.Aggregates.Users;
 
 namespace TraffiLearn.Application.Abstractions.Identity
 {

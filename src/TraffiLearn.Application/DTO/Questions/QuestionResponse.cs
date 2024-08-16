@@ -1,4 +1,4 @@
-﻿using TraffiLearn.Domain.ValueObjects.Questions;
+﻿using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 
 namespace TraffiLearn.Application.DTO.Questions
 {

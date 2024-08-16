@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
-using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.Aggregates.Comments;
+using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects.Comments;
 using TraffiLearn.DomainTests.Factories;
 
 namespace TraffiLearn.DomainTests.Comments

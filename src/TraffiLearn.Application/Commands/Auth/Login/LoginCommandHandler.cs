@@ -4,10 +4,10 @@ using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.DTO.Auth;
 using TraffiLearn.Application.Exceptions;
 using TraffiLearn.Application.Identity;
-using TraffiLearn.Domain.Errors.Users;
-using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.Aggregates.Users;
+using TraffiLearn.Domain.Aggregates.Users.Errors;
+using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Application.Commands.Auth.Login
 {
@@ -35,7 +35,7 @@ namespace TraffiLearn.Application.Commands.Auth.Login
             CancellationToken cancellationToken)
         {
             _logger.LogInformation("Handling LoginCommand for email: {Email}", request.Email);
-            
+
             var emailResult = Email.Create(request.Email);
 
             if (emailResult.IsFailure)

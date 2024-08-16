@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.RepositoryContracts;
-using TraffiLearn.Domain.ValueObjects.Topics;
+using TraffiLearn.Domain.Aggregates.Topics;
+using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 using TraffiLearn.Infrastructure.Database;
 
 namespace TraffiLearn.Infrastructure.Repositories

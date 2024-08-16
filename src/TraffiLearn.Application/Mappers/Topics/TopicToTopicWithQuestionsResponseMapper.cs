@@ -1,10 +1,10 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.DTO.Topics;
-using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.Aggregates.Topics;
 
 namespace TraffiLearn.Application.Mappers.Topics
 {
-    internal sealed class TopicToTopicWithQuestionsResponseMapper 
+    internal sealed class TopicToTopicWithQuestionsResponseMapper
         : Mapper<Topic, TopicWithQuestionsResponse>
     {
         public override TopicWithQuestionsResponse Map(Topic source)

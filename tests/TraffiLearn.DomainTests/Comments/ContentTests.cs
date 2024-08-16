@@ -1,9 +1,8 @@
 ﻿using FluentAssertions;
 using System.Reflection;
+using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects.Comments;
-using TraffiLearn.Domain.ValueObjects.Tickets;
 
 namespace TraffiLearn.DomainTests.Comments
 {

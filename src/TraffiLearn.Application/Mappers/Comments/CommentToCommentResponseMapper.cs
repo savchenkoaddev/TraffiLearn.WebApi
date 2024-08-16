@@ -1,6 +1,6 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.DTO.Comments;
-using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.Aggregates.Comments;
 
 namespace TraffiLearn.Application.Mapper.Comments
 {

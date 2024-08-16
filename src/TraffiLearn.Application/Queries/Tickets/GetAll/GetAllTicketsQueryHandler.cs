@@ -1,8 +1,7 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.DTO.Tickets;
-using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.Aggregates.Tickets;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Queries.Tickets.GetAll

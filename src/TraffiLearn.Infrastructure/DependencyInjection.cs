@@ -1,13 +1,16 @@
 ﻿using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Abstractions.Storage;
 using TraffiLearn.Application.Identity;
-using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.Aggregates.Comments;
+using TraffiLearn.Domain.Aggregates.Questions;
+using TraffiLearn.Domain.Aggregates.Tickets;
+using TraffiLearn.Domain.Aggregates.Topics;
+using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Infrastructure.Database;
 using TraffiLearn.Infrastructure.External;
 using TraffiLearn.Infrastructure.Helpers;
@@ -77,7 +80,7 @@ namespace TraffiLearn.Infrastructure
         }
 
         private static IServiceCollection ConfigureValidatableOnStartOptions<TOptions>(
-            this IServiceCollection services, 
+            this IServiceCollection services,
             string configSectionPath)
             where TOptions : class
         {

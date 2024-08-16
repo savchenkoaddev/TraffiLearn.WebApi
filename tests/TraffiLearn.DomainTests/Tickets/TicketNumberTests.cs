@@ -1,9 +1,8 @@
 ﻿using FluentAssertions;
 using System.Reflection;
+using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects.Tickets;
-using TraffiLearn.Domain.ValueObjects.Topics;
 
 namespace TraffiLearn.DomainTests.Tickets
 {

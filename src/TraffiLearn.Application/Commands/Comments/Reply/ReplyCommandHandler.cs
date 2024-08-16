@@ -2,11 +2,11 @@
 using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
-using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.Errors.Comments;
-using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.Aggregates.Comments;
+using TraffiLearn.Domain.Aggregates.Comments.Errors;
+using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects.Comments;
 
 namespace TraffiLearn.Application.Commands.Comments.Reply
 {

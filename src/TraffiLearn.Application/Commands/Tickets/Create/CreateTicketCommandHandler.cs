@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.Errors.Tickets;
-using TraffiLearn.Domain.RepositoryContracts;
+using TraffiLearn.Domain.Aggregates.Questions;
+using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Tickets;
+using TraffiLearn.Domain.Aggregates.Tickets.Errors;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects.Questions;
 
 namespace TraffiLearn.Application.Commands.Tickets.Create
 {

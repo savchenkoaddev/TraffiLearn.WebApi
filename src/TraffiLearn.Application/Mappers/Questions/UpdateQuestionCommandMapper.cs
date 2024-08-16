@@ -1,9 +1,9 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Commands.Questions.Update;
 using TraffiLearn.Application.DTO.Answers;
-using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.Aggregates.Questions;
+using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects.Questions;
 
 namespace TraffiLearn.Application.Mapper.Questions
 {
