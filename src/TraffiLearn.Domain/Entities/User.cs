@@ -6,7 +6,7 @@ using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.Domain.Entities
 {
-    public sealed class User : Entity<UserId>
+    public sealed class User : AggregateRoot<UserId>
     {
         private readonly HashSet<Comment> _comments = [];
         private readonly HashSet<Question> _markedQuestions = [];

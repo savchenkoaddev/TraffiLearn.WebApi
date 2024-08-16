@@ -5,7 +5,7 @@ using TraffiLearn.Domain.ValueObjects.Topics;
 
 namespace TraffiLearn.Domain.Entities
 {
-    public sealed class Topic : Entity<TopicId>
+    public sealed class Topic : AggregateRoot<TopicId>
     {
         private readonly HashSet<Question> _questions = [];
         private TopicNumber _topicNumber;

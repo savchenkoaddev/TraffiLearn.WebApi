@@ -1,8 +1,8 @@
 ﻿namespace TraffiLearn.Domain.Primitives
 {
-    public sealed class AggregateRoot<TId> : Entity<TId>
+    public abstract class AggregateRoot<TId> : Entity<TId>
     {
-        public AggregateRoot(TId id)
+        protected AggregateRoot(TId id)
             : base(id)
         { }
     }

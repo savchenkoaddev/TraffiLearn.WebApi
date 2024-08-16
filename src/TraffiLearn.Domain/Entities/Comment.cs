@@ -5,7 +5,7 @@ using TraffiLearn.Domain.ValueObjects.Comments;
 
 namespace TraffiLearn.Domain.Entities
 {
-    public sealed class Comment : Entity<CommentId>
+    public sealed class Comment : AggregateRoot<CommentId>
     {
         private readonly HashSet<Comment> _replies = [];
         private readonly HashSet<User> _likedByUsers = [];
