@@ -68,12 +68,12 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<Topic>> GetManyByQuestionIdAsync(
-            QuestionId questionId, 
+            QuestionId questionId,
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Topics
                 .Where(t => t.QuestionsIds.Contains(questionId))
-                .ToListAsync(cancellationToken); 
+                .ToListAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<Topic>> GetAllSortedByNumberAsync(

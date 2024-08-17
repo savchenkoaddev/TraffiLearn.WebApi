@@ -1,14 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using TraffiLearn.Application.Commands.Tickets.AddQuestionToTicket;
-using TraffiLearn.Application.Commands.Tickets.Create;
-using TraffiLearn.Application.Commands.Tickets.Delete;
-using TraffiLearn.Application.Commands.Tickets.RemoveQuestionFromTicket;
-using TraffiLearn.Application.Commands.Tickets.Update;
-using TraffiLearn.Application.Queries.Tickets.GetAll;
-using TraffiLearn.Application.Queries.Tickets.GetById;
-using TraffiLearn.Application.Queries.Tickets.GetRandomTicketWithQuestions;
-using TraffiLearn.Application.Queries.Tickets.GetTicketQuestions;
+using TraffiLearn.Application.Tickets.Commands.Create;
+using TraffiLearn.Application.Tickets.Commands.Update;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
 

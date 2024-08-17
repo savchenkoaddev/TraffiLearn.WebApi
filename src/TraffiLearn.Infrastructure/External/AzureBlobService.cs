@@ -2,7 +2,7 @@
 using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Storage;
-using TraffiLearn.Application.DTO.Blobs;
+using TraffiLearn.Application.Storage.Blobs.DTO;
 using TraffiLearn.Infrastructure.Exceptions;
 using TraffiLearn.Infrastructure.Options;
 

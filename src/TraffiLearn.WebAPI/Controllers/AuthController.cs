@@ -1,9 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using TraffiLearn.Application.Commands.Auth.Login;
-using TraffiLearn.Application.Commands.Auth.RegisterAdmin;
-using TraffiLearn.Application.Commands.Auth.RegisterUser;
-using TraffiLearn.Application.Commands.Auth.RemoveAdminAccount;
+using TraffiLearn.Application.Auth.Commands.RegisterAdmin;
+using TraffiLearn.Application.Auth.Commands.RegisterUser;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
 

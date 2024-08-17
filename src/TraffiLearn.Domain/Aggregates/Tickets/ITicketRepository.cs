@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
+﻿using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
 
 namespace TraffiLearn.Domain.Aggregates.Tickets

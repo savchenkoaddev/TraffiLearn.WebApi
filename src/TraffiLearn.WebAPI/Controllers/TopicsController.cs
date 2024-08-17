@@ -1,14 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using TraffiLearn.Application.Commands.Topics.AddQuestionToTopic;
-using TraffiLearn.Application.Commands.Topics.Create;
-using TraffiLearn.Application.Commands.Topics.Delete;
-using TraffiLearn.Application.Commands.Topics.RemoveQuestionFromTopic;
-using TraffiLearn.Application.Commands.Topics.Update;
-using TraffiLearn.Application.Queries.Topics.GetAllSortedByNumber;
-using TraffiLearn.Application.Queries.Topics.GetById;
-using TraffiLearn.Application.Queries.Topics.GetRandomTopicWithQuestions;
-using TraffiLearn.Application.Queries.Topics.GetTopicQuestions;
+using TraffiLearn.Application.Topics.Commands.Create;
+using TraffiLearn.Application.Topics.Commands.Update;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
 

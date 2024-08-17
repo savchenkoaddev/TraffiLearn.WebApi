@@ -58,7 +58,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<Ticket?> GetByIdWithQuestionsIdsAsync(
-            TicketId ticketId, 
+            TicketId ticketId,
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Tickets
@@ -68,7 +68,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<Ticket>> GetManyByQuestionIdAsync(
-            QuestionId questionId, 
+            QuestionId questionId,
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Tickets

@@ -80,7 +80,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<Question>> GetManyByTicketIdAsync(
-            TicketId ticketId, 
+            TicketId ticketId,
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Questions
@@ -89,7 +89,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<Question>> GetManyByTopicIdAsync(
-            TopicId topicId, 
+            TopicId topicId,
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Questions
@@ -98,7 +98,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<Question>> GetUserDislikedQuestionsAsync(
-            UserId userId, 
+            UserId userId,
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Questions
@@ -107,7 +107,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<Question>> GetUserLikedQuestionsAsync(
-            UserId userId, 
+            UserId userId,
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Questions
@@ -116,7 +116,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<Question>> GetUserMarkedQuestionsAsync(
-            UserId userId, 
+            UserId userId,
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Questions

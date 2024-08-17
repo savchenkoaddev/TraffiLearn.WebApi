@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Application.Identity;
+using TraffiLearn.Application.Users.Identity;
 using TraffiLearn.Domain.Aggregates.Comments;
 using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Tickets;

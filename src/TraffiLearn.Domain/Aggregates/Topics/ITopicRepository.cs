@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
+﻿using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 
 namespace TraffiLearn.Domain.Aggregates.Topics
@@ -20,7 +19,7 @@ namespace TraffiLearn.Domain.Aggregates.Topics
 
         Task<IEnumerable<Topic>> GetAllSortedByNumberAsync(
             CancellationToken cancellationToken = default);
-        
+
         Task<Topic?> GetRandomRecordAsync(
             CancellationToken cancellationToken = default);
 
