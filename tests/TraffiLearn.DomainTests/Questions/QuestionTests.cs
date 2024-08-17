@@ -17,7 +17,7 @@ namespace TraffiLearn.DomainTests.Questions
                 {
                     Question.Create(
                         new QuestionId(Guid.NewGuid()),
-                        null,
+                        null!,
                         QuestionFixtureFactory.CreateExplanation(),
                         QuestionFixtureFactory.CreateNumber(),
                         QuestionFixtureFactory.CreateAnswers(),
@@ -28,7 +28,7 @@ namespace TraffiLearn.DomainTests.Questions
                     Question.Create(
                         new QuestionId(Guid.NewGuid()),
                         QuestionFixtureFactory.CreateContent(),
-                        null,
+                        null!,
                         QuestionFixtureFactory.CreateNumber(),
                         QuestionFixtureFactory.CreateAnswers(),
                         null);
@@ -39,7 +39,7 @@ namespace TraffiLearn.DomainTests.Questions
                         new QuestionId(Guid.NewGuid()),
                         QuestionFixtureFactory.CreateContent(),
                         QuestionFixtureFactory.CreateExplanation(),
-                        null,
+                        null!,
                         QuestionFixtureFactory.CreateAnswers(),
                         null);
                 },
@@ -50,7 +50,7 @@ namespace TraffiLearn.DomainTests.Questions
                         QuestionFixtureFactory.CreateContent(),
                         QuestionFixtureFactory.CreateExplanation(),
                         QuestionFixtureFactory.CreateNumber(),
-                        null,
+                        null!,
                         null);
                 },
             ];
@@ -174,7 +174,7 @@ namespace TraffiLearn.DomainTests.Questions
                 () =>
                 {
                     question.Update(
-                        null,
+                        null!,
                         QuestionFixtureFactory.CreateExplanation(),
                         QuestionFixtureFactory.CreateNumber(),
                         QuestionFixtureFactory.CreateAnswers(),
@@ -184,7 +184,7 @@ namespace TraffiLearn.DomainTests.Questions
                 {
                     question.Update(
                         QuestionFixtureFactory.CreateContent(),
-                        null,
+                        null!,
                         QuestionFixtureFactory.CreateNumber(),
                         QuestionFixtureFactory.CreateAnswers(),
                         null);
@@ -194,7 +194,7 @@ namespace TraffiLearn.DomainTests.Questions
                     question.Update(
                         QuestionFixtureFactory.CreateContent(),
                         QuestionFixtureFactory.CreateExplanation(),
-                        null,
+                        null!,
                         QuestionFixtureFactory.CreateAnswers(),
                         null);
                 },
@@ -204,7 +204,7 @@ namespace TraffiLearn.DomainTests.Questions
                         QuestionFixtureFactory.CreateContent(),
                         QuestionFixtureFactory.CreateExplanation(),
                         QuestionFixtureFactory.CreateNumber(),
-                        null,
+                        null!,
                         null);
                 },
             ];
@@ -313,7 +313,7 @@ namespace TraffiLearn.DomainTests.Questions
 
             Action action = () =>
             {
-                question.AddAnswer(null);
+                question.AddAnswer(null!);
             };
 
             action.Should().Throw<ArgumentNullException>();
@@ -355,7 +355,7 @@ namespace TraffiLearn.DomainTests.Questions
 
             Action action = () =>
             {
-                question.RemoveAnswer(null);
+                question.RemoveAnswer(null!);
             };
 
             action.Should().Throw<ArgumentNullException>();
@@ -405,24 +405,11 @@ namespace TraffiLearn.DomainTests.Questions
         }
 
         [Fact]
-        public void AddTopic_IfPassedNullArgs_ShouldThrowArgumentNullException()
-        {
-            var question = QuestionFixtureFactory.CreateQuestion();
-
-            Action action = () =>
-            {
-                question.AddTopic(null);
-            };
-
-            action.Should().Throw<ArgumentNullException>();
-        }
-
-        [Fact]
         public void AddTopic_IfTopicAlreadyAdded_ShouldReturnError()
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var topic = TopicFixtureFactory.CreateTopic();
+            var topic = TopicFixtureFactory.CreateTopic().Id;
 
             question.AddTopic(topic);
             var result = question.AddTopic(topic);
@@ -438,7 +425,7 @@ namespace TraffiLearn.DomainTests.Questions
 
             var countBefore = question.TopicsIds.Count();
 
-            var topic = TopicFixtureFactory.CreateTopic();
+            var topic = TopicFixtureFactory.CreateTopic().Id;
 
             var result = question.AddTopic(topic);
 
@@ -448,24 +435,11 @@ namespace TraffiLearn.DomainTests.Questions
         }
 
         [Fact]
-        public void RemoveTopic_IfPassedNullArgs_ShouldThrowArgumentNullException()
-        {
-            var question = QuestionFixtureFactory.CreateQuestion();
-
-            Action action = () =>
-            {
-                question.RemoveTopic(null);
-            };
-
-            action.Should().Throw<ArgumentNullException>();
-        }
-
-        [Fact]
         public void RemoveTopic_IfTopicNotPresent_ShouldReturnError()
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var topic = TopicFixtureFactory.CreateTopic();
+            var topic = TopicFixtureFactory.CreateTopic().Id;
 
             var result = question.RemoveTopic(topic);
 
@@ -478,7 +452,7 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var topic = TopicFixtureFactory.CreateTopic();
+            var topic = TopicFixtureFactory.CreateTopic().Id;
 
             question.AddTopic(topic);
 
@@ -492,24 +466,11 @@ namespace TraffiLearn.DomainTests.Questions
         }
 
         [Fact]
-        public void AddTicket_IfPassedNullArgs_ShouldThrowArgumentNullException()
-        {
-            var question = QuestionFixtureFactory.CreateQuestion();
-
-            Action action = () =>
-            {
-                question.AddTicket(null);
-            };
-
-            action.Should().Throw<ArgumentNullException>();
-        }
-
-        [Fact]
         public void AddTicket_IfTicketAlreadyAdded_ShouldReturnError()
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var ticket = TicketFixtureFactory.CreateTicket();
+            var ticket = TicketFixtureFactory.CreateTicket().Id;
 
             question.AddTicket(ticket);
             var result = question.AddTicket(ticket);
@@ -525,7 +486,7 @@ namespace TraffiLearn.DomainTests.Questions
 
             var countBefore = question.TicketsIds.Count();
 
-            var ticket = TicketFixtureFactory.CreateTicket();
+            var ticket = TicketFixtureFactory.CreateTicket().Id;
 
             var result = question.AddTicket(ticket);
 
@@ -535,24 +496,11 @@ namespace TraffiLearn.DomainTests.Questions
         }
 
         [Fact]
-        public void RemoveTicket_IfPassedNullArgs_ShouldThrowArgumentNullException()
-        {
-            var question = QuestionFixtureFactory.CreateQuestion();
-
-            Action action = () =>
-            {
-                question.RemoveTicket(null);
-            };
-
-            action.Should().Throw<ArgumentNullException>();
-        }
-
-        [Fact]
         public void RemoveTicket_IfTicketNotPresent_ShouldReturnError()
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var ticket = TicketFixtureFactory.CreateTicket();
+            var ticket = TicketFixtureFactory.CreateTicket().Id;
 
             var result = question.RemoveTicket(ticket);
 
@@ -565,7 +513,7 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var ticket = TicketFixtureFactory.CreateTicket();
+            var ticket = TicketFixtureFactory.CreateTicket().Id;
 
             question.AddTicket(ticket);
 
@@ -579,24 +527,11 @@ namespace TraffiLearn.DomainTests.Questions
         }
 
         [Fact]
-        public void AddLike_IfPassedNullArgs_ShouldThrowArgumentNullException()
-        {
-            var question = QuestionFixtureFactory.CreateQuestion();
-
-            Action action = () =>
-            {
-                question.AddLike(null);
-            };
-
-            action.Should().Throw<ArgumentNullException>();
-        }
-
-        [Fact]
         public void AddLike_IfUserAlreadyLiked_ShouldReturnError()
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var user = UserFixtureFactory.CreateUser();
+            var user = UserFixtureFactory.CreateUser().Id;
 
             question.AddLike(user);
             var result = question.AddLike(user);
@@ -610,7 +545,7 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var user = UserFixtureFactory.CreateUser();
+            var user = UserFixtureFactory.CreateUser().Id;
 
             question.AddDislike(user);
             var result = question.AddLike(user);
@@ -627,7 +562,7 @@ namespace TraffiLearn.DomainTests.Questions
             var countBefore = question.LikedByUsersIds.Count();
             var likesBefore = question.LikesCount;
 
-            var user = UserFixtureFactory.CreateUser();
+            var user = UserFixtureFactory.CreateUser().Id;
 
             var result = question.AddLike(user);
 
@@ -638,24 +573,11 @@ namespace TraffiLearn.DomainTests.Questions
         }
 
         [Fact]
-        public void AddDislike_IfPassedNullArgs_ShouldThrowArgumentNullException()
-        {
-            var question = QuestionFixtureFactory.CreateQuestion();
-
-            Action action = () =>
-            {
-                question.AddDislike(null);
-            };
-
-            action.Should().Throw<ArgumentNullException>();
-        }
-
-        [Fact]
         public void AddDislike_IfUserAlreadyDisliked_ShouldReturnError()
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var user = UserFixtureFactory.CreateUser();
+            var user = UserFixtureFactory.CreateUser().Id;
 
             question.AddDislike(user);
             var result = question.AddDislike(user);
@@ -669,7 +591,7 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var user = UserFixtureFactory.CreateUser();
+            var user = UserFixtureFactory.CreateUser().Id;
 
             question.AddLike(user);
             var result = question.AddDislike(user);
@@ -686,7 +608,7 @@ namespace TraffiLearn.DomainTests.Questions
             var countBefore = question.DislikedByUsersIds.Count();
             var dislikesBefore = question.DislikesCount;
 
-            var user = UserFixtureFactory.CreateUser();
+            var user = UserFixtureFactory.CreateUser().Id;
 
             var result = question.AddDislike(user);
 
@@ -697,24 +619,11 @@ namespace TraffiLearn.DomainTests.Questions
         }
 
         [Fact]
-        public void RemoveLike_IfPassedNullArgs_ShouldThrowArgumentNullException()
-        {
-            var question = QuestionFixtureFactory.CreateQuestion();
-
-            Action action = () =>
-            {
-                question.RemoveLike(null);
-            };
-
-            action.Should().Throw<ArgumentNullException>();
-        }
-
-        [Fact]
         public void RemoveLike_IfQuestionNotLiked_ShouldReturnError()
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var user = UserFixtureFactory.CreateUser();
+            var user = UserFixtureFactory.CreateUser().Id;
 
             var result = question.RemoveLike(user);
 
@@ -727,7 +636,7 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var user = UserFixtureFactory.CreateUser();
+            var user = UserFixtureFactory.CreateUser().Id;
 
             question.AddLike(user);
 
@@ -745,24 +654,11 @@ namespace TraffiLearn.DomainTests.Questions
         }
 
         [Fact]
-        public void RemoveDislike_IfPassedNullArgs_ShouldThrowArgumentNullException()
-        {
-            var question = QuestionFixtureFactory.CreateQuestion();
-
-            Action action = () =>
-            {
-                question.RemoveDislike(null);
-            };
-
-            action.Should().Throw<ArgumentNullException>();
-        }
-
-        [Fact]
         public void RemoveDislike_IfQuestionNotDisliked_ShouldReturnError()
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var user = UserFixtureFactory.CreateUser();
+            var user = UserFixtureFactory.CreateUser().Id;
 
             var result = question.RemoveDislike(user);
 
@@ -775,7 +671,7 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var user = UserFixtureFactory.CreateUser();
+            var user = UserFixtureFactory.CreateUser().Id;
 
             question.AddDislike(user);
 
@@ -793,24 +689,11 @@ namespace TraffiLearn.DomainTests.Questions
         }
 
         [Fact]
-        public void AddComment_IfPassedNullArgs_ShouldThrowArgumentNullException()
-        {
-            var question = QuestionFixtureFactory.CreateQuestion();
-
-            Action action = () =>
-            {
-                question.AddComment(null);
-            };
-
-            action.Should().Throw<ArgumentNullException>();
-        }
-
-        [Fact]
         public void AddComment_IfCommentAlreadyAdded_ShouldReturnError()
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var comment = CommentFixtureFactory.CreateComment();
+            var comment = CommentFixtureFactory.CreateComment().Id;
 
             question.AddComment(comment);
             var result = question.AddComment(comment);
@@ -826,7 +709,7 @@ namespace TraffiLearn.DomainTests.Questions
 
             var countBefore = question.CommentsIds.Count();
 
-            var comment = CommentFixtureFactory.CreateComment();
+            var comment = CommentFixtureFactory.CreateComment().Id;
 
             var result = question.AddComment(comment);
 

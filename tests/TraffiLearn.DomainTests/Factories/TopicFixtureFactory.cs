@@ -1,12 +1,13 @@
-﻿using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
+﻿using TraffiLearn.Domain.Aggregates.Topics;
+using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 
 namespace TraffiLearn.DomainTests.Factories
 {
     internal static class TopicFixtureFactory
     {
-        public static Domain.Aggregates.Topics.Topic CreateTopic()
+        public static Topic CreateTopic()
         {
-            return TopicId.Create(
+            return Topic.Create(
                 new TopicId(Guid.NewGuid()),
                 CreateNumber(),
                 CreateTitle()).Value;
