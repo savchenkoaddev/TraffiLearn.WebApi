@@ -23,7 +23,7 @@ namespace TraffiLearn.Infrastructure.Configurations
                 value => TopicTitle.Create(value).Value);
 
             builder
-                .HasMany(t => t.Questions)
+                .HasMany(t => t.QuestionsIds)
                 .WithMany(t => t.Topics);
         }
     }

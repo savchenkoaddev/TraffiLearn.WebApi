@@ -30,7 +30,7 @@ namespace TraffiLearn.Application.Commands.Topics.RemoveQuestionFromTopic
             RemoveQuestionFromTopicCommand request,
             CancellationToken cancellationToken)
         {
-            var topic = await _topicRepository.GetByIdWithQuestionsAsync(
+            var topic = await _topicRepository.GetByIdWithQuestionsIdsAsync(
                 topicId: new TopicId(request.TopicId.Value),
                 cancellationToken);
 

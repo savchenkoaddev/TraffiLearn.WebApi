@@ -100,8 +100,8 @@ namespace TraffiLearn.DomainTests.Topics
             var addResult = topic.AddQuestion(question);
 
             addResult.IsSuccess.Should().BeTrue();
-            topic.Questions.Should().HaveCount(1);
-            topic.Questions.Should().Contain(question);
+            topic.QuestionsIds.Should().HaveCount(1);
+            topic.QuestionsIds.Should().Contain(question);
         }
 
         [Fact]
@@ -142,7 +142,7 @@ namespace TraffiLearn.DomainTests.Topics
             var removeResult = topic.RemoveQuestion(question);
 
             removeResult.IsSuccess.Should().BeTrue();
-            topic.Questions.Should().BeEmpty();
+            topic.QuestionsIds.Should().BeEmpty();
         }
 
         [Fact]

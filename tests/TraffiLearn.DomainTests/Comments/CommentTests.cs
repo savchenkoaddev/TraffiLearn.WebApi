@@ -68,8 +68,8 @@ namespace TraffiLearn.DomainTests.Comments
 
             comment.DislikesCount.Should().Be(0);
             comment.LikesCount.Should().Be(0);
-            comment.LikedByUsers.Should().BeEmpty();
-            comment.DislikedByUsers.Should().BeEmpty();
+            comment.LikedByUsersIds.Should().BeEmpty();
+            comment.DislikedByUsersIds.Should().BeEmpty();
             comment.Replies.Should().BeEmpty();
         }
 
@@ -119,7 +119,7 @@ namespace TraffiLearn.DomainTests.Comments
         {
             var comment = CommentFixtureFactory.CreateComment();
 
-            var countBefore = comment.LikedByUsers.Count();
+            var countBefore = comment.LikedByUsersIds.Count();
             var likesBefore = comment.LikesCount;
 
             var user = UserFixtureFactory.CreateUser();
@@ -127,8 +127,8 @@ namespace TraffiLearn.DomainTests.Comments
             var result = comment.AddLike(user);
 
             result.IsSuccess.Should().BeTrue();
-            comment.LikedByUsers.Should().HaveCount(countBefore + 1);
-            comment.LikedByUsers.Should().Contain(user);
+            comment.LikedByUsersIds.Should().HaveCount(countBefore + 1);
+            comment.LikedByUsersIds.Should().Contain(user);
             comment.LikesCount.Should().Be(likesBefore + 1);
         }
 
@@ -178,7 +178,7 @@ namespace TraffiLearn.DomainTests.Comments
         {
             var comment = CommentFixtureFactory.CreateComment();
 
-            var countBefore = comment.DislikedByUsers.Count();
+            var countBefore = comment.DislikedByUsersIds.Count();
             var dislikesBefore = comment.DislikesCount;
 
             var user = UserFixtureFactory.CreateUser();
@@ -186,8 +186,8 @@ namespace TraffiLearn.DomainTests.Comments
             var result = comment.AddDislike(user);
 
             result.IsSuccess.Should().BeTrue();
-            comment.DislikedByUsers.Should().HaveCount(countBefore + 1);
-            comment.DislikedByUsers.Should().Contain(user);
+            comment.DislikedByUsersIds.Should().HaveCount(countBefore + 1);
+            comment.DislikedByUsersIds.Should().Contain(user);
             comment.DislikesCount.Should().Be(dislikesBefore + 1);
         }
 
@@ -226,15 +226,15 @@ namespace TraffiLearn.DomainTests.Comments
 
             comment.AddLike(user);
 
-            var countBefore = comment.LikedByUsers.Count();
+            var countBefore = comment.LikedByUsersIds.Count();
             var likesBefore = comment.LikesCount;
 
             var result = comment.RemoveLike(user);
 
             result.IsSuccess.Should().BeTrue();
 
-            comment.LikedByUsers.Should().HaveCount(countBefore - 1);
-            comment.LikedByUsers.Should().NotContain(user);
+            comment.LikedByUsersIds.Should().HaveCount(countBefore - 1);
+            comment.LikedByUsersIds.Should().NotContain(user);
 
             comment.LikesCount.Should().Be(likesBefore - 1);
         }
@@ -274,15 +274,15 @@ namespace TraffiLearn.DomainTests.Comments
 
             comment.AddDislike(user);
 
-            var countBefore = comment.DislikedByUsers.Count();
+            var countBefore = comment.DislikedByUsersIds.Count();
             var dislikesBefore = comment.DislikesCount;
 
             var result = comment.RemoveDislike(user);
 
             result.IsSuccess.Should().BeTrue();
 
-            comment.DislikedByUsers.Should().HaveCount(countBefore - 1);
-            comment.DislikedByUsers.Should().NotContain(user);
+            comment.DislikedByUsersIds.Should().HaveCount(countBefore - 1);
+            comment.DislikedByUsersIds.Should().NotContain(user);
 
             comment.DislikesCount.Should().Be(dislikesBefore - 1);
         }

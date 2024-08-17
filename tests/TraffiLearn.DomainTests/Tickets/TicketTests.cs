@@ -38,7 +38,7 @@ namespace TraffiLearn.DomainTests.Tickets
 
             ticket.Id.Should().Be(validId);
             ticket.TicketNumber.Should().Be(validTicketNumber);
-            ticket.Questions.Should().BeEmpty();
+            ticket.QuestionsIds.Should().BeEmpty();
         }
 
         [Fact]
@@ -104,8 +104,8 @@ namespace TraffiLearn.DomainTests.Tickets
 
             result.IsSuccess.Should().BeTrue();
 
-            validTicket.Questions.Should().HaveCount(1);
-            validTicket.Questions.Should().Contain(question);
+            validTicket.QuestionsIds.Should().HaveCount(1);
+            validTicket.QuestionsIds.Should().Contain(question);
         }
 
         [Fact]
@@ -144,7 +144,7 @@ namespace TraffiLearn.DomainTests.Tickets
             var result = validTicket.RemoveQuestion(question);
 
             result.IsSuccess.Should().BeTrue();
-            validTicket.Questions.Should().BeEmpty();
+            validTicket.QuestionsIds.Should().BeEmpty();
         }
 
         [Fact]

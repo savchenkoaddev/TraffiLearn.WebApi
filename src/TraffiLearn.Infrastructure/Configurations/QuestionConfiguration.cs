@@ -46,15 +46,15 @@ namespace TraffiLearn.Infrastructure.Configurations
             });
 
             builder
-                .HasMany(q => q.TopicIds)
+                .HasMany(q => q.TopicsIds)
                 .WithMany(t => t.Questions);
 
             builder
-                .HasMany(q => q.TicketIds)
+                .HasMany(q => q.TicketsIds)
                 .WithMany(t => t.Questions);
 
             builder
-                .HasMany(q => q.CommentIds)
+                .HasMany(q => q.CommentsIds)
                 .WithOne(c => c.QuestionId)
                 .OnDelete(DeleteBehavior.Cascade);
 

@@ -13,7 +13,7 @@ namespace TraffiLearn.Application.Mappers.Topics
                 TopicId: source.Id.Value,
                 TopicNumber: source.Number.Value,
                 Title: source.Title.Value,
-                Questions: source.Questions.ToList());
+                Questions: source.QuestionsIds.ToList());
         }
     }
 }

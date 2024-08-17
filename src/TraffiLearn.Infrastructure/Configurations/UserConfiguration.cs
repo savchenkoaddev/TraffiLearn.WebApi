@@ -34,31 +34,31 @@ namespace TraffiLearn.Infrastructure.Configurations
                 .IsUnique();
 
             builder
-                .HasMany(user => user.Comments)
+                .HasMany(user => user.CommentsIds)
                 .WithOne(c => c.Creator);
 
             builder
-                .HasMany(user => user.MarkedQuestions)
+                .HasMany(user => user.MarkedQuestionsIds)
                 .WithMany()
                 .UsingEntity(join => join.ToTable("QuestionsMarked"));
 
             builder
-                .HasMany(user => user.LikedQuestions)
+                .HasMany(user => user.LikedQuestionsIds)
                 .WithMany(question => question.LikedByUsers)
                 .UsingEntity(join => join.ToTable("QuestionsLikedByUsers"));
 
             builder
-                .HasMany(user => user.DislikedQuestions)
+                .HasMany(user => user.DislikedQuestionsIds)
                 .WithMany(question => question.DislikedByUsers)
                 .UsingEntity(join => join.ToTable("QuestionsDislikedByUsers"));
 
             builder
-                .HasMany(user => user.LikedComments)
+                .HasMany(user => user.LikedCommentsIds)
                 .WithMany(comment => comment.LikedByUsers)
                 .UsingEntity(join => join.ToTable("CommentsLikedByUsers"));
 
             builder
-                .HasMany(user => user.DislikedComments)
+                .HasMany(user => user.DislikedCommentsIds)
                 .WithMany(comment => comment.DislikedByUsers)
                 .UsingEntity(join => join.ToTable("CommentsDislikedByUsers"));
         }

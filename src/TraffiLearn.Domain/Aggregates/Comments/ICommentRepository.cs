@@ -10,7 +10,7 @@ namespace TraffiLearn.Domain.Aggregates.Comments
             CommentId commentId,
             CancellationToken cancellationToken = default);
 
-        Task<Comment?> GetByIdWithRepliesWithUsersTwoLevelsDeepAsync(
+        Task<IEnumerable<Comment>> GetRepliesWithNextRepliesByIdAsync(
             CommentId commentId,
             CancellationToken cancellationToken = default);
 
@@ -18,11 +18,11 @@ namespace TraffiLearn.Domain.Aggregates.Comments
             CommentId commentId,
             CancellationToken cancellationToken = default);
 
-        Task<IEnumerable<Comment>> GetManyByQuestionIdAsync(
+        Task<IEnumerable<Comment>> GetManyByQuestionIdWithRepliesAsync(
             QuestionId questionId,
             CancellationToken cancellationToken = default);
 
-        Task<IEnumerable<Comment>> GetUserCommentsAsync(
+        Task<IEnumerable<Comment>> GetUserCreatedCommentsAsync(
             UserId userId,
             CancellationToken cancellationToken = default);
 

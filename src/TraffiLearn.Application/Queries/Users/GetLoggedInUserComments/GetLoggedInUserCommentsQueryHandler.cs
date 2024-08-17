@@ -48,7 +48,7 @@ namespace TraffiLearn.Application.Queries.Users.GetLoggedInUserComments
                 throw new InvalidOperationException("Authenticated user is not found.");
             }
 
-            var userComments = await _commentRepository.GetUserCommentsAsync(
+            var userComments = await _commentRepository.GetUserCreatedCommentsAsync(
                 userId,
                 cancellationToken);
 

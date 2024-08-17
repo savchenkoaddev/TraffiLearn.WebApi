@@ -54,7 +54,9 @@ namespace TraffiLearn.Application.Commands.Users.DowngradeAccount
             }
 
             string previousRole = affectedUser.Role.ToString();
+
             var downgradeResult = affectedUser.DowngradeRole();
+
             string newRole = affectedUser.Role.ToString();
 
             if (downgradeResult.IsFailure)

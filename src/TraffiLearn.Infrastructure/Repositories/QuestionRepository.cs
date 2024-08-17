@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
-using TraffiLearn.Domain.Aggregates.Comments;
 using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Infrastructure.Database;
 
 namespace TraffiLearn.Infrastructure.Repositories
@@ -34,32 +35,105 @@ namespace TraffiLearn.Infrastructure.Repositories
                 cancellationToken)) is not null;
         }
 
-        public async Task<IEnumerable<Question>> GetAllAsync(
-            Expression<Func<Question, object>>? orderByExpression = null,
-            CancellationToken cancellationToken = default,
-            params Expression<Func<Question, object>>[] includeExpressions)
+        public Task DeleteAsync(Question question)
         {
-            IQueryable<Question> query = _dbContext.Questions;
+            _dbContext.Questions.Remove(question);
 
-            foreach (var includeExpression in includeExpressions)
-            {
-                query = query.Include(includeExpression);
-            }
+            return Task.CompletedTask;
+        }
 
-            if (orderByExpression is not null)
-            {
-                query = query.OrderBy(orderByExpression);
-            }
+        public Task UpdateAsync(Question question)
+        {
+            _dbContext.Questions.Update(question);
 
-            return await query
+            return Task.CompletedTask;
+        }
+
+        public async Task<Question?> GetByIdAsync(
+            QuestionId questionId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Questions
+                .FindAsync(
+                    keyValues: [questionId],
+                    cancellationToken);
+        }
+
+        public async Task<Question?> GetByIdWithTicketsIdsAsync(
+            QuestionId questionId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Questions
+                .Where(q => q.Id == questionId)
+                .Include(q => q.TicketsIds)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
+        public async Task<Question?> GetByIdWithTopicsIdsAsync(
+            QuestionId questionId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Questions
+                .Where(q => q.Id == questionId)
+                .Include(q => q.TopicsIds)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
+        public async Task<IEnumerable<Question>> GetManyByTicketIdAsync(
+            TicketId ticketId, 
+            CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Questions
+                .Where(q => q.TicketsIds.Contains(ticketId))
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<IEnumerable<Question>> GetManyByTopicIdAsync(
+            TopicId topicId, 
+            CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Questions
+                .Where(q => q.TopicsIds.Contains(topicId))
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<IEnumerable<Question>> GetUserDislikedQuestionsAsync(
+            UserId userId, 
+            CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Questions
+                .Where(q => q.DislikedByUsersIds.Contains(userId))
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<IEnumerable<Question>> GetUserLikedQuestionsAsync(
+            UserId userId, 
+            CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Questions
+                .Where(q => q.LikedByUsersIds.Contains(userId))
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<IEnumerable<Question>> GetUserMarkedQuestionsAsync(
+            UserId userId, 
+            CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Questions
+                .Where(q => q.MarkedByUsersIds.Contains(userId))
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<IEnumerable<Question>> GetAllAsync(
+            CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Questions
                 .ToListAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<Question>> GetRandomRecordsAsync(
             int amount,
-            Expression<Func<Question, object>>? orderByExpression = null,
-            CancellationToken cancellationToken = default,
-            params Expression<Func<Question, object>>[] includeExpressions)
+            CancellationToken cancellationToken = default)
         {
             if (amount < 1)
             {
@@ -78,66 +152,8 @@ namespace TraffiLearn.Infrastructure.Repositories
                 amount,
                 nameof(ApplicationDbContext.Questions));
 
-            var query = _dbContext.Questions
-                .FromSqlRaw(formattedSql);
-
-            foreach (var includeExpression in includeExpressions)
-            {
-                query = query.Include(includeExpression);
-            }
-
-            if (orderByExpression is not null)
-            {
-                query = query.OrderBy(orderByExpression);
-            }
-
-            var result = await query
-                .ToListAsync(cancellationToken);
-
-            return result;
-        }
-
-        public Task DeleteAsync(Question question)
-        {
-            _dbContext.Questions.Remove(question);
-
-            return Task.CompletedTask;
-        }
-
-        public Task UpdateAsync(Question question)
-        {
-            _dbContext.Questions.Update(question);
-
-            return Task.CompletedTask;
-        }
-
-        public async Task<Question?> GetByIdAsync(
-            QuestionId questionId,
-            CancellationToken cancellationToken = default,
-            params Expression<Func<Question, object>>[] includeExpressions)
-        {
-            var query = _dbContext.Questions.AsQueryable();
-
-            foreach (var includeExpression in includeExpressions)
-            {
-                query = query.Include(includeExpression);
-            }
-
-            return await query
-                .FirstOrDefaultAsync(
-                    c => c.Id == questionId,
-                    cancellationToken);
-        }
-
-        public async Task<IEnumerable<Comment>> GetQuestionWithCommentsAndTheirRepliesAsync(
-            QuestionId questionId,
-            CancellationToken cancellationToken = default)
-        {
-            return await _dbContext.Comments
-                .AsNoTracking()
-                .Where(c => c.QuestionId.Id == questionId && c.RootComment == null)
-                .Include(q => q.Replies)
-                .Include(q => q.CreatorId)
+            return await _dbContext.Questions
+                .FromSqlRaw(formattedSql)
                 .ToListAsync(cancellationToken);
         }
     }

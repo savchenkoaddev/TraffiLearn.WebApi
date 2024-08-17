@@ -10,7 +10,7 @@ namespace TraffiLearn.Domain.Aggregates.Tickets
             TicketId ticketId,
             CancellationToken cancellationToken = default);
 
-        Task<Ticket?> GetByIdWithQuestionsAsync(
+        Task<Ticket?> GetByIdWithQuestionsIdsAsync(
             TicketId ticketId,
             CancellationToken cancellationToken = default);
 
@@ -19,9 +19,7 @@ namespace TraffiLearn.Domain.Aggregates.Tickets
             CancellationToken cancellationToken = default);
 
         Task<IEnumerable<Ticket>> GetAllAsync(
-            Expression<Func<Ticket, object>>? orderByExpression = null,
-            CancellationToken cancellationToken = default,
-            params Expression<Func<Ticket, object>>[] includeExpressions);
+            CancellationToken cancellationToken = default);
 
         Task<Ticket?> GetRandomRecordAsync(
             CancellationToken cancellationToken = default);

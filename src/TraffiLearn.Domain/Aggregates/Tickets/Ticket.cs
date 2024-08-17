@@ -8,7 +8,7 @@ namespace TraffiLearn.Domain.Aggregates.Tickets
 {
     public sealed class Ticket : AggregateRoot<TicketId>
     {
-        private readonly HashSet<QuestionId> _questionIds = [];
+        private readonly HashSet<QuestionId> _questionsIds = [];
         private TicketNumber _ticketNumber;
 
         private Ticket()
@@ -36,28 +36,28 @@ namespace TraffiLearn.Domain.Aggregates.Tickets
             }
         }
 
-        public IReadOnlyCollection<QuestionId> QuestionIds => _questionIds;
+        public IReadOnlyCollection<QuestionId> QuestionsIds => _questionsIds;
 
         public Result AddQuestion(QuestionId questionId)
         {
-            if (_questionIds.Contains(questionId))
+            if (_questionsIds.Contains(questionId))
             {
                 return TicketErrors.QuestionAlreadyAdded;
             }
 
-            _questionIds.Add(questionId);
+            _questionsIds.Add(questionId);
 
             return Result.Success();
         }
 
         public Result RemoveQuestion(QuestionId questionId)
         {
-            if (!_questionIds.Contains(questionId))
+            if (!_questionsIds.Contains(questionId))
             {
                 return TicketErrors.QuestionNotFound;
             }
 
-            _questionIds.Remove(questionId);
+            _questionsIds.Remove(questionId);
 
             return Result.Success();
         }

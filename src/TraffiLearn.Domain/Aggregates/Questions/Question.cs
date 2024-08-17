@@ -11,11 +11,12 @@ namespace TraffiLearn.Domain.Aggregates.Questions
 {
     public sealed class Question : AggregateRoot<QuestionId>
     {
-        private readonly HashSet<TopicId> _topicIds = [];
-        private readonly HashSet<TicketId> _ticketIds = [];
-        private readonly HashSet<CommentId> _commentIds = [];
+        private readonly HashSet<TopicId> _topicsIds = [];
+        private readonly HashSet<TicketId> _ticketsIds = [];
+        private readonly HashSet<CommentId> _commentsIds = [];
         private readonly HashSet<UserId> _likedByUsersIds = [];
         private readonly HashSet<UserId> _dislikedByUsersIds = [];
+        private readonly HashSet<UserId> _markedByUsersIds = [];
         private HashSet<Answer> _answers = [];
         private QuestionContent _content;
         private QuestionExplanation _explanation;
@@ -88,17 +89,39 @@ namespace TraffiLearn.Domain.Aggregates.Questions
 
         public int DislikesCount => _dislikedByUsersIds.Count;
 
-        public IReadOnlyCollection<TopicId> TopicIds => _topicIds;
+        public IReadOnlyCollection<TopicId> TopicsIds => _topicsIds;
 
         public IReadOnlyCollection<Answer> Answers => _answers;
 
-        public IReadOnlyCollection<TicketId> TicketIds => _ticketIds;
+        public IReadOnlyCollection<TicketId> TicketsIds => _ticketsIds;
 
-        public IReadOnlyCollection<CommentId> CommentIds => _commentIds;
+        public IReadOnlyCollection<CommentId> CommentsIds => _commentsIds;
 
         public IReadOnlyCollection<UserId> LikedByUsersIds => _likedByUsersIds;
 
         public IReadOnlyCollection<UserId> DislikedByUsersIds => _dislikedByUsersIds;
+
+        public IReadOnlyCollection<UserId> MarkedByUsersIds => _markedByUsersIds;
+
+        public Result Mark(UserId userId)
+        {
+            if (_markedByUsersIds.Contains(userId))
+            {
+                return QuestionErrors.AlreadyMarkedByUser;
+            }
+
+            return Result.Success();
+        }
+
+        public Result Unmark(UserId userId)
+        {
+            if (!_markedByUsersIds.Contains(userId))
+            {
+                return QuestionErrors.IsNotMarkedByUser;
+            }
+
+            return Result.Success();
+        }
 
         public Result AddLike(UserId userId)
         {
@@ -160,12 +183,12 @@ namespace TraffiLearn.Domain.Aggregates.Questions
 
         public Result AddComment(CommentId commentId)
         {
-            if (_commentIds.Contains(commentId))
+            if (_commentsIds.Contains(commentId))
             {
                 return QuestionErrors.CommentAlreadyAdded;
             }
 
-            _commentIds.Add(commentId);
+            _commentsIds.Add(commentId);
 
             return Result.Success();
         }
@@ -212,48 +235,48 @@ namespace TraffiLearn.Domain.Aggregates.Questions
 
         public Result AddTopic(TopicId topicId)
         {
-            if (_topicIds.Contains(topicId))
+            if (_topicsIds.Contains(topicId))
             {
                 return QuestionErrors.TopicAlreadyAdded;
             }
 
-            _topicIds.Add(topicId);
+            _topicsIds.Add(topicId);
 
             return Result.Success();
         }
 
         public Result RemoveTopic(TopicId topicId)
         {
-            if (!_topicIds.Contains(topicId))
+            if (!_topicsIds.Contains(topicId))
             {
                 return QuestionErrors.TopicNotFound;
             }
 
-            _topicIds.Remove(topicId);
+            _topicsIds.Remove(topicId);
 
             return Result.Success();
         }
 
         public Result AddTicket(TicketId ticketId)
         {
-            if (_ticketIds.Contains(ticketId))
+            if (_ticketsIds.Contains(ticketId))
             {
                 return QuestionErrors.TicketAlreadyAdded;
             }
 
-            _ticketIds.Add(ticketId);
+            _ticketsIds.Add(ticketId);
 
             return Result.Success();
         }
 
         public Result RemoveTicket(TicketId ticketId)
         {
-            if (!_ticketIds.Contains(ticketId))
+            if (!_ticketsIds.Contains(ticketId))
             {
                 return QuestionErrors.TicketNotFound;
             }
 
-            _ticketIds.Remove(ticketId);
+            _ticketsIds.Remove(ticketId);
 
             return Result.Success();
         }

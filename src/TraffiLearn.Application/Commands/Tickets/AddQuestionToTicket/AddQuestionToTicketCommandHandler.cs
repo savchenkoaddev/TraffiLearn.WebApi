@@ -30,7 +30,7 @@ namespace TraffiLearn.Application.Commands.Tickets.AddQuestionToTicket
             AddQuestionToTicketCommand request,
             CancellationToken cancellationToken)
         {
-            var ticket = await _ticketRepository.GetByIdWithQuestionsAsync(
+            var ticket = await _ticketRepository.GetByIdWithQuestionsIdsAsync(
                 ticketId: new TicketId(request.TicketId.Value),
                 cancellationToken);
 

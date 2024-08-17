@@ -39,12 +39,12 @@ namespace TraffiLearn.Infrastructure.Configurations
                 .OnDelete(DeleteBehavior.ClientCascade);
 
             builder
-                .HasMany(q => q.LikedByUsers)
+                .HasMany(q => q.LikedByUsersIds)
                 .WithMany(user => user.LikedComments)
                 .UsingEntity(join => join.ToTable("CommentsLikedByUsers"));
 
             builder
-                .HasMany(q => q.DislikedByUsers)
+                .HasMany(q => q.DislikedByUsersIds)
                 .WithMany(user => user.DislikedComments)
                 .UsingEntity(join => join.ToTable("CommentsDislikedByUsers"));
 

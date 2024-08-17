@@ -30,7 +30,7 @@ namespace TraffiLearn.Application.Commands.Tickets.Update
             UpdateTicketCommand request,
             CancellationToken cancellationToken)
         {
-            var ticket = await _ticketRepository.GetByIdWithQuestionsAsync(
+            var ticket = await _ticketRepository.GetByIdWithQuestionsIdsAsync(
                 ticketId: new TicketId(request.TicketId.Value),
                 cancellationToken);
 
@@ -85,7 +85,7 @@ namespace TraffiLearn.Application.Commands.Tickets.Update
                     return TicketErrors.QuestionNotFound;
                 }
 
-                if (!ticket.QuestionIds.Contains(question.Id))
+                if (!ticket.QuestionsIds.Contains(question.Id))
                 {
                     var questionAddResult = ticket.AddQuestion(question.Id);
 
@@ -96,7 +96,7 @@ namespace TraffiLearn.Application.Commands.Tickets.Update
                 }
             }
 
-            var ticketQuestionsIds = ticket.QuestionIds.ToList();
+            var ticketQuestionsIds = ticket.QuestionsIds.ToList();
 
             foreach (var questionId in ticketQuestionsIds)
             {

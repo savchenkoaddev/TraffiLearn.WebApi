@@ -10,8 +10,8 @@ namespace TraffiLearn.Domain.Aggregates.Comments
     public sealed class Comment : AggregateRoot<CommentId>
     {
         private readonly HashSet<Comment> _replies = [];
-        private readonly HashSet<UserId> _likedByUsers = [];
-        private readonly HashSet<UserId> _dislikedByUsers = [];
+        private readonly HashSet<UserId> _likedByUsersIds = [];
+        private readonly HashSet<UserId> _dislikedByUsersIds = [];
         private CommentContent _content;
         private UserId _creatorId;
         private QuestionId _questionId;
@@ -51,70 +51,70 @@ namespace TraffiLearn.Domain.Aggregates.Comments
 
         public Comment? RootComment { get; private set; }
 
-        public int LikesCount => _likedByUsers.Count;
+        public int LikesCount => _likedByUsersIds.Count;
 
-        public int DislikesCount => _dislikedByUsers.Count;
+        public int DislikesCount => _dislikedByUsersIds.Count;
 
         public IReadOnlyCollection<Comment> Replies => _replies;
 
-        public IReadOnlyCollection<UserId> LikedByUsers => _likedByUsers;
+        public IReadOnlyCollection<UserId> LikedByUsersIds => _likedByUsersIds;
 
-        public IReadOnlyCollection<UserId> DislikedByUsers => _dislikedByUsers;
+        public IReadOnlyCollection<UserId> DislikedByUsersIds => _dislikedByUsersIds;
 
         public Result AddLike(UserId userId)
         {
-            if (_likedByUsers.Contains(userId))
+            if (_likedByUsersIds.Contains(userId))
             {
                 return CommentErrors.AlreadyLikedByUser;
             }
 
-            if (_dislikedByUsers.Contains(userId))
+            if (_dislikedByUsersIds.Contains(userId))
             {
                 return CommentErrors.CantLikeIfDislikedByUser;
             }
 
-            _likedByUsers.Add(userId);
+            _likedByUsersIds.Add(userId);
 
             return Result.Success();
         }
 
         public Result RemoveLike(UserId userId)
         {
-            if (!_likedByUsers.Contains(userId))
+            if (!_likedByUsersIds.Contains(userId))
             {
                 return CommentErrors.NotLikedByUser;
             }
 
-            _likedByUsers.Remove(userId);
+            _likedByUsersIds.Remove(userId);
 
             return Result.Success();
         }
 
         public Result AddDislike(UserId userId)
         {
-            if (_dislikedByUsers.Contains(userId))
+            if (_dislikedByUsersIds.Contains(userId))
             {
                 return CommentErrors.AlreadyDislikedByUser;
             }
 
-            if (_likedByUsers.Contains(userId))
+            if (_likedByUsersIds.Contains(userId))
             {
                 return CommentErrors.CantDislikeIfLikedByUser;
             }
 
-            _dislikedByUsers.Add(userId);
+            _dislikedByUsersIds.Add(userId);
 
             return Result.Success();
         }
 
         public Result RemoveDislike(UserId userId)
         {
-            if (!_dislikedByUsers.Contains(userId))
+            if (!_dislikedByUsersIds.Contains(userId))
             {
                 return CommentErrors.NotDislikedByUser;
             }
 
-            _dislikedByUsers.Remove(userId);
+            _dislikedByUsersIds.Remove(userId);
 
             return Result.Success();
         }

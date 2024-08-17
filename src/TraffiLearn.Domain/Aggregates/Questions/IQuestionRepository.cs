@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
+﻿using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
@@ -12,15 +11,11 @@ namespace TraffiLearn.Domain.Aggregates.Questions
             QuestionId questionId,
             CancellationToken cancellationToken = default);
 
-        Task<Question?> GetByIdWithTicketsAsync(
+        Task<Question?> GetByIdWithTicketsIdsAsync(
             QuestionId questionId,
             CancellationToken cancellationToken = default);
 
-        Task<Question?> GetByIdWithTopicsAsync(
-            QuestionId questionId,
-            CancellationToken cancellationToken = default);
-
-        Task<Question?> GetByIdWithCommentsAndTheirRepliesAsync(
+        Task<Question?> GetByIdWithTopicsIdsAsync(
             QuestionId questionId,
             CancellationToken cancellationToken = default);
 
@@ -45,15 +40,11 @@ namespace TraffiLearn.Domain.Aggregates.Questions
             CancellationToken cancellationToken = default);
 
         Task<IEnumerable<Question>> GetAllAsync(
-            Expression<Func<Question, object>>? orderByExpression = null,
-            CancellationToken cancellationToken = default,
-            params Expression<Func<Question, object>>[] includeExpressions);
+            CancellationToken cancellationToken = default);
 
         Task<IEnumerable<Question>> GetRandomRecordsAsync(
             int amount,
-            Expression<Func<Question, object>>? orderByExpression = null,
-            CancellationToken cancellationToken = default,
-            params Expression<Func<Question, object>>[] includeExpressions);
+            CancellationToken cancellationToken = default);
 
         Task<bool> ExistsAsync(
             QuestionId questionId,

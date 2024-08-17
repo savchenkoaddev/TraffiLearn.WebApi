@@ -18,7 +18,7 @@ namespace TraffiLearn.Infrastructure.Configurations
                     value => TicketNumber.Create(value).Value);
 
             builder
-                .HasMany(t => t.Questions)
+                .HasMany(t => t.QuestionsIds)
                 .WithMany(t => t.Tickets);
         }
     }

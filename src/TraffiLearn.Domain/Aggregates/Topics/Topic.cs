@@ -8,7 +8,7 @@ namespace TraffiLearn.Domain.Aggregates.Topics
 {
     public sealed class Topic : AggregateRoot<TopicId>
     {
-        private readonly HashSet<QuestionId> _questionIds = [];
+        private readonly HashSet<QuestionId> _questionsIds = [];
         private TopicNumber _topicNumber;
         private TopicTitle _topicTitle;
 
@@ -53,28 +53,28 @@ namespace TraffiLearn.Domain.Aggregates.Topics
             }
         }
 
-        public IReadOnlyCollection<QuestionId> QuestionIds => _questionIds;
+        public IReadOnlyCollection<QuestionId> QuestionsIds => _questionsIds;
 
         public Result AddQuestion(QuestionId questionId)
         {
-            if (_questionIds.Contains(questionId))
+            if (_questionsIds.Contains(questionId))
             {
                 return TopicErrors.QuestionAlreadyAdded;
             }
 
-            _questionIds.Add(questionId);
+            _questionsIds.Add(questionId);
 
             return Result.Success();
         }
 
         public Result RemoveQuestion(QuestionId questionId)
         {
-            if (!_questionIds.Contains(questionId))
+            if (!_questionsIds.Contains(questionId))
             {
                 return TopicErrors.QuestionNotFound;
             }
 
-            _questionIds.Remove(questionId);
+            _questionsIds.Remove(questionId);
 
             return Result.Success();
         }

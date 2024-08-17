@@ -23,8 +23,7 @@ namespace TraffiLearn.Domain.Aggregates.Users
 
         Task<User?> GetByEmailAsync(
             Email email,
-            CancellationToken cancellationToken = default,
-            params Expression<Func<UserId, object>>[] includeExpressions);
+            CancellationToken cancellationToken = default);
 
         Task<User?> GetByUsernameAsync(
             Username username,
@@ -49,10 +48,6 @@ namespace TraffiLearn.Domain.Aggregates.Users
         Task<bool> ExistsAsync(
             Username username,
             Email email,
-            CancellationToken cancellationToken = default);
-
-        Task<UserId?> GetUserWithCommentsWithRepliesAsync(
-            UserId userId,
             CancellationToken cancellationToken = default);
     }
 }

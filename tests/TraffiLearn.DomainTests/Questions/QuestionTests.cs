@@ -158,9 +158,9 @@ namespace TraffiLearn.DomainTests.Questions
             nullUriResult.Value.DislikesCount.Should().Be(0);
             nullUriResult.Value.LikedByUsersIds.Should().BeEmpty();
             nullUriResult.Value.DislikedByUsersIds.Should().BeEmpty();
-            nullUriResult.Value.CommentIds.Should().BeEmpty();
-            nullUriResult.Value.TicketIds.Should().BeEmpty();
-            nullUriResult.Value.TopicIds.Should().BeEmpty();
+            nullUriResult.Value.CommentsIds.Should().BeEmpty();
+            nullUriResult.Value.TicketsIds.Should().BeEmpty();
+            nullUriResult.Value.TopicsIds.Should().BeEmpty();
 
             notNullUriResult.Value.ImageUri.Should().Be(imageUri);
         }
@@ -436,15 +436,15 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var countBefore = question.TopicIds.Count();
+            var countBefore = question.TopicsIds.Count();
 
             var topic = TopicFixtureFactory.CreateTopic();
 
             var result = question.AddTopic(topic);
 
             result.IsSuccess.Should().BeTrue();
-            question.TopicIds.Should().HaveCount(countBefore + 1);
-            question.TopicIds.Should().Contain(topic);
+            question.TopicsIds.Should().HaveCount(countBefore + 1);
+            question.TopicsIds.Should().Contain(topic);
         }
 
         [Fact]
@@ -482,13 +482,13 @@ namespace TraffiLearn.DomainTests.Questions
 
             question.AddTopic(topic);
 
-            var countBefore = question.TopicIds.Count();
+            var countBefore = question.TopicsIds.Count();
 
             var result = question.RemoveTopic(topic);
 
             result.IsSuccess.Should().BeTrue();
-            question.TopicIds.Should().HaveCount(countBefore - 1);
-            question.TopicIds.Should().NotContain(topic);
+            question.TopicsIds.Should().HaveCount(countBefore - 1);
+            question.TopicsIds.Should().NotContain(topic);
         }
 
         [Fact]
@@ -523,15 +523,15 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var countBefore = question.TicketIds.Count();
+            var countBefore = question.TicketsIds.Count();
 
             var ticket = TicketFixtureFactory.CreateTicket();
 
             var result = question.AddTicket(ticket);
 
             result.IsSuccess.Should().BeTrue();
-            question.TicketIds.Should().HaveCount(countBefore + 1);
-            question.TicketIds.Should().Contain(ticket);
+            question.TicketsIds.Should().HaveCount(countBefore + 1);
+            question.TicketsIds.Should().Contain(ticket);
         }
 
         [Fact]
@@ -569,13 +569,13 @@ namespace TraffiLearn.DomainTests.Questions
 
             question.AddTicket(ticket);
 
-            var countBefore = question.TicketIds.Count();
+            var countBefore = question.TicketsIds.Count();
 
             var result = question.RemoveTicket(ticket);
 
             result.IsSuccess.Should().BeTrue();
-            question.TicketIds.Should().HaveCount(countBefore - 1);
-            question.TicketIds.Should().NotContain(ticket);
+            question.TicketsIds.Should().HaveCount(countBefore - 1);
+            question.TicketsIds.Should().NotContain(ticket);
         }
 
         [Fact]
@@ -824,15 +824,15 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var countBefore = question.CommentIds.Count();
+            var countBefore = question.CommentsIds.Count();
 
             var comment = CommentFixtureFactory.CreateComment();
 
             var result = question.AddComment(comment);
 
             result.IsSuccess.Should().BeTrue();
-            question.CommentIds.Should().HaveCount(countBefore + 1);
-            question.CommentIds.Should().Contain(comment);
+            question.CommentsIds.Should().HaveCount(countBefore + 1);
+            question.CommentsIds.Should().Contain(comment);
         }
 
         [Fact]

@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Infrastructure.Database;
@@ -16,7 +15,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task AddAsync(
-            Domain.Aggregates.Users.UserId user,
+            User user,
             CancellationToken cancellationToken = default)
         {
             await _dbContext.Users.AddAsync(
@@ -24,7 +23,7 @@ namespace TraffiLearn.Infrastructure.Repositories
                 cancellationToken);
         }
 
-        public Task DeleteAsync(Domain.Aggregates.Users.UserId user)
+        public Task DeleteAsync(User user)
         {
             _dbContext.Users.Remove(user);
 
@@ -32,7 +31,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         }
 
         public async Task<bool> ExistsAsync(
-            Domain.Aggregates.Users.ValueObjects.UserId userId,
+            UserId userId,
             CancellationToken cancellationToken = default)
         {
             return (await _dbContext.Users.FindAsync(
@@ -46,7 +45,7 @@ namespace TraffiLearn.Infrastructure.Repositories
         {
             return (await _dbContext.Users.FirstOrDefaultAsync(
                 user => user.Username == username,
-                cancellationToken: cancellationToken)) is not null;
+                cancellationToken)) is not null;
         }
 
         public async Task<bool> ExistsAsync(
@@ -59,42 +58,57 @@ namespace TraffiLearn.Infrastructure.Repositories
                 cancellationToken: cancellationToken)) is not null;
         }
 
-        public Task<Domain.Aggregates.Users.UserId?> GetByEmailAsync(
+        public Task<User?> GetByEmailAsync(
             Email email,
-            CancellationToken cancellationToken = default,
-            params Expression<Func<Domain.Aggregates.Users.UserId, object>>[] includeExpressions)
+            CancellationToken cancellationToken = default)
         {
-            IQueryable<Domain.Aggregates.Users.UserId> query = _dbContext.Users;
-
-            foreach (var includeExpression in includeExpressions)
-            {
-                query = query.Include(includeExpression);
-            }
-
-            return query.FirstOrDefaultAsync(
-                user => user.Email == email,
-                cancellationToken);
+            return _dbContext.Users
+                .FirstOrDefaultAsync(
+                    user => user.Email == email,
+                    cancellationToken);
         }
 
-        public async Task<Domain.Aggregates.Users.UserId?> GetByIdAsync(
-            Domain.Aggregates.Users.ValueObjects.UserId userId,
-            CancellationToken cancellationToken = default,
-            params Expression<Func<Domain.Aggregates.Users.UserId, object>>[] includeExpressions)
+        public Task<User?> GetByIdAsync(
+            UserId userId,
+            CancellationToken cancellationToken = default)
         {
-            var query = _dbContext.Users.AsQueryable();
-
-            foreach (var includeExpression in includeExpressions)
-            {
-                query = query.Include(includeExpression);
-            }
-
-            return await query
+            return _dbContext.Users
                 .FirstOrDefaultAsync(
                     c => c.Id == userId,
                     cancellationToken);
         }
 
-        public Task<Domain.Aggregates.Users.UserId?> GetByUsernameAsync(
+        public Task<User?> GetByIdWithLikedAndDislikedCommentsIdsAsync(
+            UserId userId,
+            CancellationToken cancellationToken = default)
+        {
+            return _dbContext.Users
+                .Where(user => user.Id == userId)
+                .Include(user => user.LikedCommentsIds)
+                .Include(user => user.DislikedCommentsIds)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
+        public Task<User?> GetByIdWithLikedAndDislikedQuestionsIdsAsync(
+            UserId userId,
+            CancellationToken cancellationToken = default)
+        {
+            return _dbContext.Users
+                .Where(user => user.Id == userId)
+                .Include(user => user.LikedQuestionsIds)
+                .Include(user => user.DislikedQuestionsIds)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
+        public Task<User?> GetByIdWithMarkedQuestionsIdsAsync(UserId userId, CancellationToken cancellationToken = default)
+        {
+            return _dbContext.Users
+                .Where(user => user.Id == userId)
+                .Include(user => user.MarkedQuestionsIds)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
+        public Task<User?> GetByUsernameAsync(
             Username username,
             CancellationToken cancellationToken = default)
         {
@@ -103,18 +117,7 @@ namespace TraffiLearn.Infrastructure.Repositories
                 cancellationToken);
         }
 
-        public async Task<Domain.Aggregates.Users.UserId?> GetUserWithCommentsWithRepliesAsync(
-            Domain.Aggregates.Users.ValueObjects.UserId userId,
-            CancellationToken cancellationToken = default)
-        {
-            return await _dbContext.Users
-                .Where(c => c.Id == userId)
-                .Include(user => user.Comments)
-                .ThenInclude(user => user.Replies)
-                .FirstOrDefaultAsync(cancellationToken);
-        }
-
-        public Task UpdateAsync(Domain.Aggregates.Users.UserId user)
+        public Task UpdateAsync(User user)
         {
             _dbContext.Users.Update(user);
 

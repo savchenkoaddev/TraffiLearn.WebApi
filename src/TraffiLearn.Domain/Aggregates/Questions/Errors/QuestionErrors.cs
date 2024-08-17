@@ -84,6 +84,16 @@ namespace TraffiLearn.Domain.Aggregates.Questions.Errors
                 code: "Question.AlreadyDislikedByUser",
                 description: "The question is already disliked by the user.");
 
+        public static readonly Error AlreadyMarkedByUser =
+            Error.Validation(
+                code: "Question.AlreadyMarkedByUser",
+                description: "The question is already marked by the user.");
+
+        public static readonly Error IsNotMarkedByUser =
+            Error.Validation(
+                code: "Question.IsNotMarkedByUser",
+                description: "The question is not marked yet.");
+
         public static readonly Error NotLikedByUser =
             Error.Validation(
                 code: "Question.NotLikedByUser",

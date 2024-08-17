@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 using TraffiLearn.Domain.Aggregates.Comments;
 using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Infrastructure.Database;
 
 namespace TraffiLearn.Infrastructure.Repositories
@@ -33,22 +34,18 @@ namespace TraffiLearn.Infrastructure.Repositories
                 cancellationToken)) is not null;
         }
 
-        public async Task<Comment?> GetByIdAsync(
-            CommentId commentId,
-            CancellationToken cancellationToken = default,
-            params Expression<Func<Comment, object>>[] includeExpressions)
+        public Task DeleteAsync(Comment comment)
         {
-            IQueryable<Comment> query = _dbContext.Comments;
+            _dbContext.Comments.Remove(comment);
 
-            foreach (var includeExpression in includeExpressions)
-            {
-                query = query.Include(includeExpression);
-            }
+            return Task.CompletedTask;
+        }
 
-            return await query
-                .FirstOrDefaultAsync(
-                    c => c.Id == commentId,
-                    cancellationToken);
+        public Task UpdateAsync(Comment comment)
+        {
+            _dbContext.Comments.Update(comment);
+
+            return Task.CompletedTask;
         }
 
         public async Task<Comment?> GetByIdWithAllNestedRepliesAsync(
@@ -99,32 +96,43 @@ namespace TraffiLearn.Infrastructure.Repositories
             return rootComment;
         }
 
-        public Task DeleteAsync(Comment comment)
-        {
-            _dbContext.Comments.Remove(comment);
-
-            return Task.CompletedTask;
-        }
-
-        public Task UpdateAsync(Comment comment)
-        {
-            _dbContext.Comments.Update(comment);
-
-            return Task.CompletedTask;
-        }
-
-        public Task<Comment?> GetByIdWithRepliesWithUsersTwoLevelsDeepAsync(
+        public async Task<Comment?> GetByIdAsync(
             CommentId commentId,
             CancellationToken cancellationToken = default)
         {
-            return _dbContext.Comments
-                .Include(c => c.Replies)
-                .ThenInclude(c => c.Replies)
-                .Include(c => c.Replies)
-                .ThenInclude(c => c.CreatorId)
-                .FirstOrDefaultAsync(
-                    comment => comment.Id == commentId,
+            return await _dbContext.Comments
+                .FindAsync(
+                    keyValues: [commentId],
                     cancellationToken);
+        }
+
+        public async Task<IEnumerable<Comment>> GetUserCreatedCommentsAsync(
+            UserId userId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Comments
+                .Where(c => c.CreatorId == userId)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<IEnumerable<Comment>> GetRepliesWithNextRepliesByIdAsync(
+            CommentId commentId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Comments
+                .Where(c => c.Id == commentId)
+                .Include(c => c.Replies)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<IEnumerable<Comment>> GetManyByQuestionIdWithRepliesAsync(
+            QuestionId questionId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Comments
+                .Where(c => c.QuestionId == questionId)
+                .Include(c => c.Replies)
+                .ToListAsync(cancellationToken);
         }
     }
 }

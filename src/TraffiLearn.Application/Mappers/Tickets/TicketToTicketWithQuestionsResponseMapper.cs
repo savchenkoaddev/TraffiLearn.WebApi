@@ -12,7 +12,7 @@ namespace TraffiLearn.Application.Mappers.Tickets
             return new TicketWithQuestionsResponse(
                 TicketId: source.Id.Value,
                 TicketNumber: source.TicketNumber.Value,
-                Questions: source.Questions.ToList());
+                Questions: source.QuestionsIds.ToList());
         }
     }
 }

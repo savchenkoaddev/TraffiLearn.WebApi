@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
+using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Tickets;
 using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
 using TraffiLearn.Infrastructure.Database;
@@ -40,30 +40,51 @@ namespace TraffiLearn.Infrastructure.Repositories
                 cancellationToken)) is not null;
         }
 
-        public async Task<IEnumerable<Ticket>> GetAllAsync(
-            Expression<Func<Ticket, object>>? orderByExpression = null,
-            CancellationToken cancellationToken = default,
-            params Expression<Func<Ticket, object>>[] includeExpressions)
+        public Task UpdateAsync(Ticket ticket)
         {
-            IQueryable<Ticket> tickets = _dbContext.Tickets;
+            _dbContext.Tickets.Update(ticket);
 
-            foreach (var includeExpression in includeExpressions)
-            {
-                tickets = tickets.Include(includeExpression);
-            }
+            return Task.CompletedTask;
+        }
 
-            if (orderByExpression is not null)
-            {
-                tickets = tickets.OrderBy(orderByExpression);
-            }
+        public async Task<Ticket?> GetByIdAsync(
+            TicketId ticketId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Tickets
+                .FindAsync(
+                    keyValues: [ticketId],
+                    cancellationToken);
+        }
 
-            return await tickets
+        public async Task<Ticket?> GetByIdWithQuestionsIdsAsync(
+            TicketId ticketId, 
+            CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Tickets
+                .Where(t => t.Id == ticketId)
+                .Include(t => t.QuestionsIds)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
+        public async Task<IEnumerable<Ticket>> GetManyByQuestionIdAsync(
+            QuestionId questionId, 
+            CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Tickets
+                .Where(t => t.QuestionsIds.Contains(questionId))
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<Ticket?> GetRandomRecordAsync(
-            CancellationToken cancellationToken = default,
-            params Expression<Func<Ticket, object>>[] includeExpressions)
+        public async Task<IEnumerable<Ticket>> GetAllAsync(
+            CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Tickets
+                .ToListAsync(cancellationToken);
+        }
+
+        public Task<Ticket?> GetRandomRecordAsync(
+            CancellationToken cancellationToken = default)
         {
             var sql = """
                 SELECT TOP 1 *
@@ -75,41 +96,9 @@ namespace TraffiLearn.Infrastructure.Repositories
                sql,
                nameof(ApplicationDbContext.Tickets));
 
-            var query = _dbContext.Tickets
-                .FromSqlRaw(formattedSql);
-
-            foreach (var includeExpression in includeExpressions)
-            {
-                query = query.Include(includeExpression);
-            }
-
-            return await query
+            return _dbContext.Tickets
+                .FromSqlRaw(formattedSql)
                 .FirstOrDefaultAsync(cancellationToken);
-        }
-
-        public async Task<Ticket?> GetByIdAsync(
-            TicketId ticketId,
-            CancellationToken cancellationToken = default,
-            params Expression<Func<Ticket, object>>[] includeExpressions)
-        {
-            var query = _dbContext.Tickets.AsQueryable();
-
-            foreach (var includeExpression in includeExpressions)
-            {
-                query = query.Include(includeExpression);
-            }
-
-            return await query
-                .FirstOrDefaultAsync(
-                    c => c.Id == ticketId,
-                    cancellationToken);
-        }
-
-        public Task UpdateAsync(Ticket ticket)
-        {
-            _dbContext.Tickets.Update(ticket);
-
-            return Task.CompletedTask;
         }
     }
 }

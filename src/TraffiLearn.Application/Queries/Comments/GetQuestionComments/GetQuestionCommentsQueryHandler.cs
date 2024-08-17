@@ -44,7 +44,7 @@ namespace TraffiLearn.Application.Queries.Comments.GetQuestionComments
             }
 
             var comments = await _commentRepository
-                .GetManyByQuestionIdAsync(
+                .GetManyByQuestionIdWithRepliesAsync(
                     questionId,
                     cancellationToken);
 

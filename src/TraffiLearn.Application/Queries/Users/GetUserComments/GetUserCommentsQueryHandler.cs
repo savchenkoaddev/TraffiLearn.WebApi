@@ -42,7 +42,7 @@ namespace TraffiLearn.Application.Queries.Users.GetUserComments
                 return Result.Failure<IEnumerable<CommentResponse>>(UserErrors.NotFound);
             }
 
-            var userComments = await _commentRepository.GetUserCommentsAsync(
+            var userComments = await _commentRepository.GetUserCreatedCommentsAsync(
                 userId,
                 cancellationToken);
 
