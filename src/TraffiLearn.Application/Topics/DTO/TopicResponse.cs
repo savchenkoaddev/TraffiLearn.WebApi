@@ -1,4 +1,4 @@
-﻿namespace TraffiLearn.Application.DTO.Topics
+﻿namespace TraffiLearn.Application.Topics.DTO
 {
     public sealed record TopicResponse(
         Guid TopicId,

@@ -1,4 +1,4 @@
-﻿namespace TraffiLearn.Application.DTO.Comments
+﻿namespace TraffiLearn.Application.Comments.DTO
 {
     public sealed record CommentResponse(
         Guid CommentId,

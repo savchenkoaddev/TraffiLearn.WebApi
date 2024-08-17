@@ -7,7 +7,7 @@ using TraffiLearn.Domain.Aggregates.Topics;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Commands.Topics.RemoveQuestionFromTopic
+namespace TraffiLearn.Application.Topics.Commands.RemoveQuestionFromTopic
 {
     internal sealed class RemoveQuestionFromTopicCommandHandler
         : IRequestHandler<RemoveQuestionFromTopicCommand, Result>

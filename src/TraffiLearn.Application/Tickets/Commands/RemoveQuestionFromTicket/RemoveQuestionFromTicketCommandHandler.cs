@@ -7,7 +7,7 @@ using TraffiLearn.Domain.Aggregates.Tickets.Errors;
 using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Commands.Tickets.RemoveQuestionFromTicket
+namespace TraffiLearn.Application.Tickets.Commands.RemoveQuestionFromTicket
 {
     internal sealed class RemoveQuestionFromTicketCommandHandler
         : IRequestHandler<RemoveQuestionFromTicketCommand, Result>

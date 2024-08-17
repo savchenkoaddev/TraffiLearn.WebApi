@@ -8,7 +8,7 @@ using TraffiLearn.Domain.Aggregates.Topics.Errors;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Commands.Topics.AddQuestionToTopic
+namespace TraffiLearn.Application.Topics.Commands.AddQuestionToTopic
 {
     internal sealed class AddQuestionToTopicCommandHandler : IRequestHandler<AddQuestionToTopicCommand, Result>
     {

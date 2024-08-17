@@ -1,11 +1,11 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Application.Commands.Auth.RegisterUser;
+using TraffiLearn.Application.Auth.Commands.RegisterUser;
 using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Mappers.Auth
+namespace TraffiLearn.Application.Auth.Mappers
 {
     internal sealed class RegisterUserCommandMapper
         : Mapper<RegisterUserCommand, Result<User>>

@@ -8,7 +8,7 @@ using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Commands.Users.RemoveQuestionDislike
+namespace TraffiLearn.Application.Users.Commands.RemoveQuestionDislike
 {
     internal sealed class RemoveQuestionDislikeCommandHandler
         : IRequestHandler<RemoveQuestionDislikeCommand, Result>

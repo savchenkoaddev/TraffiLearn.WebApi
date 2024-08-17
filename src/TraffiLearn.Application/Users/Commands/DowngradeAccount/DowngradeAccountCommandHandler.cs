@@ -4,14 +4,14 @@ using System.Transactions;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Exceptions;
-using TraffiLearn.Application.Identity;
+using TraffiLearn.Application.Users.Identity;
 using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.Domain.Aggregates.Users.Errors;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Commands.Users.DowngradeAccount
+namespace TraffiLearn.Application.Users.Commands.DowngradeAccount
 {
     internal sealed class DowngradeAccountCommandHandler
         : IRequestHandler<DowngradeAccountCommand, Result>

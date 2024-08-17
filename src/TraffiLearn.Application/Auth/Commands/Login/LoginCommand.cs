@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using TraffiLearn.Application.DTO.Auth;
+using TraffiLearn.Application.Auth.DTO;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Auth.Commands.Login

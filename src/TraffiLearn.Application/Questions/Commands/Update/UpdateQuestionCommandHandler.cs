@@ -10,7 +10,7 @@ using TraffiLearn.Domain.Aggregates.Topics.Errors;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Commands.Questions.Update
+namespace TraffiLearn.Application.Questions.Commands.Update
 {
     internal sealed class UpdateQuestionCommandHandler : IRequestHandler<UpdateQuestionCommand, Result>
     {

@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using TraffiLearn.Application.DTO.Tickets;
+using TraffiLearn.Application.Tickets.DTO;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Tickets.Queries.GetRandomTicketWithQuestions

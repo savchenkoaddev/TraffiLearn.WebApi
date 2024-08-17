@@ -8,7 +8,7 @@ using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Commands.Users.DislikeComment
+namespace TraffiLearn.Application.Users.Commands.DislikeComment
 {
     internal sealed class DislikeCommentCommandHandler
         : IRequestHandler<DislikeCommentCommand, Result>

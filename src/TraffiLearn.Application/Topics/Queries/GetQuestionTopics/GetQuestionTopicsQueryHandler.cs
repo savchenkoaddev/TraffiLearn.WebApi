@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Application.DTO.Topics;
+using TraffiLearn.Application.Topics.DTO;
 using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Questions.Errors;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;

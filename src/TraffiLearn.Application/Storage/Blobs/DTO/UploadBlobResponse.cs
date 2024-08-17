@@ -1,4 +1,4 @@
-﻿namespace TraffiLearn.Application.DTO.Blobs
+﻿namespace TraffiLearn.Application.Storage.Blobs.DTO
 {
     public sealed record UploadBlobResponse
     {

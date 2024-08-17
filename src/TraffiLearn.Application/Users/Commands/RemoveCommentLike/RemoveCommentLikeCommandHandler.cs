@@ -8,7 +8,7 @@ using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Commands.Users.RemoveCommentLike
+namespace TraffiLearn.Application.Users.Commands.RemoveCommentLike
 {
     internal sealed class RemoveCommentLikeCommandHandler
         : IRequestHandler<RemoveCommentLikeCommand, Result>

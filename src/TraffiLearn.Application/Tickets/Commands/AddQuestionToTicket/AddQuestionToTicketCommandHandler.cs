@@ -7,7 +7,7 @@ using TraffiLearn.Domain.Aggregates.Tickets.Errors;
 using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Commands.Tickets.AddQuestionToTicket
+namespace TraffiLearn.Application.Tickets.Commands.AddQuestionToTicket
 {
     internal sealed class AddQuestionToTicketCommandHandler
         : IRequestHandler<AddQuestionToTicketCommand, Result>

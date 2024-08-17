@@ -8,7 +8,7 @@ using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Commands.Users.LikeComment
+namespace TraffiLearn.Application.Users.Commands.LikeComment
 {
     internal sealed class LikeCommentCommandHandler
         : IRequestHandler<LikeCommentCommand, Result>

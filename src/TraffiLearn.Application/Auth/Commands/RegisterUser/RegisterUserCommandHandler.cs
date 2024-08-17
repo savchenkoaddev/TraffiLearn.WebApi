@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using System.Transactions;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
-using TraffiLearn.Application.Identity;
+using TraffiLearn.Application.Users.Identity;
 using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Aggregates.Users.Errors;
 using TraffiLearn.Domain.Shared;

@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Application.DTO.Tickets;
+using TraffiLearn.Application.Tickets.DTO;
 using TraffiLearn.Domain.Aggregates.Tickets;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Queries.Tickets.GetAll
+namespace TraffiLearn.Application.Tickets.Queries.GetAll
 {
     internal sealed class GetAllTicketsQueryHandler
         : IRequestHandler<GetAllTicketsQuery, Result<IEnumerable<TicketResponse>>>

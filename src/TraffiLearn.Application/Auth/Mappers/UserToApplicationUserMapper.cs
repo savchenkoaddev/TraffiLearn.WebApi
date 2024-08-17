@@ -1,8 +1,8 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Application.Identity;
+using TraffiLearn.Application.Users.Identity;
 using TraffiLearn.Domain.Aggregates.Users;
 
-namespace TraffiLearn.Application.Mappers.Auth
+namespace TraffiLearn.Application.Auth.Mappers
 {
     internal sealed class UserToApplicationUserMapper
         : Mapper<User, ApplicationUser>

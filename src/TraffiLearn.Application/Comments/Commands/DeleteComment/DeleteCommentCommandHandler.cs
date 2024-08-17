@@ -6,7 +6,7 @@ using TraffiLearn.Domain.Aggregates.Comments.Errors;
 using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Commands.Comments.DeleteComment
+namespace TraffiLearn.Application.Comments.Commands.DeleteComment
 {
     internal sealed class DeleteCommentCommandHandler
         : IRequestHandler<DeleteCommentCommand, Result>

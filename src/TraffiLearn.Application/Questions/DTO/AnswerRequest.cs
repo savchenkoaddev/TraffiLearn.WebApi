@@ -1,4 +1,4 @@
-﻿namespace TraffiLearn.Application.DTO.Answers
+﻿namespace TraffiLearn.Application.Questions.DTO
 {
     public sealed record AnswerRequest(
         string? Text,

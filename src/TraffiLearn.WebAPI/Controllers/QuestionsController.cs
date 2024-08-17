@@ -1,8 +1,25 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using TraffiLearn.Application.Comments.Queries.GetQuestionComments;
 using TraffiLearn.Application.Questions.Commands.AddComment;
 using TraffiLearn.Application.Questions.Commands.Create;
+using TraffiLearn.Application.Questions.Commands.Delete;
 using TraffiLearn.Application.Questions.Commands.Update;
+using TraffiLearn.Application.Questions.Queries.GetAll;
+using TraffiLearn.Application.Questions.Queries.GetById;
+using TraffiLearn.Application.Questions.Queries.GetQuestionsForTheoryTest;
+using TraffiLearn.Application.Questions.Queries.GetRandomQuestions;
+using TraffiLearn.Application.Tickets.Queries.GetQuestionTickets;
+using TraffiLearn.Application.Topics.Queries.GetQuestionTopics;
+using TraffiLearn.Application.Users.Commands.DislikeQuestion;
+using TraffiLearn.Application.Users.Commands.LikeQuestion;
+using TraffiLearn.Application.Users.Commands.MarkQuestion;
+using TraffiLearn.Application.Users.Commands.RemoveQuestionDislike;
+using TraffiLearn.Application.Users.Commands.RemoveQuestionLike;
+using TraffiLearn.Application.Users.Commands.UnmarkQuestion;
+using TraffiLearn.Application.Users.Queries.GetCurrentUserDislikedQuestions;
+using TraffiLearn.Application.Users.Queries.GetCurrentUserLikedQuestions;
+using TraffiLearn.Application.Users.Queries.GetMarkedQuestions;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
 
@@ -34,15 +51,6 @@ namespace TraffiLearn.WebAPI.Controllers
         [HttpGet("questions/random")]
         public async Task<IActionResult> GetRandomQuestion(
             [FromQuery] int amount = 1)
-        {
-            var queryResult = await _sender.Send(new GetRandomQuestionsQuery(amount));
-
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
-        }
-
-        [HttpGet("questions/random")]
-        public async Task<IActionResult> GetRandomQuestions(
-            [FromBody] int amount)
         {
             var queryResult = await _sender.Send(new GetRandomQuestionsQuery(amount));
 
@@ -138,58 +146,6 @@ namespace TraffiLearn.WebAPI.Controllers
             [FromForm] UpdateQuestionCommand command)
         {
             var commandResult = await _sender.Send(command);
-
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
-        }
-
-        [HasPermission(Permission.ModifyData)]
-        [HttpPut("{questionId:guid}/add-topic/{topicId:guid}")]
-        public async Task<IActionResult> AddTopicToQuestion(
-            [FromRoute] Guid topicId,
-            [FromRoute] Guid questionId)
-        {
-            var commandResult = await _sender.Send(new AddTopicToQuestionCommand(
-                TopicId: topicId,
-                QuestionId: questionId));
-
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
-        }
-
-        [HasPermission(Permission.ModifyData)]
-        [HttpPut("{questionId:guid}/remove-topic/{topicId:guid}")]
-        public async Task<IActionResult> RemoveTopicFromQuestion(
-            [FromRoute] Guid topicId,
-            [FromRoute] Guid questionId)
-        {
-            var commandResult = await _sender.Send(new RemoveTopicFromQuestionCommand(
-                TopicId: topicId,
-                QuestionId: questionId));
-
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
-        }
-
-        [HasPermission(Permission.ModifyData)]
-        [HttpPut("{questionId:guid}/add-ticket/{ticketId:guid}")]
-        public async Task<IActionResult> AddTicketToQuestion(
-            [FromRoute] Guid ticketId,
-            [FromRoute] Guid questionId)
-        {
-            var commandResult = await _sender.Send(new AddTicketToQuestionCommand(
-                TicketId: ticketId,
-                QuestionId: questionId));
-
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
-        }
-
-        [HasPermission(Permission.ModifyData)]
-        [HttpPut("{questionId:guid}/remove-ticket/{ticketId:guid}")]
-        public async Task<IActionResult> RemoveTicketFromQuestion(
-            [FromRoute] Guid ticketId,
-            [FromRoute] Guid questionId)
-        {
-            var commandResult = await _sender.Send(new RemoveTicketFromQuestionCommand(
-                TicketId: ticketId,
-                QuestionId: questionId));
 
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }

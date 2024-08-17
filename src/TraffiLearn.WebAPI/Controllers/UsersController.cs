@@ -1,5 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using TraffiLearn.Application.Users.Commands.DowngradeAccount;
+using TraffiLearn.Application.Users.Queries.GetLoggedInUserComments;
+using TraffiLearn.Application.Users.Queries.GetUserComments;
+using TraffiLearn.Application.Users.Queries.GetUserDislikedQuestions;
+using TraffiLearn.Application.Users.Queries.GetUserLikedQuestions;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
 

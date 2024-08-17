@@ -1,15 +1,15 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Identity;
-using TraffiLearn.Application.DTO.Auth;
+using TraffiLearn.Application.Auth.DTO;
 using TraffiLearn.Application.Exceptions;
-using TraffiLearn.Application.Identity;
+using TraffiLearn.Application.Users.Identity;
 using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Aggregates.Users.Errors;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Commands.Auth.Login
+namespace TraffiLearn.Application.Auth.Commands.Login
 {
     internal sealed class LoginCommandHandler : IRequestHandler<LoginCommand, Result<LoginResponse>>
     {

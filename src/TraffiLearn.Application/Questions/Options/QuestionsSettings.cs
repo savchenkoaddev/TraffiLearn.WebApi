@@ -1,4 +1,4 @@
-﻿namespace TraffiLearn.Application.Options
+﻿namespace TraffiLearn.Application.Questions.Options
 {
     public sealed class QuestionsSettings
     {

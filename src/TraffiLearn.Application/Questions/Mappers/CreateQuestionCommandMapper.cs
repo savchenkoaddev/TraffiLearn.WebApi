@@ -1,11 +1,11 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Application.Commands.Questions.Create;
-using TraffiLearn.Application.DTO.Answers;
+using TraffiLearn.Application.Questions.Commands.Create;
+using TraffiLearn.Application.Questions.DTO;
 using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Mappers.Questions
+namespace TraffiLearn.Application.Questions.Mappers
 {
     internal sealed class CreateQuestionCommandMapper
         : Mapper<CreateQuestionCommand, Result<Question>>

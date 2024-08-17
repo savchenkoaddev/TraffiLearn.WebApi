@@ -1,4 +1,4 @@
-﻿namespace TraffiLearn.Application.DTO.Tickets
+﻿namespace TraffiLearn.Application.Tickets.DTO
 {
     public sealed record TicketResponse(
         Guid TicketId,

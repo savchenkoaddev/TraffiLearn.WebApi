@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using TraffiLearn.Application.DTO.Comments;
+using TraffiLearn.Application.Comments.DTO;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Comments.Queries.GetCommentReplies

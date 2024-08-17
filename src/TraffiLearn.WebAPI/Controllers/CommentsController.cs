@@ -1,7 +1,13 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using TraffiLearn.Application.Comments.Commands.DeleteComment;
 using TraffiLearn.Application.Comments.Commands.Reply;
 using TraffiLearn.Application.Comments.Commands.UpdateComment;
+using TraffiLearn.Application.Comments.Queries.GetCommentReplies;
+using TraffiLearn.Application.Users.Commands.DislikeComment;
+using TraffiLearn.Application.Users.Commands.LikeComment;
+using TraffiLearn.Application.Users.Commands.RemoveCommentDislike;
+using TraffiLearn.Application.Users.Commands.RemoveCommentLike;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
 

@@ -1,8 +1,8 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Application.DTO.Topics;
+using TraffiLearn.Application.Topics.DTO;
 using TraffiLearn.Domain.Aggregates.Topics;
 
-namespace TraffiLearn.Application.Mappers.Topics
+namespace TraffiLearn.Application.Topics.Mappers
 {
     internal sealed class TopicToTopicResponseMapper : Mapper<Topic, TopicResponse>
     {
