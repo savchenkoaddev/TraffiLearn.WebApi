@@ -1,5 +1,6 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Commands.Auth.RegisterUser;
+using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Shared;
@@ -7,27 +8,27 @@ using TraffiLearn.Domain.Shared;
 namespace TraffiLearn.Application.Mappers.Auth
 {
     internal sealed class RegisterUserCommandMapper
-        : Mapper<RegisterUserCommand, Result<Domain.Aggregates.Users.UserId>>
+        : Mapper<RegisterUserCommand, Result<User>>
     {
-        public override Result<Domain.Aggregates.Users.UserId> Map(RegisterUserCommand source)
+        public override Result<User> Map(RegisterUserCommand source)
         {
             Result<Email> emailCreateResult = Email.Create(source.Email);
 
             if (emailCreateResult.IsFailure)
             {
-                return Result.Failure<Domain.Aggregates.Users.UserId>(emailCreateResult.Error);
+                return Result.Failure<User>(emailCreateResult.Error);
             }
 
             Result<Username> usernameCreateResult = Username.Create(source.Username);
 
             if (usernameCreateResult.IsFailure)
             {
-                return Result.Failure<Domain.Aggregates.Users.UserId>(usernameCreateResult.Error);
+                return Result.Failure<User>(usernameCreateResult.Error);
             }
 
             UserId userId = new(Guid.NewGuid());
 
-            return UserId.Create(
+            return User.Create(
                 userId: userId,
                 email: emailCreateResult.Value,
                 username: usernameCreateResult.Value,

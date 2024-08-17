@@ -13,8 +13,7 @@ namespace TraffiLearn.Application.Mappers.Comments
 
             return new CommentResponse(
                 CommentId: source.Id.Value,
-                AuthorUserId: source.CreatorId.Id.Value,
-                AuthorUsername: source.CreatorId.Username.Value,
+                AuthorUserId: source.CreatorId.Value,
                 Content: source.Content.Value,
                 HasReplies: hasReplies);
         }

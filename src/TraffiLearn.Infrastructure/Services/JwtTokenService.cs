@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using TraffiLearn.Application.Abstractions.Identity;
+using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Infrastructure.Options;
 
 namespace TraffiLearn.Infrastructure.Services
@@ -21,7 +22,7 @@ namespace TraffiLearn.Infrastructure.Services
             _symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
         }
 
-        public string GenerateAccessToken(UserId user)
+        public string GenerateAccessToken(User user)
         {
             var claims = GenerateClaims(user);
 
@@ -77,7 +78,7 @@ namespace TraffiLearn.Infrastructure.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private Claim[] GenerateClaims(UserId user)
+        private Claim[] GenerateClaims(User user)
         {
             return
             [
