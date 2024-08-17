@@ -69,7 +69,7 @@ namespace TraffiLearn.Application.Questions.Commands.Update
             }
 
             var updateTopicsResult = await UpdateTopics(
-                topicIds: request.TopicIds,
+                topicsIds: request.TopicsIds,
                 question,
                 cancellationToken);
 
@@ -100,11 +100,11 @@ namespace TraffiLearn.Application.Questions.Commands.Update
         }
 
         private async Task<Result> UpdateTopics(
-            List<Guid>? topicIds,
+            List<Guid>? topicsIds,
             Question question,
             CancellationToken cancellationToken = default)
         {
-            foreach (var topicId in topicIds)
+            foreach (var topicId in topicsIds)
             {
                 var topic = await _topicRepository.GetByIdAsync(
                     topicId: new TopicId(topicId),
@@ -130,7 +130,7 @@ namespace TraffiLearn.Application.Questions.Commands.Update
 
             foreach (var topicId in questionTopicsIds)
             {
-                if (!topicIds.Contains(topicId.Value))
+                if (!topicsIds.Contains(topicId.Value))
                 {
                     var topicRemoveResult = question.RemoveTopic(topicId);
 

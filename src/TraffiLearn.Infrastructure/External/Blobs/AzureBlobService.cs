@@ -4,9 +4,9 @@ using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Storage;
 using TraffiLearn.Application.Storage.Blobs.DTO;
 using TraffiLearn.Infrastructure.Exceptions;
-using TraffiLearn.Infrastructure.Options;
+using TraffiLearn.Infrastructure.External.Blobs.Options;
 
-namespace TraffiLearn.Infrastructure.External
+namespace TraffiLearn.Infrastructure.External.Blobs
 {
     internal sealed class AzureBlobService : IBlobService
     {

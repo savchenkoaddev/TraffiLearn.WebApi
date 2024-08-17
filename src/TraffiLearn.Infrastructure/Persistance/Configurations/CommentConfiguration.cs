@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TraffiLearn.Domain.Aggregates.Comments;
 using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
 
-namespace TraffiLearn.Infrastructure.Configurations
+namespace TraffiLearn.Infrastructure.Persistance.Configurations
 {
     internal sealed class CommentConfiguration : IEntityTypeConfiguration<Comment>
     {

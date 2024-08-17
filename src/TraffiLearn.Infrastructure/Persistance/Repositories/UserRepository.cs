@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
-using TraffiLearn.Infrastructure.Database;
+using TraffiLearn.Infrastructure.Persistance;
 
-namespace TraffiLearn.Infrastructure.Repositories
+namespace TraffiLearn.Infrastructure.Persistance.Repositories
 {
     internal sealed class UserRepository : IUserRepository
     {
@@ -34,18 +34,18 @@ namespace TraffiLearn.Infrastructure.Repositories
             UserId userId,
             CancellationToken cancellationToken = default)
         {
-            return (await _dbContext.Users.FindAsync(
+            return await _dbContext.Users.FindAsync(
                 keyValues: [userId],
-                cancellationToken: cancellationToken)) is not null;
+                cancellationToken: cancellationToken) is not null;
         }
 
         public async Task<bool> ExistsAsync(
             Username username,
             CancellationToken cancellationToken = default)
         {
-            return (await _dbContext.Users.FirstOrDefaultAsync(
+            return await _dbContext.Users.FirstOrDefaultAsync(
                 user => user.Username == username,
-                cancellationToken)) is not null;
+                cancellationToken) is not null;
         }
 
         public async Task<bool> ExistsAsync(
@@ -53,9 +53,9 @@ namespace TraffiLearn.Infrastructure.Repositories
             Email email,
             CancellationToken cancellationToken = default)
         {
-            return (await _dbContext.Users.FirstOrDefaultAsync(
+            return await _dbContext.Users.FirstOrDefaultAsync(
                 user => user.Username == username || user.Email == email,
-                cancellationToken: cancellationToken)) is not null;
+                cancellationToken: cancellationToken) is not null;
         }
 
         public Task<User?> GetByEmailAsync(

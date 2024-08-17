@@ -30,6 +30,7 @@ using TraffiLearn.Domain.Aggregates.Comments;
 using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Tickets;
 using TraffiLearn.Domain.Aggregates.Topics;
+using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application
@@ -88,10 +89,6 @@ namespace TraffiLearn.Application
         {
             services.AddScoped<Mapper<Question, QuestionResponse>,
                 QuestionToQuestionResponseMapper>();
-            services.AddScoped<Mapper<Topic, TopicWithQuestionsResponse>,
-                TopicToTopicWithQuestionsResponseMapper>();
-            services.AddScoped<Mapper<Ticket, TicketWithQuestionsResponse>,
-                TicketToTicketWithQuestionsResponseMapper>();
             services.AddScoped<Mapper<Topic, TopicResponse>, TopicToTopicResponseMapper>();
             services.AddScoped<Mapper<CreateTopicCommand, Result<Topic>>,
                 CreateTopicCommandMapper>();
@@ -100,7 +97,7 @@ namespace TraffiLearn.Application
             services.AddScoped<Mapper<CreateTicketCommand, Result<Ticket>>, CreateTicketCommandMapper>();
             services.AddScoped<Mapper<Ticket, TicketResponse>,
                 TicketToTicketResponseMapper>();
-            services.AddScoped<Mapper<RegisterUserCommand, Result<UserId>>,
+            services.AddScoped<Mapper<RegisterUserCommand, Result<User>>,
                 RegisterUserCommandMapper>();
             services.AddScoped<Mapper<UpdateQuestionCommand, Result<Question>>,
                 UpdateQuestionCommandMapper>();
@@ -108,8 +105,8 @@ namespace TraffiLearn.Application
                 UpdateTopicCommandMapper>();
             services.AddScoped<Mapper<Comment, CommentResponse>,
                 CommentToCommentResponseMapper>();
-            services.AddScoped<Mapper<RegisterAdminCommand, Result<UserId>>, RegisterAdminCommandMapper>();
-            services.AddScoped<Mapper<UserId, ApplicationUser>, UserToApplicationUserMapper>();
+            services.AddScoped<Mapper<RegisterAdminCommand, Result<User>>, RegisterAdminCommandMapper>();
+            services.AddScoped<Mapper<User, ApplicationUser>, UserToApplicationUserMapper>();
 
             return services;
         }

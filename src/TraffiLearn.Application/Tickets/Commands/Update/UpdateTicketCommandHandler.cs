@@ -55,7 +55,7 @@ namespace TraffiLearn.Application.Tickets.Commands.Update
 
             var updateQuestionsResult = await UpdateQuestions(
                 ticket,
-                request.QuestionIds,
+                request.QuestionsIds,
                 cancellationToken);
 
             if (updateQuestionsResult.IsFailure)
@@ -71,10 +71,10 @@ namespace TraffiLearn.Application.Tickets.Commands.Update
 
         private async Task<Result> UpdateQuestions(
             Ticket ticket,
-            IEnumerable<Guid>? questionIds,
+            IEnumerable<Guid>? questionsIds,
             CancellationToken cancellationToken = default)
         {
-            foreach (var questionId in questionIds)
+            foreach (var questionId in questionsIds)
             {
                 var question = await _questionRepository.GetByIdAsync(
                     questionId: new QuestionId(questionId),
@@ -100,7 +100,7 @@ namespace TraffiLearn.Application.Tickets.Commands.Update
 
             foreach (var questionId in ticketQuestionsIds)
             {
-                if (!questionIds.Contains(questionId.Value))
+                if (!questionsIds.Contains(questionId.Value))
                 {
                     var questionRemoveResult = ticket.RemoveQuestion(questionId);
 

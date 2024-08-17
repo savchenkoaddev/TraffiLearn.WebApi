@@ -11,7 +11,7 @@ namespace TraffiLearn.Application.Questions.Commands.Update
         string? Explanation,
         int? QuestionNumber,
         List<AnswerRequest>? Answers,
-        List<Guid>? TopicIds,
+        List<Guid>? TopicsIds,
         IFormFile? Image,
         bool? RemoveOldImageIfNewImageMissing = true) : IRequest<Result>;
 }

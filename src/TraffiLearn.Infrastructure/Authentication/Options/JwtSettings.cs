@@ -1,7 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
 
-namespace TraffiLearn.Infrastructure.Options
+namespace TraffiLearn.Infrastructure.Authentication.Options
 {
     public sealed class JwtSettings
     {

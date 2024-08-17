@@ -4,9 +4,8 @@ using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
-using TraffiLearn.Infrastructure.Database;
 
-namespace TraffiLearn.Infrastructure.Repositories
+namespace TraffiLearn.Infrastructure.Persistance.Repositories
 {
     internal sealed class QuestionRepository : IQuestionRepository
     {
@@ -30,9 +29,9 @@ namespace TraffiLearn.Infrastructure.Repositories
             QuestionId questionId,
             CancellationToken cancellationToken = default)
         {
-            return (await _dbContext.Questions.FindAsync(
+            return await _dbContext.Questions.FindAsync(
                 keyValues: [questionId],
-                cancellationToken)) is not null;
+                cancellationToken) is not null;
         }
 
         public Task DeleteAsync(Question question)

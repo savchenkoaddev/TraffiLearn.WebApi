@@ -3,9 +3,9 @@ using TraffiLearn.Domain.Aggregates.Comments;
 using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
-using TraffiLearn.Infrastructure.Database;
+using TraffiLearn.Infrastructure.Persistance;
 
-namespace TraffiLearn.Infrastructure.Repositories
+namespace TraffiLearn.Infrastructure.Persistance.Repositories
 {
     internal sealed class CommentRepository : ICommentRepository
     {
@@ -29,9 +29,9 @@ namespace TraffiLearn.Infrastructure.Repositories
             CommentId commentId,
             CancellationToken cancellationToken = default)
         {
-            return (await _dbContext.Comments.FindAsync(
+            return await _dbContext.Comments.FindAsync(
                 keyValues: [commentId],
-                cancellationToken)) is not null;
+                cancellationToken) is not null;
         }
 
         public Task DeleteAsync(Comment comment)

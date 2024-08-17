@@ -2,9 +2,9 @@
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Topics;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
-using TraffiLearn.Infrastructure.Database;
+using TraffiLearn.Infrastructure.Persistance;
 
-namespace TraffiLearn.Infrastructure.Repositories
+namespace TraffiLearn.Infrastructure.Persistance.Repositories
 {
     internal sealed class TopicRepository : ITopicRepository
     {
@@ -35,9 +35,9 @@ namespace TraffiLearn.Infrastructure.Repositories
             TopicId topicId,
             CancellationToken cancellationToken = default)
         {
-            return (await _dbContext.Topics.FindAsync(
+            return await _dbContext.Topics.FindAsync(
                 keyValues: [topicId],
-                cancellationToken)) is not null;
+                cancellationToken) is not null;
         }
 
         public Task UpdateAsync(Topic topic)

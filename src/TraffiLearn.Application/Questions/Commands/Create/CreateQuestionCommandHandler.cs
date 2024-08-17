@@ -48,7 +48,7 @@ namespace TraffiLearn.Application.Questions.Commands.Create
 
             var addResult = await HandleTopics(
                 question,
-                topicsIds: request.TopicIds,
+                topicsIds: request.TopicsIds,
                 cancellationToken);
 
             if (addResult.IsFailure)

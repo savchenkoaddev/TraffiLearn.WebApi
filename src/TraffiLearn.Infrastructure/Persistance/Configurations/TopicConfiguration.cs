@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 
-namespace TraffiLearn.Infrastructure.Configurations
+namespace TraffiLearn.Infrastructure.Persistance.Configurations
 {
     internal sealed class TopicConfiguration : IEntityTypeConfiguration<Domain.Aggregates.Topics.Topic>
     {
@@ -10,7 +10,7 @@ namespace TraffiLearn.Infrastructure.Configurations
         {
             builder.Property(q => q.Id).HasConversion(
                   id => id.Value,
-                  value => new Domain.Aggregates.Topics.ValueObjects.TopicId(value));
+                  value => new TopicId(value));
 
             builder.Property(t => t.Number).HasConversion(
                 number => number.Value,

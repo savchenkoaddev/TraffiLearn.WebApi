@@ -8,9 +8,9 @@ using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Tickets;
 using TraffiLearn.Domain.Aggregates.Topics;
 using TraffiLearn.Domain.Aggregates.Users;
-using TraffiLearn.Infrastructure.Options;
+using TraffiLearn.Infrastructure.Persistance.Options;
 
-namespace TraffiLearn.Infrastructure.Database
+namespace TraffiLearn.Infrastructure.Persistance
 {
     public sealed class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IUnitOfWork
     {

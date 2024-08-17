@@ -2,9 +2,9 @@
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Tickets;
 using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
-using TraffiLearn.Infrastructure.Database;
+using TraffiLearn.Infrastructure.Persistance;
 
-namespace TraffiLearn.Infrastructure.Repositories
+namespace TraffiLearn.Infrastructure.Persistance.Repositories
 {
     internal sealed class TicketRepository : ITicketRepository
     {
@@ -35,9 +35,9 @@ namespace TraffiLearn.Infrastructure.Repositories
             TicketId ticketId,
             CancellationToken cancellationToken = default)
         {
-            return (await _dbContext.Tickets.FindAsync(
+            return await _dbContext.Tickets.FindAsync(
                 keyValues: [ticketId],
-                cancellationToken)) is not null;
+                cancellationToken) is not null;
         }
 
         public Task UpdateAsync(Ticket ticket)

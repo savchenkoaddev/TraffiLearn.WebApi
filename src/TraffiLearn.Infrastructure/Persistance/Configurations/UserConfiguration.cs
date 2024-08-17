@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 
-namespace TraffiLearn.Infrastructure.Configurations
+namespace TraffiLearn.Infrastructure.Persistance.Configurations
 {
     internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
     {

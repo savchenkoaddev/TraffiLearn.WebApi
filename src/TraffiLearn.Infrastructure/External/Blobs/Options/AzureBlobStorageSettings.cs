@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TraffiLearn.Infrastructure.Options
+namespace TraffiLearn.Infrastructure.External.Blobs.Options
 {
     public sealed class AzureBlobStorageSettings
     {

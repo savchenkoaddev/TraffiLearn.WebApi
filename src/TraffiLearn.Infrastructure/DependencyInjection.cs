@@ -11,11 +11,13 @@ using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Tickets;
 using TraffiLearn.Domain.Aggregates.Topics;
 using TraffiLearn.Domain.Aggregates.Users;
-using TraffiLearn.Infrastructure.Database;
-using TraffiLearn.Infrastructure.External;
+using TraffiLearn.Infrastructure.Authentication.Options;
+using TraffiLearn.Infrastructure.External.Blobs;
+using TraffiLearn.Infrastructure.External.Blobs.Options;
 using TraffiLearn.Infrastructure.Helpers;
-using TraffiLearn.Infrastructure.Options;
-using TraffiLearn.Infrastructure.Repositories;
+using TraffiLearn.Infrastructure.Persistance;
+using TraffiLearn.Infrastructure.Persistance.Options;
+using TraffiLearn.Infrastructure.Persistance.Repositories;
 using TraffiLearn.Infrastructure.Services;
 
 namespace TraffiLearn.Infrastructure

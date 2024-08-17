@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 
-namespace TraffiLearn.Infrastructure.Configurations
+namespace TraffiLearn.Infrastructure.Persistance.Configurations
 {
     internal sealed class QuestionConfiguration : IEntityTypeConfiguration<Question>
     {

@@ -41,7 +41,7 @@ namespace TraffiLearn.Application.Tickets.Commands.Create
 
             var ticket = mappingResult.Value;
 
-            foreach (var questionId in request.QuestionIds)
+            foreach (var questionId in request.QuestionsIds)
             {
                 var question = await _questionRepository.GetByIdAsync(
                     questionId: new QuestionId(questionId),

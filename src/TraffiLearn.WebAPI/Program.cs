@@ -5,7 +5,7 @@ using TraffiLearn.Application;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.Infrastructure;
 using TraffiLearn.Infrastructure.Authentication;
-using TraffiLearn.Infrastructure.Options;
+using TraffiLearn.Infrastructure.Authentication.Options;
 using TraffiLearn.WebAPI.Middleware;
 
 namespace TraffiLearn.WebAPI

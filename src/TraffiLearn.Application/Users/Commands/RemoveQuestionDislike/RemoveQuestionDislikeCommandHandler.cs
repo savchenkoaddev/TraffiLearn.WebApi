@@ -65,18 +65,5 @@ namespace TraffiLearn.Application.Users.Commands.RemoveQuestionDislike
 
             return Result.Success();
         }
-
-        private async Task<Question?> GetDislikedQuestion(
-            QuestionId dislikedQuestionId,
-            CancellationToken cancellationToken = default)
-        {
-            return await _questionRepository.GetByIdAsync(
-                dislikedQuestionId,
-                cancellationToken,
-                includeExpressions: [
-                    question => question.LikedByUsersIds,
-                    question => question.DislikedByUsersIds
-                ]);
-        }
     }
 }
