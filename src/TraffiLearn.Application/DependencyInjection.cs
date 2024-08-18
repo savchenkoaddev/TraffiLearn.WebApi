@@ -5,30 +5,30 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
+using TraffiLearn.Application.Auth.Commands.RegisterAdmin;
+using TraffiLearn.Application.Auth.Commands.RegisterUser;
+using TraffiLearn.Application.Auth.Mappers;
 using TraffiLearn.Application.Behaviors;
-using TraffiLearn.Application.Commands.Auth.RegisterAdmin;
-using TraffiLearn.Application.Commands.Auth.RegisterUser;
-using TraffiLearn.Application.Commands.Questions.Create;
-using TraffiLearn.Application.Commands.Questions.Update;
-using TraffiLearn.Application.Commands.Tickets.Create;
-using TraffiLearn.Application.Commands.Topics.Create;
-using TraffiLearn.Application.Commands.Topics.Update;
-using TraffiLearn.Application.DTO.Comments;
-using TraffiLearn.Application.DTO.Questions;
-using TraffiLearn.Application.DTO.Tickets;
-using TraffiLearn.Application.DTO.Topics;
-using TraffiLearn.Application.Identity;
-using TraffiLearn.Application.Mapper.Auth;
-using TraffiLearn.Application.Mapper.Comments;
-using TraffiLearn.Application.Mapper.Questions;
-using TraffiLearn.Application.Mapper.Tickets;
-using TraffiLearn.Application.Mapper.Topics;
-using TraffiLearn.Application.Mappers.Auth;
-using TraffiLearn.Application.Mappers.Tickets;
-using TraffiLearn.Application.Mappers.Topics;
-using TraffiLearn.Application.Options;
+using TraffiLearn.Application.Comments.DTO;
+using TraffiLearn.Application.Comments.Mappers;
+using TraffiLearn.Application.Questions.Commands.Create;
+using TraffiLearn.Application.Questions.Commands.Update;
+using TraffiLearn.Application.Questions.DTO;
+using TraffiLearn.Application.Questions.Mappers;
 using TraffiLearn.Application.Services;
-using TraffiLearn.Domain.Entities;
+using TraffiLearn.Application.Tickets.Commands.Create;
+using TraffiLearn.Application.Tickets.DTO;
+using TraffiLearn.Application.Tickets.Mappers;
+using TraffiLearn.Application.Topics.Commands.Create;
+using TraffiLearn.Application.Topics.Commands.Update;
+using TraffiLearn.Application.Topics.DTO;
+using TraffiLearn.Application.Topics.Mappers;
+using TraffiLearn.Application.Users.Identity;
+using TraffiLearn.Domain.Aggregates.Comments;
+using TraffiLearn.Domain.Aggregates.Questions;
+using TraffiLearn.Domain.Aggregates.Tickets;
+using TraffiLearn.Domain.Aggregates.Topics;
+using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application
@@ -40,7 +40,6 @@ namespace TraffiLearn.Application
             IConfiguration configuration)
         {
             services.AddMappers();
-            services.AddOptions(configuration);
 
             services.AddMediatR();
 
@@ -87,10 +86,6 @@ namespace TraffiLearn.Application
         {
             services.AddScoped<Mapper<Question, QuestionResponse>,
                 QuestionToQuestionResponseMapper>();
-            services.AddScoped<Mapper<Topic, TopicWithQuestionsResponse>,
-                TopicToTopicWithQuestionsResponseMapper>();
-            services.AddScoped<Mapper<Ticket, TicketWithQuestionsResponse>,
-                TicketToTicketWithQuestionsResponseMapper>();
             services.AddScoped<Mapper<Topic, TopicResponse>, TopicToTopicResponseMapper>();
             services.AddScoped<Mapper<CreateTopicCommand, Result<Topic>>,
                 CreateTopicCommandMapper>();
@@ -109,18 +104,6 @@ namespace TraffiLearn.Application
                 CommentToCommentResponseMapper>();
             services.AddScoped<Mapper<RegisterAdminCommand, Result<User>>, RegisterAdminCommandMapper>();
             services.AddScoped<Mapper<User, ApplicationUser>, UserToApplicationUserMapper>();
-
-            return services;
-        }
-
-        private static IServiceCollection AddOptions(
-            this IServiceCollection services,
-            IConfiguration configuration)
-        {
-            services.Configure<QuestionsSettings>(
-                configuration.GetSection(QuestionsSettings.SectionName));
-            services.Configure<LoginSettings>(
-                configuration.GetSection(LoginSettings.SectionName));
 
             return services;
         }

@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using TraffiLearn.Domain.Primitives;
+using TraffiLearn.Infrastructure.Persistence;
 
 namespace TraffiLearn.ArchitectureTests
 {
@@ -9,7 +10,7 @@ namespace TraffiLearn.ArchitectureTests
 
         protected static readonly Assembly ApplicationAssembly = typeof(TraffiLearn.Application.DependencyInjection).Assembly;
 
-        protected static readonly Assembly InfrastructureAssembly = typeof(Infrastructure.Database.ApplicationDbContext).Assembly;
+        protected static readonly Assembly InfrastructureAssembly = typeof(ApplicationDbContext).Assembly;
 
         protected static readonly Assembly WebApiAssembly = typeof(WebAPI.Program).Assembly;
 

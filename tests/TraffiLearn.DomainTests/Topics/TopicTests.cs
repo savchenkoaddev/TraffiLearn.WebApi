@@ -1,14 +1,16 @@
 using FluentAssertions;
-using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.Aggregates.Topics;
+using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects.Topics;
 using TraffiLearn.DomainTests.Factories;
 
 namespace TraffiLearn.DomainTests.Topics
 {
     public class TopicTests
     {
+#pragma warning disable CS8625
+
         [Fact]
         public void Create_IfPassedNullArgs_ShouldThrowArgumentNullException()
         {
@@ -189,5 +191,7 @@ namespace TraffiLearn.DomainTests.Topics
             var isValueObject = typeof(Entity<TopicId>).IsAssignableFrom(type);
             isValueObject.Should().BeTrue("Topic should inherit from Entity.");
         }
+
+#pragma warning restore
     }
 }

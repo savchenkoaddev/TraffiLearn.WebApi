@@ -1,14 +1,16 @@
 ﻿using FluentAssertions;
-using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.Aggregates.Questions;
+using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects.Questions;
 using TraffiLearn.DomainTests.Factories;
 
 namespace TraffiLearn.DomainTests.Questions
 {
     public sealed class QuestionTests
     {
+#pragma warning disable CS8625
+
         [Fact]
         public void Create_IfPassedNullArgs_ShouldThrowArgumentNullException()
         {
@@ -304,6 +306,97 @@ namespace TraffiLearn.DomainTests.Questions
             question.QuestionNumber.Should().Be(number);
             question.Answers.Should().BeEquivalentTo(answers);
             question.ImageUri.Should().BeNull();
+        }
+
+        [Fact]
+        public void Mark_IfPassedNullArgs_ShouldThrowArgumentNullException()
+        {
+            var question = QuestionFixtureFactory.CreateQuestion();
+
+            Action action = () =>
+            {
+                question.Mark(null);
+            };
+
+            action.Should().Throw<ArgumentNullException>();
+
+            question.MarkedByUsers.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Mark_IfAlreadyMarked_ShouldReturnError()
+        {
+            var question = QuestionFixtureFactory.CreateQuestion();
+
+            var user = UserFixtureFactory.CreateUser();
+
+            question.Mark(user);
+            var result = question.Mark(user);
+
+            result.IsFailure.Should().BeTrue();
+            result.Error.Should().NotBe(Error.None);
+
+            question.MarkedByUsers.Should().HaveCount(1);
+        }
+
+        [Fact]
+        public void Mark_IfPassedValidArgs_ShouldBeSuccesful()
+        {
+            var question = QuestionFixtureFactory.CreateQuestion();
+
+            var user = UserFixtureFactory.CreateUser();
+
+            var result = question.Mark(user);
+
+            result.IsSuccess.Should().BeTrue();
+
+            question.MarkedByUsers.Should().HaveCount(1);
+            question.MarkedByUsers.Should().Contain(user);
+        }
+
+        [Fact]
+        public void Unmark_IfPassedNullArgs_ShouldThrowArgumentNullException()
+        {
+            var question = QuestionFixtureFactory.CreateQuestion();
+
+            Action action = () =>
+            {
+                question.Unmark(null);
+            };
+
+            action.Should().Throw<ArgumentNullException>();
+
+            question.MarkedByUsers.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Unmark_IfQuestionIsNotMarked_ShouldReturnError()
+        {
+            var question = QuestionFixtureFactory.CreateQuestion();
+
+            var user = UserFixtureFactory.CreateUser();
+
+            var result = question.Unmark(user);
+
+            result.IsFailure.Should().BeTrue();
+            result.Error.Should().NotBe(Error.None);
+
+            question.MarkedByUsers.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Unmark_IfPassedValidArgs_ShouldBeSuccesful()
+        {
+            var question = QuestionFixtureFactory.CreateQuestion();
+
+            var user = UserFixtureFactory.CreateUser();
+
+            question.Mark(user);
+            var result = question.Unmark(user);
+
+            result.IsSuccess.Should().BeTrue();
+
+            question.MarkedByUsers.Should().BeEmpty();
         }
 
         [Fact]
@@ -843,5 +936,7 @@ namespace TraffiLearn.DomainTests.Questions
             var isValueObject = typeof(Entity<QuestionId>).IsAssignableFrom(type);
             isValueObject.Should().BeTrue("Question should inherit from Entity.");
         }
+
+#pragma warning restore
     }
 }

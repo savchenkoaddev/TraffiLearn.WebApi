@@ -1,18 +1,24 @@
 ﻿using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Abstractions.Storage;
-using TraffiLearn.Application.Identity;
-using TraffiLearn.Domain.RepositoryContracts;
-using TraffiLearn.Infrastructure.Database;
-using TraffiLearn.Infrastructure.External;
+using TraffiLearn.Application.Questions.Options;
+using TraffiLearn.Application.Users.Identity;
+using TraffiLearn.Domain.Aggregates.Comments;
+using TraffiLearn.Domain.Aggregates.Questions;
+using TraffiLearn.Domain.Aggregates.Tickets;
+using TraffiLearn.Domain.Aggregates.Topics;
+using TraffiLearn.Domain.Aggregates.Users;
+using TraffiLearn.Infrastructure.Authentication.Options;
+using TraffiLearn.Infrastructure.External.Blobs;
+using TraffiLearn.Infrastructure.External.Blobs.Options;
 using TraffiLearn.Infrastructure.Helpers;
-using TraffiLearn.Infrastructure.Options;
-using TraffiLearn.Infrastructure.Repositories;
+using TraffiLearn.Infrastructure.Persistence;
+using TraffiLearn.Infrastructure.Persistence.Options;
+using TraffiLearn.Infrastructure.Persistence.Repositories;
 using TraffiLearn.Infrastructure.Services;
 
 namespace TraffiLearn.Infrastructure
@@ -72,12 +78,13 @@ namespace TraffiLearn.Infrastructure
             services.ConfigureValidatableOnStartOptions<DbSettings>(DbSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<AzureBlobStorageSettings>(AzureBlobStorageSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<JwtSettings>(JwtSettings.SectionName);
+            services.ConfigureValidatableOnStartOptions<QuestionsSettings>(QuestionsSettings.SectionName);
 
             return services;
         }
 
         private static IServiceCollection ConfigureValidatableOnStartOptions<TOptions>(
-            this IServiceCollection services, 
+            this IServiceCollection services,
             string configSectionPath)
             where TOptions : class
         {

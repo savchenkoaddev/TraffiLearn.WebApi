@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
-using TraffiLearn.Domain.Entities;
+using TraffiLearn.Domain.Aggregates.Comments;
+using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects.Comments;
 using TraffiLearn.DomainTests.Factories;
 
 namespace TraffiLearn.DomainTests.Comments
@@ -17,7 +17,7 @@ namespace TraffiLearn.DomainTests.Comments
                 {
                     Comment.Create(
                         new CommentId(),
-                        null,
+                        null!,
                         UserFixtureFactory.CreateUser(),
                         QuestionFixtureFactory.CreateQuestion());
                 },
@@ -26,7 +26,7 @@ namespace TraffiLearn.DomainTests.Comments
                     Comment.Create(
                         new CommentId(),
                         CommentFixtureFactory.CreateContent(),
-                        null,
+                        null!,
                         QuestionFixtureFactory.CreateQuestion());
                 },
                 () =>
@@ -35,7 +35,7 @@ namespace TraffiLearn.DomainTests.Comments
                         new CommentId(),
                         CommentFixtureFactory.CreateContent(),
                         UserFixtureFactory.CreateUser(),
-                        null);
+                        null!);
                 }
             ];
 
@@ -80,7 +80,7 @@ namespace TraffiLearn.DomainTests.Comments
 
             Action action = () =>
             {
-                comment.AddLike(null);
+                comment.AddLike(null!);
             };
 
             action.Should().Throw<ArgumentNullException>();
@@ -139,7 +139,7 @@ namespace TraffiLearn.DomainTests.Comments
 
             Action action = () =>
             {
-                comment.AddDislike(null);
+                comment.AddDislike(null!);
             };
 
             action.Should().Throw<ArgumentNullException>();
@@ -198,7 +198,7 @@ namespace TraffiLearn.DomainTests.Comments
 
             Action action = () =>
             {
-                comment.RemoveLike(null);
+                comment.RemoveLike(null!);
             };
 
             action.Should().Throw<ArgumentNullException>();
@@ -246,7 +246,7 @@ namespace TraffiLearn.DomainTests.Comments
 
             Action action = () =>
             {
-                comment.RemoveDislike(null);
+                comment.RemoveDislike(null!);
             };
 
             action.Should().Throw<ArgumentNullException>();
@@ -294,7 +294,7 @@ namespace TraffiLearn.DomainTests.Comments
 
             Action action = () =>
             {
-                comment.Update(null);
+                comment.Update(null!);
             };
 
             action.Should().Throw<ArgumentNullException>();
@@ -320,7 +320,7 @@ namespace TraffiLearn.DomainTests.Comments
 
             Action action = () =>
             {
-                comment.Reply(null);
+                comment.Reply(null!);
             };
 
             action.Should().Throw<ArgumentNullException>();

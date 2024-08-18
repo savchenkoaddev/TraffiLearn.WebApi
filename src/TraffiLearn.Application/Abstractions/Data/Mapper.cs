@@ -6,7 +6,7 @@
 
         public virtual IEnumerable<TDestination> Map(IEnumerable<TSource> sources)
         {
-            return sources.Select(source => Map(source));
+            return sources.Select(Map);
         }
     }
 }

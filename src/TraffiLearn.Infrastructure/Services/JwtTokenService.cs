@@ -5,8 +5,8 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using TraffiLearn.Application.Abstractions.Identity;
-using TraffiLearn.Domain.Entities;
-using TraffiLearn.Infrastructure.Options;
+using TraffiLearn.Domain.Aggregates.Users;
+using TraffiLearn.Infrastructure.Authentication.Options;
 
 namespace TraffiLearn.Infrastructure.Services
 {

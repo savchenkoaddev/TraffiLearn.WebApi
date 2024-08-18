@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
 using System.Reflection;
+using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects.Questions;
 
 namespace TraffiLearn.DomainTests.Questions
 {
@@ -63,7 +63,7 @@ namespace TraffiLearn.DomainTests.Questions
         public void Explanation_ShouldInheritFromValueObject()
         {
             var type = typeof(QuestionExplanation);
-            
+
             var isValueObject = typeof(ValueObject).IsAssignableFrom(type);
             isValueObject.Should().BeTrue("Explanation should inherit from ValueObject.");
         }

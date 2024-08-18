@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
 using System.Reflection;
+using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.Domain.ValueObjects.Users;
 
 namespace TraffiLearn.DomainTests.Users
 {

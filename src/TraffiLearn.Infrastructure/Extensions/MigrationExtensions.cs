@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TraffiLearn.Application.Abstractions.Identity;
-using TraffiLearn.Infrastructure.Database;
 using TraffiLearn.Infrastructure.Helpers;
+using TraffiLearn.Infrastructure.Persistence;
 
 namespace TraffiLearn.Infrastructure.Extensions
 {

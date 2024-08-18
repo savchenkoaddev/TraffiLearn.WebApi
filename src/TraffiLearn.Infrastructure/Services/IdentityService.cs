@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Identity;
-using TraffiLearn.Domain.ValueObjects.Users;
+using TraffiLearn.Domain.Aggregates.Users.Errors;
+using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
+using TraffiLearn.Domain.Shared;
+using TraffiLearn.Infrastructure.Authentication.Options;
 
 namespace TraffiLearn.Infrastructure.Services
 {
@@ -8,10 +12,17 @@ namespace TraffiLearn.Infrastructure.Services
         where TIdentityUser : class
     {
         private readonly UserManager<TIdentityUser> _userManager;
+        private readonly SignInManager<TIdentityUser> _signInManager;
+        private readonly LoginSettings _loginSettings;
 
-        public IdentityService(UserManager<TIdentityUser> userManager)
+        public IdentityService(
+            UserManager<TIdentityUser> userManager,
+            SignInManager<TIdentityUser> signInManager,
+            IOptions<LoginSettings> loginSettings)
         {
             _userManager = userManager;
+            _signInManager = signInManager;
+            _loginSettings = loginSettings.Value;
         }
 
         public async Task CreateAsync(
@@ -65,6 +76,27 @@ namespace TraffiLearn.Infrastructure.Services
             ArgumentNullException.ThrowIfNull(email, nameof(email));
 
             return await _userManager.FindByEmailAsync(email.Value);
+        }
+
+        public async Task<Result> LoginAsync(
+            TIdentityUser identityUser,
+            string password)
+        {
+            ArgumentNullException.ThrowIfNull(identityUser);
+            ArgumentException.ThrowIfNullOrWhiteSpace(password);
+
+            var result = await _signInManager.PasswordSignInAsync(
+                identityUser,
+                password,
+                isPersistent: _loginSettings.IsPersistent,
+                lockoutOnFailure: _loginSettings.LockoutOnFailure);
+
+            if (!result.Succeeded)
+            {
+                return UserErrors.InvalidCredentials;
+            }
+
+            return Result.Success();
         }
 
         private void HandleIdentityResult(IdentityResult result, string errorMessage)

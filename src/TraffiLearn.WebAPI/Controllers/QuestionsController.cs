@@ -1,29 +1,25 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using TraffiLearn.Application.Commands.Questions.AddComment;
-using TraffiLearn.Application.Commands.Questions.AddTicketToQuestion;
-using TraffiLearn.Application.Commands.Questions.AddTopicToQuestion;
-using TraffiLearn.Application.Commands.Questions.Create;
-using TraffiLearn.Application.Commands.Questions.Delete;
-using TraffiLearn.Application.Commands.Questions.RemoveTicketFromQuestion;
-using TraffiLearn.Application.Commands.Questions.RemoveTopicFromQuestion;
-using TraffiLearn.Application.Commands.Questions.Update;
-using TraffiLearn.Application.Commands.Users.DislikeQuestion;
-using TraffiLearn.Application.Commands.Users.LikeQuestion;
-using TraffiLearn.Application.Commands.Users.MarkQuestion;
-using TraffiLearn.Application.Commands.Users.RemoveQuestionDislike;
-using TraffiLearn.Application.Commands.Users.RemoveQuestionLike;
-using TraffiLearn.Application.Commands.Users.UnmarkQuestion;
-using TraffiLearn.Application.Queries.Questions.GetAll;
-using TraffiLearn.Application.Queries.Questions.GetById;
-using TraffiLearn.Application.Queries.Questions.GetQuestionComments;
-using TraffiLearn.Application.Queries.Questions.GetQuestionsForTheoryTest;
-using TraffiLearn.Application.Queries.Questions.GetQuestionTickets;
-using TraffiLearn.Application.Queries.Questions.GetQuestionTopics;
-using TraffiLearn.Application.Queries.Questions.GetRandomQuestions;
-using TraffiLearn.Application.Queries.Users.GetCurrentUserDislikedQuestions;
-using TraffiLearn.Application.Queries.Users.GetCurrentUserLikedQuestions;
-using TraffiLearn.Application.Queries.Users.GetMarkedQuestions;
+using TraffiLearn.Application.Comments.Queries.GetQuestionComments;
+using TraffiLearn.Application.Questions.Commands.AddComment;
+using TraffiLearn.Application.Questions.Commands.Create;
+using TraffiLearn.Application.Questions.Commands.Delete;
+using TraffiLearn.Application.Questions.Commands.Update;
+using TraffiLearn.Application.Questions.Queries.GetAll;
+using TraffiLearn.Application.Questions.Queries.GetById;
+using TraffiLearn.Application.Questions.Queries.GetQuestionsForTheoryTest;
+using TraffiLearn.Application.Questions.Queries.GetRandomQuestions;
+using TraffiLearn.Application.Tickets.Queries.GetQuestionTickets;
+using TraffiLearn.Application.Topics.Queries.GetQuestionTopics;
+using TraffiLearn.Application.Users.Commands.DislikeQuestion;
+using TraffiLearn.Application.Users.Commands.LikeQuestion;
+using TraffiLearn.Application.Users.Commands.MarkQuestion;
+using TraffiLearn.Application.Users.Commands.RemoveQuestionDislike;
+using TraffiLearn.Application.Users.Commands.RemoveQuestionLike;
+using TraffiLearn.Application.Users.Commands.UnmarkQuestion;
+using TraffiLearn.Application.Users.Queries.GetCurrentUserDislikedQuestions;
+using TraffiLearn.Application.Users.Queries.GetCurrentUserLikedQuestions;
+using TraffiLearn.Application.Users.Queries.GetMarkedQuestions;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
 
@@ -150,58 +146,6 @@ namespace TraffiLearn.WebAPI.Controllers
             [FromForm] UpdateQuestionCommand command)
         {
             var commandResult = await _sender.Send(command);
-
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
-        }
-
-        [HasPermission(Permission.ModifyData)]
-        [HttpPut("{questionId:guid}/add-topic/{topicId:guid}")]
-        public async Task<IActionResult> AddTopicToQuestion(
-            [FromRoute] Guid topicId,
-            [FromRoute] Guid questionId)
-        {
-            var commandResult = await _sender.Send(new AddTopicToQuestionCommand(
-                TopicId: topicId,
-                QuestionId: questionId));
-
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
-        }
-
-        [HasPermission(Permission.ModifyData)]
-        [HttpPut("{questionId:guid}/remove-topic/{topicId:guid}")]
-        public async Task<IActionResult> RemoveTopicFromQuestion(
-            [FromRoute] Guid topicId,
-            [FromRoute] Guid questionId)
-        {
-            var commandResult = await _sender.Send(new RemoveTopicFromQuestionCommand(
-                TopicId: topicId,
-                QuestionId: questionId));
-
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
-        }
-
-        [HasPermission(Permission.ModifyData)]
-        [HttpPut("{questionId:guid}/add-ticket/{ticketId:guid}")]
-        public async Task<IActionResult> AddTicketToQuestion(
-            [FromRoute] Guid ticketId,
-            [FromRoute] Guid questionId)
-        {
-            var commandResult = await _sender.Send(new AddTicketToQuestionCommand(
-                TicketId: ticketId,
-                QuestionId: questionId));
-
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
-        }
-
-        [HasPermission(Permission.ModifyData)]
-        [HttpPut("{questionId:guid}/remove-ticket/{ticketId:guid}")]
-        public async Task<IActionResult> RemoveTicketFromQuestion(
-            [FromRoute] Guid ticketId,
-            [FromRoute] Guid questionId)
-        {
-            var commandResult = await _sender.Send(new RemoveTicketFromQuestionCommand(
-                TicketId: ticketId,
-                QuestionId: questionId));
 
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }

@@ -1,5 +1,5 @@
-﻿using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.ValueObjects.Questions;
+﻿using TraffiLearn.Domain.Aggregates.Questions;
+using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 
 namespace TraffiLearn.DomainTests.Factories
 {

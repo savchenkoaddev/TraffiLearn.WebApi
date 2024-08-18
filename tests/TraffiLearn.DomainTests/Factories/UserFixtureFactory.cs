@@ -1,6 +1,6 @@
-﻿using TraffiLearn.Domain.Entities;
-using TraffiLearn.Domain.Enums;
-using TraffiLearn.Domain.ValueObjects.Users;
+﻿using TraffiLearn.Domain.Aggregates.Users;
+using TraffiLearn.Domain.Aggregates.Users.Enums;
+using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 
 namespace TraffiLearn.DomainTests.Factories
 {

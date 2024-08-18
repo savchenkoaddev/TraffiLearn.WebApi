@@ -1,4 +1,5 @@
-﻿using TraffiLearn.Domain.ValueObjects.Users;
+﻿using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
+using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Abstractions.Identity
 {
@@ -13,5 +14,7 @@ namespace TraffiLearn.Application.Abstractions.Identity
         Task AddToRoleAsync(TIdentityUser identityUser, string roleName);
 
         Task RemoveFromRoleAsync(TIdentityUser identityUser, string roleName);
+
+        Task<Result> LoginAsync(TIdentityUser identityUser, string password);
     }
 }
