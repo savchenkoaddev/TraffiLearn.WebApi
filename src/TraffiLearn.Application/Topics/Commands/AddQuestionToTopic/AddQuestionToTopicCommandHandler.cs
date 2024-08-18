@@ -30,7 +30,7 @@ namespace TraffiLearn.Application.Topics.Commands.AddQuestionToTopic
             AddQuestionToTopicCommand request,
             CancellationToken cancellationToken)
         {
-            var topic = await _topicRepository.GetByIdWithQuestionsIdsAsync(
+            var topic = await _topicRepository.GetByIdWithQuestionsAsync(
                 topicId: new TopicId(request.TopicId.Value),
                 cancellationToken);
 
@@ -48,7 +48,7 @@ namespace TraffiLearn.Application.Topics.Commands.AddQuestionToTopic
                 return QuestionErrors.NotFound;
             }
 
-            var questionAddResult = topic.AddQuestion(question.Id);
+            var questionAddResult = topic.AddQuestion(question);
 
             if (questionAddResult.IsFailure)
             {

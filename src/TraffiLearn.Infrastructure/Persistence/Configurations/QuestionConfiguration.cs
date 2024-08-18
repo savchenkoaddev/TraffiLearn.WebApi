@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 
-namespace TraffiLearn.Infrastructure.Persistance.Configurations
+namespace TraffiLearn.Infrastructure.Persistence.Configurations
 {
     internal sealed class QuestionConfiguration : IEntityTypeConfiguration<Question>
     {
@@ -46,25 +46,30 @@ namespace TraffiLearn.Infrastructure.Persistance.Configurations
             });
 
             builder
-                .HasMany(q => q.TopicsIds)
+                .HasMany(q => q.Topics)
                 .WithMany(t => t.Questions);
 
             builder
-                .HasMany(q => q.TicketsIds)
+                .HasMany(q => q.Tickets)
                 .WithMany(t => t.Questions);
 
             builder
-                .HasMany(q => q.CommentsIds)
-                .WithOne(c => c.QuestionId)
+                .HasMany(q => q.Comments)
+                .WithOne(c => c.Question)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder
-                .HasMany(q => q.LikedByUsersIds)
+                .HasMany(q => q.LikedByUsers)
                 .WithMany(user => user.LikedQuestions)
                 .UsingEntity(join => join.ToTable("QuestionsLikedByUsers"));
 
             builder
-                .HasMany(q => q.DislikedByUsersIds)
+                .HasMany(q => q.MarkedByUsers)
+                .WithMany(user => user.MarkedQuestions)
+                .UsingEntity(join => join.ToTable("QuestionsMarkedByUsers"));
+
+            builder
+                .HasMany(q => q.DislikedByUsers)
                 .WithMany(user => user.DislikedQuestions)
                 .UsingEntity(join => join.ToTable("QuestionsDislikedByUsers"));
 

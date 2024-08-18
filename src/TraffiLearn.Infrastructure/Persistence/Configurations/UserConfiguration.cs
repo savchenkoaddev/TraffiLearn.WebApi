@@ -3,13 +3,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 
-namespace TraffiLearn.Infrastructure.Persistance.Configurations
+namespace TraffiLearn.Infrastructure.Persistence.Configurations
 {
     internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.Property(user => user.Id).HasConversion(
+            builder.Property(q => q.Id).HasConversion(
                  id => id.Value,
                  value => new UserId(value));
 
@@ -34,31 +34,31 @@ namespace TraffiLearn.Infrastructure.Persistance.Configurations
                 .IsUnique();
 
             builder
-                .HasMany(user => user.CommentsIds)
+                .HasMany(user => user.Comments)
                 .WithOne(c => c.Creator);
 
             builder
-                .HasMany(user => user.MarkedQuestionsIds)
-                .WithMany()
-                .UsingEntity(join => join.ToTable("QuestionsMarked"));
+                .HasMany(user => user.MarkedQuestions)
+                .WithMany(question => question.MarkedByUsers)
+                .UsingEntity(join => join.ToTable("QuestionsMarkedByUsers"));
 
             builder
-                .HasMany(user => user.LikedQuestionsIds)
+                .HasMany(user => user.LikedQuestions)
                 .WithMany(question => question.LikedByUsers)
                 .UsingEntity(join => join.ToTable("QuestionsLikedByUsers"));
 
             builder
-                .HasMany(user => user.DislikedQuestionsIds)
+                .HasMany(user => user.DislikedQuestions)
                 .WithMany(question => question.DislikedByUsers)
                 .UsingEntity(join => join.ToTable("QuestionsDislikedByUsers"));
 
             builder
-                .HasMany(user => user.LikedCommentsIds)
+                .HasMany(user => user.LikedComments)
                 .WithMany(comment => comment.LikedByUsers)
                 .UsingEntity(join => join.ToTable("CommentsLikedByUsers"));
 
             builder
-                .HasMany(user => user.DislikedCommentsIds)
+                .HasMany(user => user.DislikedComments)
                 .WithMany(comment => comment.DislikedByUsers)
                 .UsingEntity(join => join.ToTable("CommentsDislikedByUsers"));
         }

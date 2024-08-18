@@ -1,4 +1,4 @@
-﻿namespace TraffiLearn.Application.Auth.Options
+﻿namespace TraffiLearn.Infrastructure.Authentication.Options
 {
     public sealed class LoginSettings
     {

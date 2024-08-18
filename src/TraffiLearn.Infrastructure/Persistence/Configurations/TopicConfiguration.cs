@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 
-namespace TraffiLearn.Infrastructure.Persistance.Configurations
+namespace TraffiLearn.Infrastructure.Persistence.Configurations
 {
     internal sealed class TopicConfiguration : IEntityTypeConfiguration<Domain.Aggregates.Topics.Topic>
     {
@@ -23,7 +23,7 @@ namespace TraffiLearn.Infrastructure.Persistance.Configurations
                 value => TopicTitle.Create(value).Value);
 
             builder
-                .HasMany(t => t.QuestionsIds)
+                .HasMany(t => t.Questions)
                 .WithMany(t => t.Topics);
         }
     }

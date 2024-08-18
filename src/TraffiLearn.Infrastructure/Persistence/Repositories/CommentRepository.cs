@@ -3,9 +3,8 @@ using TraffiLearn.Domain.Aggregates.Comments;
 using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
-using TraffiLearn.Infrastructure.Persistance;
 
-namespace TraffiLearn.Infrastructure.Persistance.Repositories
+namespace TraffiLearn.Infrastructure.Persistence.Repositories
 {
     internal sealed class CommentRepository : ICommentRepository
     {
@@ -111,7 +110,7 @@ namespace TraffiLearn.Infrastructure.Persistance.Repositories
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Comments
-                .Where(c => c.CreatorId == userId)
+                .Where(c => c.Creator.Id == userId)
                 .ToListAsync(cancellationToken);
         }
 
@@ -125,13 +124,14 @@ namespace TraffiLearn.Infrastructure.Persistance.Repositories
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<Comment>> GetManyByQuestionIdWithRepliesAsync(
+        public async Task<IEnumerable<Comment>> GetManyByQuestionIdWithRepliesAndCreatorsAsync(
             QuestionId questionId,
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Comments
-                .Where(c => c.QuestionId == questionId)
+                .Where(c => c.Question.Id == questionId)
                 .Include(c => c.Replies)
+                .Include(c => c.Creator)
                 .ToListAsync(cancellationToken);
         }
     }

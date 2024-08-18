@@ -9,6 +9,8 @@ namespace TraffiLearn.DomainTests.Questions
 {
     public sealed class QuestionTests
     {
+#pragma warning disable CS8625
+
         [Fact]
         public void Create_IfPassedNullArgs_ShouldThrowArgumentNullException()
         {
@@ -17,7 +19,7 @@ namespace TraffiLearn.DomainTests.Questions
                 {
                     Question.Create(
                         new QuestionId(Guid.NewGuid()),
-                        null!,
+                        null,
                         QuestionFixtureFactory.CreateExplanation(),
                         QuestionFixtureFactory.CreateNumber(),
                         QuestionFixtureFactory.CreateAnswers(),
@@ -28,7 +30,7 @@ namespace TraffiLearn.DomainTests.Questions
                     Question.Create(
                         new QuestionId(Guid.NewGuid()),
                         QuestionFixtureFactory.CreateContent(),
-                        null!,
+                        null,
                         QuestionFixtureFactory.CreateNumber(),
                         QuestionFixtureFactory.CreateAnswers(),
                         null);
@@ -39,7 +41,7 @@ namespace TraffiLearn.DomainTests.Questions
                         new QuestionId(Guid.NewGuid()),
                         QuestionFixtureFactory.CreateContent(),
                         QuestionFixtureFactory.CreateExplanation(),
-                        null!,
+                        null,
                         QuestionFixtureFactory.CreateAnswers(),
                         null);
                 },
@@ -50,7 +52,7 @@ namespace TraffiLearn.DomainTests.Questions
                         QuestionFixtureFactory.CreateContent(),
                         QuestionFixtureFactory.CreateExplanation(),
                         QuestionFixtureFactory.CreateNumber(),
-                        null!,
+                        null,
                         null);
                 },
             ];
@@ -156,11 +158,11 @@ namespace TraffiLearn.DomainTests.Questions
             nullUriResult.Value.ImageUri.Should().BeNull();
             nullUriResult.Value.LikesCount.Should().Be(0);
             nullUriResult.Value.DislikesCount.Should().Be(0);
-            nullUriResult.Value.LikedByUsersIds.Should().BeEmpty();
-            nullUriResult.Value.DislikedByUsersIds.Should().BeEmpty();
-            nullUriResult.Value.CommentsIds.Should().BeEmpty();
-            nullUriResult.Value.TicketsIds.Should().BeEmpty();
-            nullUriResult.Value.TopicsIds.Should().BeEmpty();
+            nullUriResult.Value.LikedByUsers.Should().BeEmpty();
+            nullUriResult.Value.DislikedByUsers.Should().BeEmpty();
+            nullUriResult.Value.Comments.Should().BeEmpty();
+            nullUriResult.Value.Tickets.Should().BeEmpty();
+            nullUriResult.Value.Topics.Should().BeEmpty();
 
             notNullUriResult.Value.ImageUri.Should().Be(imageUri);
         }
@@ -174,7 +176,7 @@ namespace TraffiLearn.DomainTests.Questions
                 () =>
                 {
                     question.Update(
-                        null!,
+                        null,
                         QuestionFixtureFactory.CreateExplanation(),
                         QuestionFixtureFactory.CreateNumber(),
                         QuestionFixtureFactory.CreateAnswers(),
@@ -184,7 +186,7 @@ namespace TraffiLearn.DomainTests.Questions
                 {
                     question.Update(
                         QuestionFixtureFactory.CreateContent(),
-                        null!,
+                        null,
                         QuestionFixtureFactory.CreateNumber(),
                         QuestionFixtureFactory.CreateAnswers(),
                         null);
@@ -194,7 +196,7 @@ namespace TraffiLearn.DomainTests.Questions
                     question.Update(
                         QuestionFixtureFactory.CreateContent(),
                         QuestionFixtureFactory.CreateExplanation(),
-                        null!,
+                        null,
                         QuestionFixtureFactory.CreateAnswers(),
                         null);
                 },
@@ -204,7 +206,7 @@ namespace TraffiLearn.DomainTests.Questions
                         QuestionFixtureFactory.CreateContent(),
                         QuestionFixtureFactory.CreateExplanation(),
                         QuestionFixtureFactory.CreateNumber(),
-                        null!,
+                        null,
                         null);
                 },
             ];
@@ -307,13 +309,104 @@ namespace TraffiLearn.DomainTests.Questions
         }
 
         [Fact]
+        public void Mark_IfPassedNullArgs_ShouldThrowArgumentNullException()
+        {
+            var question = QuestionFixtureFactory.CreateQuestion();
+
+            Action action = () =>
+            {
+                question.Mark(null);
+            };
+
+            action.Should().Throw<ArgumentNullException>();
+
+            question.MarkedByUsers.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Mark_IfAlreadyMarked_ShouldReturnError()
+        {
+            var question = QuestionFixtureFactory.CreateQuestion();
+
+            var user = UserFixtureFactory.CreateUser();
+
+            question.Mark(user);
+            var result = question.Mark(user);
+
+            result.IsFailure.Should().BeTrue();
+            result.Error.Should().NotBe(Error.None);
+
+            question.MarkedByUsers.Should().HaveCount(1);
+        }
+
+        [Fact]
+        public void Mark_IfPassedValidArgs_ShouldBeSuccesful()
+        {
+            var question = QuestionFixtureFactory.CreateQuestion();
+
+            var user = UserFixtureFactory.CreateUser();
+
+            var result = question.Mark(user);
+
+            result.IsSuccess.Should().BeTrue();
+
+            question.MarkedByUsers.Should().HaveCount(1);
+            question.MarkedByUsers.Should().Contain(user);
+        }
+
+        [Fact]
+        public void Unmark_IfPassedNullArgs_ShouldThrowArgumentNullException()
+        {
+            var question = QuestionFixtureFactory.CreateQuestion();
+
+            Action action = () =>
+            {
+                question.Unmark(null);
+            };
+
+            action.Should().Throw<ArgumentNullException>();
+
+            question.MarkedByUsers.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Unmark_IfQuestionIsNotMarked_ShouldReturnError()
+        {
+            var question = QuestionFixtureFactory.CreateQuestion();
+
+            var user = UserFixtureFactory.CreateUser();
+
+            var result = question.Unmark(user);
+
+            result.IsFailure.Should().BeTrue();
+            result.Error.Should().NotBe(Error.None);
+
+            question.MarkedByUsers.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Unmark_IfPassedValidArgs_ShouldBeSuccesful()
+        {
+            var question = QuestionFixtureFactory.CreateQuestion();
+
+            var user = UserFixtureFactory.CreateUser();
+
+            question.Mark(user);
+            var result = question.Unmark(user);
+
+            result.IsSuccess.Should().BeTrue();
+
+            question.MarkedByUsers.Should().BeEmpty();
+        }
+
+        [Fact]
         public void AddAnswer_IfPassedNullArgs_ShouldThrowArgumentNullException()
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
             Action action = () =>
             {
-                question.AddAnswer(null!);
+                question.AddAnswer(null);
             };
 
             action.Should().Throw<ArgumentNullException>();
@@ -355,7 +448,7 @@ namespace TraffiLearn.DomainTests.Questions
 
             Action action = () =>
             {
-                question.RemoveAnswer(null!);
+                question.RemoveAnswer(null);
             };
 
             action.Should().Throw<ArgumentNullException>();
@@ -405,11 +498,24 @@ namespace TraffiLearn.DomainTests.Questions
         }
 
         [Fact]
+        public void AddTopic_IfPassedNullArgs_ShouldThrowArgumentNullException()
+        {
+            var question = QuestionFixtureFactory.CreateQuestion();
+
+            Action action = () =>
+            {
+                question.AddTopic(null);
+            };
+
+            action.Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
         public void AddTopic_IfTopicAlreadyAdded_ShouldReturnError()
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var topic = TopicFixtureFactory.CreateTopic().Id;
+            var topic = TopicFixtureFactory.CreateTopic();
 
             question.AddTopic(topic);
             var result = question.AddTopic(topic);
@@ -423,15 +529,28 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var countBefore = question.TopicsIds.Count();
+            var countBefore = question.Topics.Count();
 
-            var topic = TopicFixtureFactory.CreateTopic().Id;
+            var topic = TopicFixtureFactory.CreateTopic();
 
             var result = question.AddTopic(topic);
 
             result.IsSuccess.Should().BeTrue();
-            question.TopicsIds.Should().HaveCount(countBefore + 1);
-            question.TopicsIds.Should().Contain(topic);
+            question.Topics.Should().HaveCount(countBefore + 1);
+            question.Topics.Should().Contain(topic);
+        }
+
+        [Fact]
+        public void RemoveTopic_IfPassedNullArgs_ShouldThrowArgumentNullException()
+        {
+            var question = QuestionFixtureFactory.CreateQuestion();
+
+            Action action = () =>
+            {
+                question.RemoveTopic(null);
+            };
+
+            action.Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -439,7 +558,7 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var topic = TopicFixtureFactory.CreateTopic().Id;
+            var topic = TopicFixtureFactory.CreateTopic();
 
             var result = question.RemoveTopic(topic);
 
@@ -452,17 +571,30 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var topic = TopicFixtureFactory.CreateTopic().Id;
+            var topic = TopicFixtureFactory.CreateTopic();
 
             question.AddTopic(topic);
 
-            var countBefore = question.TopicsIds.Count();
+            var countBefore = question.Topics.Count();
 
             var result = question.RemoveTopic(topic);
 
             result.IsSuccess.Should().BeTrue();
-            question.TopicsIds.Should().HaveCount(countBefore - 1);
-            question.TopicsIds.Should().NotContain(topic);
+            question.Topics.Should().HaveCount(countBefore - 1);
+            question.Topics.Should().NotContain(topic);
+        }
+
+        [Fact]
+        public void AddTicket_IfPassedNullArgs_ShouldThrowArgumentNullException()
+        {
+            var question = QuestionFixtureFactory.CreateQuestion();
+
+            Action action = () =>
+            {
+                question.AddTicket(null);
+            };
+
+            action.Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -470,7 +602,7 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var ticket = TicketFixtureFactory.CreateTicket().Id;
+            var ticket = TicketFixtureFactory.CreateTicket();
 
             question.AddTicket(ticket);
             var result = question.AddTicket(ticket);
@@ -484,15 +616,28 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var countBefore = question.TicketsIds.Count();
+            var countBefore = question.Tickets.Count();
 
-            var ticket = TicketFixtureFactory.CreateTicket().Id;
+            var ticket = TicketFixtureFactory.CreateTicket();
 
             var result = question.AddTicket(ticket);
 
             result.IsSuccess.Should().BeTrue();
-            question.TicketsIds.Should().HaveCount(countBefore + 1);
-            question.TicketsIds.Should().Contain(ticket);
+            question.Tickets.Should().HaveCount(countBefore + 1);
+            question.Tickets.Should().Contain(ticket);
+        }
+
+        [Fact]
+        public void RemoveTicket_IfPassedNullArgs_ShouldThrowArgumentNullException()
+        {
+            var question = QuestionFixtureFactory.CreateQuestion();
+
+            Action action = () =>
+            {
+                question.RemoveTicket(null);
+            };
+
+            action.Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -500,7 +645,7 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var ticket = TicketFixtureFactory.CreateTicket().Id;
+            var ticket = TicketFixtureFactory.CreateTicket();
 
             var result = question.RemoveTicket(ticket);
 
@@ -513,17 +658,30 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var ticket = TicketFixtureFactory.CreateTicket().Id;
+            var ticket = TicketFixtureFactory.CreateTicket();
 
             question.AddTicket(ticket);
 
-            var countBefore = question.TicketsIds.Count();
+            var countBefore = question.Tickets.Count();
 
             var result = question.RemoveTicket(ticket);
 
             result.IsSuccess.Should().BeTrue();
-            question.TicketsIds.Should().HaveCount(countBefore - 1);
-            question.TicketsIds.Should().NotContain(ticket);
+            question.Tickets.Should().HaveCount(countBefore - 1);
+            question.Tickets.Should().NotContain(ticket);
+        }
+
+        [Fact]
+        public void AddLike_IfPassedNullArgs_ShouldThrowArgumentNullException()
+        {
+            var question = QuestionFixtureFactory.CreateQuestion();
+
+            Action action = () =>
+            {
+                question.AddLike(null);
+            };
+
+            action.Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -531,7 +689,7 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var user = UserFixtureFactory.CreateUser().Id;
+            var user = UserFixtureFactory.CreateUser();
 
             question.AddLike(user);
             var result = question.AddLike(user);
@@ -545,7 +703,7 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var user = UserFixtureFactory.CreateUser().Id;
+            var user = UserFixtureFactory.CreateUser();
 
             question.AddDislike(user);
             var result = question.AddLike(user);
@@ -559,17 +717,30 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var countBefore = question.LikedByUsersIds.Count();
+            var countBefore = question.LikedByUsers.Count();
             var likesBefore = question.LikesCount;
 
-            var user = UserFixtureFactory.CreateUser().Id;
+            var user = UserFixtureFactory.CreateUser();
 
             var result = question.AddLike(user);
 
             result.IsSuccess.Should().BeTrue();
-            question.LikedByUsersIds.Should().HaveCount(countBefore + 1);
-            question.LikedByUsersIds.Should().Contain(user);
+            question.LikedByUsers.Should().HaveCount(countBefore + 1);
+            question.LikedByUsers.Should().Contain(user);
             question.LikesCount.Should().Be(likesBefore + 1);
+        }
+
+        [Fact]
+        public void AddDislike_IfPassedNullArgs_ShouldThrowArgumentNullException()
+        {
+            var question = QuestionFixtureFactory.CreateQuestion();
+
+            Action action = () =>
+            {
+                question.AddDislike(null);
+            };
+
+            action.Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -577,7 +748,7 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var user = UserFixtureFactory.CreateUser().Id;
+            var user = UserFixtureFactory.CreateUser();
 
             question.AddDislike(user);
             var result = question.AddDislike(user);
@@ -591,7 +762,7 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var user = UserFixtureFactory.CreateUser().Id;
+            var user = UserFixtureFactory.CreateUser();
 
             question.AddLike(user);
             var result = question.AddDislike(user);
@@ -605,17 +776,30 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var countBefore = question.DislikedByUsersIds.Count();
+            var countBefore = question.DislikedByUsers.Count();
             var dislikesBefore = question.DislikesCount;
 
-            var user = UserFixtureFactory.CreateUser().Id;
+            var user = UserFixtureFactory.CreateUser();
 
             var result = question.AddDislike(user);
 
             result.IsSuccess.Should().BeTrue();
-            question.DislikedByUsersIds.Should().HaveCount(countBefore + 1);
-            question.DislikedByUsersIds.Should().Contain(user);
+            question.DislikedByUsers.Should().HaveCount(countBefore + 1);
+            question.DislikedByUsers.Should().Contain(user);
             question.DislikesCount.Should().Be(dislikesBefore + 1);
+        }
+
+        [Fact]
+        public void RemoveLike_IfPassedNullArgs_ShouldThrowArgumentNullException()
+        {
+            var question = QuestionFixtureFactory.CreateQuestion();
+
+            Action action = () =>
+            {
+                question.RemoveLike(null);
+            };
+
+            action.Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -623,7 +807,7 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var user = UserFixtureFactory.CreateUser().Id;
+            var user = UserFixtureFactory.CreateUser();
 
             var result = question.RemoveLike(user);
 
@@ -636,21 +820,34 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var user = UserFixtureFactory.CreateUser().Id;
+            var user = UserFixtureFactory.CreateUser();
 
             question.AddLike(user);
 
-            var countBefore = question.LikedByUsersIds.Count();
+            var countBefore = question.LikedByUsers.Count();
             var likesBefore = question.LikesCount;
 
             var result = question.RemoveLike(user);
 
             result.IsSuccess.Should().BeTrue();
 
-            question.LikedByUsersIds.Should().HaveCount(countBefore - 1);
-            question.LikedByUsersIds.Should().NotContain(user);
+            question.LikedByUsers.Should().HaveCount(countBefore - 1);
+            question.LikedByUsers.Should().NotContain(user);
 
             question.LikesCount.Should().Be(likesBefore - 1);
+        }
+
+        [Fact]
+        public void RemoveDislike_IfPassedNullArgs_ShouldThrowArgumentNullException()
+        {
+            var question = QuestionFixtureFactory.CreateQuestion();
+
+            Action action = () =>
+            {
+                question.RemoveDislike(null);
+            };
+
+            action.Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -658,7 +855,7 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var user = UserFixtureFactory.CreateUser().Id;
+            var user = UserFixtureFactory.CreateUser();
 
             var result = question.RemoveDislike(user);
 
@@ -671,21 +868,34 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var user = UserFixtureFactory.CreateUser().Id;
+            var user = UserFixtureFactory.CreateUser();
 
             question.AddDislike(user);
 
-            var countBefore = question.DislikedByUsersIds.Count();
+            var countBefore = question.DislikedByUsers.Count();
             var dislikesBefore = question.DislikesCount;
 
             var result = question.RemoveDislike(user);
 
             result.IsSuccess.Should().BeTrue();
 
-            question.DislikedByUsersIds.Should().HaveCount(countBefore - 1);
-            question.DislikedByUsersIds.Should().NotContain(user);
+            question.DislikedByUsers.Should().HaveCount(countBefore - 1);
+            question.DislikedByUsers.Should().NotContain(user);
 
             question.DislikesCount.Should().Be(dislikesBefore - 1);
+        }
+
+        [Fact]
+        public void AddComment_IfPassedNullArgs_ShouldThrowArgumentNullException()
+        {
+            var question = QuestionFixtureFactory.CreateQuestion();
+
+            Action action = () =>
+            {
+                question.AddComment(null);
+            };
+
+            action.Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -693,7 +903,7 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var comment = CommentFixtureFactory.CreateComment().Id;
+            var comment = CommentFixtureFactory.CreateComment();
 
             question.AddComment(comment);
             var result = question.AddComment(comment);
@@ -707,15 +917,15 @@ namespace TraffiLearn.DomainTests.Questions
         {
             var question = QuestionFixtureFactory.CreateQuestion();
 
-            var countBefore = question.CommentsIds.Count();
+            var countBefore = question.Comments.Count();
 
-            var comment = CommentFixtureFactory.CreateComment().Id;
+            var comment = CommentFixtureFactory.CreateComment();
 
             var result = question.AddComment(comment);
 
             result.IsSuccess.Should().BeTrue();
-            question.CommentsIds.Should().HaveCount(countBefore + 1);
-            question.CommentsIds.Should().Contain(comment);
+            question.Comments.Should().HaveCount(countBefore + 1);
+            question.Comments.Should().Contain(comment);
         }
 
         [Fact]
@@ -726,5 +936,7 @@ namespace TraffiLearn.DomainTests.Questions
             var isValueObject = typeof(Entity<QuestionId>).IsAssignableFrom(type);
             isValueObject.Should().BeTrue("Question should inherit from Entity.");
         }
+
+#pragma warning restore
     }
 }

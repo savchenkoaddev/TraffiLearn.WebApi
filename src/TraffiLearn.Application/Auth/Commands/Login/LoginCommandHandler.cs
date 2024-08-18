@@ -54,6 +54,15 @@ namespace TraffiLearn.Application.Auth.Commands.Login
                 return Result.Failure<LoginResponse>(UserErrors.NotFound);
             }
 
+            var loginResult = await _identityService.LoginAsync(
+                identityUser,
+                password: request.Password);
+
+            if (loginResult.IsFailure)
+            {
+                return Result.Failure<LoginResponse>(loginResult.Error);
+            }
+
             _logger.LogInformation("User found in identity service for email: {Email}", email.Value);
 
             var user = await _userRepository.GetByEmailAsync(email, cancellationToken);

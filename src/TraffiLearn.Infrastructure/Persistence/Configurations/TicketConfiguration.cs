@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TraffiLearn.Domain.Aggregates.Tickets;
 using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
 
-namespace TraffiLearn.Infrastructure.Persistance.Configurations
+namespace TraffiLearn.Infrastructure.Persistence.Configurations
 {
     internal sealed class TicketConfiguration : IEntityTypeConfiguration<Ticket>
     {
@@ -18,7 +18,7 @@ namespace TraffiLearn.Infrastructure.Persistance.Configurations
                     value => TicketNumber.Create(value).Value);
 
             builder
-                .HasMany(t => t.QuestionsIds)
+                .HasMany(t => t.Questions)
                 .WithMany(t => t.Tickets);
         }
     }

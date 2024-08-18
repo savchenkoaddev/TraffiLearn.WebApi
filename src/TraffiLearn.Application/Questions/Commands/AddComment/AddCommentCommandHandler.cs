@@ -7,7 +7,6 @@ using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Questions.Errors;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
-using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Questions.Commands.AddComment
@@ -16,20 +15,20 @@ namespace TraffiLearn.Application.Questions.Commands.AddComment
     {
         private readonly ICommentRepository _commentRepository;
         private readonly IQuestionRepository _questionRepository;
-        private readonly IUserContextService<Guid> _userContextService;
+        private readonly IAuthenticatedUserService _authenticatedUserService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<AddCommentCommandHandler> _logger;
 
         public AddCommentCommandHandler(
             ICommentRepository commentRepository,
             IQuestionRepository questionRepository,
-            IUserContextService<Guid> userContextService,
+            IAuthenticatedUserService authenticatedUserService,
             IUnitOfWork unitOfWork,
             ILogger<AddCommentCommandHandler> logger)
         {
             _commentRepository = commentRepository;
             _questionRepository = questionRepository;
-            _userContextService = userContextService;
+            _authenticatedUserService = authenticatedUserService;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
@@ -38,7 +37,8 @@ namespace TraffiLearn.Application.Questions.Commands.AddComment
             AddCommentCommand request,
             CancellationToken cancellationToken)
         {
-            var callerId = new UserId(_userContextService.FetchAuthenticatedUserId());
+            var caller = await _authenticatedUserService.GetAuthenticatedUserAsync(
+                cancellationToken);
 
             var question = await _questionRepository.GetByIdAsync(
                 new QuestionId(request.QuestionId.Value),
@@ -59,8 +59,8 @@ namespace TraffiLearn.Application.Questions.Commands.AddComment
             var commentResult = Comment.Create(
                 commentId: new CommentId(Guid.NewGuid()),
                 contentResult.Value,
-                creatorId: callerId,
-                questionId: question.Id);
+                creator: caller,
+                question);
 
             if (commentResult.IsFailure)
             {
@@ -69,7 +69,7 @@ namespace TraffiLearn.Application.Questions.Commands.AddComment
 
             var comment = commentResult.Value;
 
-            question.AddComment(comment.Id);
+            question.AddComment(comment);
 
             await _commentRepository.AddAsync(comment);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

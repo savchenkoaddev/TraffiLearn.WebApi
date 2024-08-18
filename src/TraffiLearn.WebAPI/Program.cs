@@ -8,7 +8,7 @@ using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.Infrastructure.Authentication.Options;
 using TraffiLearn.WebAPI.Middleware;
 
-namespace TraffiLearn.WebAPI
+namespace TraffiLearn.WebAPI 
 {
     public class Program
     {

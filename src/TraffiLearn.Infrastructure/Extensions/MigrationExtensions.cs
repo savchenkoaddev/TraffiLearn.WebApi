@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Infrastructure.Helpers;
-using TraffiLearn.Infrastructure.Persistance;
+using TraffiLearn.Infrastructure.Persistence;
 
 namespace TraffiLearn.Infrastructure.Extensions
 {

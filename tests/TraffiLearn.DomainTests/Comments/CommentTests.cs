@@ -12,16 +12,35 @@ namespace TraffiLearn.DomainTests.Comments
         [Fact]
         public void Create_IfPassedNullArgs_ShouldThrowArgumentNullException()
         {
-            Action action = () =>
-            {
-                Comment.Create(
+            Action[] actions = [
+                () =>
+                {
+                    Comment.Create(
                         new CommentId(),
                         null!,
-                        UserFixtureFactory.CreateUser().Id,
-                        QuestionFixtureFactory.CreateQuestion().Id);
-            };
+                        UserFixtureFactory.CreateUser(),
+                        QuestionFixtureFactory.CreateQuestion());
+                },
+                () =>
+                {
+                    Comment.Create(
+                        new CommentId(),
+                        CommentFixtureFactory.CreateContent(),
+                        null!,
+                        QuestionFixtureFactory.CreateQuestion());
+                },
+                () =>
+                {
+                    Comment.Create(
+                        new CommentId(),
+                        CommentFixtureFactory.CreateContent(),
+                        UserFixtureFactory.CreateUser(),
+                        null!);
+                }
+            ];
 
-            action.Should().Throw<ArgumentNullException>();
+            actions.Should().AllSatisfy(
+                action => action.Should().Throw<ArgumentNullException>());
         }
 
         [Fact]
@@ -29,8 +48,8 @@ namespace TraffiLearn.DomainTests.Comments
         {
             var id = new CommentId(Guid.NewGuid());
             var content = CommentFixtureFactory.CreateContent();
-            var creator = UserFixtureFactory.CreateUser().Id;
-            var question = QuestionFixtureFactory.CreateQuestion().Id;
+            var creator = UserFixtureFactory.CreateUser();
+            var question = QuestionFixtureFactory.CreateQuestion();
 
             var result = Comment.Create(
                 id,
@@ -43,15 +62,28 @@ namespace TraffiLearn.DomainTests.Comments
             var comment = result.Value;
 
             comment.Content.Should().Be(content);
-            comment.CreatorId.Should().Be(creator);
-            comment.QuestionId.Should().Be(question);
+            comment.Creator.Should().Be(creator);
+            comment.Question.Should().Be(question);
             comment.Id.Should().Be(id);
 
             comment.DislikesCount.Should().Be(0);
             comment.LikesCount.Should().Be(0);
-            comment.LikedByUsersIds.Should().BeEmpty();
-            comment.DislikedByUsersIds.Should().BeEmpty();
+            comment.LikedByUsers.Should().BeEmpty();
+            comment.DislikedByUsers.Should().BeEmpty();
             comment.Replies.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void AddLike_IfPassedNullArgs_ShouldThrowArgumentNullExceptionB()
+        {
+            var comment = CommentFixtureFactory.CreateComment();
+
+            Action action = () =>
+            {
+                comment.AddLike(null!);
+            };
+
+            action.Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -59,7 +91,7 @@ namespace TraffiLearn.DomainTests.Comments
         {
             var comment = CommentFixtureFactory.CreateComment();
 
-            var user = UserFixtureFactory.CreateUser().Id;
+            var user = UserFixtureFactory.CreateUser();
 
             comment.AddLike(user);
             var result = comment.AddLike(user);
@@ -73,7 +105,7 @@ namespace TraffiLearn.DomainTests.Comments
         {
             var comment = CommentFixtureFactory.CreateComment();
 
-            var user = UserFixtureFactory.CreateUser().Id;
+            var user = UserFixtureFactory.CreateUser();
 
             comment.AddDislike(user);
             var result = comment.AddLike(user);
@@ -87,17 +119,30 @@ namespace TraffiLearn.DomainTests.Comments
         {
             var comment = CommentFixtureFactory.CreateComment();
 
-            var countBefore = comment.LikedByUsersIds.Count();
+            var countBefore = comment.LikedByUsers.Count();
             var likesBefore = comment.LikesCount;
 
-            var user = UserFixtureFactory.CreateUser().Id;
+            var user = UserFixtureFactory.CreateUser();
 
             var result = comment.AddLike(user);
 
             result.IsSuccess.Should().BeTrue();
-            comment.LikedByUsersIds.Should().HaveCount(countBefore + 1);
-            comment.LikedByUsersIds.Should().Contain(user);
+            comment.LikedByUsers.Should().HaveCount(countBefore + 1);
+            comment.LikedByUsers.Should().Contain(user);
             comment.LikesCount.Should().Be(likesBefore + 1);
+        }
+
+        [Fact]
+        public void AddDislike_IfPassedNullArgs_ShouldThrowArgumentNullException()
+        {
+            var comment = CommentFixtureFactory.CreateComment();
+
+            Action action = () =>
+            {
+                comment.AddDislike(null!);
+            };
+
+            action.Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -105,7 +150,7 @@ namespace TraffiLearn.DomainTests.Comments
         {
             var comment = CommentFixtureFactory.CreateComment();
 
-            var user = UserFixtureFactory.CreateUser().Id;
+            var user = UserFixtureFactory.CreateUser();
 
             comment.AddDislike(user);
             var result = comment.AddDislike(user);
@@ -119,7 +164,7 @@ namespace TraffiLearn.DomainTests.Comments
         {
             var comment = CommentFixtureFactory.CreateComment();
 
-            var user = UserFixtureFactory.CreateUser().Id;
+            var user = UserFixtureFactory.CreateUser();
 
             comment.AddLike(user);
             var result = comment.AddDislike(user);
@@ -133,17 +178,30 @@ namespace TraffiLearn.DomainTests.Comments
         {
             var comment = CommentFixtureFactory.CreateComment();
 
-            var countBefore = comment.DislikedByUsersIds.Count();
+            var countBefore = comment.DislikedByUsers.Count();
             var dislikesBefore = comment.DislikesCount;
 
-            var user = UserFixtureFactory.CreateUser().Id;
+            var user = UserFixtureFactory.CreateUser();
 
             var result = comment.AddDislike(user);
 
             result.IsSuccess.Should().BeTrue();
-            comment.DislikedByUsersIds.Should().HaveCount(countBefore + 1);
-            comment.DislikedByUsersIds.Should().Contain(user);
+            comment.DislikedByUsers.Should().HaveCount(countBefore + 1);
+            comment.DislikedByUsers.Should().Contain(user);
             comment.DislikesCount.Should().Be(dislikesBefore + 1);
+        }
+
+        [Fact]
+        public void RemoveLike_IfPassedNullArgs_ShouldThrowArgumentNullException()
+        {
+            var comment = CommentFixtureFactory.CreateComment();
+
+            Action action = () =>
+            {
+                comment.RemoveLike(null!);
+            };
+
+            action.Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -151,7 +209,7 @@ namespace TraffiLearn.DomainTests.Comments
         {
             var comment = CommentFixtureFactory.CreateComment();
 
-            var user = UserFixtureFactory.CreateUser().Id;
+            var user = UserFixtureFactory.CreateUser();
 
             var result = comment.RemoveLike(user);
 
@@ -164,21 +222,34 @@ namespace TraffiLearn.DomainTests.Comments
         {
             var comment = CommentFixtureFactory.CreateComment();
 
-            var user = UserFixtureFactory.CreateUser().Id;
+            var user = UserFixtureFactory.CreateUser();
 
             comment.AddLike(user);
 
-            var countBefore = comment.LikedByUsersIds.Count();
+            var countBefore = comment.LikedByUsers.Count();
             var likesBefore = comment.LikesCount;
 
             var result = comment.RemoveLike(user);
 
             result.IsSuccess.Should().BeTrue();
 
-            comment.LikedByUsersIds.Should().HaveCount(countBefore - 1);
-            comment.LikedByUsersIds.Should().NotContain(user);
+            comment.LikedByUsers.Should().HaveCount(countBefore - 1);
+            comment.LikedByUsers.Should().NotContain(user);
 
             comment.LikesCount.Should().Be(likesBefore - 1);
+        }
+
+        [Fact]
+        public void RemoveDislike_IfPassedNullArgs_ShouldThrowArgumentNullException()
+        {
+            var comment = CommentFixtureFactory.CreateComment();
+
+            Action action = () =>
+            {
+                comment.RemoveDislike(null!);
+            };
+
+            action.Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -186,7 +257,7 @@ namespace TraffiLearn.DomainTests.Comments
         {
             var comment = CommentFixtureFactory.CreateComment();
 
-            var user = UserFixtureFactory.CreateUser().Id;
+            var user = UserFixtureFactory.CreateUser();
 
             var result = comment.RemoveDislike(user);
 
@@ -199,19 +270,19 @@ namespace TraffiLearn.DomainTests.Comments
         {
             var comment = CommentFixtureFactory.CreateComment();
 
-            var user = UserFixtureFactory.CreateUser().Id;
+            var user = UserFixtureFactory.CreateUser();
 
             comment.AddDislike(user);
 
-            var countBefore = comment.DislikedByUsersIds.Count();
+            var countBefore = comment.DislikedByUsers.Count();
             var dislikesBefore = comment.DislikesCount;
 
             var result = comment.RemoveDislike(user);
 
             result.IsSuccess.Should().BeTrue();
 
-            comment.DislikedByUsersIds.Should().HaveCount(countBefore - 1);
-            comment.DislikedByUsersIds.Should().NotContain(user);
+            comment.DislikedByUsers.Should().HaveCount(countBefore - 1);
+            comment.DislikedByUsers.Should().NotContain(user);
 
             comment.DislikesCount.Should().Be(dislikesBefore - 1);
         }

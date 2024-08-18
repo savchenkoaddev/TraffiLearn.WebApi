@@ -30,7 +30,7 @@ namespace TraffiLearn.Application.Topics.Commands.RemoveQuestionFromTopic
             RemoveQuestionFromTopicCommand request,
             CancellationToken cancellationToken)
         {
-            var topic = await _topicRepository.GetByIdWithQuestionsIdsAsync(
+            var topic = await _topicRepository.GetByIdWithQuestionsAsync(
                 topicId: new TopicId(request.TopicId.Value),
                 cancellationToken);
 
@@ -48,7 +48,7 @@ namespace TraffiLearn.Application.Topics.Commands.RemoveQuestionFromTopic
                 return TicketErrors.QuestionNotFound;
             }
 
-            var questionRemoveResult = topic.RemoveQuestion(question.Id);
+            var questionRemoveResult = topic.RemoveQuestion(question);
 
             if (questionRemoveResult.IsFailure)
             {

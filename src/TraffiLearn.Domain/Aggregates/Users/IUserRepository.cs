@@ -8,15 +8,15 @@ namespace TraffiLearn.Domain.Aggregates.Users
             UserId userId,
             CancellationToken cancellationToken = default);
 
-        Task<User?> GetByIdWithLikedAndDislikedCommentsIdsAsync(
+        Task<User?> GetByIdWithLikedAndDislikedCommentsAsync(
             UserId userId,
             CancellationToken cancellationToken = default);
 
-        Task<User?> GetByIdWithLikedAndDislikedQuestionsIdsAsync(
+        Task<User?> GetByIdWithLikedAndDislikedQuestionsAsync(
             UserId userId,
             CancellationToken cancellationToken = default);
 
-        Task<User?> GetByIdWithMarkedQuestionsIdsAsync(
+        Task<User?> GetByIdWithMarkedQuestionsAsync(
             UserId userId,
             CancellationToken cancellationToken = default);
 

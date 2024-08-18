@@ -91,7 +91,7 @@ namespace TraffiLearn.Application.Questions.Commands.Create
                     return TopicErrors.NotFound;
                 }
 
-                var topicAddResult = question.AddTopic(topic.Id);
+                var topicAddResult = question.AddTopic(topic);
 
                 if (topicAddResult.IsFailure)
                 {

@@ -1,5 +1,5 @@
-﻿using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
-using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
+﻿using TraffiLearn.Domain.Aggregates.Comments;
+using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.Domain.Aggregates.Users.Errors;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
@@ -10,12 +10,12 @@ namespace TraffiLearn.Domain.Aggregates.Users
 {
     public sealed class User : AggregateRoot<UserId>
     {
-        private readonly HashSet<CommentId> _commentsIds = [];
-        private readonly HashSet<QuestionId> _markedQuestionsIds = [];
-        private readonly HashSet<QuestionId> _likedQuestionsIds = [];
-        private readonly HashSet<QuestionId> _dislikedQuestionsIds = [];
-        private readonly HashSet<CommentId> _likedCommentsIds = [];
-        private readonly HashSet<CommentId> _dislikedCommentsIds = [];
+        private readonly HashSet<Comment> _comments = [];
+        private readonly HashSet<Question> _markedQuestions = [];
+        private readonly HashSet<Question> _likedQuestions = [];
+        private readonly HashSet<Question> _dislikedQuestions = [];
+        private readonly HashSet<Comment> _likedComments = [];
+        private readonly HashSet<Comment> _dislikedComments = [];
         private Email _email;
         private Username _username;
 
@@ -64,17 +64,17 @@ namespace TraffiLearn.Domain.Aggregates.Users
 
         public Role Role { get; private set; }
 
-        public IReadOnlyCollection<CommentId> CommentsIds => _commentsIds;
+        public IReadOnlyCollection<Comment> Comments => _comments;
 
-        public IReadOnlyCollection<QuestionId> MarkedQuestionsIds => _markedQuestionsIds;
+        public IReadOnlyCollection<Question> MarkedQuestions => _markedQuestions;
 
-        public IReadOnlyCollection<QuestionId> LikedQuestionsIds => _likedQuestionsIds;
+        public IReadOnlyCollection<Question> LikedQuestions => _likedQuestions;
 
-        public IReadOnlyCollection<QuestionId> DislikedQuestionsIds => _dislikedQuestionsIds;
+        public IReadOnlyCollection<Question> DislikedQuestions => _dislikedQuestions;
 
-        public IReadOnlyCollection<CommentId> LikedCommentsIds => _likedCommentsIds;
+        public IReadOnlyCollection<Comment> LikedComments => _likedComments;
 
-        public IReadOnlyCollection<CommentId> DislikedCommentsIds => _dislikedCommentsIds;
+        public IReadOnlyCollection<Comment> DislikedComments => _dislikedComments;
 
         public Result DowngradeRole()
         {
@@ -94,154 +94,176 @@ namespace TraffiLearn.Domain.Aggregates.Users
             return Result.Success();
         }
 
-        public Result AddComment(CommentId commentId)
+        public Result AddComment(Comment comment)
         {
-            if (_commentsIds.Contains(commentId))
+            ArgumentNullException.ThrowIfNull(comment, nameof(comment));
+
+            if (_comments.Contains(comment))
             {
                 return UserErrors.CommentAlreadyAdded;
             }
 
-            _commentsIds.Add(commentId);
+            _comments.Add(comment);
 
             return Result.Success();
         }
 
-        public Result MarkQuestion(QuestionId questionId)
+        public Result MarkQuestion(Question question)
         {
-            if (_markedQuestionsIds.Contains(questionId))
+            ArgumentNullException.ThrowIfNull(question, nameof(question));
+
+            if (_markedQuestions.Contains(question))
             {
                 return UserErrors.QuestionAlreadyMarked;
             }
 
-            _markedQuestionsIds.Add(questionId);
+            _markedQuestions.Add(question);
 
             return Result.Success();
         }
 
-        public Result UnmarkQuestion(QuestionId questionId)
+        public Result UnmarkQuestion(Question question)
         {
-            if (!_markedQuestionsIds.Contains(questionId))
+            ArgumentNullException.ThrowIfNull(question, nameof(question));
+
+            if (!_markedQuestions.Contains(question))
             {
                 return UserErrors.QuestionAlreadyUnmarked;
             }
 
-            _markedQuestionsIds.Remove(questionId);
+            _markedQuestions.Remove(question);
 
             return Result.Success();
         }
 
-        public Result LikeQuestion(QuestionId questionId)
+        public Result LikeQuestion(Question question)
         {
-            if (_likedQuestionsIds.Contains(questionId))
+            ArgumentNullException.ThrowIfNull(question, nameof(question));
+
+            if (_likedQuestions.Contains(question))
             {
                 return UserErrors.QuestionAlreadyLikedByUser;
             }
 
-            if (_dislikedQuestionsIds.Contains(questionId))
+            if (_dislikedQuestions.Contains(question))
             {
                 return UserErrors.CantLikeQuestionIfDisliked;
             }
 
-            _likedQuestionsIds.Add(questionId);
+            _likedQuestions.Add(question);
 
             return Result.Success();
         }
 
-        public Result DislikeQuestion(QuestionId questionId)
+        public Result DislikeQuestion(Question question)
         {
-            if (_dislikedQuestionsIds.Contains(questionId))
+            ArgumentNullException.ThrowIfNull(question, nameof(question));
+
+            if (_dislikedQuestions.Contains(question))
             {
                 return UserErrors.QuestionAlreadyDislikedByUser;
             }
 
-            if (_likedQuestionsIds.Contains(questionId))
+            if (_likedQuestions.Contains(question))
             {
                 return UserErrors.CantDislikeQuestionIfLiked;
             }
 
-            _dislikedQuestionsIds.Add(questionId);
+            _dislikedQuestions.Add(question);
 
             return Result.Success();
         }
 
-        public Result RemoveQuestionLike(QuestionId questionId)
+        public Result RemoveQuestionLike(Question question)
         {
-            if (!_likedQuestionsIds.Contains(questionId))
+            ArgumentNullException.ThrowIfNull(question, nameof(question));
+
+            if (!_likedQuestions.Contains(question))
             {
                 return UserErrors.QuestionNotLiked;
             }
 
-            _likedQuestionsIds.Remove(questionId);
+            _likedQuestions.Remove(question);
 
             return Result.Success();
         }
 
-        public Result RemoveQuestionDislike(QuestionId questionId)
+        public Result RemoveQuestionDislike(Question question)
         {
-            if (!_dislikedQuestionsIds.Contains(questionId))
+            ArgumentNullException.ThrowIfNull(question, nameof(question));
+
+            if (!_dislikedQuestions.Contains(question))
             {
                 return UserErrors.QuestionNotDisliked;
             }
 
-            _dislikedQuestionsIds.Remove(questionId);
+            _dislikedQuestions.Remove(question);
 
             return Result.Success();
         }
 
-        public Result LikeComment(CommentId commentId)
+        public Result LikeComment(Comment comment)
         {
-            if (_likedCommentsIds.Contains(commentId))
+            ArgumentNullException.ThrowIfNull(comment, nameof(comment));
+
+            if (_likedComments.Contains(comment))
             {
                 return UserErrors.CommentAlreadyLikedByUser;
             }
 
-            if (_dislikedCommentsIds.Contains(commentId))
+            if (_dislikedComments.Contains(comment))
             {
                 return UserErrors.CantLikeCommentIfDisliked;
             }
 
-            _likedCommentsIds.Add(commentId);
+            _likedComments.Add(comment);
 
             return Result.Success();
         }
 
-        public Result DislikeComment(CommentId commentId)
+        public Result DislikeComment(Comment comment)
         {
-            if (_dislikedCommentsIds.Contains(commentId))
+            ArgumentNullException.ThrowIfNull(comment, nameof(comment));
+
+            if (_dislikedComments.Contains(comment))
             {
                 return UserErrors.CommentAlreadyDislikedByUser;
             }
 
-            if (_likedCommentsIds.Contains(commentId))
+            if (_likedComments.Contains(comment))
             {
                 return UserErrors.CantDislikeCommentIfLiked;
             }
 
-            _dislikedCommentsIds.Add(commentId);
+            _dislikedComments.Add(comment);
 
             return Result.Success();
         }
 
-        public Result RemoveCommentLike(CommentId commentId)
+        public Result RemoveCommentLike(Comment comment)
         {
-            if (!_likedCommentsIds.Contains(commentId))
+            ArgumentNullException.ThrowIfNull(comment, nameof(comment));
+
+            if (!_likedComments.Contains(comment))
             {
                 return UserErrors.CommentNotLiked;
             }
 
-            _likedCommentsIds.Remove(commentId);
+            _likedComments.Remove(comment);
 
             return Result.Success();
         }
 
-        public Result RemoveCommentDislike(CommentId commentId)
+        public Result RemoveCommentDislike(Comment comment)
         {
-            if (!_dislikedCommentsIds.Contains(commentId))
+            ArgumentNullException.ThrowIfNull(comment, nameof(comment));
+
+            if (!_dislikedComments.Contains(comment))
             {
                 return UserErrors.CommentNotDisliked;
             }
 
-            _dislikedCommentsIds.Remove(commentId);
+            _dislikedComments.Remove(comment);
 
             return Result.Success();
         }

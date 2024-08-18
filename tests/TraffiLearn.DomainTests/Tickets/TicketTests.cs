@@ -9,6 +9,8 @@ namespace TraffiLearn.DomainTests.Tickets
 {
     public sealed class TicketTests
     {
+#pragma warning disable CS8625
+
         [Fact]
         public void Create_IfPassedNullArgs_ShouldThrowArgumentNullException()
         {
@@ -16,7 +18,7 @@ namespace TraffiLearn.DomainTests.Tickets
             {
                 Ticket.Create(
                 new TicketId(Guid.NewGuid()),
-                null!);
+                null);
             };
 
             action.Should().Throw<ArgumentNullException>();
@@ -38,7 +40,7 @@ namespace TraffiLearn.DomainTests.Tickets
 
             ticket.Id.Should().Be(validId);
             ticket.TicketNumber.Should().Be(validTicketNumber);
-            ticket.QuestionsIds.Should().BeEmpty();
+            ticket.Questions.Should().BeEmpty();
         }
 
         [Fact]
@@ -68,10 +70,23 @@ namespace TraffiLearn.DomainTests.Tickets
         }
 
         [Fact]
+        public void AddQuestion_IfPassedNullArgs_ShouldThrowArgumentNullException()
+        {
+            var validTicket = TicketFixtureFactory.CreateTicket();
+
+            Action action = () =>
+            {
+                validTicket.AddQuestion(null);
+            };
+
+            action.Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
         public void AddQuestion_IfSameQuestionAlreadyAdded_ShouldReturnError()
         {
             var validTicket = TicketFixtureFactory.CreateTicket();
-            var question = QuestionFixtureFactory.CreateQuestion().Id;
+            var question = QuestionFixtureFactory.CreateQuestion();
 
             validTicket.AddQuestion(question);
 
@@ -85,21 +100,34 @@ namespace TraffiLearn.DomainTests.Tickets
         public void AddQuestion_IfValidCase_ShouldBeSuccesful()
         {
             var validTicket = TicketFixtureFactory.CreateTicket();
-            var question = QuestionFixtureFactory.CreateQuestion().Id;
+            var question = QuestionFixtureFactory.CreateQuestion();
 
             var result = validTicket.AddQuestion(question);
 
             result.IsSuccess.Should().BeTrue();
 
-            validTicket.QuestionsIds.Should().HaveCount(1);
-            validTicket.QuestionsIds.Should().Contain(question);
+            validTicket.Questions.Should().HaveCount(1);
+            validTicket.Questions.Should().Contain(question);
+        }
+
+        [Fact]
+        public void RemoveQuestion_IfPassedNullArgs_ShouldThrowArgumentNullException()
+        {
+            var validTicket = TicketFixtureFactory.CreateTicket();
+
+            Action action = () =>
+            {
+                validTicket.RemoveQuestion(null);
+            };
+
+            action.Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
         public void RemoveQuestion_IfQuestionNotPresent_ShouldReturnError()
         {
             var validTicket = TicketFixtureFactory.CreateTicket();
-            var question = QuestionFixtureFactory.CreateQuestion().Id;
+            var question = QuestionFixtureFactory.CreateQuestion();
 
             var result = validTicket.RemoveQuestion(question);
 
@@ -111,14 +139,14 @@ namespace TraffiLearn.DomainTests.Tickets
         public void RemoveQuestion_IfValidCase_ShouldBeSuccesful()
         {
             var validTicket = TicketFixtureFactory.CreateTicket();
-            var question = QuestionFixtureFactory.CreateQuestion().Id;
+            var question = QuestionFixtureFactory.CreateQuestion();
 
             validTicket.AddQuestion(question);
 
             var result = validTicket.RemoveQuestion(question);
 
             result.IsSuccess.Should().BeTrue();
-            validTicket.QuestionsIds.Should().BeEmpty();
+            validTicket.Questions.Should().BeEmpty();
         }
 
         [Fact]
@@ -129,5 +157,7 @@ namespace TraffiLearn.DomainTests.Tickets
             var isValueObject = typeof(Entity<TicketId>).IsAssignableFrom(type);
             isValueObject.Should().BeTrue("Ticket should inherit from Entity.");
         }
+
+#pragma warning restore
     }
 }

@@ -36,7 +36,7 @@ namespace TraffiLearn.Application.Users.Commands.MarkQuestion
         {
             var callerId = new UserId(_userContextService.FetchAuthenticatedUserId());
 
-            var caller = await _userRepository.GetByIdWithMarkedQuestionsIdsAsync(
+            var caller = await _userRepository.GetByIdWithMarkedQuestionsAsync(
                 callerId,
                 cancellationToken);
 
@@ -54,7 +54,7 @@ namespace TraffiLearn.Application.Users.Commands.MarkQuestion
                 return QuestionErrors.NotFound;
             }
 
-            var markQuestionResult = caller.MarkQuestion(question.Id);
+            var markQuestionResult = caller.MarkQuestion(question);
 
             if (markQuestionResult.IsFailure)
             {

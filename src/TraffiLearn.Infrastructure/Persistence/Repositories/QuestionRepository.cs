@@ -5,7 +5,7 @@ using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 
-namespace TraffiLearn.Infrastructure.Persistance.Repositories
+namespace TraffiLearn.Infrastructure.Persistence.Repositories
 {
     internal sealed class QuestionRepository : IQuestionRepository
     {
@@ -58,23 +58,23 @@ namespace TraffiLearn.Infrastructure.Persistance.Repositories
                     cancellationToken);
         }
 
-        public async Task<Question?> GetByIdWithTicketsIdsAsync(
+        public async Task<Question?> GetByIdWithTicketsAsync(
             QuestionId questionId,
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Questions
                 .Where(q => q.Id == questionId)
-                .Include(q => q.TicketsIds)
+                .Include(q => q.Tickets)
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<Question?> GetByIdWithTopicsIdsAsync(
+        public async Task<Question?> GetByIdWithTopicsAsync(
             QuestionId questionId,
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Questions
                 .Where(q => q.Id == questionId)
-                .Include(q => q.TopicsIds)
+                .Include(q => q.Topics)
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
@@ -83,7 +83,7 @@ namespace TraffiLearn.Infrastructure.Persistance.Repositories
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Questions
-                .Where(q => q.TicketsIds.Contains(ticketId))
+                .Where(q => q.Tickets.Any(t => t.Id == ticketId))
                 .ToListAsync(cancellationToken);
         }
 
@@ -92,7 +92,7 @@ namespace TraffiLearn.Infrastructure.Persistance.Repositories
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Questions
-                .Where(q => q.TopicsIds.Contains(topicId))
+                .Where(q => q.Topics.Any(t => t.Id == topicId))
                 .ToListAsync(cancellationToken);
         }
 
@@ -101,7 +101,7 @@ namespace TraffiLearn.Infrastructure.Persistance.Repositories
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Questions
-                .Where(q => q.DislikedByUsersIds.Contains(userId))
+                .Where(q => q.DislikedByUsers.Any(user => user.Id == userId))
                 .ToListAsync(cancellationToken);
         }
 
@@ -110,7 +110,7 @@ namespace TraffiLearn.Infrastructure.Persistance.Repositories
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Questions
-                .Where(q => q.LikedByUsersIds.Contains(userId))
+                .Where(q => q.LikedByUsers.Any(user => user.Id == userId))
                 .ToListAsync(cancellationToken);
         }
 
@@ -119,7 +119,7 @@ namespace TraffiLearn.Infrastructure.Persistance.Repositories
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Questions
-                .Where(q => q.MarkedByUsersIds.Contains(userId))
+                .Where(q => q.MarkedByUsers.Any(user => user.Id == userId))
                 .ToListAsync(cancellationToken);
         }
 

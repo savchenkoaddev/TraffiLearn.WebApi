@@ -9,7 +9,7 @@ namespace TraffiLearn.Domain.Aggregates.Topics
             TopicId topicId,
             CancellationToken cancellationToken = default);
 
-        Task<Topic?> GetByIdWithQuestionsIdsAsync(
+        Task<Topic?> GetByIdWithQuestionsAsync(
             TopicId topicId,
             CancellationToken cancellationToken = default);
 

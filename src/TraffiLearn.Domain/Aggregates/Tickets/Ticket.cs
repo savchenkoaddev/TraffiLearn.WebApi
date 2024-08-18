@@ -1,4 +1,4 @@
-﻿using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
+﻿using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Tickets.Errors;
 using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
 using TraffiLearn.Domain.Primitives;
@@ -8,7 +8,7 @@ namespace TraffiLearn.Domain.Aggregates.Tickets
 {
     public sealed class Ticket : AggregateRoot<TicketId>
     {
-        private readonly HashSet<QuestionId> _questionsIds = [];
+        private readonly HashSet<Question> _questions = [];
         private TicketNumber _ticketNumber;
 
         private Ticket()
@@ -32,32 +32,37 @@ namespace TraffiLearn.Domain.Aggregates.Tickets
             private set
             {
                 ArgumentNullException.ThrowIfNull(value, nameof(value));
+
                 _ticketNumber = value;
             }
         }
 
-        public IReadOnlyCollection<QuestionId> QuestionsIds => _questionsIds;
+        public IReadOnlyCollection<Question> Questions => _questions;
 
-        public Result AddQuestion(QuestionId questionId)
+        public Result AddQuestion(Question question)
         {
-            if (_questionsIds.Contains(questionId))
+            ArgumentNullException.ThrowIfNull(question, nameof(question));
+
+            if (_questions.Contains(question))
             {
                 return TicketErrors.QuestionAlreadyAdded;
             }
 
-            _questionsIds.Add(questionId);
+            _questions.Add(question);
 
             return Result.Success();
         }
 
-        public Result RemoveQuestion(QuestionId questionId)
+        public Result RemoveQuestion(Question question)
         {
-            if (!_questionsIds.Contains(questionId))
+            ArgumentNullException.ThrowIfNull(question, nameof(question));
+
+            if (!_questions.Contains(question))
             {
                 return TicketErrors.QuestionNotFound;
             }
 
-            _questionsIds.Remove(questionId);
+            _questions.Remove(question);
 
             return Result.Success();
         }

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TraffiLearn.Infrastructure.Persistance;
+using TraffiLearn.Infrastructure.Persistence;
 
 #nullable disable
 
@@ -232,6 +232,21 @@ namespace TraffiLearn.Infrastructure.Migrations
 
             modelBuilder.Entity("QuestionUser1", b =>
                 {
+                    b.Property<Guid>("MarkedByUsersId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MarkedQuestionsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("MarkedByUsersId", "MarkedQuestionsId");
+
+                    b.HasIndex("MarkedQuestionsId");
+
+                    b.ToTable("QuestionsMarkedByUsers", (string)null);
+                });
+
+            modelBuilder.Entity("QuestionUser2", b =>
+                {
                     b.Property<Guid>("DislikedByUsersId")
                         .HasColumnType("uniqueidentifier");
 
@@ -245,22 +260,7 @@ namespace TraffiLearn.Infrastructure.Migrations
                     b.ToTable("QuestionsDislikedByUsers", (string)null);
                 });
 
-            modelBuilder.Entity("QuestionUser2", b =>
-                {
-                    b.Property<Guid>("MarkedQuestionsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("MarkedQuestionsId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("QuestionsMarked", (string)null);
-                });
-
-            modelBuilder.Entity("TraffiLearn.Application.Identity.ApplicationUser", b =>
+            modelBuilder.Entity("TraffiLearn.Application.Users.Identity.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -325,7 +325,7 @@ namespace TraffiLearn.Infrastructure.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("TraffiLearn.Domain.Entities.Comment", b =>
+            modelBuilder.Entity("TraffiLearn.Domain.Aggregates.Comments.Comment", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
@@ -355,7 +355,7 @@ namespace TraffiLearn.Infrastructure.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("TraffiLearn.Domain.Entities.Question", b =>
+            modelBuilder.Entity("TraffiLearn.Domain.Aggregates.Questions.Question", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
@@ -382,7 +382,7 @@ namespace TraffiLearn.Infrastructure.Migrations
                     b.ToTable("Questions");
                 });
 
-            modelBuilder.Entity("TraffiLearn.Domain.Entities.Ticket", b =>
+            modelBuilder.Entity("TraffiLearn.Domain.Aggregates.Tickets.Ticket", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
@@ -395,7 +395,7 @@ namespace TraffiLearn.Infrastructure.Migrations
                     b.ToTable("Tickets");
                 });
 
-            modelBuilder.Entity("TraffiLearn.Domain.Entities.Topic", b =>
+            modelBuilder.Entity("TraffiLearn.Domain.Aggregates.Topics.Topic", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
@@ -413,7 +413,7 @@ namespace TraffiLearn.Infrastructure.Migrations
                     b.ToTable("Topics");
                 });
 
-            modelBuilder.Entity("TraffiLearn.Domain.Entities.User", b =>
+            modelBuilder.Entity("TraffiLearn.Domain.Aggregates.Users.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
@@ -444,13 +444,13 @@ namespace TraffiLearn.Infrastructure.Migrations
 
             modelBuilder.Entity("CommentUser", b =>
                 {
-                    b.HasOne("TraffiLearn.Domain.Entities.User", null)
+                    b.HasOne("TraffiLearn.Domain.Aggregates.Users.User", null)
                         .WithMany()
                         .HasForeignKey("LikedByUsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TraffiLearn.Domain.Entities.Comment", null)
+                    b.HasOne("TraffiLearn.Domain.Aggregates.Comments.Comment", null)
                         .WithMany()
                         .HasForeignKey("LikedCommentsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -459,13 +459,13 @@ namespace TraffiLearn.Infrastructure.Migrations
 
             modelBuilder.Entity("CommentUser1", b =>
                 {
-                    b.HasOne("TraffiLearn.Domain.Entities.User", null)
+                    b.HasOne("TraffiLearn.Domain.Aggregates.Users.User", null)
                         .WithMany()
                         .HasForeignKey("DislikedByUsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TraffiLearn.Domain.Entities.Comment", null)
+                    b.HasOne("TraffiLearn.Domain.Aggregates.Comments.Comment", null)
                         .WithMany()
                         .HasForeignKey("DislikedCommentsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -483,7 +483,7 @@ namespace TraffiLearn.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("TraffiLearn.Application.Identity.ApplicationUser", null)
+                    b.HasOne("TraffiLearn.Application.Users.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -492,7 +492,7 @@ namespace TraffiLearn.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("TraffiLearn.Application.Identity.ApplicationUser", null)
+                    b.HasOne("TraffiLearn.Application.Users.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -507,7 +507,7 @@ namespace TraffiLearn.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TraffiLearn.Application.Identity.ApplicationUser", null)
+                    b.HasOne("TraffiLearn.Application.Users.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -516,7 +516,7 @@ namespace TraffiLearn.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("TraffiLearn.Application.Identity.ApplicationUser", null)
+                    b.HasOne("TraffiLearn.Application.Users.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -525,13 +525,13 @@ namespace TraffiLearn.Infrastructure.Migrations
 
             modelBuilder.Entity("QuestionTicket", b =>
                 {
-                    b.HasOne("TraffiLearn.Domain.Entities.Question", null)
+                    b.HasOne("TraffiLearn.Domain.Aggregates.Questions.Question", null)
                         .WithMany()
                         .HasForeignKey("QuestionsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TraffiLearn.Domain.Entities.Ticket", null)
+                    b.HasOne("TraffiLearn.Domain.Aggregates.Tickets.Ticket", null)
                         .WithMany()
                         .HasForeignKey("TicketsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -540,13 +540,13 @@ namespace TraffiLearn.Infrastructure.Migrations
 
             modelBuilder.Entity("QuestionTopic", b =>
                 {
-                    b.HasOne("TraffiLearn.Domain.Entities.Question", null)
+                    b.HasOne("TraffiLearn.Domain.Aggregates.Questions.Question", null)
                         .WithMany()
                         .HasForeignKey("QuestionsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TraffiLearn.Domain.Entities.Topic", null)
+                    b.HasOne("TraffiLearn.Domain.Aggregates.Topics.Topic", null)
                         .WithMany()
                         .HasForeignKey("TopicsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -555,13 +555,13 @@ namespace TraffiLearn.Infrastructure.Migrations
 
             modelBuilder.Entity("QuestionUser", b =>
                 {
-                    b.HasOne("TraffiLearn.Domain.Entities.User", null)
+                    b.HasOne("TraffiLearn.Domain.Aggregates.Users.User", null)
                         .WithMany()
                         .HasForeignKey("LikedByUsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TraffiLearn.Domain.Entities.Question", null)
+                    b.HasOne("TraffiLearn.Domain.Aggregates.Questions.Question", null)
                         .WithMany()
                         .HasForeignKey("LikedQuestionsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -570,49 +570,49 @@ namespace TraffiLearn.Infrastructure.Migrations
 
             modelBuilder.Entity("QuestionUser1", b =>
                 {
-                    b.HasOne("TraffiLearn.Domain.Entities.User", null)
+                    b.HasOne("TraffiLearn.Domain.Aggregates.Users.User", null)
                         .WithMany()
-                        .HasForeignKey("DislikedByUsersId")
+                        .HasForeignKey("MarkedByUsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TraffiLearn.Domain.Entities.Question", null)
+                    b.HasOne("TraffiLearn.Domain.Aggregates.Questions.Question", null)
                         .WithMany()
-                        .HasForeignKey("DislikedQuestionsId")
+                        .HasForeignKey("MarkedQuestionsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("QuestionUser2", b =>
                 {
-                    b.HasOne("TraffiLearn.Domain.Entities.Question", null)
+                    b.HasOne("TraffiLearn.Domain.Aggregates.Users.User", null)
                         .WithMany()
-                        .HasForeignKey("MarkedQuestionsId")
+                        .HasForeignKey("DislikedByUsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TraffiLearn.Domain.Entities.User", null)
+                    b.HasOne("TraffiLearn.Domain.Aggregates.Questions.Question", null)
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("DislikedQuestionsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TraffiLearn.Domain.Entities.Comment", b =>
+            modelBuilder.Entity("TraffiLearn.Domain.Aggregates.Comments.Comment", b =>
                 {
-                    b.HasOne("TraffiLearn.Domain.Entities.User", "Creator")
+                    b.HasOne("TraffiLearn.Domain.Aggregates.Users.User", "Creator")
                         .WithMany("Comments")
                         .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.HasOne("TraffiLearn.Domain.Entities.Question", "Question")
+                    b.HasOne("TraffiLearn.Domain.Aggregates.Questions.Question", "Question")
                         .WithMany("Comments")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TraffiLearn.Domain.Entities.Comment", "RootComment")
+                    b.HasOne("TraffiLearn.Domain.Aggregates.Comments.Comment", "RootComment")
                         .WithMany("Replies")
                         .HasForeignKey("RootCommentId")
                         .OnDelete(DeleteBehavior.ClientCascade);
@@ -624,9 +624,9 @@ namespace TraffiLearn.Infrastructure.Migrations
                     b.Navigation("RootComment");
                 });
 
-            modelBuilder.Entity("TraffiLearn.Domain.Entities.Question", b =>
+            modelBuilder.Entity("TraffiLearn.Domain.Aggregates.Questions.Question", b =>
                 {
-                    b.OwnsMany("TraffiLearn.Domain.ValueObjects.Questions.Answer", "Answers", b1 =>
+                    b.OwnsMany("TraffiLearn.Domain.Aggregates.Questions.ValueObjects.Answer", "Answers", b1 =>
                         {
                             b1.Property<Guid>("QuestionId")
                                 .HasColumnType("uniqueidentifier");
@@ -656,17 +656,17 @@ namespace TraffiLearn.Infrastructure.Migrations
                     b.Navigation("Answers");
                 });
 
-            modelBuilder.Entity("TraffiLearn.Domain.Entities.Comment", b =>
+            modelBuilder.Entity("TraffiLearn.Domain.Aggregates.Comments.Comment", b =>
                 {
                     b.Navigation("Replies");
                 });
 
-            modelBuilder.Entity("TraffiLearn.Domain.Entities.Question", b =>
+            modelBuilder.Entity("TraffiLearn.Domain.Aggregates.Questions.Question", b =>
                 {
                     b.Navigation("Comments");
                 });
 
-            modelBuilder.Entity("TraffiLearn.Domain.Entities.User", b =>
+            modelBuilder.Entity("TraffiLearn.Domain.Aggregates.Users.User", b =>
                 {
                     b.Navigation("Comments");
                 });

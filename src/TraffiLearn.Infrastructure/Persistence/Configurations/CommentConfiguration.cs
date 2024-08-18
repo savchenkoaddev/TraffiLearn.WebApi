@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TraffiLearn.Domain.Aggregates.Comments;
 using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
 
-namespace TraffiLearn.Infrastructure.Persistance.Configurations
+namespace TraffiLearn.Infrastructure.Persistence.Configurations
 {
     internal sealed class CommentConfiguration : IEntityTypeConfiguration<Comment>
     {
@@ -20,11 +20,11 @@ namespace TraffiLearn.Infrastructure.Persistance.Configurations
                     value => CommentContent.Create(value).Value);
 
             builder
-                .HasOne(c => c.QuestionId)
+                .HasOne(c => c.Question)
                 .WithMany(q => q.Comments);
 
             builder
-                .HasOne(c => c.CreatorId)
+                .HasOne(c => c.Creator)
                 .WithMany(q => q.Comments)
                 .OnDelete(DeleteBehavior.ClientCascade);
 
@@ -39,12 +39,12 @@ namespace TraffiLearn.Infrastructure.Persistance.Configurations
                 .OnDelete(DeleteBehavior.ClientCascade);
 
             builder
-                .HasMany(q => q.LikedByUsersIds)
+                .HasMany(q => q.LikedByUsers)
                 .WithMany(user => user.LikedComments)
                 .UsingEntity(join => join.ToTable("CommentsLikedByUsers"));
 
             builder
-                .HasMany(q => q.DislikedByUsersIds)
+                .HasMany(q => q.DislikedByUsers)
                 .WithMany(user => user.DislikedComments)
                 .UsingEntity(join => join.ToTable("CommentsDislikedByUsers"));
 

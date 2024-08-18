@@ -36,7 +36,7 @@ namespace TraffiLearn.Application.Users.Commands.RemoveQuestionLike
         {
             var callerId = new UserId(_userContextService.FetchAuthenticatedUserId());
 
-            var caller = await _userRepository.GetByIdWithLikedAndDislikedQuestionsIdsAsync(
+            var caller = await _userRepository.GetByIdWithLikedAndDislikedQuestionsAsync(
                 callerId,
                 cancellationToken);
 
@@ -54,7 +54,7 @@ namespace TraffiLearn.Application.Users.Commands.RemoveQuestionLike
                 return QuestionErrors.NotFound;
             }
 
-            var removeLikeResult = caller.RemoveQuestionLike(question.Id);
+            var removeLikeResult = caller.RemoveQuestionLike(question);
 
             if (removeLikeResult.IsFailure)
             {

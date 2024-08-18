@@ -14,10 +14,10 @@ namespace TraffiLearn.Application.Tickets.Commands.Update
                 .NotEmpty()
                 .GreaterThan(0);
 
-            RuleFor(x => x.QuestionsIds)
+            RuleFor(x => x.QuestionIds)
                 .NotEmpty();
 
-            RuleForEach(x => x.QuestionsIds)
+            RuleForEach(x => x.QuestionIds)
                 .NotEmpty();
         }
     }

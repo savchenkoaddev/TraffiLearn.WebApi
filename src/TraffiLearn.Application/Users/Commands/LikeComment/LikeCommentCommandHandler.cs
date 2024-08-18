@@ -36,7 +36,7 @@ namespace TraffiLearn.Application.Users.Commands.LikeComment
         {
             var callerId = new UserId(_userContextService.FetchAuthenticatedUserId());
 
-            var caller = await _userRepository.GetByIdWithLikedAndDislikedCommentsIdsAsync(
+            var caller = await _userRepository.GetByIdWithLikedAndDislikedCommentsAsync(
                 callerId,
                 cancellationToken);
 
@@ -54,7 +54,7 @@ namespace TraffiLearn.Application.Users.Commands.LikeComment
                 return CommentErrors.NotFound;
             }
 
-            var likeCommentResult = caller.LikeComment(comment.Id);
+            var likeCommentResult = caller.LikeComment(comment);
 
             if (likeCommentResult.IsFailure)
             {

@@ -30,7 +30,7 @@ namespace TraffiLearn.Application.Tickets.Commands.Update
             UpdateTicketCommand request,
             CancellationToken cancellationToken)
         {
-            var ticket = await _ticketRepository.GetByIdWithQuestionsIdsAsync(
+            var ticket = await _ticketRepository.GetByIdWithQuestionsAsync(
                 ticketId: new TicketId(request.TicketId.Value),
                 cancellationToken);
 
@@ -55,7 +55,7 @@ namespace TraffiLearn.Application.Tickets.Commands.Update
 
             var updateQuestionsResult = await UpdateQuestions(
                 ticket,
-                request.QuestionsIds,
+                request.QuestionIds,
                 cancellationToken);
 
             if (updateQuestionsResult.IsFailure)
@@ -71,10 +71,10 @@ namespace TraffiLearn.Application.Tickets.Commands.Update
 
         private async Task<Result> UpdateQuestions(
             Ticket ticket,
-            IEnumerable<Guid>? questionsIds,
+            IEnumerable<Guid>? questionIds,
             CancellationToken cancellationToken = default)
         {
-            foreach (var questionId in questionsIds)
+            foreach (var questionId in questionIds)
             {
                 var question = await _questionRepository.GetByIdAsync(
                     questionId: new QuestionId(questionId),
@@ -85,9 +85,9 @@ namespace TraffiLearn.Application.Tickets.Commands.Update
                     return TicketErrors.QuestionNotFound;
                 }
 
-                if (!ticket.QuestionsIds.Contains(question.Id))
+                if (!ticket.Questions.Contains(question))
                 {
-                    var questionAddResult = ticket.AddQuestion(question.Id);
+                    var questionAddResult = ticket.AddQuestion(question);
 
                     if (questionAddResult.IsFailure)
                     {
@@ -96,13 +96,13 @@ namespace TraffiLearn.Application.Tickets.Commands.Update
                 }
             }
 
-            var ticketQuestionsIds = ticket.QuestionsIds.ToList();
+            var ticketQuestions = ticket.Questions.ToList();
 
-            foreach (var questionId in ticketQuestionsIds)
+            foreach (var question in ticketQuestions)
             {
-                if (!questionsIds.Contains(questionId.Value))
+                if (!questionIds.Contains(question.Id.Value))
                 {
-                    var questionRemoveResult = ticket.RemoveQuestion(questionId);
+                    var questionRemoveResult = ticket.RemoveQuestion(question);
 
                     if (questionRemoveResult.IsFailure)
                     {

@@ -2,9 +2,8 @@
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Topics;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
-using TraffiLearn.Infrastructure.Persistance;
 
-namespace TraffiLearn.Infrastructure.Persistance.Repositories
+namespace TraffiLearn.Infrastructure.Persistence.Repositories
 {
     internal sealed class TopicRepository : ITopicRepository
     {
@@ -57,13 +56,13 @@ namespace TraffiLearn.Infrastructure.Persistance.Repositories
                     cancellationToken);
         }
 
-        public async Task<Topic?> GetByIdWithQuestionsIdsAsync(
+        public async Task<Topic?> GetByIdWithQuestionsAsync(
             TopicId topicId,
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Topics
                 .Where(t => t.Id == topicId)
-                .Include(t => t.QuestionsIds)
+                .Include(t => t.Questions)
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
@@ -72,7 +71,7 @@ namespace TraffiLearn.Infrastructure.Persistance.Repositories
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Topics
-                .Where(t => t.QuestionsIds.Contains(questionId))
+                .Where(t => t.Questions.Any(q => q.Id == questionId))
                 .ToListAsync(cancellationToken);
         }
 

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TraffiLearn.Infrastructure.Persistance.Options
+namespace TraffiLearn.Infrastructure.Persistence.Options
 {
     public sealed class DbSettings
     {

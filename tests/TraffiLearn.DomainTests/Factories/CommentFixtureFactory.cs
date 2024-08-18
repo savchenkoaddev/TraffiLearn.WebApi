@@ -10,8 +10,8 @@ namespace TraffiLearn.DomainTests.Factories
             return Comment.Create(
                 new CommentId(Guid.NewGuid()),
                 CreateContent(),
-                UserFixtureFactory.CreateUser().Id,
-                QuestionFixtureFactory.CreateQuestion().Id).Value;
+                UserFixtureFactory.CreateUser(),
+                QuestionFixtureFactory.CreateQuestion()).Value;
         }
 
         public static CommentContent CreateContent()

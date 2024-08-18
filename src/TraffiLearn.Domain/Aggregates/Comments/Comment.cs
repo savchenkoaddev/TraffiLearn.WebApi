@@ -1,7 +1,7 @@
 ﻿using TraffiLearn.Domain.Aggregates.Comments.Errors;
 using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
-using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
-using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Questions;
+using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 
@@ -10,11 +10,11 @@ namespace TraffiLearn.Domain.Aggregates.Comments
     public sealed class Comment : AggregateRoot<CommentId>
     {
         private readonly HashSet<Comment> _replies = [];
-        private readonly HashSet<UserId> _likedByUsersIds = [];
-        private readonly HashSet<UserId> _dislikedByUsersIds = [];
+        private readonly HashSet<User> _likedByUsers = [];
+        private readonly HashSet<User> _dislikedByUsers = [];
         private CommentContent _content;
-        private UserId _creatorId;
-        private QuestionId _questionId;
+        private User _creator;
+        private Question _question;
 
         private Comment()
             : base(new(Guid.Empty))
@@ -23,12 +23,12 @@ namespace TraffiLearn.Domain.Aggregates.Comments
         private Comment(
             CommentId commentId,
             CommentContent commentContent,
-            UserId creatorId,
-            QuestionId questionId) : base(commentId)
+            User creator,
+            Question question) : base(commentId)
         {
             Content = commentContent;
-            CreatorId = creatorId;
-            QuestionId = questionId;
+            Creator = creator;
+            Question = question;
         }
 
         public CommentContent Content
@@ -45,76 +45,108 @@ namespace TraffiLearn.Domain.Aggregates.Comments
             }
         }
 
-        public UserId CreatorId { get; private set; }
+        public User Creator
+        {
+            get
+            {
+                return _creator;
+            }
+            private set
+            {
+                ArgumentNullException.ThrowIfNull(value, nameof(value));
 
-        public QuestionId QuestionId { get; private set; }
+                _creator = value;
+            }
+        }
+
+        public Question Question
+        {
+            get
+            {
+                return _question;
+            }
+            private set
+            {
+                ArgumentNullException.ThrowIfNull(value, nameof(value));
+
+                _question = value;
+            }
+        }
 
         public Comment? RootComment { get; private set; }
 
-        public int LikesCount => _likedByUsersIds.Count;
+        public int LikesCount => _likedByUsers.Count;
 
-        public int DislikesCount => _dislikedByUsersIds.Count;
+        public int DislikesCount => _dislikedByUsers.Count;
 
         public IReadOnlyCollection<Comment> Replies => _replies;
 
-        public IReadOnlyCollection<UserId> LikedByUsersIds => _likedByUsersIds;
+        public IReadOnlyCollection<User> LikedByUsers => _likedByUsers;
 
-        public IReadOnlyCollection<UserId> DislikedByUsersIds => _dislikedByUsersIds;
+        public IReadOnlyCollection<User> DislikedByUsers => _dislikedByUsers;
 
-        public Result AddLike(UserId userId)
+        public Result AddLike(User user)
         {
-            if (_likedByUsersIds.Contains(userId))
+            ArgumentNullException.ThrowIfNull(user, nameof(user));
+
+            if (_likedByUsers.Contains(user))
             {
                 return CommentErrors.AlreadyLikedByUser;
             }
 
-            if (_dislikedByUsersIds.Contains(userId))
+            if (_dislikedByUsers.Contains(user))
             {
                 return CommentErrors.CantLikeIfDislikedByUser;
             }
 
-            _likedByUsersIds.Add(userId);
+            _likedByUsers.Add(user);
 
             return Result.Success();
         }
 
-        public Result RemoveLike(UserId userId)
+        public Result RemoveLike(User user)
         {
-            if (!_likedByUsersIds.Contains(userId))
+            ArgumentNullException.ThrowIfNull(user, nameof(user));
+
+            if (!_likedByUsers.Contains(user))
             {
                 return CommentErrors.NotLikedByUser;
             }
 
-            _likedByUsersIds.Remove(userId);
+            _likedByUsers.Remove(user);
 
             return Result.Success();
         }
 
-        public Result AddDislike(UserId userId)
+        public Result AddDislike(User user)
         {
-            if (_dislikedByUsersIds.Contains(userId))
+            ArgumentNullException.ThrowIfNull(user, nameof(user));
+
+            if (_dislikedByUsers.Contains(user))
             {
                 return CommentErrors.AlreadyDislikedByUser;
             }
 
-            if (_likedByUsersIds.Contains(userId))
+            if (_likedByUsers.Contains(user))
             {
                 return CommentErrors.CantDislikeIfLikedByUser;
             }
 
-            _dislikedByUsersIds.Add(userId);
+            _dislikedByUsers.Add(user);
 
             return Result.Success();
         }
 
-        public Result RemoveDislike(UserId userId)
+        public Result RemoveDislike(User user)
         {
-            if (!_dislikedByUsersIds.Contains(userId))
+            ArgumentNullException.ThrowIfNull(user, nameof(user));
+
+            if (!_dislikedByUsers.Contains(user))
             {
                 return CommentErrors.NotDislikedByUser;
             }
 
-            _dislikedByUsersIds.Remove(userId);
+            _dislikedByUsers.Remove(user);
 
             return Result.Success();
         }
@@ -128,6 +160,8 @@ namespace TraffiLearn.Domain.Aggregates.Comments
 
         public Result Reply(Comment comment)
         {
+            ArgumentNullException.ThrowIfNull(comment, nameof(comment));
+
             if (_replies.Contains(comment))
             {
                 return CommentErrors.CommentAlreadyAdded;
@@ -142,14 +176,14 @@ namespace TraffiLearn.Domain.Aggregates.Comments
         public static Result<Comment> Create(
             CommentId commentId,
             CommentContent content,
-            UserId creatorId,
-            QuestionId questionId)
+            User creator,
+            Question question)
         {
             return new Comment(
                 commentId,
                 content,
-                creatorId,
-                questionId);
+                creator,
+                question);
         }
     }
 }

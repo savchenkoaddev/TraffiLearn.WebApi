@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
-using TraffiLearn.Infrastructure.Persistance;
 
-namespace TraffiLearn.Infrastructure.Persistance.Repositories
+namespace TraffiLearn.Infrastructure.Persistence.Repositories
 {
     internal sealed class UserRepository : IUserRepository
     {
@@ -78,33 +77,33 @@ namespace TraffiLearn.Infrastructure.Persistance.Repositories
                     cancellationToken);
         }
 
-        public Task<User?> GetByIdWithLikedAndDislikedCommentsIdsAsync(
+        public Task<User?> GetByIdWithLikedAndDislikedCommentsAsync(
             UserId userId,
             CancellationToken cancellationToken = default)
         {
             return _dbContext.Users
                 .Where(user => user.Id == userId)
-                .Include(user => user.LikedCommentsIds)
-                .Include(user => user.DislikedCommentsIds)
+                .Include(user => user.LikedComments)
+                .Include(user => user.DislikedComments)
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
-        public Task<User?> GetByIdWithLikedAndDislikedQuestionsIdsAsync(
+        public Task<User?> GetByIdWithLikedAndDislikedQuestionsAsync(
             UserId userId,
             CancellationToken cancellationToken = default)
         {
             return _dbContext.Users
                 .Where(user => user.Id == userId)
-                .Include(user => user.LikedQuestionsIds)
-                .Include(user => user.DislikedQuestionsIds)
+                .Include(user => user.LikedQuestions)
+                .Include(user => user.DislikedQuestions)
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
-        public Task<User?> GetByIdWithMarkedQuestionsIdsAsync(UserId userId, CancellationToken cancellationToken = default)
+        public Task<User?> GetByIdWithMarkedQuestionsAsync(UserId userId, CancellationToken cancellationToken = default)
         {
             return _dbContext.Users
                 .Where(user => user.Id == userId)
-                .Include(user => user.MarkedQuestionsIds)
+                .Include(user => user.MarkedQuestions)
                 .FirstOrDefaultAsync(cancellationToken);
         }
 

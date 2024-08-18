@@ -18,7 +18,7 @@ namespace TraffiLearn.Domain.Aggregates.Comments
             CommentId commentId,
             CancellationToken cancellationToken = default);
 
-        Task<IEnumerable<Comment>> GetManyByQuestionIdWithRepliesAsync(
+        Task<IEnumerable<Comment>> GetManyByQuestionIdWithRepliesAndCreatorsAsync(
             QuestionId questionId,
             CancellationToken cancellationToken = default);
 

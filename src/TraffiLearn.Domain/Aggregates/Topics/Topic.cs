@@ -1,4 +1,4 @@
-﻿using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
+﻿using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Topics.Errors;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 using TraffiLearn.Domain.Primitives;
@@ -8,7 +8,7 @@ namespace TraffiLearn.Domain.Aggregates.Topics
 {
     public sealed class Topic : AggregateRoot<TopicId>
     {
-        private readonly HashSet<QuestionId> _questionsIds = [];
+        private readonly HashSet<Question> _questions = [];
         private TopicNumber _topicNumber;
         private TopicTitle _topicTitle;
 
@@ -53,28 +53,32 @@ namespace TraffiLearn.Domain.Aggregates.Topics
             }
         }
 
-        public IReadOnlyCollection<QuestionId> QuestionsIds => _questionsIds;
+        public IReadOnlyCollection<Question> Questions => _questions;
 
-        public Result AddQuestion(QuestionId questionId)
+        public Result AddQuestion(Question question)
         {
-            if (_questionsIds.Contains(questionId))
+            ArgumentNullException.ThrowIfNull(question, nameof(question));
+
+            if (_questions.Contains(question))
             {
                 return TopicErrors.QuestionAlreadyAdded;
             }
 
-            _questionsIds.Add(questionId);
+            _questions.Add(question);
 
             return Result.Success();
         }
 
-        public Result RemoveQuestion(QuestionId questionId)
+        public Result RemoveQuestion(Question question)
         {
-            if (!_questionsIds.Contains(questionId))
+            ArgumentNullException.ThrowIfNull(question, nameof(question));
+
+            if (!_questions.Contains(question))
             {
                 return TopicErrors.QuestionNotFound;
             }
 
-            _questionsIds.Remove(questionId);
+            _questions.Remove(question);
 
             return Result.Success();
         }

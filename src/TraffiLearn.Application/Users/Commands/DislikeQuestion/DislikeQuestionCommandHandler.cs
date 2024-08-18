@@ -36,7 +36,7 @@ namespace TraffiLearn.Application.Users.Commands.DislikeQuestion
         {
             var callerId = new UserId(_userContextService.FetchAuthenticatedUserId());
 
-            var caller = await _userRepository.GetByIdWithLikedAndDislikedQuestionsIdsAsync(
+            var caller = await _userRepository.GetByIdWithLikedAndDislikedQuestionsAsync(
                 callerId,
                 cancellationToken);
 
@@ -54,7 +54,7 @@ namespace TraffiLearn.Application.Users.Commands.DislikeQuestion
                 return QuestionErrors.NotFound;
             }
 
-            var dislikeQuestionResult = caller.DislikeQuestion(question.Id);
+            var dislikeQuestionResult = caller.DislikeQuestion(question);
 
             if (dislikeQuestionResult.IsFailure)
             {

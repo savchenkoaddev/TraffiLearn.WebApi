@@ -8,7 +8,6 @@ using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Auth.Commands.RegisterAdmin;
 using TraffiLearn.Application.Auth.Commands.RegisterUser;
 using TraffiLearn.Application.Auth.Mappers;
-using TraffiLearn.Application.Auth.Options;
 using TraffiLearn.Application.Behaviors;
 using TraffiLearn.Application.Comments.DTO;
 using TraffiLearn.Application.Comments.Mappers;
@@ -16,7 +15,6 @@ using TraffiLearn.Application.Questions.Commands.Create;
 using TraffiLearn.Application.Questions.Commands.Update;
 using TraffiLearn.Application.Questions.DTO;
 using TraffiLearn.Application.Questions.Mappers;
-using TraffiLearn.Application.Questions.Options;
 using TraffiLearn.Application.Services;
 using TraffiLearn.Application.Tickets.Commands.Create;
 using TraffiLearn.Application.Tickets.DTO;
@@ -42,7 +40,6 @@ namespace TraffiLearn.Application
             IConfiguration configuration)
         {
             services.AddMappers();
-            services.AddOptions(configuration);
 
             services.AddMediatR();
 
@@ -107,18 +104,6 @@ namespace TraffiLearn.Application
                 CommentToCommentResponseMapper>();
             services.AddScoped<Mapper<RegisterAdminCommand, Result<User>>, RegisterAdminCommandMapper>();
             services.AddScoped<Mapper<User, ApplicationUser>, UserToApplicationUserMapper>();
-
-            return services;
-        }
-
-        private static IServiceCollection AddOptions(
-            this IServiceCollection services,
-            IConfiguration configuration)
-        {
-            services.Configure<QuestionsSettings>(
-                configuration.GetSection(QuestionsSettings.SectionName));
-            services.Configure<LoginSettings>(
-                configuration.GetSection(LoginSettings.SectionName));
 
             return services;
         }

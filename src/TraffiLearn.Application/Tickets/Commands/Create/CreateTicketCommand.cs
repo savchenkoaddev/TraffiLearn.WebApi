@@ -5,5 +5,5 @@ namespace TraffiLearn.Application.Tickets.Commands.Create
 {
     public sealed record CreateTicketCommand(
         int? TicketNumber,
-        List<Guid>? QuestionsIds) : IRequest<Result>;
+        List<Guid>? QuestionIds) : IRequest<Result>;
 }
