@@ -44,6 +44,8 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries
             var result = await Sender.Send(new GetTopicQuestionsQuery(firstTopicId));
 
             result.IsSuccess.Should().BeTrue();
+
+            result.Value.Should().NotBeNull();
             result.Value.Should().BeEmpty();
         }
 
