@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Questions.DTO;
-using TraffiLearn.Application.Questions.Queries.GetTopicQuestions;
 using TraffiLearn.Application.Topics.Commands.Create;
 using TraffiLearn.Application.Topics.DTO;
 using TraffiLearn.Application.Topics.Queries.GetAllSortedByNumber;
+using TraffiLearn.Application.Topics.Queries.GetTopicQuestions;
 
 namespace TraffiLearn.IntegrationTests.Topics
 {
@@ -16,7 +16,7 @@ namespace TraffiLearn.IntegrationTests.Topics
             _sender = sender;
         }
 
-        public async Task CreateValidTopicAsync(int number = 1, string title = "Value")
+        public async Task CreateTopicAsync(int number = 1, string title = "Value")
         {
             await _sender.Send(new CreateTopicCommand(number, title));
         }

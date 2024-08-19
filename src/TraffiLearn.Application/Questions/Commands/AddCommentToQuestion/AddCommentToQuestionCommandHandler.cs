@@ -9,22 +9,22 @@ using TraffiLearn.Domain.Aggregates.Questions.Errors;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Questions.Commands.AddComment
+namespace TraffiLearn.Application.Questions.Commands.AddCommentToQuestion
 {
-    internal sealed class AddCommentCommandHandler : IRequestHandler<AddCommentCommand, Result>
+    internal sealed class AddCommentToQuestionCommandHandler : IRequestHandler<AddCommentToQuestionCommand, Result>
     {
         private readonly ICommentRepository _commentRepository;
         private readonly IQuestionRepository _questionRepository;
         private readonly IAuthenticatedUserService _authenticatedUserService;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<AddCommentCommandHandler> _logger;
+        private readonly ILogger<AddCommentToQuestionCommandHandler> _logger;
 
-        public AddCommentCommandHandler(
+        public AddCommentToQuestionCommandHandler(
             ICommentRepository commentRepository,
             IQuestionRepository questionRepository,
             IAuthenticatedUserService authenticatedUserService,
             IUnitOfWork unitOfWork,
-            ILogger<AddCommentCommandHandler> logger)
+            ILogger<AddCommentToQuestionCommandHandler> logger)
         {
             _commentRepository = commentRepository;
             _questionRepository = questionRepository;
@@ -34,7 +34,7 @@ namespace TraffiLearn.Application.Questions.Commands.AddComment
         }
 
         public async Task<Result> Handle(
-            AddCommentCommand request,
+            AddCommentToQuestionCommand request,
             CancellationToken cancellationToken)
         {
             var caller = await _authenticatedUserService.GetAuthenticatedUserAsync(

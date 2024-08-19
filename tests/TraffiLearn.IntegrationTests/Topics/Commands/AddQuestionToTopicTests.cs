@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
-using TraffiLearn.Application.Questions.Queries.GetTopicQuestions;
+using TraffiLearn.Application.Questions.Queries.GetQuestionTopics;
 using TraffiLearn.Application.Topics.Commands.AddQuestionToTopic;
-using TraffiLearn.Application.Topics.Queries.GetQuestionTopics;
+using TraffiLearn.Application.Topics.Queries.GetTopicQuestions;
 using TraffiLearn.IntegrationTests.Questions;
 
 namespace TraffiLearn.IntegrationTests.Topics.Commands
@@ -37,7 +37,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands
         [Fact]
         public async Task AddQuestionToTopic_IfQuestionDoesNotExist_ShouldReturnError()
         {
-            await _topicTestHelper.CreateValidTopicAsync();
+            await _topicTestHelper.CreateTopicAsync();
 
             var topicId = await _topicTestHelper.GetFirstTopicIdAsync();
 
@@ -98,7 +98,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands
 
             var testTopicTitle = Guid.NewGuid().ToString();
 
-            await _topicTestHelper.CreateValidTopicAsync(
+            await _topicTestHelper.CreateTopicAsync(
                 number: 1,
                 title: testTopicTitle);
 
@@ -136,7 +136,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands
 
         private async Task<Guid> InsertValidQuestionWithTopic()
         {
-            await _topicTestHelper.CreateValidTopicAsync();
+            await _topicTestHelper.CreateTopicAsync();
 
             var topicId = await _topicTestHelper.GetFirstTopicIdAsync();
 
