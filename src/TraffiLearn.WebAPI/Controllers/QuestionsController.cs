@@ -1,16 +1,16 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using TraffiLearn.Application.Comments.Queries.GetQuestionComments;
-using TraffiLearn.Application.Questions.Commands.AddComment;
+using TraffiLearn.Application.Questions.Commands.AddCommentToQuestion;
 using TraffiLearn.Application.Questions.Commands.Create;
 using TraffiLearn.Application.Questions.Commands.Delete;
 using TraffiLearn.Application.Questions.Commands.Update;
 using TraffiLearn.Application.Questions.Queries.GetAll;
 using TraffiLearn.Application.Questions.Queries.GetById;
+using TraffiLearn.Application.Questions.Queries.GetQuestionComments;
 using TraffiLearn.Application.Questions.Queries.GetQuestionsForTheoryTest;
+using TraffiLearn.Application.Questions.Queries.GetQuestionTickets;
+using TraffiLearn.Application.Questions.Queries.GetQuestionTopics;
 using TraffiLearn.Application.Questions.Queries.GetRandomQuestions;
-using TraffiLearn.Application.Tickets.Queries.GetQuestionTickets;
-using TraffiLearn.Application.Topics.Queries.GetQuestionTopics;
 using TraffiLearn.Application.Users.Commands.DislikeQuestion;
 using TraffiLearn.Application.Users.Commands.LikeQuestion;
 using TraffiLearn.Application.Users.Commands.MarkQuestion;
@@ -162,7 +162,7 @@ namespace TraffiLearn.WebAPI.Controllers
 
         [HasPermission(Permission.ModifyData)]
         [HttpPost("add-comment")]
-        public async Task<IActionResult> AddComment(AddCommentCommand command)
+        public async Task<IActionResult> AddComment(AddCommentToQuestionCommand command)
         {
             var commandResult = await _sender.Send(command);
 

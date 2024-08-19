@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Questions.DTO;
-using TraffiLearn.Application.Questions.Queries.GetTopicQuestions;
 using TraffiLearn.Application.Topics.Commands.Create;
 using TraffiLearn.Application.Topics.DTO;
 using TraffiLearn.Application.Topics.Queries.GetAllSortedByNumber;
+using TraffiLearn.Application.Topics.Queries.GetTopicQuestions;
 
 namespace TraffiLearn.IntegrationTests.Topics
 {

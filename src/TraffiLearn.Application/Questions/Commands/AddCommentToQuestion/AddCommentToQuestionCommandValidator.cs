@@ -1,12 +1,12 @@
 ﻿using FluentValidation;
 using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
 
-namespace TraffiLearn.Application.Questions.Commands.AddComment
+namespace TraffiLearn.Application.Questions.Commands.AddCommentToQuestion
 {
-    internal sealed class AddCommentCommandValidator
-        : AbstractValidator<AddCommentCommand>
+    internal sealed class AddCommentToQuestionCommandValidator
+        : AbstractValidator<AddCommentToQuestionCommand>
     {
-        public AddCommentCommandValidator()
+        public AddCommentToQuestionCommandValidator()
         {
             RuleFor(x => x.Content)
                 .NotEmpty()

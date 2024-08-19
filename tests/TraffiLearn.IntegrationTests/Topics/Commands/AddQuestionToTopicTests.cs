@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
-using TraffiLearn.Application.Questions.Queries.GetTopicQuestions;
+using TraffiLearn.Application.Questions.Queries.GetQuestionTopics;
 using TraffiLearn.Application.Topics.Commands.AddQuestionToTopic;
-using TraffiLearn.Application.Topics.Queries.GetQuestionTopics;
+using TraffiLearn.Application.Topics.Queries.GetTopicQuestions;
 using TraffiLearn.IntegrationTests.Questions;
 
 namespace TraffiLearn.IntegrationTests.Topics.Commands

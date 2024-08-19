@@ -7,7 +7,7 @@ using TraffiLearn.Domain.Aggregates.Topics.Errors;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Questions.Queries.GetTopicQuestions
+namespace TraffiLearn.Application.Topics.Queries.GetTopicQuestions
 {
     internal sealed class GetTopicQuestionsQueryHandler : IRequestHandler<GetTopicQuestionsQuery, Result<IEnumerable<QuestionResponse>>>
     {

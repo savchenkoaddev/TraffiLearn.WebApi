@@ -7,7 +7,7 @@ using TraffiLearn.Domain.Aggregates.Questions.Errors;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Comments.Queries.GetQuestionComments
+namespace TraffiLearn.Application.Questions.Queries.GetQuestionComments
 {
     internal sealed class GetQuestionCommentsQueryHandler
         : IRequestHandler<GetQuestionCommentsQuery,
