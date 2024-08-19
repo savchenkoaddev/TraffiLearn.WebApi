@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -13,6 +13,7 @@
     <PackageReference Include="FluentAssertions" Version="6.12.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.8" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
+    <PackageReference Include="Respawn" Version="6.2.1" />
     <PackageReference Include="Testcontainers" Version="3.9.0" />
     <PackageReference Include="Testcontainers.Azurite" Version="3.9.0" />
     <PackageReference Include="Testcontainers.MsSql" Version="3.9.0" />
@@ -29,6 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\TraffiLearn.WebAPI\TraffiLearn.WebAPI.csproj" />
+    <ProjectReference Include="..\TraffiLearn.Testing.Shared\TraffiLearn.Testing.Shared.csproj" />
   </ItemGroup>
 
 </Project>

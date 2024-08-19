@@ -4,7 +4,7 @@ using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.DomainTests.Factories;
+using TraffiLearn.Testing.Shared.Factories;
 
 namespace TraffiLearn.DomainTests.Users
 {

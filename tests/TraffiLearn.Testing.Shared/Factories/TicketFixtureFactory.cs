@@ -1,9 +1,9 @@
 ﻿using TraffiLearn.Domain.Aggregates.Tickets;
 using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
 
-namespace TraffiLearn.DomainTests.Factories
+namespace TraffiLearn.Testing.Shared.Factories
 {
-    internal static class TicketFixtureFactory
+    public static class TicketFixtureFactory
     {
         public static Ticket CreateTicket()
         {

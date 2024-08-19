@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\TraffiLearn.Domain\TraffiLearn.Domain.csproj" />
+    <ProjectReference Include="..\TraffiLearn.Testing.Shared\TraffiLearn.Testing.Shared.csproj" />
   </ItemGroup>
 
 </Project>

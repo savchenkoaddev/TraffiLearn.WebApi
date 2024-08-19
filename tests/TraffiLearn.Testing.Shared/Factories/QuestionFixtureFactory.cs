@@ -1,9 +1,9 @@
 ﻿using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 
-namespace TraffiLearn.DomainTests.Factories
+namespace TraffiLearn.Testing.Shared.Factories
 {
-    internal static class QuestionFixtureFactory
+    public static class QuestionFixtureFactory
     {
         public static Question CreateQuestion()
         {
