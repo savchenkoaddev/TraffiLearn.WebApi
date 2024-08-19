@@ -1,5 +1,6 @@
 ﻿using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Data;
@@ -15,7 +16,6 @@ using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Infrastructure.Authentication.Options;
 using TraffiLearn.Infrastructure.External.Blobs;
 using TraffiLearn.Infrastructure.External.Blobs.Options;
-using TraffiLearn.Infrastructure.Helpers;
 using TraffiLearn.Infrastructure.Persistence;
 using TraffiLearn.Infrastructure.Persistence.Options;
 using TraffiLearn.Infrastructure.Persistence.Repositories;
@@ -35,7 +35,6 @@ namespace TraffiLearn.Infrastructure
             services.AddInfrastructureServices();
 
             services.AddPersistence();
-            SeedRoles(services).Wait();
             services.AddRepositories();
 
             return services;
@@ -51,18 +50,17 @@ namespace TraffiLearn.Infrastructure
             return services;
         }
 
-        private async static Task SeedRoles(IServiceCollection services)
-        {
-            using (var sp = services.BuildServiceProvider())
-            {
-                var roleService = sp.GetRequiredService<IRoleService<IdentityRole>>();
-                await RoleSeeder.SeedRolesAsync(roleService);
-            }
-        }
-
         private static IServiceCollection AddPersistence(this IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>();
+            services.AddDbContext<ApplicationDbContext>(
+                (serviceProvider, options) =>
+            {
+                var dbSettings = serviceProvider.GetRequiredService
+                    <IOptions<DbSettings>>().Value;
+
+                options.UseSqlServer(dbSettings.ConnectionString);
+            });
+
             services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
 
             services.AddIdentity<ApplicationUser, IdentityRole>()

@@ -6,9 +6,10 @@ using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.Infrastructure;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.Infrastructure.Authentication.Options;
+using TraffiLearn.Infrastructure.Extensions;
 using TraffiLearn.WebAPI.Middleware;
 
-namespace TraffiLearn.WebAPI 
+namespace TraffiLearn.WebAPI
 {
     public class Program
     {
@@ -39,6 +40,7 @@ namespace TraffiLearn.WebAPI
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+                app.ApplyMigration();
             }
 
             app.UseRouting();
@@ -47,6 +49,8 @@ namespace TraffiLearn.WebAPI
             app.UseAuthorization();
 
             app.MapControllers();
+
+            app.SeedRoles().Wait();
 
             app.Run();
         }

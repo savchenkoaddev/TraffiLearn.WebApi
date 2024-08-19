@@ -3,7 +3,7 @@ using TraffiLearn.Domain.Aggregates.Topics;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.DomainTests.Factories;
+using TraffiLearn.Testing.Shared.Factories;
 
 namespace TraffiLearn.DomainTests.Topics
 {

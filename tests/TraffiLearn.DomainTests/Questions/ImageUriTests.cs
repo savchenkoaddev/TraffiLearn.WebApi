@@ -3,7 +3,7 @@ using System.Reflection;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.DomainTests.Factories;
+using TraffiLearn.Testing.Shared.Factories;
 
 namespace TraffiLearn.DomainTests.Questions
 {

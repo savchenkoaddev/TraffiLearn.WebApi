@@ -1,9 +1,9 @@
 ﻿using TraffiLearn.Domain.Aggregates.Comments;
 using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
 
-namespace TraffiLearn.DomainTests.Factories
+namespace TraffiLearn.Testing.Shared.Factories
 {
-    internal static class CommentFixtureFactory
+    public static class CommentFixtureFactory
     {
         public static Comment CreateComment()
         {

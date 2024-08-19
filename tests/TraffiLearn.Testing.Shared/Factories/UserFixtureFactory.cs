@@ -2,9 +2,9 @@
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 
-namespace TraffiLearn.DomainTests.Factories
+namespace TraffiLearn.Testing.Shared.Factories
 {
-    internal static class UserFixtureFactory
+    public static class UserFixtureFactory
     {
         public static User CreateUser()
         {

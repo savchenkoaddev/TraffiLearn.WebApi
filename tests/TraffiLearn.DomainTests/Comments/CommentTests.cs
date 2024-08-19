@@ -3,7 +3,7 @@ using TraffiLearn.Domain.Aggregates.Comments;
 using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
-using TraffiLearn.DomainTests.Factories;
+using TraffiLearn.Testing.Shared.Factories;
 
 namespace TraffiLearn.DomainTests.Comments
 {
