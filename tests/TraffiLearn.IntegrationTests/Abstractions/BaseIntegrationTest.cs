@@ -1,24 +1,18 @@
-﻿using MediatR;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace TraffiLearn.IntegrationTests
+﻿namespace TraffiLearn.IntegrationTests.Abstractions
 {
     [Collection(Constants.CollectionName)]
     public abstract class BaseIntegrationTest : IAsyncLifetime
     {
-        private readonly IServiceScope _scope;
-        protected readonly ISender Sender;
         private readonly Func<Task> ResetDatabase;
 
         protected BaseIntegrationTest(
-            IntegrationTestWebAppFactory factory)
+            WebApplicationFactory factory)
         {
-            _scope = factory.Services.CreateScope();
-
-            Sender = _scope.ServiceProvider.GetRequiredService<ISender>();
-
             ResetDatabase = factory.ResetDatabaseAsync;
+            HttpClient = factory.CreateClient();
         }
+
+        protected HttpClient HttpClient { get; init; }
 
         public Task InitializeAsync() => Task.CompletedTask;
 

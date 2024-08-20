@@ -2,6 +2,7 @@
 using TraffiLearn.Application.Questions.Queries.GetQuestionTopics;
 using TraffiLearn.Application.Topics.Commands.AddQuestionToTopic;
 using TraffiLearn.Application.Topics.Queries.GetTopicQuestions;
+using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Questions;
 
 namespace TraffiLearn.IntegrationTests.Topics.Commands
@@ -11,7 +12,8 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands
         private readonly TopicTestHelper _topicTestHelper;
         private readonly QuestionTestHelper _questionTestHelper;
 
-        public AddQuestionToTopicTests(IntegrationTestWebAppFactory factory)
+        public AddQuestionToTopicTests(
+            WebApplicationFactory factory)
             : base(factory)
         {
             _topicTestHelper = new(Sender);

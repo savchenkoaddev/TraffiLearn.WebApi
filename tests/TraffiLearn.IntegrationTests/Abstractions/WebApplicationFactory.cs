@@ -4,15 +4,16 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Respawn;
 using System.Data.Common;
 using Testcontainers.MsSql;
 using TraffiLearn.Infrastructure.Persistence;
 using TraffiLearn.WebAPI;
 
-namespace TraffiLearn.IntegrationTests
+namespace TraffiLearn.IntegrationTests.Abstractions
 {
-    public sealed class IntegrationTestWebAppFactory
+    public sealed class WebApplicationFactory
         : WebApplicationFactory<Program>, IAsyncLifetime
     {
         private readonly MsSqlContainer _dbContainer = new MsSqlBuilder()
@@ -84,18 +85,7 @@ namespace TraffiLearn.IntegrationTests
 
         private static void RemoveExistingDbContext(IServiceCollection services)
         {
-            ServiceDescriptor? dbDescriptor = GetExistingDbDescriptor(services);
-
-            if (dbDescriptor is not null)
-            {
-                services.Remove(dbDescriptor);
-            }
-
-            static ServiceDescriptor? GetExistingDbDescriptor(IServiceCollection services)
-            {
-                return services.SingleOrDefault(
-                    s => s.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
-            }
+            services.RemoveAll(typeof(DbContextOptions<ApplicationDbContext>));
         }
     }
 }

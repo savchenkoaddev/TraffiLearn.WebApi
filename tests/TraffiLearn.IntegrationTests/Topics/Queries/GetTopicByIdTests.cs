@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using TraffiLearn.Application.Topics.Queries.GetById;
+using TraffiLearn.IntegrationTests.Abstractions;
 
 namespace TraffiLearn.IntegrationTests.Topics.Queries
 {
@@ -8,7 +9,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries
         private readonly TopicTestHelper _topicTestHelper;
 
         public GetTopicByIdTests(
-            IntegrationTestWebAppFactory factory) 
+            WebApplicationFactory factory) 
             : base(factory)
         {
             _topicTestHelper = new(Sender);

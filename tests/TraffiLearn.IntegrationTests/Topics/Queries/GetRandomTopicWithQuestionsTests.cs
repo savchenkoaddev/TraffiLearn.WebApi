@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using TraffiLearn.Application.Topics.Queries.GetRandomTopicWithQuestions;
+using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Questions;
 
 namespace TraffiLearn.IntegrationTests.Topics.Queries
@@ -10,7 +11,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries
         private readonly QuestionTestHelper _questionTestHelper;
 
         public GetRandomTopicWithQuestionsTests(
-            IntegrationTestWebAppFactory factory) 
+            WebApplicationFactory factory) 
             : base(factory)
         {
             _topicTestHelper = new(Sender);

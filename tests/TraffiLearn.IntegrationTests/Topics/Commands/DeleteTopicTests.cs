@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using TraffiLearn.Application.Topics.Commands.Create;
 using TraffiLearn.Application.Topics.Commands.Delete;
+using TraffiLearn.IntegrationTests.Abstractions;
 
 namespace TraffiLearn.IntegrationTests.Topics.Commands
 {
@@ -8,7 +9,8 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands
     {
         private readonly TopicTestHelper _topicTestHelper;
 
-        public DeleteTopicTests(IntegrationTestWebAppFactory factory)
+        public DeleteTopicTests(
+            WebApplicationFactory factory)
             : base(factory)
         {
             _topicTestHelper = new(Sender);

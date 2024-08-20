@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using TraffiLearn.Application.Topics.Commands.Create;
 using TraffiLearn.Application.Topics.DTO;
+using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.Testing.Shared.Factories;
 
 namespace TraffiLearn.IntegrationTests.Topics.Commands
@@ -9,7 +10,8 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands
     {
         private readonly TopicTestHelper _topicTestHelper;
 
-        public CreateTopicTests(IntegrationTestWebAppFactory factory)
+        public CreateTopicTests(
+            WebApplicationFactory factory)
             : base(factory)
         {
             _topicTestHelper = new TopicTestHelper(Sender);
