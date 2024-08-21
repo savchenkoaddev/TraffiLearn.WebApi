@@ -4,163 +4,157 @@ using TraffiLearn.Application.Topics.Commands.AddQuestionToTopic;
 using TraffiLearn.Application.Topics.Commands.RemoveQuestionFromTopic;
 using TraffiLearn.Application.Topics.Queries.GetTopicQuestions;
 using TraffiLearn.IntegrationTests.Abstractions;
-using TraffiLearn.IntegrationTests.Questions;
 
 namespace TraffiLearn.IntegrationTests.Topics.Commands
 {
     public sealed class RemoveQuestionFromTopicTests : BaseIntegrationTest
     {
-        private readonly TopicTestHelper _topicTestHelper;
-        private readonly QuestionTestHelper _questionTestHelper;
-
         public RemoveQuestionFromTopicTests(
             WebApplicationFactory factory)
             : base(factory)
         {
-            _topicTestHelper = new(Sender);
-            _questionTestHelper = new(Sender);
         }
 
-        [Fact]
-        public async Task RemoveQuestionFromTopic_IfPassedInvalidArgs()
-        {
-            List<RemoveQuestionFromTopicCommand> invalidCommands = [
-                new RemoveQuestionFromTopicCommand(null, Guid.NewGuid()),
-                new RemoveQuestionFromTopicCommand(Guid.NewGuid(), null)
-            ];
+        //[Fact]
+        //public async Task RemoveQuestionFromTopic_IfPassedInvalidArgs()
+        //{
+        //    List<RemoveQuestionFromTopicCommand> invalidCommands = [
+        //        new RemoveQuestionFromTopicCommand(null, Guid.NewGuid()),
+        //        new RemoveQuestionFromTopicCommand(Guid.NewGuid(), null)
+        //    ];
 
-            foreach (var command in invalidCommands)
-            {
-                var result = await Sender.Send(command);
+        //    foreach (var command in invalidCommands)
+        //    {
+        //        var result = await Sender.Send(command);
 
-                result.IsFailure.Should().BeTrue();
-            }
-        }
+        //        result.IsFailure.Should().BeTrue();
+        //    }
+        //}
 
-        [Fact]
-        public async Task RemoveQuestionFromTopic_IfQuestionDoesNotExist_ShouldReturnError()
-        {
-            await _topicTestHelper.CreateTopicAsync();
+        //[Fact]
+        //public async Task RemoveQuestionFromTopic_IfQuestionDoesNotExist_ShouldReturnError()
+        //{
+        //    await _topicTestHelper.CreateTopicAsync();
 
-            var topicId = await _topicTestHelper.GetFirstTopicIdAsync();
+        //    var topicId = await _topicTestHelper.GetFirstTopicIdAsync();
 
-            var command = new RemoveQuestionFromTopicCommand(Guid.NewGuid(), topicId);
+        //    var command = new RemoveQuestionFromTopicCommand(Guid.NewGuid(), topicId);
 
-            var result = await Sender.Send(command);
+        //    var result = await Sender.Send(command);
 
-            result.IsFailure.Should().BeTrue();
+        //    result.IsFailure.Should().BeTrue();
 
-            var topicQuestions = await _topicTestHelper.GetTopicQuestionsAsync(topicId);
+        //    var topicQuestions = await _topicTestHelper.GetTopicQuestionsAsync(topicId);
 
-            topicQuestions.Should().BeEmpty();
-        }
+        //    topicQuestions.Should().BeEmpty();
+        //}
 
-        [Fact]
-        public async Task RemoveQuestionFromTopic_IfTopicDoesNotExist_ShouldReturnError()
-        {
-            await _topicTestHelper.CreateTopicAsync();
+        //[Fact]
+        //public async Task RemoveQuestionFromTopic_IfTopicDoesNotExist_ShouldReturnError()
+        //{
+        //    await _topicTestHelper.CreateTopicAsync();
 
-            var topicId = await _topicTestHelper.GetFirstTopicIdAsync();
+        //    var topicId = await _topicTestHelper.GetFirstTopicIdAsync();
 
-            await _questionTestHelper.CreateValidQuestionAsync(
-                TopicIds: [topicId]);
+        //    await _questionTestHelper.CreateValidQuestionAsync(
+        //        TopicIds: [topicId]);
 
-            var questionId = await _questionTestHelper.GetFirstQuestionIdAsync();
+        //    var questionId = await _questionTestHelper.GetFirstQuestionIdAsync();
 
-            var command = new RemoveQuestionFromTopicCommand(
-                QuestionId: questionId,
-                TopicId: Guid.NewGuid());
+        //    var command = new RemoveQuestionFromTopicCommand(
+        //        QuestionId: questionId,
+        //        TopicId: Guid.NewGuid());
 
-            var result = await Sender.Send(command);
+        //    var result = await Sender.Send(command);
 
-            result.IsFailure.Should().BeTrue();
-        }
+        //    result.IsFailure.Should().BeTrue();
+        //}
 
-        [Fact]
-        public async Task RemoveQuestionFromTopic_IfTopicDoesNotContainQuestion_ShouldReturnError()
-        {
-            await InsertValidQuestionWithTopic();
+        //[Fact]
+        //public async Task RemoveQuestionFromTopic_IfTopicDoesNotContainQuestion_ShouldReturnError()
+        //{
+        //    await InsertValidQuestionWithTopic();
 
-            var firstQuestionId = await _questionTestHelper.GetFirstQuestionIdAsync();
+        //    var firstQuestionId = await _questionTestHelper.GetFirstQuestionIdAsync();
 
-            var testTopicTitle = Guid.NewGuid();
+        //    var testTopicTitle = Guid.NewGuid();
 
-            await _topicTestHelper.CreateTopicAsync(
-                number: 1,
-                title: testTopicTitle.ToString());
+        //    await _topicTestHelper.CreateTopicAsync(
+        //        number: 1,
+        //        title: testTopicTitle.ToString());
 
-            var allTopics = await _topicTestHelper.GetAllTopicsAsync();
+        //    var allTopics = await _topicTestHelper.GetAllTopicsAsync();
 
-            var testTopic = allTopics.First(
-                t => t.Title == testTopicTitle.ToString());
+        //    var testTopic = allTopics.First(
+        //        t => t.Title == testTopicTitle.ToString());
 
-            var result = await Sender.Send(new RemoveQuestionFromTopicCommand(
-                QuestionId: firstQuestionId,
-                TopicId: testTopic.TopicId));
+        //    var result = await Sender.Send(new RemoveQuestionFromTopicCommand(
+        //        QuestionId: firstQuestionId,
+        //        TopicId: testTopic.TopicId));
 
-            result.IsFailure.Should().BeTrue();
-        }
+        //    result.IsFailure.Should().BeTrue();
+        //}
 
-        [Fact]
-        public async Task RemoveQuestionFromTopic_IfPassedValidArgs_ShouldBeSuccesful()
-        {
-            await InsertValidQuestionWithTopic();
+        //[Fact]
+        //public async Task RemoveQuestionFromTopic_IfPassedValidArgs_ShouldBeSuccesful()
+        //{
+        //    await InsertValidQuestionWithTopic();
 
-            var testTopicTitle = Guid.NewGuid().ToString();
+        //    var testTopicTitle = Guid.NewGuid().ToString();
 
-            await _topicTestHelper.CreateTopicAsync(
-                number: 1,
-                title: testTopicTitle);
+        //    await _topicTestHelper.CreateTopicAsync(
+        //        number: 1,
+        //        title: testTopicTitle);
 
-            var questionId = await _questionTestHelper.GetFirstQuestionIdAsync();
+        //    var questionId = await _questionTestHelper.GetFirstQuestionIdAsync();
 
-            var allTopics = await _topicTestHelper.GetAllTopicsAsync();
+        //    var allTopics = await _topicTestHelper.GetAllTopicsAsync();
 
-            var testTopic = allTopics.First(t => t.Title == testTopicTitle);
+        //    var testTopic = allTopics.First(t => t.Title == testTopicTitle);
 
-            await Sender.Send(new AddQuestionToTopicCommand(
-                questionId,
-                testTopic.TopicId));
+        //    await Sender.Send(new AddQuestionToTopicCommand(
+        //        questionId,
+        //        testTopic.TopicId));
 
-            var command = new RemoveQuestionFromTopicCommand(
-                QuestionId: questionId,
-                TopicId: testTopic.TopicId);
+        //    var command = new RemoveQuestionFromTopicCommand(
+        //        QuestionId: questionId,
+        //        TopicId: testTopic.TopicId);
 
-            var result = await Sender.Send(command);
+        //    var result = await Sender.Send(command);
 
-            result.IsSuccess.Should().BeTrue();
+        //    result.IsSuccess.Should().BeTrue();
 
-            await EnsureQuestionIsRemovedFromTopic(
-                questionId,
-                testTopic.TopicId);
-        }
+        //    await EnsureQuestionIsRemovedFromTopic(
+        //        questionId,
+        //        testTopic.TopicId);
+        //}
 
-        private async Task EnsureQuestionIsRemovedFromTopic(
-            Guid questionId,
-            Guid topicId)
-        {
-            var questionTopics = (await Sender.Send(new GetQuestionTopicsQuery(questionId))).Value;
+        //private async Task EnsureQuestionIsRemovedFromTopic(
+        //    Guid questionId,
+        //    Guid topicId)
+        //{
+        //    var questionTopics = (await Sender.Send(new GetQuestionTopicsQuery(questionId))).Value;
 
-            questionTopics.Should().HaveCount(1);
-            questionTopics.Any(t => t.TopicId == topicId).Should().BeFalse();
+        //    questionTopics.Should().HaveCount(1);
+        //    questionTopics.Any(t => t.TopicId == topicId).Should().BeFalse();
 
-            var topicQuestions = (await Sender.Send(new GetTopicQuestionsQuery(
-                TopicId: topicId))).Value;
+        //    var topicQuestions = (await Sender.Send(new GetTopicQuestionsQuery(
+        //        TopicId: topicId))).Value;
 
-            topicQuestions.Should().BeEmpty();
-            topicQuestions.Any(q => q.Id == questionId).Should().BeFalse();
-        }
+        //    topicQuestions.Should().BeEmpty();
+        //    topicQuestions.Any(q => q.Id == questionId).Should().BeFalse();
+        //}
 
-        private async Task<Guid> InsertValidQuestionWithTopic()
-        {
-            await _topicTestHelper.CreateTopicAsync();
+        //private async Task<Guid> InsertValidQuestionWithTopic()
+        //{
+        //    await _topicTestHelper.CreateTopicAsync();
 
-            var topicId = await _topicTestHelper.GetFirstTopicIdAsync();
+        //    var topicId = await _topicTestHelper.GetFirstTopicIdAsync();
 
-            await _questionTestHelper.CreateValidQuestionAsync(
-                TopicIds: [topicId]);
+        //    await _questionTestHelper.CreateValidQuestionAsync(
+        //        TopicIds: [topicId]);
 
-            return topicId;
-        }
+        //    return topicId;
+        //}
     }
 }

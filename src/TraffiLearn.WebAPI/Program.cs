@@ -98,7 +98,11 @@ namespace TraffiLearn.WebAPI
                     Permission.ModifyData.ToString(),
                     policy =>
                     {
-                        policy.RequireRole(Role.Admin.ToString());
+                        policy.RequireRole(
+                            roles: [
+                                Role.Admin.ToString(),
+                                Role.Owner.ToString()
+                            ]);
                     });
             });
         }

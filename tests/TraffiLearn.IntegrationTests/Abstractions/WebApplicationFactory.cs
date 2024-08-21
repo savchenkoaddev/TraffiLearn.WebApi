@@ -8,7 +8,12 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Respawn;
 using System.Data.Common;
 using Testcontainers.MsSql;
+using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Abstractions.Identity;
+using TraffiLearn.Application.Users.Identity;
+using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Infrastructure.Persistence;
+using TraffiLearn.IntegrationTests.Helpers;
 using TraffiLearn.WebAPI;
 
 namespace TraffiLearn.IntegrationTests.Abstractions
@@ -21,6 +26,7 @@ namespace TraffiLearn.IntegrationTests.Abstractions
 
         private DbConnection _dbConnection = default!;
         private Respawner _respawner = default!;
+        private UserSeeder _userSeeder = default!;
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
@@ -35,6 +41,7 @@ namespace TraffiLearn.IntegrationTests.Abstractions
         public async Task ResetDatabaseAsync()
         {
             await _respawner.ResetAsync(_dbConnection);
+            await _userSeeder.Seed();
         }
 
         public async Task InitializeAsync()
@@ -43,7 +50,12 @@ namespace TraffiLearn.IntegrationTests.Abstractions
             _dbConnection = new SqlConnection(_dbContainer.GetConnectionString());
 
             await _dbConnection.OpenAsync();
+
+            _userSeeder = BuildUserSeeder();
+
             await RunMigration();
+
+            await _userSeeder.Seed();
 
             await InitializeRespawner();
         }
@@ -59,7 +71,8 @@ namespace TraffiLearn.IntegrationTests.Abstractions
                 _dbConnection,
                 new RespawnerOptions()
                 {
-                    DbAdapter = DbAdapter.SqlServer
+                    DbAdapter = DbAdapter.SqlServer,
+                    TablesToIgnore = ["AspNetRoles", "AspNetRoleClaims"]
                 });
         }
 
@@ -86,6 +99,25 @@ namespace TraffiLearn.IntegrationTests.Abstractions
         private static void RemoveExistingDbContext(IServiceCollection services)
         {
             services.RemoveAll(typeof(DbContextOptions<ApplicationDbContext>));
+        }
+
+        private UserSeeder BuildUserSeeder()
+        {
+            var scope = Services.CreateScope();
+
+            var identityService = scope.ServiceProvider
+                .GetRequiredService<IIdentityService<ApplicationUser>>();
+
+            var userRepository = scope.ServiceProvider
+                .GetRequiredService<IUserRepository>();
+
+            var unitOfWork = scope.ServiceProvider
+                .GetRequiredService<IUnitOfWork>();
+
+            return new UserSeeder(
+                identityService,
+                userRepository,
+                unitOfWork);
         }
     }
 }
