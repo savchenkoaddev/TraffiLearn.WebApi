@@ -1,9 +1,11 @@
-﻿using System.Net.Http.Json;
+﻿using Microsoft.Extensions.Caching.Memory;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Auth;
 using TraffiLearn.IntegrationTests.Builders;
+using TraffiLearn.IntegrationTests.Extensions;
 
 namespace TraffiLearn.IntegrationTests.Helpers
 {
@@ -13,6 +15,7 @@ namespace TraffiLearn.IntegrationTests.Helpers
         private readonly Authenticator _authenticator;
         private readonly Encoding _encoding = Encoding.UTF8;
         private readonly Dictionary<Role, RoleCredentials> _roleCredentials;
+        private readonly IMemoryCache _cache;
 
         public RequestSender(
             HttpClient httpClient,
@@ -22,6 +25,7 @@ namespace TraffiLearn.IntegrationTests.Helpers
             _authenticator = authenticator;
 
             _roleCredentials = CreateRoleCredentialsDictionary();
+            _cache = new MemoryCache(new MemoryCacheOptions());
         }
 
         public async Task<HttpResponseMessage> SendJsonRequestWithRole<TValue>(
@@ -30,9 +34,7 @@ namespace TraffiLearn.IntegrationTests.Helpers
             string requestUri,
             TValue value)
         {
-            var credentials = GetCredentialsFromRole(role);
-
-            var accessToken = await GetAccessTokenAsync(credentials);
+            var accessToken = await GetAccessTokenForRoleAsync(role);
 
             var request = new HttpRequestMessageBuilder(method, requestUri)
                 .WithJsonContent(value)
@@ -56,13 +58,39 @@ namespace TraffiLearn.IntegrationTests.Helpers
             return await _httpClient.SendAsync(request);
         }
 
+        public Task<HttpResponseMessage> DeleteAsync(
+            string requestUri)
+        {
+            var request = new HttpRequestMessageBuilder(
+                method: HttpMethod.Delete,
+                requestUri)
+                .Build();
+
+            return _httpClient.SendAsync(request);
+        }
+
+        public async Task<HttpResponseMessage> DeleteWithRoleAsync(
+            Role role,
+            string requestUri)
+        {
+            var accessToken = await GetAccessTokenForRoleAsync(role);
+
+            var request = new HttpRequestMessageBuilder(
+                method: HttpMethod.Delete,
+                requestUri)
+                .WithAuthorization(
+                    scheme: AuthConstants.Scheme,
+                    parameter: accessToken)
+                .Build();
+
+            return await _httpClient.SendAsync(request);
+        }
+
         public async Task<TValue> GetFromJsonWithRoleAsync<TValue>(
             Role role,
             string requestUri)
         {
-            var credentials = GetCredentialsFromRole(role);
-
-            var accessToken = await GetAccessTokenAsync(credentials);
+            var accessToken = await GetAccessTokenForRoleAsync(role);
 
             var request = new HttpRequestMessageBuilder(HttpMethod.Get, requestUri)
                 .WithAuthorization(
@@ -100,12 +128,29 @@ namespace TraffiLearn.IntegrationTests.Helpers
             return credentials;
         }
 
-        private async Task<string> GetAccessTokenAsync(RoleCredentials credentials)
+        private async Task<string> GetAccessTokenForRoleAsync(Role role)
         {
-            var loginResponse = await _authenticator.LoginAsync(
-                credentials);
+            if (_cache.TryGetAccessTokenForRole(
+                    role, 
+                    out string? cachedToken))
+            {
+                if (!string.IsNullOrEmpty(cachedToken))
+                {
+                    return cachedToken;
+                }
+            }
 
-            return loginResponse.AccessToken;
+            var credentials = GetCredentialsFromRole(role);
+
+            var loginResponse = await _authenticator.LoginAsync(credentials);
+
+            var token = loginResponse.AccessToken;
+
+            _cache.SetAccessToken(
+                role: role,
+                accessToken: token);
+
+            return token;
         }
 
         private Dictionary<Role, RoleCredentials> CreateRoleCredentialsDictionary()

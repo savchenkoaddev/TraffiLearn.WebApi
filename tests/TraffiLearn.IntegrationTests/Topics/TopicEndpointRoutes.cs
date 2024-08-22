@@ -1,9 +1,12 @@
 ﻿namespace TraffiLearn.IntegrationTests.Topics
 {
-    public static class TopicEndpointRoutes
+    internal static class TopicEndpointRoutes
     {
         public static readonly string CreateTopicRoute =
             "api/topics";
+
+        public static string DeleteTopicRoute(Guid topicId) =>
+           $"api/topics/{topicId}";
 
         public static readonly string UpdateTopicRoute =
             "api/topics";
