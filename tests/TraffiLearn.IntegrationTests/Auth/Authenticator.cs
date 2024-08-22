@@ -4,7 +4,7 @@ using TraffiLearn.Application.Auth.DTO;
 
 namespace TraffiLearn.IntegrationTests.Auth
 {
-    internal sealed class Authenticator
+    public sealed class Authenticator
     {
         private readonly HttpClient _httpClient;
 
@@ -13,34 +13,15 @@ namespace TraffiLearn.IntegrationTests.Auth
             _httpClient = httpClient;
         }
 
-        public Task<LoginResponse> LoginAsOwnerUsingTestCredentialsAsync()
-        {
-            return LoginAsync(
-                email: AuthConstants.OwnerEmail,
-                password: AuthConstants.Password);
-        }
-
-        public Task<LoginResponse> LoginAsAdminUsingTestCredentialsAsync()
-        {
-            return LoginAsync(
-                email: AuthConstants.AdminEmail,
-                password: AuthConstants.Password);
-        }
-
-        public Task<LoginResponse> LoginAsRegularUserUsingTestCredentialsAsync()
-        {
-            return LoginAsync(
-                email: AuthConstants.Email,
-                password: AuthConstants.Password);
-        }
-
-        private async Task<LoginResponse> LoginAsync(
-            string email,
-            string password)
+        public async Task<LoginResponse> LoginAsync(
+            RoleCredentials credentials)
         {
             var loginResponse = await _httpClient.PostAsJsonAsync(
                 requestUri: AuthRoutes.LoginRoute,
-                new { email, password });
+                new { 
+                    email = credentials.Email, 
+                    password = credentials.Password 
+                });
 
             loginResponse.EnsureSuccessStatusCode();
 

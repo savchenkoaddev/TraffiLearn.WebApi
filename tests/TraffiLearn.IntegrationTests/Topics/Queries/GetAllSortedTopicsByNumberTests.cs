@@ -1,6 +1,4 @@
-﻿using FluentAssertions;
-using TraffiLearn.Application.Topics.Queries.GetAllSortedByNumber;
-using TraffiLearn.IntegrationTests.Abstractions;
+﻿using TraffiLearn.IntegrationTests.Abstractions;
 
 namespace TraffiLearn.IntegrationTests.Topics.Queries
 {

@@ -34,32 +34,32 @@ namespace TraffiLearn.IntegrationTests.Helpers
         private Task SeedOwnerWithTestCredentialsAsync()
         {
             return SeedUserAsync(
-                username: AuthConstants.OwnerUsername,
-                email: AuthConstants.OwnerEmail,
+                AuthTestCredentials.Owner,
                 Role.Owner);
         }
 
         private Task SeedAdminWithTestCredentialsAsync()
         {
             return SeedUserAsync(
-                username: AuthConstants.AdminUsername,
-                email: AuthConstants.AdminEmail,
+                AuthTestCredentials.Admin,
                 Role.Admin);
         }
 
         private Task SeedRegularUserWithTestCredentialsAsync()
         {
             return SeedUserAsync(
-                username: AuthConstants.Username,
-                email: AuthConstants.Email,
+                AuthTestCredentials.RegularUser,
                 Role.RegularUser);
         }
 
         private async Task SeedUserAsync(
-            string username,
-            string email,
+            RoleCredentials roleCredentials,
             Role role)
         {
+            var username = roleCredentials.Username;
+            var email = roleCredentials.Email;
+            var password = roleCredentials.Password;
+
             var usernameObject = Username.Create(username).Value;
             var emailObject = Email.Create(email).Value;
 
@@ -88,7 +88,7 @@ namespace TraffiLearn.IntegrationTests.Helpers
 
                 await _identityService.CreateAsync(
                     identityUser,
-                    password: AuthConstants.Password);
+                    password: password);
 
                 await _identityService.AddToRoleAsync(
                     identityUser,

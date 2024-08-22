@@ -1,18 +1,18 @@
-﻿using Azure.Core;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using System.Net.Mime;
+﻿using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Auth;
+using TraffiLearn.IntegrationTests.Builders;
 
 namespace TraffiLearn.IntegrationTests.Helpers
 {
-    internal sealed class RequestSender
+    public sealed class RequestSender
     {
         private readonly HttpClient _httpClient;
         private readonly Authenticator _authenticator;
         private readonly Encoding _encoding = Encoding.UTF8;
+        private readonly Dictionary<Role, RoleCredentials> _roleCredentials;
 
         public RequestSender(
             HttpClient httpClient,
@@ -20,84 +20,63 @@ namespace TraffiLearn.IntegrationTests.Helpers
         {
             _httpClient = httpClient;
             _authenticator = authenticator;
+
+            _roleCredentials = CreateRoleCredentialsDictionary();
         }
 
-        public async Task<HttpResponseMessage> SendJsonRequestAsRegularUserWithTestCredentials<TValue>(
-           HttpRequestMessage request,
-           TValue value)
+        public async Task<HttpResponseMessage> SendJsonRequestWithRole<TValue>(
+            Role role,
+            HttpMethod method,
+            string requestUri,
+            TValue value)
         {
-            var loginResponse = await _authenticator.LoginAsRegularUserUsingTestCredentialsAsync();
+            var credentials = GetCredentialsFromRole(role);
 
-            SetAuthorizationHeader(
-                request,
-                loginResponse.AccessToken);
+            var accessToken = await GetAccessTokenAsync(credentials);
 
-            SetJsonContentHeader(
-                request,
-                value);
+            var request = new HttpRequestMessageBuilder(method, requestUri)
+                .WithJsonContent(value)
+                .WithAuthorization(
+                    scheme: AuthConstants.Scheme,
+                    parameter: accessToken)
+                .Build();
 
             return await _httpClient.SendAsync(request);
         }
 
-        public async Task<HttpResponseMessage> SendJsonRequestAsAdminWithTestCredentials<TValue>(
-            HttpRequestMessage request,
+        public async Task<HttpResponseMessage> SendJsonRequest<TValue>(
+            HttpMethod method,
+            string requestUri,
             TValue value)
         {
-            var loginResponse = await _authenticator.LoginAsAdminUsingTestCredentialsAsync();
-
-            SetAuthorizationHeader(
-                request,
-                loginResponse.AccessToken);
-
-            SetJsonContentHeader(
-                request,
-                value);
+            var request = new HttpRequestMessageBuilder(method, requestUri)
+                .WithJsonContent(value)
+                .Build();
 
             return await _httpClient.SendAsync(request);
         }
 
-        public async Task<HttpResponseMessage> SendJsonRequestAsOwnerWithTestCredentials<TValue>(
-            HttpRequestMessage request,
-            TValue value)
-        {
-            var loginResponse = await _authenticator.LoginAsOwnerUsingTestCredentialsAsync();
-
-            SetAuthorizationHeader(
-                request,
-                loginResponse.AccessToken);
-
-            SetJsonContentHeader(
-                request,
-                value);
-
-            return await _httpClient.SendAsync(request);
-        }
-
-        private void SetJsonContentHeader<TValue>(
-            HttpRequestMessage request,
-            TValue value)
-        {
-            request.Content = new StringContent(
-                JsonSerializer.Serialize(value),
-                encoding: _encoding,
-                mediaType: MediaTypeNames.Application.Json);
-        }
-
-        public async Task<TValue> GetFromJsonAsRegularUserAsync<TValue>(
+        public async Task<TValue> GetFromJsonWithRoleAsync<TValue>(
+            Role role,
             string requestUri)
         {
-            var httpRequestMessage = new HttpRequestMessage(
-                method: HttpMethod.Get,
-                requestUri: requestUri);
+            var credentials = GetCredentialsFromRole(role);
 
-            var loginResponse = await _authenticator
-                .LoginAsRegularUserUsingTestCredentialsAsync();
+            var accessToken = await GetAccessTokenAsync(credentials);
 
-            SetAuthorizationHeader(
-                httpRequestMessage, 
-                accessToken: loginResponse.AccessToken);
+            var request = new HttpRequestMessageBuilder(HttpMethod.Get, requestUri)
+                .WithAuthorization(
+                    scheme: AuthConstants.Scheme,
+                    parameter: accessToken)
+                .Build();
 
-            var response = await _httpClient.SendAsync(httpRequestMessage);
+            return await SendAndParseJsonResponseAsync<TValue>(request);
+        }
+
+        private async Task<TValue> SendAndParseJsonResponseAsync<TValue>(
+            HttpRequestMessage requestMessage)
+        {
+            var response = await _httpClient.SendAsync(requestMessage);
 
             response.EnsureSuccessStatusCode();
 
@@ -105,19 +84,38 @@ namespace TraffiLearn.IntegrationTests.Helpers
 
             if (result is null)
             {
-                throw new JsonException("Failed to parse value from json.");
+                throw new JsonException("Failed to parse value from JSON.");
             }
 
             return result;
         }
 
-        private void SetAuthorizationHeader(
-            HttpRequestMessage request,
-            string accessToken)
+        private RoleCredentials GetCredentialsFromRole(Role role)
         {
-            request.Headers.Authorization = new AuthenticationHeaderValue(
-                AuthConstants.Scheme,
-                parameter: accessToken);
+            if (!_roleCredentials.TryGetValue(role, out var credentials))
+            {
+                throw new InvalidOperationException($"Invalid role '{role}' provided. Unable to send JSON request due to missing or unrecognized role credentials.");
+            }
+
+            return credentials;
+        }
+
+        private async Task<string> GetAccessTokenAsync(RoleCredentials credentials)
+        {
+            var loginResponse = await _authenticator.LoginAsync(
+                credentials);
+
+            return loginResponse.AccessToken;
+        }
+
+        private Dictionary<Role, RoleCredentials> CreateRoleCredentialsDictionary()
+        {
+            return new Dictionary<Role, RoleCredentials>
+            {
+                { Role.RegularUser, AuthTestCredentials.RegularUser },
+                { Role.Admin, AuthTestCredentials.Admin },
+                { Role.Owner, AuthTestCredentials.Owner }
+            };
         }
     }
 }

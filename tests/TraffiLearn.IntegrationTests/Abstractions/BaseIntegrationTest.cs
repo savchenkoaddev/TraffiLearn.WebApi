@@ -1,4 +1,7 @@
-﻿namespace TraffiLearn.IntegrationTests.Abstractions
+﻿using TraffiLearn.IntegrationTests.Auth;
+using TraffiLearn.IntegrationTests.Helpers;
+
+namespace TraffiLearn.IntegrationTests.Abstractions
 {
     [Collection(Constants.CollectionName)]
     public abstract class BaseIntegrationTest : IAsyncLifetime
@@ -10,9 +13,19 @@
         {
             ResetDatabase = factory.ResetDatabaseAsync;
             HttpClient = factory.CreateClient();
+
+            Authenticator = new Authenticator(HttpClient);
+
+            RequestSender = new RequestSender(
+                HttpClient, 
+                Authenticator);
         }
 
-        protected HttpClient HttpClient { get; init; }
+        protected HttpClient HttpClient { get; private init; }
+
+        protected Authenticator Authenticator { get; private init; }
+
+        protected RequestSender RequestSender { get; private init; }
 
         public Task InitializeAsync() => Task.CompletedTask;
 
