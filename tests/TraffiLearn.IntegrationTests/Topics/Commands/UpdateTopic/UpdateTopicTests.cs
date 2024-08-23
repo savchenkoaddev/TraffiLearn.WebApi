@@ -89,7 +89,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
 
             var allTopics = await TopicRequestSender.GetAllTopicsSortedByNumberAsync();
 
-            var firstTopicId = allTopics.First().TopicId;
+            var firstTopicId = allTopics.First().Id;
 
             var command = UpdateTopicFixtureFactory.CreateValidCommand(
                 topicId: firstTopicId);
@@ -113,7 +113,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
 
             var allTopics = await TopicRequestSender.GetAllTopicsSortedByNumberAsync();
 
-            var firstTopicId = allTopics.First().TopicId;
+            var firstTopicId = allTopics.First().Id;
 
             var command = UpdateTopicFixtureFactory.CreateValidCommand(
                 topicId: firstTopicId);

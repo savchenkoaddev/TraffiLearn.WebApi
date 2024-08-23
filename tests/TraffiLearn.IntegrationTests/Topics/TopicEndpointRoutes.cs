@@ -5,13 +5,17 @@
         public static readonly string CreateTopicRoute =
             "api/topics";
 
-        public static string DeleteTopicRoute(Guid topicId) =>
-           $"api/topics/{topicId}";
-
         public static readonly string UpdateTopicRoute =
             "api/topics";
 
         public static readonly string GetAllSortedTopicsByNumberRoute =
             "api/topics";
+
+        public static string DeleteTopicRoute(Guid topicId) =>
+           $"api/topics/{topicId}";
+
+        public static string AddQuestionToTopicRoute(
+            Guid questionId, 
+            Guid topicId) => $"api/topics/{topicId}/add-question/{questionId}";
     }
 }

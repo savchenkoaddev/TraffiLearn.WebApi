@@ -9,7 +9,7 @@ namespace TraffiLearn.Application.Questions.Commands.Create
         string? Content,
         string? Explanation,
         int? QuestionNumber,
-        List<Guid>? TopicsIds,
-        List<AnswerRequest?>? Answers,
+        List<Guid>? TopicIds,
+        List<AnswerRequest>? Answers,
         IFormFile? Image) : IRequest<Result>;
 }

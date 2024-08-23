@@ -19,13 +19,14 @@ namespace TraffiLearn.IntegrationTests.Helpers
 
         public RequestSender(
             HttpClient httpClient,
-            Authenticator authenticator)
+            Authenticator authenticator,
+            IMemoryCache cache)
         {
             _httpClient = httpClient;
             _authenticator = authenticator;
 
             _roleCredentials = CreateRoleCredentialsDictionary();
-            _cache = new MemoryCache(new MemoryCacheOptions());
+            _cache = cache;
         }
 
         public async Task<HttpResponseMessage> SendJsonRequestWithRole<TValue>(
@@ -77,6 +78,34 @@ namespace TraffiLearn.IntegrationTests.Helpers
 
             var request = new HttpRequestMessageBuilder(
                 method: HttpMethod.Delete,
+                requestUri)
+                .WithAuthorization(
+                    scheme: AuthConstants.Scheme,
+                    parameter: accessToken)
+                .Build();
+
+            return await _httpClient.SendAsync(request);
+        }
+
+        public Task<HttpResponseMessage> PutAsync(
+            string requestUri)
+        {
+            var request = new HttpRequestMessageBuilder(
+                method: HttpMethod.Put,
+                requestUri)
+                .Build();
+
+            return _httpClient.SendAsync(request);
+        }
+
+        public async Task<HttpResponseMessage> PutWithRoleAsync(
+            Role role,
+            string requestUri)
+        {
+            var accessToken = await GetAccessTokenForRoleAsync(role);
+
+            var request = new HttpRequestMessageBuilder(
+                method: HttpMethod.Put,
                 requestUri)
                 .WithAuthorization(
                     scheme: AuthConstants.Scheme,

@@ -30,7 +30,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.DeleteTopic
 
             var allTopics = await TopicRequestSender.GetAllTopicsSortedByNumberAsync();
 
-            var firstTopicId = allTopics.First().TopicId;
+            var firstTopicId = allTopics.First().Id;
 
             var response = await RequestSender.DeleteAsync(
                 requestUri: TopicEndpointRoutes.DeleteTopicRoute(firstTopicId));
@@ -63,7 +63,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.DeleteTopic
 
             var allTopics = await TopicRequestSender.GetAllTopicsSortedByNumberAsync();
 
-            var firstTopicId = allTopics.First().TopicId;
+            var firstTopicId = allTopics.First().Id;
 
             var response = await RequestSender.DeleteWithRoleAsync(
                 role,
@@ -99,7 +99,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.DeleteTopic
 
             var allTopics = await TopicRequestSender.GetAllTopicsSortedByNumberAsync();
 
-            var firstTopicId = allTopics.First().TopicId;
+            var firstTopicId = allTopics.First().Id;
 
             var response = await RequestSender.DeleteWithRoleAsync(
                 role,
@@ -118,7 +118,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.DeleteTopic
 
             var allTopics = await TopicRequestSender.GetAllTopicsSortedByNumberAsync();
 
-            var firstTopicId = allTopics.First().TopicId;
+            var firstTopicId = allTopics.First().Id;
 
             await RequestSender.DeleteWithRoleAsync(
                 role,

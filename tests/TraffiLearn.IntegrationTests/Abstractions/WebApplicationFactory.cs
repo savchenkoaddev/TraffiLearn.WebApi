@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Respawn;
@@ -35,7 +36,14 @@ namespace TraffiLearn.IntegrationTests.Abstractions
                 RemoveExistingDbContext(services);
 
                 RegisterTestingDbContext(services);
+
+                RegisterTestingMemoryCache(services);
             });
+        }
+
+        private static void RegisterTestingMemoryCache(IServiceCollection services)
+        {
+            services.AddSingleton<IMemoryCache, MemoryCache>();
         }
 
         public async Task ResetDatabaseAsync()

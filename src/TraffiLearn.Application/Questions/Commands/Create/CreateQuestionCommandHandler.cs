@@ -48,7 +48,7 @@ namespace TraffiLearn.Application.Questions.Commands.Create
 
             var addResult = await HandleTopics(
                 question,
-                topicsIds: request.TopicsIds,
+                topicIds: request.TopicIds,
                 cancellationToken);
 
             if (addResult.IsFailure)
@@ -77,10 +77,10 @@ namespace TraffiLearn.Application.Questions.Commands.Create
 
         private async Task<Result> HandleTopics(
             Question question,
-            List<Guid>? topicsIds,
+            List<Guid>? topicIds,
             CancellationToken cancellationToken = default)
         {
-            foreach (var topicId in topicsIds)
+            foreach (var topicId in topicIds)
             {
                 var topic = await _topicRepository.GetByIdAsync(
                     topicId: new TopicId(topicId),
