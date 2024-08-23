@@ -62,5 +62,11 @@ namespace TraffiLearn.IntegrationTests.Extensions
         {
             responseMessage.AssertStatusCode(HttpStatusCode.OK);
         }
+
+        public static void AssertInternalServerErrorStatusCode(
+            this HttpResponseMessage responseMessage)
+        {
+            responseMessage.AssertStatusCode(HttpStatusCode.InternalServerError);
+        }
     }
 }
