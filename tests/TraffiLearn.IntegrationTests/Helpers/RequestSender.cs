@@ -78,6 +78,21 @@ namespace TraffiLearn.IntegrationTests.Helpers
             return await _httpClient.SendAsync(request);
         }
 
+        public async Task<HttpResponseMessage> GetAsync(
+            string requestUri,
+            Role? getFromRole = null)
+        {
+            var builder = new HttpRequestMessageBuilder(
+                HttpMethod.Get,
+                requestUri);
+
+            var request = await BuildHttpRequestWithOptionalAuthorizationAsync(
+                builder,
+                getFromRole);
+
+            return await _httpClient.SendAsync(request);
+        }
+
         public async Task<TValue> GetFromJsonAsync<TValue>(
             string requestUri,
             Role? getFromRole = null)

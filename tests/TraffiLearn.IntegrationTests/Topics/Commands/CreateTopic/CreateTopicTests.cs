@@ -16,7 +16,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
         { }
 
         [Fact]
-        public async Task CreateTopic_IfUserNotAuthenticated_ShouldReturn401StatusCode()
+        public async Task CreateTopic_IfUserIsNotAuthenticated_ShouldReturn401StatusCode()
         {
             var response = await SendUnauthenticatedValidCreateTopicRequestAsync();
 

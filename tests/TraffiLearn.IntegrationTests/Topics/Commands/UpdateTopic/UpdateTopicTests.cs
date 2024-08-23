@@ -14,7 +14,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
         { }
 
         [Fact]
-        public async Task UpdateTopic_IfUserNotAuthenticated_ShouldReturn401StatusCode()
+        public async Task UpdateTopic_IfUserIsNotAuthenticated_ShouldReturn401StatusCode()
         {
             var command = UpdateTopicFixtureFactory.CreateValidCommandWithRandomId();
 

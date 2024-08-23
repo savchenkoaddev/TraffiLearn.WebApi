@@ -19,7 +19,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.AddQuestionToTopic
         }
 
         [Fact]
-        public async Task AddQuestionToTopic_IfUserNotAuthenticated_ShouldReturn401StatusCode()
+        public async Task AddQuestionToTopic_IfUserIsNotAuthenticated_ShouldReturn401StatusCode()
         {
             var response = await RequestSender.PutAsync(
                 requestUri: TopicEndpointRoutes.AddQuestionToTopicRoute(

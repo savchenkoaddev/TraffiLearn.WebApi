@@ -11,6 +11,9 @@
         public static readonly string GetAllSortedTopicsByNumberRoute =
             "api/topics";
 
+        public static string GetTopicByIdRoute(Guid topicId) =>
+            $"api/topics/{topicId}";
+
         public static string GetTopicQuestionsRoute(Guid topicId) =>
             $"api/topics/{topicId}/questions";
 

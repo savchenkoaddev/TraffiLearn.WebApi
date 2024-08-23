@@ -18,7 +18,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.RemoveQuestionFromTopic
         }
 
         [Fact]
-        public async Task RemoveQuestionFromTopic_IfUserNotAuthenticated_ShouldReturn401StatusCode()
+        public async Task RemoveQuestionFromTopic_IfUserIsNotAuthenticated_ShouldReturn401StatusCode()
         {
             var response = await RequestSender.PutAsync(
                 requestUri: TopicEndpointRoutes.RemoveQuestionFromTopicRoute(

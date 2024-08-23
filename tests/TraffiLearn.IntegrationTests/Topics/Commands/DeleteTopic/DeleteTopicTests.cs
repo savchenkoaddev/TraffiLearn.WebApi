@@ -13,7 +13,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.DeleteTopic
         { }
 
         [Fact]
-        public async Task DeleteTopic_IfUserNotAuthenticated_ShouldReturn401StatusCode()
+        public async Task DeleteTopic_IfUserIsNotAuthenticated_ShouldReturn401StatusCode()
         {
             var topicId = Guid.NewGuid();
 

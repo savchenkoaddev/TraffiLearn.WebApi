@@ -56,5 +56,11 @@ namespace TraffiLearn.IntegrationTests.Extensions
         {
             responseMessage.AssertStatusCode(HttpStatusCode.NotFound);
         }
+
+        public static void AssertOkStatusCode(
+            this HttpResponseMessage responseMessage)
+        {
+            responseMessage.AssertStatusCode(HttpStatusCode.OK);
+        }
     }
 }
