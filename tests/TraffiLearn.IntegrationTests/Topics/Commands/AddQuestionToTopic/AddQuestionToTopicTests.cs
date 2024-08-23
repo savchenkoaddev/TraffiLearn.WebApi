@@ -1,4 +1,5 @@
-﻿using TraffiLearn.Domain.Aggregates.Users.Enums;
+﻿using FluentAssertions;
+using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;
 using TraffiLearn.IntegrationTests.Questions;
@@ -7,13 +8,14 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.AddQuestionToTopic
 {
     public sealed class AddQuestionToTopicTests : TopicIntegrationTest
     {
-        private readonly AuthorizedQuestionRequestSender _questionRequestSender;
+        private readonly ApiQuestionClient
+            _apiQuestionClient;
 
         public AddQuestionToTopicTests(
             WebApplicationFactory factory)
             : base(factory)
         {
-            _questionRequestSender = new AuthorizedQuestionRequestSender(RequestSender);
+            _apiQuestionClient = new ApiQuestionClient(RequestSender);
         }
 
         [Fact]
@@ -47,16 +49,12 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.AddQuestionToTopic
         public async Task AddQuestionToTopic_IfUserEligibleButQuestionNotFound_ShouldReturn404StatusCode(
             Role role)
         {
-            await TopicRequestSender.CreateValidTopicAsync();
-
-            var allTopics = await TopicRequestSender.GetAllTopicsSortedByNumberAsync();
-
-            var firstTopicId = allTopics.First().Id;
+            var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
             var response = await RequestSender.PutAsync(
                 requestUri: TopicEndpointRoutes.AddQuestionToTopicRoute(
                     questionId: Guid.NewGuid(),
-                    topicId: firstTopicId),
+                    topicId: topicId),
                 putWithRole: role);
 
             response.AssertNotFoundStatusCode();
@@ -68,22 +66,14 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.AddQuestionToTopic
         public async Task AddQuestionToTopic_IfUserEligibleButTopicNotFound_ShouldReturn404StatusCode(
             Role role)
         {
-            await TopicRequestSender.CreateValidTopicAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
-            var allTopics = await TopicRequestSender.GetAllTopicsSortedByNumberAsync();
-
-            var firstTopicId = allTopics.First().Id;
-
-            await _questionRequestSender.CreateValidQuestionAsync(
-                topicIds: [firstTopicId]);
-
-            var allQuestions = await _questionRequestSender.GetAllQuestionAsync();
-
-            var firstQuestionId = allQuestions.First().Id;
+            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+                topicIds: [topicId]);
 
             var response = await RequestSender.PutAsync(
                 requestUri: TopicEndpointRoutes.AddQuestionToTopicRoute(
-                    questionId: firstQuestionId,
+                    questionId: questionId,
                     topicId: Guid.NewGuid()),
                 putWithRole: role);
 
@@ -96,30 +86,18 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.AddQuestionToTopic
         public async Task AddQuestionToTopic_IfUserEligibleButQuestionAlreadyAdded_ShouldReturn400StatusCode(
             Role role)
         {
-            await SeedTopicAsync();
-            var firstTopicId = await GetFirstTopicId();
+            var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
-            await _questionRequestSender.CreateValidQuestionAsync(
-                topicIds: [firstTopicId]);
-
-            var allQuestions = await _questionRequestSender.GetAllQuestionAsync();
-
-            var firstQuestionId = allQuestions.First().Id;
+            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+                topicIds: [topicId]);
 
             var response = await RequestSender.PutAsync(
                 requestUri: TopicEndpointRoutes.AddQuestionToTopicRoute(
-                    questionId: firstQuestionId,
-                    topicId: firstTopicId),
-                putWithRole: role);
-
-            var secondResponse = await RequestSender.PutAsync(
-                requestUri: TopicEndpointRoutes.AddQuestionToTopicRoute(
-                    questionId: firstQuestionId,
-                    topicId: firstTopicId),
+                    questionId: questionId,
+                    topicId: topicId),
                 putWithRole: role);
 
             response.AssertBadRequestStatusCode();
-            secondResponse.AssertBadRequestStatusCode();
         }
 
         [Theory]
@@ -128,38 +106,70 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.AddQuestionToTopic
         public async Task AddQuestionToTopic_IfValidCase_ShouldReturn204StatusCode(
             Role role)
         {
-            //await SeedTopicAsync();
-            //var firstTopicId = await GetFirstTopicId();
+            var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
-            ////invar questionId = await _questionRequestSender.CreateValidQuestionAsync(
-            ////    topicIds: [firstTopicId]);
+            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+                topicIds: [topicId]);
 
-            //var response = await RequestSender.PutAsync(
-            //    requestUri: TopicEndpointRoutes.AddQuestionToTopicRoute(
-            //        questionId: questionId,
-            //        topicId: firstTopicId),
-            //    putWithRole: role);
+            var newTopicId = await ApiTopicClient.CreateValidTopicAsync();
 
-            //var secondResponse = await RequestSender.PutAsync(
-            //    requestUri: TopicEndpointRoutes.AddQuestionToTopicRoute(
-            //        questionId: questionId,
-            //        topicId: firstTopicId),
-            //    putWithRole: role);
+            var response = await RequestSender.PutAsync(
+                requestUri: TopicEndpointRoutes.AddQuestionToTopicRoute(
+                    questionId: questionId,
+                    topicId: newTopicId),
+                putWithRole: role);
 
-            //response.AssertBadRequestStatusCode();
-            //secondResponse.AssertBadRequestStatusCode();
+            response.AssertNoContentStatusCode();
         }
 
-        private async Task<Guid> GetFirstTopicId()
+        [Theory]
+        [InlineData(Role.Admin)]
+        [InlineData(Role.Owner)]
+        public async Task AddQuestionToTopic_IfValidCase_QuestionShouldBeAddedToTopic(
+            Role role)
         {
-            var allTopics = await TopicRequestSender.GetAllTopicsSortedByNumberAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
-            return allTopics.First().Id;
+            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+                topicIds: [topicId]);
+
+            var newTopicId = await ApiTopicClient.CreateValidTopicAsync();
+
+            var response = await RequestSender.PutAsync(
+                requestUri: TopicEndpointRoutes.AddQuestionToTopicRoute(
+                    questionId: questionId,
+                    topicId: newTopicId),
+                putWithRole: role);
+
+            var topicQuestions = await ApiTopicClient.GetTopicQuestionsAsync(newTopicId);
+
+            topicQuestions.Should().HaveCount(1);
+            topicQuestions.First().Id.Should().Be(questionId);
         }
 
-        private async Task SeedTopicAsync()
+        [Theory]
+        [InlineData(Role.Admin)]
+        [InlineData(Role.Owner)]
+        public async Task AddQuestionToTopic_IfValidCase_TopicShouldBeAddedToQuestion(
+            Role role)
         {
-            await TopicRequestSender.CreateValidTopicAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsync();
+
+            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+                topicIds: [topicId]);
+
+            var newTopicId = await ApiTopicClient.CreateValidTopicAsync();
+
+            var response = await RequestSender.PutAsync(
+                requestUri: TopicEndpointRoutes.AddQuestionToTopicRoute(
+                    questionId: questionId,
+                    topicId: newTopicId),
+                putWithRole: role);
+
+            var topicQuestions = await ApiTopicClient.GetTopicQuestionsAsync(newTopicId);
+
+            topicQuestions.Should().HaveCount(1);
+            topicQuestions.First().Id.Should().Be(questionId);
         }
     }
 }

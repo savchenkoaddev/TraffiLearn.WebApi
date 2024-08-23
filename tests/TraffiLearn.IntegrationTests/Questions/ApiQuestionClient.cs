@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Net.Http.Json;
 using TraffiLearn.Application.Questions.DTO;
+using TraffiLearn.Application.Topics.DTO;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Helpers;
 using TraffiLearn.IntegrationTests.Questions.CreateQuestion;
 
 namespace TraffiLearn.IntegrationTests.Questions
 {
-    public sealed class AuthorizedQuestionRequestSender
+    public sealed class ApiQuestionClient
     {
         private readonly RequestSender _requestSender;
 
-        public AuthorizedQuestionRequestSender(RequestSender requestSender)
+        public ApiQuestionClient(RequestSender requestSender)
         {
             _requestSender = requestSender;
         }
@@ -36,10 +37,17 @@ namespace TraffiLearn.IntegrationTests.Questions
             return await response.Content.ReadFromJsonAsync<Guid>();
         }
 
-        public async Task<IEnumerable<QuestionResponse>> GetAllQuestionAsync()
+        public Task<IEnumerable<QuestionResponse>> GetAllQuestionAsync()
         {
-            return await _requestSender.GetFromJsonAsync<IEnumerable<QuestionResponse>>(
+            return _requestSender.GetFromJsonAsync<IEnumerable<QuestionResponse>>(
                 requestUri: QuestionEndpointRoutes.GetAllQuestionsRoute,
+                getFromRole: Role.Owner);
+        }
+
+        public Task<IEnumerable<TopicResponse>> GetQuestionTopicsAsync(Guid questionId)
+        {
+            return _requestSender.GetFromJsonAsync<IEnumerable<TopicResponse>>(
+                requestUri: QuestionEndpointRoutes.GetQuestionTopicsRoute(questionId),
                 getFromRole: Role.Owner);
         }
     }

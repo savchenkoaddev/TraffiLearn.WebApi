@@ -85,9 +85,9 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
         public async Task UpdateTopic_IfPassedValidArgsAndUserIsEligible_ShouldReturn204StatusCode(
             Role role)
         {
-            await TopicRequestSender.CreateValidTopicAsync();
+            await ApiTopicClient.CreateValidTopicAsync();
 
-            var allTopics = await TopicRequestSender.GetAllTopicsSortedByNumberAsync();
+            var allTopics = await ApiTopicClient.GetAllTopicsSortedByNumberAsync();
 
             var firstTopicId = allTopics.First().Id;
 
@@ -109,7 +109,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
         public async Task UpdateTopic_IfPassedValidArgsAndUserIsEligible_TopicShouldBeUpdated(
             Role role)
         {
-            var topicId = await TopicRequestSender.CreateValidTopicAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
             var command = UpdateTopicFixtureFactory.CreateValidCommand(
                 topicId: topicId);
@@ -120,7 +120,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
                 command,
                 sentWithRole: role);
 
-            var allTopics = await TopicRequestSender.GetAllTopicsSortedByNumberAsync();
+            var allTopics = await ApiTopicClient.GetAllTopicsSortedByNumberAsync();
 
             allTopics.First().Title.Should().Be(command.Title);
             allTopics.First().Id.Should().Be(topicId);

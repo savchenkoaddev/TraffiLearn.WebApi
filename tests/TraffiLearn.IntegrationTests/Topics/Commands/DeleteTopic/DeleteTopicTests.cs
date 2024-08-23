@@ -26,12 +26,12 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.DeleteTopic
         [Fact]
         public async Task DeleteTopic_IfUserNotAuthenticated_TopicShouldNotBeDeleted()
         {
-            var topicId = await TopicRequestSender.CreateValidTopicAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
             var response = await RequestSender.DeleteAsync(
                 requestUri: TopicEndpointRoutes.DeleteTopicRoute(topicId));
 
-            var allTopics = await TopicRequestSender.GetAllTopicsSortedByNumberAsync();
+            var allTopics = await ApiTopicClient.GetAllTopicsSortedByNumberAsync();
 
             allTopics.Should().HaveCount(1);
             allTopics.First().Id.Should().Be(topicId);
@@ -56,13 +56,13 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.DeleteTopic
         public async Task DeleteTopic_IfUserIsNotEligible_TopicShouldNotBeDeleted(
             Role role)
         {
-            var topicId = await TopicRequestSender.CreateValidTopicAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
             var response = await RequestSender.DeleteAsync(
                 requestUri: TopicEndpointRoutes.DeleteTopicRoute(topicId),
                 deletedWithRole: role);
 
-            var allTopics = await TopicRequestSender.GetAllTopicsSortedByNumberAsync();
+            var allTopics = await ApiTopicClient.GetAllTopicsSortedByNumberAsync();
 
             allTopics.Should().HaveCount(1);
             allTopics.First().Id.Should().Be(topicId);
@@ -89,7 +89,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.DeleteTopic
         public async Task DeleteTopic_IfUserIsEligibleAndTopicIsFound_ShouldReturn204StatusCode(
             Role role)
         {
-            var topicId = await TopicRequestSender.CreateValidTopicAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
             var response = await RequestSender.DeleteAsync(
                 requestUri: TopicEndpointRoutes.DeleteTopicRoute(topicId),
@@ -104,13 +104,13 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.DeleteTopic
         public async Task DeleteTopic_IfUserIsEligibleAndTopicIsFound_TopicShouldBeDeleted(
             Role role)
         {
-            var topicId = await TopicRequestSender.CreateValidTopicAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
             await RequestSender.DeleteAsync(
                 requestUri: TopicEndpointRoutes.DeleteTopicRoute(topicId),
                 deletedWithRole: role);
 
-            var allTopics = await TopicRequestSender.GetAllTopicsSortedByNumberAsync();
+            var allTopics = await ApiTopicClient.GetAllTopicsSortedByNumberAsync();
 
             allTopics.Should().BeEmpty();
         }

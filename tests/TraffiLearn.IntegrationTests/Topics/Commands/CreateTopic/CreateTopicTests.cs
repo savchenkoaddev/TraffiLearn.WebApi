@@ -28,7 +28,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
         {
             var response = await SendUnauthenticatedValidCreateTopicRequestAsync();
 
-            var topics = await TopicRequestSender.GetAllTopicsSortedByNumberAsync();
+            var topics = await ApiTopicClient.GetAllTopicsSortedByNumberAsync();
 
             topics.Should().BeEmpty();
         }
@@ -50,7 +50,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
         {
             var response = await SendValidCreateTopicRequestWithRoleAsync(role);
 
-            var topics = await TopicRequestSender.GetAllTopicsSortedByNumberAsync();
+            var topics = await ApiTopicClient.GetAllTopicsSortedByNumberAsync();
 
             topics.Should().BeEmpty();
         }
@@ -87,7 +87,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
                     role: role,
                     command);
 
-                var topics = await TopicRequestSender.GetAllTopicsSortedByNumberAsync();
+                var topics = await ApiTopicClient.GetAllTopicsSortedByNumberAsync();
 
                 topics.Should().BeEmpty();
             }
@@ -116,7 +116,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
                 role: role,
                 command);
 
-            var topics = await TopicRequestSender.GetAllTopicsSortedByNumberAsync();
+            var topics = await ApiTopicClient.GetAllTopicsSortedByNumberAsync();
 
             topics.Should().HaveCount(1);
             topics.First().Title.Should().Be(command.Title);
@@ -157,7 +157,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
 
             var topicId = await response.Content.ReadFromJsonAsync<Guid>();
 
-            var allTopics = await TopicRequestSender.GetAllTopicsSortedByNumberAsync();
+            var allTopics = await ApiTopicClient.GetAllTopicsSortedByNumberAsync();
 
             allTopics.Should().HaveCount(1);
             allTopics.First().Id.Should().Be(topicId);

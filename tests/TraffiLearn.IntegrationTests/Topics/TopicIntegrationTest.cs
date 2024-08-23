@@ -4,13 +4,13 @@ namespace TraffiLearn.IntegrationTests.Topics
 {
     public class TopicIntegrationTest : BaseIntegrationTest
     {
-        protected readonly AuthorizedTopicRequestSender TopicRequestSender;
+        protected readonly ApiTopicClient ApiTopicClient;
 
         public TopicIntegrationTest(
             WebApplicationFactory factory)
             : base(factory)
         {
-            TopicRequestSender = new AuthorizedTopicRequestSender(RequestSender);
+            ApiTopicClient = new ApiTopicClient(RequestSender);
         }
     }
 }
