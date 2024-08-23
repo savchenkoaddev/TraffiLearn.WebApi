@@ -2,9 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using TraffiLearn.Application.Questions.Commands.AddCommentToQuestion;
-using TraffiLearn.Application.Questions.Commands.Create;
 using TraffiLearn.Application.Questions.Commands.Delete;
-using TraffiLearn.Application.Questions.Commands.Update;
 using TraffiLearn.Application.Questions.Queries.GetAll;
 using TraffiLearn.Application.Questions.Queries.GetById;
 using TraffiLearn.Application.Questions.Queries.GetQuestionComments;
@@ -28,6 +26,7 @@ using TraffiLearn.WebAPI.Extensions;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
+    [HasPermission(Permission.AccessData)]
     [Route("api/questions")]
     [ApiController]
     public class QuestionsController : ControllerBase
@@ -133,6 +132,7 @@ namespace TraffiLearn.WebAPI.Controllers
         #region Commands
 
 
+        [HasPermission(Permission.ModifyData)]
         [HttpPost]
         [Consumes(MediaTypeNames.Multipart.FormData)]
         public async Task<IActionResult> CreateQuestion(
@@ -158,7 +158,7 @@ namespace TraffiLearn.WebAPI.Controllers
             [FromForm] UpdateQuestionCommandWrapper wrapper)
         {
             var commandResult = await _sender.Send(wrapper.ToCommand());
-            
+
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 

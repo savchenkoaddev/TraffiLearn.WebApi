@@ -76,7 +76,11 @@ namespace TraffiLearn.WebAPI
                     Permission.AccessData.ToString(),
                     policy =>
                     {
-                        policy.RequireAuthenticatedUser();
+                        policy.RequireRole(roles: [
+                            Role.RegularUser.ToString(),
+                            Role.Admin.ToString(),
+                            Role.Owner.ToString(),
+                        ]);
                     });
 
                 options.AddPolicy(

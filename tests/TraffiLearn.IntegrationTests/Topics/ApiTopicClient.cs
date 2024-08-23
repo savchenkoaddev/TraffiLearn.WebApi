@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Json;
 using TraffiLearn.Application.Questions.DTO;
+using TraffiLearn.Application.Topics.Commands.Create;
 using TraffiLearn.Application.Topics.DTO;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Helpers;
@@ -20,6 +21,20 @@ namespace TraffiLearn.IntegrationTests.Topics
         {
             var command = CreateTopicFixtureFactory.CreateValidCommand();
 
+            var response = await _requestSender.SendJsonRequest(
+                method: HttpMethod.Post,
+                requestUri: TopicEndpointRoutes.CreateTopicRoute,
+                command,
+                sentWithRole: Role.Owner);
+
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadFromJsonAsync<Guid>();
+        }
+
+        public async Task<Guid> CreateTopicAsync(
+            CreateTopicCommand command)
+        {
             var response = await _requestSender.SendJsonRequest(
                 method: HttpMethod.Post,
                 requestUri: TopicEndpointRoutes.CreateTopicRoute,
