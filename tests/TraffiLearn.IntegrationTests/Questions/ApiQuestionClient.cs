@@ -37,7 +37,7 @@ namespace TraffiLearn.IntegrationTests.Questions
             return await response.Content.ReadFromJsonAsync<Guid>();
         }
 
-        public Task<IEnumerable<QuestionResponse>> GetAllQuestionAsync()
+        public Task<IEnumerable<QuestionResponse>> GetAllQuestionsAsync()
         {
             return _requestSender.GetFromJsonAsync<IEnumerable<QuestionResponse>>(
                 requestUri: QuestionEndpointRoutes.GetAllQuestionsRoute,
