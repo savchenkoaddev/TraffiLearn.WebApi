@@ -16,7 +16,9 @@ namespace TraffiLearn.Application.Questions.Mappers
                 LikesCount: source.LikesCount,
                 DislikesCount: source.DislikesCount,
                 QuestionNumber: source.QuestionNumber.Value,
-                Answers: source.Answers.ToList());
+                Answers: source.Answers.Select(a => new AnswerResponse(
+                    a.Text,
+                    a.IsCorrect)).ToList());
         }
     }
 }

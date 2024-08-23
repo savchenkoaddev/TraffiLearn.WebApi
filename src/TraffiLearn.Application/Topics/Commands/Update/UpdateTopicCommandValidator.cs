@@ -10,6 +10,7 @@ namespace TraffiLearn.Application.Topics.Commands.Update
                 .NotEmpty();
 
             RuleFor(x => x.TopicNumber)
+                .NotEmpty()
                 .GreaterThan(0);
 
             RuleFor(x => x.Title)

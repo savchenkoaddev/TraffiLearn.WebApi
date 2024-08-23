@@ -75,7 +75,15 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command);
 
-            return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
+            if (commandResult.IsSuccess)
+            {
+                return CreatedAtAction(
+                    actionName: nameof(GetTicketById),
+                    routeValues: new { ticketId = commandResult.Value },
+                    value: commandResult.Value);
+            }
+
+            return commandResult.ToProblemDetails();
         }
 
         [HasPermission(Permission.ModifyData)]

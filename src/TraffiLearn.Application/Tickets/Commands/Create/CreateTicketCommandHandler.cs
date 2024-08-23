@@ -9,7 +9,7 @@ using TraffiLearn.Domain.Shared;
 namespace TraffiLearn.Application.Tickets.Commands.Create
 {
     internal sealed class CreateTicketCommandHandler :
-        IRequestHandler<CreateTicketCommand, Result>
+        IRequestHandler<CreateTicketCommand, Result<Guid>>
     {
         private readonly ITicketRepository _ticketRepository;
         private readonly IQuestionRepository _questionRepository;
@@ -28,7 +28,7 @@ namespace TraffiLearn.Application.Tickets.Commands.Create
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result> Handle(
+        public async Task<Result<Guid>> Handle(
             CreateTicketCommand request,
             CancellationToken cancellationToken)
         {
@@ -36,7 +36,7 @@ namespace TraffiLearn.Application.Tickets.Commands.Create
 
             if (mappingResult.IsFailure)
             {
-                return mappingResult.Error;
+                return Result.Failure<Guid>(mappingResult.Error);
             }
 
             var ticket = mappingResult.Value;
@@ -49,14 +49,14 @@ namespace TraffiLearn.Application.Tickets.Commands.Create
 
                 if (question is null)
                 {
-                    return TicketErrors.QuestionNotFound;
+                    return Result.Failure<Guid>(TicketErrors.QuestionNotFound);
                 }
 
                 var questionAddResult = ticket.AddQuestion(question);
 
                 if (questionAddResult.IsFailure)
                 {
-                    return questionAddResult.Error;
+                    return Result.Failure<Guid>(questionAddResult.Error);
                 }
             }
 
@@ -66,7 +66,7 @@ namespace TraffiLearn.Application.Tickets.Commands.Create
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return Result.Success();
+            return Result.Success(ticket.Id.Value);
         }
     }
 }

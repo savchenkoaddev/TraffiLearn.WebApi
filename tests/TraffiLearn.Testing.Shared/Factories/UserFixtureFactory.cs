@@ -30,5 +30,7 @@ namespace TraffiLearn.Testing.Shared.Factories
         {
             return Role.RegularUser;
         }
+
+        public static string CreateValidPassword() => "Strong123!.";
     }
 }

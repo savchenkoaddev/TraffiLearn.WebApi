@@ -11,7 +11,8 @@ using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Questions.Commands.Create
 {
-    internal sealed class CreateQuestionCommandHandler : IRequestHandler<CreateQuestionCommand, Result>
+    internal sealed class CreateQuestionCommandHandler 
+        : IRequestHandler<CreateQuestionCommand, Result<Guid>>
     {
         private readonly IQuestionRepository _questionRepository;
         private readonly ITopicRepository _topicRepository;
@@ -33,7 +34,7 @@ namespace TraffiLearn.Application.Questions.Commands.Create
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result> Handle(
+        public async Task<Result<Guid>> Handle(
             CreateQuestionCommand request,
             CancellationToken cancellationToken)
         {
@@ -41,19 +42,19 @@ namespace TraffiLearn.Application.Questions.Commands.Create
 
             if (mappingResult.IsFailure)
             {
-                return mappingResult.Error;
+                return Result.Failure<Guid>(mappingResult.Error);
             }
 
             var question = mappingResult.Value;
 
             var addResult = await HandleTopics(
                 question,
-                topicsIds: request.TopicsIds,
+                topicIds: request.TopicIds,
                 cancellationToken);
 
             if (addResult.IsFailure)
             {
-                return addResult.Error;
+                return Result.Failure<Guid>(addResult.Error);
             }
 
             var imageResult = await HandleImage(
@@ -63,7 +64,7 @@ namespace TraffiLearn.Application.Questions.Commands.Create
 
             if (imageResult.IsFailure)
             {
-                return imageResult.Error;
+                return Result.Failure<Guid>(imageResult.Error);
             }
 
             await _questionRepository.AddAsync(
@@ -72,15 +73,15 @@ namespace TraffiLearn.Application.Questions.Commands.Create
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return Result.Success();
+            return Result.Success(question.Id.Value);
         }
 
         private async Task<Result> HandleTopics(
             Question question,
-            List<Guid>? topicsIds,
+            List<Guid>? topicIds,
             CancellationToken cancellationToken = default)
         {
-            foreach (var topicId in topicsIds)
+            foreach (var topicId in topicIds)
             {
                 var topic = await _topicRepository.GetByIdAsync(
                     topicId: new TopicId(topicId),

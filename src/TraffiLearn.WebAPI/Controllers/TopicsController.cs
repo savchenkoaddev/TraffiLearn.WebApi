@@ -37,7 +37,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
-        [HttpGet("topics/random/with-questions")]
+        [HttpGet("random/with-questions")]
         public async Task<IActionResult> GetRandomTopicWithQuestions()
         {
             var queryResult = await _sender.Send(new GetRandomTopicWithQuestionsQuery());
@@ -75,7 +75,15 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command);
 
-            return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
+            if (commandResult.IsSuccess)
+            {
+                return CreatedAtAction(
+                    actionName: nameof(GetTopicById),
+                    routeValues: new { topicId = commandResult.Value },
+                    value: commandResult.Value);
+            }
+
+            return commandResult.ToProblemDetails();
         }
 
         [HasPermission(Permission.ModifyData)]

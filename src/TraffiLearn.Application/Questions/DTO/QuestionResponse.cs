@@ -1,6 +1,4 @@
-﻿using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
-
-namespace TraffiLearn.Application.Questions.DTO
+﻿namespace TraffiLearn.Application.Questions.DTO
 {
     public sealed record QuestionResponse(
         Guid Id,
@@ -10,5 +8,5 @@ namespace TraffiLearn.Application.Questions.DTO
         int LikesCount,
         int DislikesCount,
         int QuestionNumber,
-        List<Answer> Answers);
+        List<AnswerResponse> Answers);
 }

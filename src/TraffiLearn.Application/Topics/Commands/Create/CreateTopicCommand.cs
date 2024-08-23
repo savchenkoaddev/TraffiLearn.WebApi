@@ -5,5 +5,5 @@ namespace TraffiLearn.Application.Topics.Commands.Create
 {
     public sealed record CreateTopicCommand(
         int? TopicNumber,
-        string? Title) : IRequest<Result>;
+        string? Title) : IRequest<Result<Guid>>;
 }

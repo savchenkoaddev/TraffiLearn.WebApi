@@ -1,9 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Mime;
 using TraffiLearn.Application.Questions.Commands.AddCommentToQuestion;
-using TraffiLearn.Application.Questions.Commands.Create;
 using TraffiLearn.Application.Questions.Commands.Delete;
-using TraffiLearn.Application.Questions.Commands.Update;
 using TraffiLearn.Application.Questions.Queries.GetAll;
 using TraffiLearn.Application.Questions.Queries.GetById;
 using TraffiLearn.Application.Questions.Queries.GetQuestionComments;
@@ -21,6 +20,8 @@ using TraffiLearn.Application.Users.Queries.GetCurrentUserDislikedQuestions;
 using TraffiLearn.Application.Users.Queries.GetCurrentUserLikedQuestions;
 using TraffiLearn.Application.Users.Queries.GetMarkedQuestions;
 using TraffiLearn.Infrastructure.Authentication;
+using TraffiLearn.WebAPI.CommandWrappers.CreateQuestion;
+using TraffiLearn.WebAPI.CommandWrappers.UpdateQuestion;
 using TraffiLearn.WebAPI.Extensions;
 
 namespace TraffiLearn.WebAPI.Controllers
@@ -130,22 +131,33 @@ namespace TraffiLearn.WebAPI.Controllers
 
         #region Commands
 
+
         [HasPermission(Permission.ModifyData)]
         [HttpPost]
+        [Consumes(MediaTypeNames.Multipart.FormData)]
         public async Task<IActionResult> CreateQuestion(
-            [FromForm] CreateQuestionCommand command)
+            [FromForm] CreateQuestionCommandWrapper wrapper)
         {
-            var commandResult = await _sender.Send(command);
+            var commandResult = await _sender.Send(wrapper.ToCommand());
 
-            return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
+            if (commandResult.IsSuccess)
+            {
+                return CreatedAtAction(
+                    actionName: nameof(GetQuestionById),
+                    routeValues: new { questionId = commandResult.Value },
+                    value: commandResult.Value);
+            }
+
+            return commandResult.ToProblemDetails();
         }
 
         [HasPermission(Permission.ModifyData)]
         [HttpPut]
+        [Consumes(MediaTypeNames.Multipart.FormData)]
         public async Task<IActionResult> UpdateQuestion(
-            [FromForm] UpdateQuestionCommand command)
+            [FromForm] UpdateQuestionCommandWrapper wrapper)
         {
-            var commandResult = await _sender.Send(command);
+            var commandResult = await _sender.Send(wrapper.ToCommand());
 
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }

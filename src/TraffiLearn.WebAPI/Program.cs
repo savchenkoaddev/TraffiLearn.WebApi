@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Extensions;
+using Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Integrations;
 using System.Text;
 using TraffiLearn.Application;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
@@ -18,7 +20,11 @@ namespace TraffiLearn.WebAPI
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllers();
+
+            builder.Services.AddJsonMultipartFormDataSupport(JsonSerializerChoice.Newtonsoft);
+
             builder.Services.AddEndpointsApiExplorer();
+
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddApplication(builder.Configuration);
@@ -70,7 +76,11 @@ namespace TraffiLearn.WebAPI
                     Permission.AccessData.ToString(),
                     policy =>
                     {
-                        policy.RequireAuthenticatedUser();
+                        policy.RequireRole(roles: [
+                            Role.RegularUser.ToString(),
+                            Role.Admin.ToString(),
+                            Role.Owner.ToString(),
+                        ]);
                     });
 
                 options.AddPolicy(
@@ -98,7 +108,11 @@ namespace TraffiLearn.WebAPI
                     Permission.ModifyData.ToString(),
                     policy =>
                     {
-                        policy.RequireRole(Role.Admin.ToString());
+                        policy.RequireRole(
+                            roles: [
+                                Role.Admin.ToString(),
+                                Role.Owner.ToString()
+                            ]);
                     });
             });
         }

@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 
 namespace TraffiLearn.Application.Questions.Commands.Create
 {
@@ -7,22 +8,23 @@ namespace TraffiLearn.Application.Questions.Commands.Create
         public CreateQuestionCommandValidator()
         {
             RuleFor(x => x.Explanation)
-                .NotEmpty();
+                .NotEmpty()
+                .MaximumLength(QuestionExplanation.MaxLength);
 
             RuleFor(x => x.Content)
                 .NotEmpty()
-                .MaximumLength(3000);
+                .MaximumLength(QuestionContent.MaxLength);
 
             RuleFor(x => x.QuestionNumber)
                 .GreaterThan(0)
                 .NotEmpty();
 
-            RuleFor(x => x.TopicsIds)
+            RuleFor(x => x.TopicIds)
                 .NotEmpty();
 
-            RuleForEach(x => x.TopicsIds)
+            RuleForEach(x => x.TopicIds)
                 .NotEmpty()
-                .When(x => x.TopicsIds is not null);
+                .When(x => x.TopicIds is not null);
 
             RuleFor(x => x.Answers)
                 .NotEmpty();
@@ -33,7 +35,7 @@ namespace TraffiLearn.Application.Questions.Commands.Create
                 {
                     x.RuleFor(x => x.Text)
                         .NotEmpty()
-                        .MaximumLength(300);
+                        .MaximumLength(Answer.MaxTextLength);
 
                     x.RuleFor(x => x.IsCorrect)
                         .NotEmpty();
