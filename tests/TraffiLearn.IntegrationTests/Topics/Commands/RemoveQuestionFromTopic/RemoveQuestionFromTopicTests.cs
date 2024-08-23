@@ -4,14 +4,13 @@ using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;
 using TraffiLearn.IntegrationTests.Questions;
 
-namespace TraffiLearn.IntegrationTests.Topics.Commands.AddQuestionToTopic
+namespace TraffiLearn.IntegrationTests.Topics.Commands.RemoveQuestionFromTopic
 {
-    public sealed class AddQuestionToTopicTests : TopicIntegrationTest
+    public sealed class RemoveQuestionFromTopicTests : TopicIntegrationTest
     {
-        private readonly ApiQuestionClient
-            _apiQuestionClient;
+        private readonly ApiQuestionClient _apiQuestionClient;
 
-        public AddQuestionToTopicTests(
+        public RemoveQuestionFromTopicTests(
             WebApplicationFactory factory)
             : base(factory)
         {
@@ -19,10 +18,10 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.AddQuestionToTopic
         }
 
         [Fact]
-        public async Task AddQuestionToTopic_IfUserNotAuthenticated_ShouldReturn401StatusCode()
+        public async Task RemoveQuestionFromTopic_IfUserNotAuthenticated_ShouldReturn401StatusCode()
         {
             var response = await RequestSender.PutAsync(
-                requestUri: TopicEndpointRoutes.AddQuestionToTopicRoute(
+                requestUri: TopicEndpointRoutes.RemoveQuestionFromTopicRoute(
                     questionId: Guid.NewGuid(),
                     topicId: Guid.NewGuid()));
 
@@ -31,7 +30,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.AddQuestionToTopic
 
         [Theory]
         [InlineData(Role.RegularUser)]
-        public async Task AddQuestionToTopic_IfUserIsNotEligible_ShouldReturn403StatusCode(
+        public async Task RemoveQuestionFromTopic_IfUserIsNotEligible_ShouldReturn403StatusCode(
             Role role)
         {
             var response = await RequestSender.PutAsync(
@@ -46,13 +45,13 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.AddQuestionToTopic
         [Theory]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task AddQuestionToTopic_IfUserIsEligibleButQuestionNotFound_ShouldReturn404StatusCode(
+        public async Task RemoveQuestionFromTopic_IfUserIsEligibleButQuestionNotFound_ShouldReturn404StatusCode(
             Role role)
         {
             var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
             var response = await RequestSender.PutAsync(
-                requestUri: TopicEndpointRoutes.AddQuestionToTopicRoute(
+                requestUri: TopicEndpointRoutes.RemoveQuestionFromTopicRoute(
                     questionId: Guid.NewGuid(),
                     topicId: topicId),
                 putWithRole: role);
@@ -63,7 +62,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.AddQuestionToTopic
         [Theory]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task AddQuestionToTopic_IfUserIsEligibleButTopicNotFound_ShouldReturn404StatusCode(
+        public async Task RemoveQuestionFromTopic_IfUserIsEligibleButTopicNotFound_ShouldReturn404StatusCode(
             Role role)
         {
             var topicId = await ApiTopicClient.CreateValidTopicAsync();
@@ -72,7 +71,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.AddQuestionToTopic
                 topicIds: [topicId]);
 
             var response = await RequestSender.PutAsync(
-                requestUri: TopicEndpointRoutes.AddQuestionToTopicRoute(
+                requestUri: TopicEndpointRoutes.RemoveQuestionFromTopicRoute(
                     questionId: questionId,
                     topicId: Guid.NewGuid()),
                 putWithRole: role);
@@ -83,27 +82,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.AddQuestionToTopic
         [Theory]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task AddQuestionToTopic_IfUserIsEligibleButQuestionAlreadyAdded_ShouldReturn400StatusCode(
-            Role role)
-        {
-            var topicId = await ApiTopicClient.CreateValidTopicAsync();
-
-            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
-                topicIds: [topicId]);
-
-            var response = await RequestSender.PutAsync(
-                requestUri: TopicEndpointRoutes.AddQuestionToTopicRoute(
-                    questionId: questionId,
-                    topicId: topicId),
-                putWithRole: role);
-
-            response.AssertBadRequestStatusCode();
-        }
-
-        [Theory]
-        [InlineData(Role.Admin)]
-        [InlineData(Role.Owner)]
-        public async Task AddQuestionToTopic_IfValidCase_ShouldReturn204StatusCode(
+        public async Task RemoveQuestionFromTopic_IfUserIsEligibleButQuestionIsNotAdded_ShouldReturn404StatusCode(
             Role role)
         {
             var topicId = await ApiTopicClient.CreateValidTopicAsync();
@@ -113,10 +92,33 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.AddQuestionToTopic
 
             var newTopicId = await ApiTopicClient.CreateValidTopicAsync();
 
+            var newQuestionId = await _apiQuestionClient.CreateValidQuestionAsync(
+                topicIds: [newTopicId]);
+
             var response = await RequestSender.PutAsync(
-                requestUri: TopicEndpointRoutes.AddQuestionToTopicRoute(
+                requestUri: TopicEndpointRoutes.RemoveQuestionFromTopicRoute(
                     questionId: questionId,
                     topicId: newTopicId),
+                putWithRole: role);
+
+            response.AssertNotFoundStatusCode();
+        }
+
+        [Theory]
+        [InlineData(Role.Admin)]
+        [InlineData(Role.Owner)]
+        public async Task RemoveQuestionFromTopic_IfValidCase_ShouldReturn204StatusCode(
+            Role role)
+        {
+            var topicId = await ApiTopicClient.CreateValidTopicAsync();
+
+            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+                topicIds: [topicId]);
+
+            var response = await RequestSender.PutAsync(
+                requestUri: TopicEndpointRoutes.RemoveQuestionFromTopicRoute(
+                    questionId: questionId,
+                    topicId: topicId),
                 putWithRole: role);
 
             response.AssertNoContentStatusCode();
@@ -125,7 +127,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.AddQuestionToTopic
         [Theory]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task AddQuestionToTopic_IfValidCase_QuestionShouldBeAddedToTopic(
+        public async Task RemoveQuestionFromTopic_IfValidCase_QuestionShouldBeRemovedFromTopic(
             Role role)
         {
             var topicId = await ApiTopicClient.CreateValidTopicAsync();
@@ -133,24 +135,21 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.AddQuestionToTopic
             var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
                 topicIds: [topicId]);
 
-            var newTopicId = await ApiTopicClient.CreateValidTopicAsync();
-
             var response = await RequestSender.PutAsync(
-                requestUri: TopicEndpointRoutes.AddQuestionToTopicRoute(
+                requestUri: TopicEndpointRoutes.RemoveQuestionFromTopicRoute(
                     questionId: questionId,
-                    topicId: newTopicId),
+                    topicId: topicId),
                 putWithRole: role);
 
-            var topicQuestions = await ApiTopicClient.GetTopicQuestionsAsync(newTopicId);
+            var topicQuestions = await ApiTopicClient.GetTopicQuestionsAsync(topicId);
 
-            topicQuestions.Should().HaveCount(1);
-            topicQuestions.First().Id.Should().Be(questionId);
+            topicQuestions.Should().BeEmpty();
         }
 
         [Theory]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task AddQuestionToTopic_IfValidCase_TopicShouldBeAddedToQuestion(
+        public async Task RemoveQuestionFromTopic_IfValidCase_TopicShouldBeRemovedFromQuestion(
             Role role)
         {
             var topicId = await ApiTopicClient.CreateValidTopicAsync();
@@ -158,18 +157,15 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.AddQuestionToTopic
             var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
                 topicIds: [topicId]);
 
-            var newTopicId = await ApiTopicClient.CreateValidTopicAsync();
-
             var response = await RequestSender.PutAsync(
-                requestUri: TopicEndpointRoutes.AddQuestionToTopicRoute(
+                requestUri: TopicEndpointRoutes.RemoveQuestionFromTopicRoute(
                     questionId: questionId,
-                    topicId: newTopicId),
+                    topicId: topicId),
                 putWithRole: role);
 
             var questionTopics = await _apiQuestionClient.GetQuestionTopicsAsync(questionId);
 
-            questionTopics.Should().HaveCount(2);
-            questionTopics.Any(t => t.Id == newTopicId).Should().BeTrue();
+            questionTopics.Should().BeEmpty();
         }
     }
 }

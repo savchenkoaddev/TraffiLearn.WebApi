@@ -34,8 +34,4 @@
     <ProjectReference Include="..\TraffiLearn.Testing.Shared\TraffiLearn.Testing.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Topics\Commands\RemoveQuestionFromTopic\" />
-  </ItemGroup>
-
 </Project>
