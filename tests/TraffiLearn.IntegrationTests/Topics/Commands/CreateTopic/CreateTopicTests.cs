@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using System.Net.Http.Json;
 using TraffiLearn.Application.Topics.Commands.Create;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Abstractions;
@@ -119,6 +120,47 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
 
             topics.Should().HaveCount(1);
             topics.First().Title.Should().Be(command.Title);
+        }
+
+        [Theory]
+        [InlineData(Role.Admin)]
+        [InlineData(Role.Owner)]
+        public async Task CreateTopic_IfPassedValidArgsAndUserIsEligible_ShouldReturnId(
+           Role role)
+        {
+            var command = CreateTopicFixtureFactory.CreateValidCommand();
+
+            var response = await SendCreateTopicRequestWithRoleAsync(
+                role: role,
+                command);
+
+            var content = await response.Content.ReadFromJsonAsync<string>();
+
+            content.Should().NotBeNull();
+
+            var isGuid = Guid.TryParse(content, out var _);
+
+            isGuid.Should().BeTrue();
+        }
+
+        [Theory]
+        [InlineData(Role.Admin)]
+        [InlineData(Role.Owner)]
+        public async Task CreateTopic_IfPassedValidArgsAndUserIsEligible_ShouldReturnValidTopicId(
+           Role role)
+        {
+            var command = CreateTopicFixtureFactory.CreateValidCommand();
+
+            var response = await SendCreateTopicRequestWithRoleAsync(
+                role: role,
+                command);
+
+            var topicId = await response.Content.ReadFromJsonAsync<Guid>();
+
+            var allTopics = await TopicRequestSender.GetAllTopicsSortedByNumberAsync();
+
+            allTopics.Should().HaveCount(1);
+            allTopics.First().Id.Should().Be(topicId);
         }
 
         private async Task<HttpResponseMessage> SendValidCreateTopicRequestWithRoleAsync(

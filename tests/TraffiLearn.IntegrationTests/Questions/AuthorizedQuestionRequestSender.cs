@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.Net.Http.Json;
 using TraffiLearn.Application.Questions.DTO;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Helpers;
@@ -32,14 +33,7 @@ namespace TraffiLearn.IntegrationTests.Questions
 
             response.EnsureSuccessStatusCode();
 
-            var content = await response.Content.ReadAsStringAsync();
-
-            if (content is null)
-            {
-                throw new InvalidOperationException("API didn't send the question id as the response.");
-            }
-
-            return Guid.Parse(content);
+            return await response.Content.ReadFromJsonAsync<Guid>();
         }
 
         public async Task<IEnumerable<QuestionResponse>> GetAllQuestionAsync()

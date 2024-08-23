@@ -109,14 +109,10 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
         public async Task UpdateTopic_IfPassedValidArgsAndUserIsEligible_TopicShouldBeUpdated(
             Role role)
         {
-            await TopicRequestSender.CreateValidTopicAsync();
-
-            var allTopics = await TopicRequestSender.GetAllTopicsSortedByNumberAsync();
-
-            var firstTopicId = allTopics.First().Id;
+            var topicId = await TopicRequestSender.CreateValidTopicAsync();
 
             var command = UpdateTopicFixtureFactory.CreateValidCommand(
-                topicId: firstTopicId);
+                topicId: topicId);
 
             await RequestSender.SendJsonRequest(
                 method: HttpMethod.Put,
@@ -124,9 +120,10 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
                 command,
                 sentWithRole: role);
 
-            allTopics = await TopicRequestSender.GetAllTopicsSortedByNumberAsync();
+            var allTopics = await TopicRequestSender.GetAllTopicsSortedByNumberAsync();
 
             allTopics.First().Title.Should().Be(command.Title);
+            allTopics.First().Id.Should().Be(topicId);
         }
     }
 }
