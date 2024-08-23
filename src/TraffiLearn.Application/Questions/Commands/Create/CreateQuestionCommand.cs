@@ -11,5 +11,5 @@ namespace TraffiLearn.Application.Questions.Commands.Create
         int? QuestionNumber,
         List<Guid>? TopicIds,
         List<AnswerRequest>? Answers,
-        IFormFile? Image) : IRequest<Result>;
+        IFormFile? Image) : IRequest<Result<Guid>>;
 }

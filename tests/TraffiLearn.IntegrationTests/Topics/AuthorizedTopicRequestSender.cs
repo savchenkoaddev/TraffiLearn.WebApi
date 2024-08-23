@@ -18,20 +18,20 @@ namespace TraffiLearn.IntegrationTests.Topics
         {
             var command = CreateTopicFixtureFactory.CreateValidCommand();
 
-            var response = await _requestSender.SendJsonRequestWithRole(
-                role: Role.Owner,
+            var response = await _requestSender.SendJsonRequest(
                 method: HttpMethod.Post,
                 requestUri: TopicEndpointRoutes.CreateTopicRoute,
-                command);
+                command,
+                sentWithRole: Role.Owner);
 
             response.EnsureSuccessStatusCode();
         }
 
         public Task<IEnumerable<TopicResponse>> GetAllTopicsSortedByNumberAsync()
         {
-            return _requestSender.GetFromJsonWithRoleAsync<IEnumerable<TopicResponse>>(
-                role: Role.Owner,
-                requestUri: TopicEndpointRoutes.GetAllSortedTopicsByNumberRoute);
+            return _requestSender.GetFromJsonAsync<IEnumerable<TopicResponse>>(
+                requestUri: TopicEndpointRoutes.GetAllSortedTopicsByNumberRoute,
+                getFromRole: Role.Owner);
         }
     }
 }

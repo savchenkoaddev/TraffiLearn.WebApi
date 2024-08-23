@@ -5,7 +5,8 @@ using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Topics.Commands.Create
 {
-    internal sealed class CreateTopicCommandHandler : IRequestHandler<CreateTopicCommand, Result>
+    internal sealed class CreateTopicCommandHandler 
+        : IRequestHandler<CreateTopicCommand, Result<Guid>>
     {
         private readonly ITopicRepository _topicRepository;
         private readonly Mapper<CreateTopicCommand, Result<Topic>> _topicMapper;
@@ -21,7 +22,7 @@ namespace TraffiLearn.Application.Topics.Commands.Create
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result> Handle(
+        public async Task<Result<Guid>> Handle(
             CreateTopicCommand request,
             CancellationToken cancellationToken)
         {
@@ -29,7 +30,7 @@ namespace TraffiLearn.Application.Topics.Commands.Create
 
             if (mappingResult.IsFailure)
             {
-                return mappingResult.Error;
+                return Result.Failure<Guid>(mappingResult.Error);
             }
 
             var topic = mappingResult.Value;
@@ -40,7 +41,7 @@ namespace TraffiLearn.Application.Topics.Commands.Create
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return Result.Success();
+            return Result.Success(topic.Id.Value);
         }
     }
 }

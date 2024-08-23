@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
@@ -29,105 +30,104 @@ namespace TraffiLearn.IntegrationTests.Helpers
             _cache = cache;
         }
 
-        public async Task<HttpResponseMessage> SendJsonRequestWithRole<TValue>(
-            Role role,
-            HttpMethod method,
-            string requestUri,
-            TValue value)
-        {
-            var accessToken = await GetAccessTokenForRoleAsync(role);
-
-            var request = new HttpRequestMessageBuilder(method, requestUri)
-                .WithJsonContent(value)
-                .WithAuthorization(
-                    scheme: AuthConstants.Scheme,
-                    parameter: accessToken)
-                .Build();
-
-            return await _httpClient.SendAsync(request);
-        }
-
         public async Task<HttpResponseMessage> SendJsonRequest<TValue>(
             HttpMethod method,
             string requestUri,
-            TValue value)
+            TValue value,
+            Role? sentWithRole = null)
         {
-            var request = new HttpRequestMessageBuilder(method, requestUri)
-                .WithJsonContent(value)
-                .Build();
+            var builder = new HttpRequestMessageBuilder(
+                    method, 
+                    requestUri)
+                .WithJsonContent(value);
+
+            var request = await BuildHttpRequestWithOptionalAuthorizationAsync(
+                builder, 
+                sentWithRole);
 
             return await _httpClient.SendAsync(request);
         }
 
-        public Task<HttpResponseMessage> DeleteAsync(
-            string requestUri)
+        public async Task<HttpResponseMessage> DeleteAsync(
+            string requestUri,
+            Role? deletedWithRole = null)
         {
-            var request = new HttpRequestMessageBuilder(
-                method: HttpMethod.Delete,
-                requestUri)
-                .Build();
+            var builder = new HttpRequestMessageBuilder(
+                HttpMethod.Delete, 
+                requestUri);
 
-            return _httpClient.SendAsync(request);
-        }
-
-        public async Task<HttpResponseMessage> DeleteWithRoleAsync(
-            Role role,
-            string requestUri)
-        {
-            var accessToken = await GetAccessTokenForRoleAsync(role);
-
-            var request = new HttpRequestMessageBuilder(
-                method: HttpMethod.Delete,
-                requestUri)
-                .WithAuthorization(
-                    scheme: AuthConstants.Scheme,
-                    parameter: accessToken)
-                .Build();
+            var request = await BuildHttpRequestWithOptionalAuthorizationAsync(
+                builder, 
+                deletedWithRole);
 
             return await _httpClient.SendAsync(request);
         }
 
-        public Task<HttpResponseMessage> PutAsync(
-            string requestUri)
+        public async Task<HttpResponseMessage> PutAsync(
+            string requestUri,
+            Role? putWithRole = null)
         {
-            var request = new HttpRequestMessageBuilder(
-                method: HttpMethod.Put,
-                requestUri)
-                .Build();
+            var builder = new HttpRequestMessageBuilder(
+                HttpMethod.Put, 
+                requestUri);
 
-            return _httpClient.SendAsync(request);
-        }
-
-        public async Task<HttpResponseMessage> PutWithRoleAsync(
-            Role role,
-            string requestUri)
-        {
-            var accessToken = await GetAccessTokenForRoleAsync(role);
-
-            var request = new HttpRequestMessageBuilder(
-                method: HttpMethod.Put,
-                requestUri)
-                .WithAuthorization(
-                    scheme: AuthConstants.Scheme,
-                    parameter: accessToken)
-                .Build();
+            var request = await BuildHttpRequestWithOptionalAuthorizationAsync(
+                builder, 
+                putWithRole);
 
             return await _httpClient.SendAsync(request);
         }
 
-        public async Task<TValue> GetFromJsonWithRoleAsync<TValue>(
-            Role role,
-            string requestUri)
+        public async Task<TValue> GetFromJsonAsync<TValue>(
+            string requestUri,
+            Role? getFromRole = null)
         {
-            var accessToken = await GetAccessTokenForRoleAsync(role);
+            var builder = new HttpRequestMessageBuilder(
+                HttpMethod.Get,
+                requestUri);
 
-            var request = new HttpRequestMessageBuilder(HttpMethod.Get, requestUri)
-                .WithAuthorization(
-                    scheme: AuthConstants.Scheme,
-                    parameter: accessToken)
-                .Build();
+            var request = await BuildHttpRequestWithOptionalAuthorizationAsync(
+                builder, 
+                getFromRole);
 
             return await SendAndParseJsonResponseAsync<TValue>(request);
+        }
+
+        public async Task<HttpResponseMessage> SendMultipartFormDataWithJsonAndFileRequest<TValue>(
+            HttpMethod method,
+            string requestUri,
+            TValue value,
+            IFormFile? file = null,
+            Role? sentFromRole = null)
+        {
+            var builder = new HttpRequestMessageBuilder(
+                    method,
+                    requestUri)
+                .WithMultipartFormDataContent(
+                    value,
+                    file);
+
+            var request = await BuildHttpRequestWithOptionalAuthorizationAsync(
+                builder,
+                sentFromRole);
+
+            return await _httpClient.SendAsync(request);
+        }
+
+        private async Task<HttpRequestMessage> BuildHttpRequestWithOptionalAuthorizationAsync(
+            HttpRequestMessageBuilder builder,
+            Role? role)
+        {
+            if (role is not null)
+            {
+                var accessToken = await GetAccessTokenForRoleAsync(role.Value);
+
+                builder.WithAuthorization(
+                    scheme: AuthConstants.Scheme, 
+                    parameter: accessToken);
+            }
+
+            return builder.Build();
         }
 
         private async Task<TValue> SendAndParseJsonResponseAsync<TValue>(
@@ -160,7 +160,7 @@ namespace TraffiLearn.IntegrationTests.Helpers
         private async Task<string> GetAccessTokenForRoleAsync(Role role)
         {
             if (_cache.TryGetAccessTokenForRole(
-                    role, 
+                    role,
                     out string? cachedToken))
             {
                 if (!string.IsNullOrEmpty(cachedToken))

@@ -33,11 +33,11 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
         {
             var command = UpdateTopicFixtureFactory.CreateValidCommandWithRandomId();
 
-            var response = await RequestSender.SendJsonRequestWithRole(
-                role: role,
+            var response = await RequestSender.SendJsonRequest(
                 method: HttpMethod.Put,
                 requestUri: TopicEndpointRoutes.UpdateTopicRoute,
-                command);
+                command,
+                sentWithRole: role);
 
             response.AssertForbiddenStatusCode();
         }
@@ -52,11 +52,11 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
 
             foreach (var command in invalidCommands)
             {
-                var response = await RequestSender.SendJsonRequestWithRole(
-                    role: role,
+                var response = await RequestSender.SendJsonRequest(
                     method: HttpMethod.Put,
                     requestUri: TopicEndpointRoutes.UpdateTopicRoute,
-                    command);
+                    command,
+                    sentWithRole: role);
 
                 response.AssertBadRequestStatusCode();
             }
@@ -70,11 +70,11 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
         {
             var command = UpdateTopicFixtureFactory.CreateValidCommandWithRandomId();
 
-            var response = await RequestSender.SendJsonRequestWithRole(
-                role: role,
+            var response = await RequestSender.SendJsonRequest(
                 method: HttpMethod.Put,
                 requestUri: TopicEndpointRoutes.UpdateTopicRoute,
-                command);
+                command,
+                sentWithRole: role);
 
             response.AssertNotFoundStatusCode();
         }
@@ -94,11 +94,11 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
             var command = UpdateTopicFixtureFactory.CreateValidCommand(
                 topicId: firstTopicId);
 
-            var response = await RequestSender.SendJsonRequestWithRole(
-                role: role,
+            var response = await RequestSender.SendJsonRequest(
                 method: HttpMethod.Put,
                 requestUri: TopicEndpointRoutes.UpdateTopicRoute,
-                command);
+                command,
+                sentWithRole: role);
 
             response.AssertNoContentStatusCode();
         }
@@ -118,11 +118,11 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
             var command = UpdateTopicFixtureFactory.CreateValidCommand(
                 topicId: firstTopicId);
 
-            await RequestSender.SendJsonRequestWithRole(
-                role: role,
+            await RequestSender.SendJsonRequest(
                 method: HttpMethod.Put,
                 requestUri: TopicEndpointRoutes.UpdateTopicRoute,
-                command);
+                command,
+                sentWithRole: role);
 
             allTopics = await TopicRequestSender.GetAllTopicsSortedByNumberAsync();
 

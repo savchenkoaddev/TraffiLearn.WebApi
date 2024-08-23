@@ -28,7 +28,6 @@ using TraffiLearn.WebAPI.Extensions;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
-    [HasPermission(Permission.AccessData)]
     [Route("api/questions")]
     [ApiController]
     public class QuestionsController : ControllerBase
@@ -134,7 +133,6 @@ namespace TraffiLearn.WebAPI.Controllers
         #region Commands
 
 
-        [HasPermission(Permission.ModifyData)]
         [HttpPost]
         [Consumes(MediaTypeNames.Multipart.FormData)]
         public async Task<IActionResult> CreateQuestion(
@@ -142,7 +140,15 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(wrapper.ToCommand());
 
-            return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
+            if (commandResult.IsSuccess)
+            {
+                return CreatedAtAction(
+                    actionName: nameof(GetQuestionById),
+                    routeValues: new { questionId = commandResult.Value },
+                    value: commandResult.Value);
+            }
+
+            return commandResult.ToProblemDetails();
         }
 
         [HasPermission(Permission.ModifyData)]
@@ -152,7 +158,7 @@ namespace TraffiLearn.WebAPI.Controllers
             [FromForm] UpdateQuestionCommandWrapper wrapper)
         {
             var commandResult = await _sender.Send(wrapper.ToCommand());
-
+            
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 

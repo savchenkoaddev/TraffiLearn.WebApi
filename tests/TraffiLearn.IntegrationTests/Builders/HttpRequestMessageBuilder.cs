@@ -30,40 +30,6 @@ namespace TraffiLearn.IntegrationTests.Builders
             return this;
         }
 
-        public MultipartFormDataContent WithMultipartFormDataContent<TValue>(
-            TValue value)
-        {
-            var content = new MultipartFormDataContent();
-
-            foreach (var property in typeof(TValue).GetProperties())
-            {
-                var propertyValue = property.GetValue(value);
-
-                if (propertyValue is not null)
-                {
-                    if (propertyValue is IFormFile formFile)
-                    {
-                        var fileContent = new StreamContent(formFile.OpenReadStream());
-
-                        fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(
-                            formFile.ContentType);
-
-                        content.Add(
-                            content: fileContent,
-                            name: property.Name,
-                            fileName: formFile.FileName);
-                    }
-                    else
-                    {
-                        content.Add(
-                            content: new StringContent(propertyValue.ToString() ?? string.Empty, _encoding), property.Name);
-                    }
-                }
-            }
-
-            return content;
-        }
-
         public HttpRequestMessageBuilder WithAuthorization(
             string scheme,
             string parameter)
@@ -71,6 +37,28 @@ namespace TraffiLearn.IntegrationTests.Builders
             _httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(
                 scheme,
                 parameter);
+
+            return this;
+        }
+
+        public HttpRequestMessageBuilder WithMultipartFormDataContent<TValue>(
+            TValue value,
+            IFormFile? file = null)
+        {
+            MultipartFormDataContent content = new MultipartFormDataContent();
+
+            HttpContent valueContent = new StringContent(
+                content: JsonSerializer.Serialize(value),
+                encoding: _encoding);
+
+            content.Add(valueContent, "Request");
+
+            if (file is not null)
+            {
+                content.Add(new StreamContent(file.OpenReadStream()), "Image");
+            }
+
+            _httpRequestMessage.Content = content;
 
             return this;
         }

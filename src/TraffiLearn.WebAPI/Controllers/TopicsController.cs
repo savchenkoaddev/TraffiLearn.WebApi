@@ -74,8 +74,16 @@ namespace TraffiLearn.WebAPI.Controllers
         public async Task<IActionResult> CreateTopic(CreateTopicCommand command)
         {
             var commandResult = await _sender.Send(command);
-            
-            return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
+
+            if (commandResult.IsSuccess)
+            {
+                return CreatedAtAction(
+                    actionName: nameof(GetTopicById),
+                    routeValues: new { topicId = commandResult.Value },
+                    value: commandResult.Value);
+            }
+
+            return commandResult.ToProblemDetails();
         }
 
         [HasPermission(Permission.ModifyData)]

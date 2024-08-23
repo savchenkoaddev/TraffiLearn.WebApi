@@ -47,9 +47,9 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.DeleteTopic
         {
             var topicId = Guid.NewGuid();
 
-            var response = await RequestSender.DeleteWithRoleAsync(
-                role,
-                requestUri: TopicEndpointRoutes.DeleteTopicRoute(topicId));
+            var response = await RequestSender.DeleteAsync(
+                requestUri: TopicEndpointRoutes.DeleteTopicRoute(topicId),
+                deletedWithRole: role);
 
             response.AssertForbiddenStatusCode();
         }
@@ -65,9 +65,9 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.DeleteTopic
 
             var firstTopicId = allTopics.First().Id;
 
-            var response = await RequestSender.DeleteWithRoleAsync(
-                role,
-                requestUri: TopicEndpointRoutes.DeleteTopicRoute(firstTopicId));
+            var response = await RequestSender.DeleteAsync(
+                requestUri: TopicEndpointRoutes.DeleteTopicRoute(firstTopicId),
+                deletedWithRole: role);
 
             allTopics = await TopicRequestSender.GetAllTopicsSortedByNumberAsync();
 
@@ -82,9 +82,9 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.DeleteTopic
         {
             var topicId = Guid.NewGuid();
 
-            var response = await RequestSender.DeleteWithRoleAsync(
-                role,
-                requestUri: TopicEndpointRoutes.DeleteTopicRoute(topicId));
+            var response = await RequestSender.DeleteAsync(
+                requestUri: TopicEndpointRoutes.DeleteTopicRoute(topicId),
+                deletedWithRole: role);
 
             response.AssertNotFoundStatusCode();
         }
@@ -101,9 +101,9 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.DeleteTopic
 
             var firstTopicId = allTopics.First().Id;
 
-            var response = await RequestSender.DeleteWithRoleAsync(
-                role,
-                requestUri: TopicEndpointRoutes.DeleteTopicRoute(firstTopicId));
+            var response = await RequestSender.DeleteAsync(
+                requestUri: TopicEndpointRoutes.DeleteTopicRoute(firstTopicId),
+                deletedWithRole: role);
 
             response.AssertNoContentStatusCode();
         }
@@ -120,9 +120,9 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.DeleteTopic
 
             var firstTopicId = allTopics.First().Id;
 
-            await RequestSender.DeleteWithRoleAsync(
-                role,
-                requestUri: TopicEndpointRoutes.DeleteTopicRoute(firstTopicId));
+            await RequestSender.DeleteAsync(
+                requestUri: TopicEndpointRoutes.DeleteTopicRoute(firstTopicId),
+                deletedWithRole: role);
 
             allTopics = await TopicRequestSender.GetAllTopicsSortedByNumberAsync();
 

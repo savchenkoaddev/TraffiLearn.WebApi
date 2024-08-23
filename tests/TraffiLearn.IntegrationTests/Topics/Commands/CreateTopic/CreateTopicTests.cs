@@ -127,11 +127,11 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
             var command = CreateTopicFixtureFactory.CreateValidCommand();
 
             return await RequestSender
-                .SendJsonRequestWithRole(
-                    role: role,
+                .SendJsonRequest(
                     method: HttpMethod.Post,
                     requestUri: TopicEndpointRoutes.CreateTopicRoute,
-                    command);
+                    command,
+                    sentWithRole: role);
         }
 
         private async Task<HttpResponseMessage> SendUnauthenticatedValidCreateTopicRequestAsync()
@@ -150,11 +150,11 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
             CreateTopicCommand command)
         {
             return await RequestSender
-                .SendJsonRequestWithRole(
-                    role: role,
+                .SendJsonRequest(
                     method: HttpMethod.Post,
                     requestUri: TopicEndpointRoutes.CreateTopicRoute,
-                    command);
+                    command,
+                    sentWithRole: role);
         }
     }
 }

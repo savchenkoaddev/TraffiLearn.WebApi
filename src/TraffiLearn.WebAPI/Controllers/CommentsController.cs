@@ -47,7 +47,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(replyCommand);
 
-            return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
         [HasPermission(Permission.ModifyData)]
