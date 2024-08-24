@@ -8,15 +8,10 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.AddQuestionToTopic
 {
     public sealed class AddQuestionToTopicTests : TopicIntegrationTest
     {
-        private readonly ApiQuestionClient
-            _apiQuestionClient;
-
         public AddQuestionToTopicTests(
             WebApplicationFactory factory)
             : base(factory)
-        {
-            _apiQuestionClient = new ApiQuestionClient(RequestSender);
-        }
+        { }
 
         [Fact]
         public async Task AddQuestionToTopic_IfUserIsNotAuthenticated_ShouldReturn401StatusCode()
@@ -68,7 +63,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.AddQuestionToTopic
         {
             var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
-            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+            var questionId = await ApiQuestionClient.CreateValidQuestionAsync(
                 topicIds: [topicId]);
 
             var response = await RequestSender.PutAsync(
@@ -88,7 +83,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.AddQuestionToTopic
         {
             var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
-            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+            var questionId = await ApiQuestionClient.CreateValidQuestionAsync(
                 topicIds: [topicId]);
 
             var response = await RequestSender.PutAsync(
@@ -108,7 +103,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.AddQuestionToTopic
         {
             var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
-            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+            var questionId = await ApiQuestionClient.CreateValidQuestionAsync(
                 topicIds: [topicId]);
 
             var newTopicId = await ApiTopicClient.CreateValidTopicAsync();
@@ -130,7 +125,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.AddQuestionToTopic
         {
             var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
-            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+            var questionId = await ApiQuestionClient.CreateValidQuestionAsync(
                 topicIds: [topicId]);
 
             var newTopicId = await ApiTopicClient.CreateValidTopicAsync();
@@ -155,7 +150,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.AddQuestionToTopic
         {
             var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
-            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+            var questionId = await ApiQuestionClient.CreateValidQuestionAsync(
                 topicIds: [topicId]);
 
             var newTopicId = await ApiTopicClient.CreateValidTopicAsync();
@@ -166,7 +161,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.AddQuestionToTopic
                     topicId: newTopicId),
                 putWithRole: role);
 
-            var questionTopics = await _apiQuestionClient.GetQuestionTopicsAsync(questionId);
+            var questionTopics = await ApiQuestionClient.GetQuestionTopicsAsync(questionId);
 
             questionTopics.Should().HaveCount(2);
             questionTopics.Any(t => t.Id == newTopicId).Should().BeTrue();

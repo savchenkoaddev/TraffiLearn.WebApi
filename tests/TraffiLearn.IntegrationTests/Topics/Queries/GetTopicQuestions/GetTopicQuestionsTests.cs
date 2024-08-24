@@ -9,14 +9,10 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicQuestions
 {
     public sealed class GetTopicQuestionsTests : TopicIntegrationTest
     {
-        private readonly ApiQuestionClient _apiQuestionClient;
-
         public GetTopicQuestionsTests(
             WebApplicationFactory factory)
             : base(factory)
-        {
-            _apiQuestionClient = new ApiQuestionClient(RequestSender);
-        }
+        { }
 
         [Fact]
         public async Task GetTopicQuestions_IfUserIsNotAuthenticated_ShouldReturn401StatusCode()
@@ -38,7 +34,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicQuestions
             var response = await RequestSender.GetAsync(
                 requestUri: TopicEndpointRoutes.GetTopicQuestionsRoute(
                     topicId: Guid.NewGuid()),
-                getFromRole: role);
+                getWithRole: role);
 
             response.AssertNotFoundStatusCode();
         }
@@ -55,7 +51,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicQuestions
             var response = await RequestSender.GetAsync(
                 requestUri: TopicEndpointRoutes.GetTopicQuestionsRoute(
                     topicId: topicId),
-                getFromRole: role);
+                getWithRole: role);
 
             response.AssertOkStatusCode();
         }
@@ -72,7 +68,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicQuestions
             var topicQuestions = await RequestSender.GetFromJsonAsync<IEnumerable<QuestionResponse>>(
                 requestUri: TopicEndpointRoutes.GetTopicQuestionsRoute(
                     topicId: topicId),
-                getFromRole: role);
+                getWithRole: role);
 
             topicQuestions.Should().NotBeNull();
             topicQuestions.Should().BeEmpty();
@@ -87,13 +83,13 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicQuestions
         {
             var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
-            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+            var questionId = await ApiQuestionClient.CreateValidQuestionAsync(
                 topicIds: [topicId]);
 
             var response = await RequestSender.GetAsync(
                 requestUri: TopicEndpointRoutes.GetTopicQuestionsRoute(
                     topicId: topicId),
-                getFromRole: role);
+                getWithRole: role);
 
             response.AssertOkStatusCode();
         }
@@ -107,13 +103,13 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicQuestions
         {
             var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
-            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+            var questionId = await ApiQuestionClient.CreateValidQuestionAsync(
                 topicIds: [topicId]);
 
             var topicQuestions = await RequestSender.GetFromJsonAsync<IEnumerable<QuestionResponse>>(
                 requestUri: TopicEndpointRoutes.GetTopicQuestionsRoute(
                     topicId: topicId),
-                getFromRole: role);
+                getWithRole: role);
 
             topicQuestions.Should().HaveCount(1);
             topicQuestions.First().Id.Should().Be(questionId);

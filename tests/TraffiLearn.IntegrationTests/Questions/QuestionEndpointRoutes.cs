@@ -8,5 +8,8 @@
 
         public static string GetQuestionTopicsRoute(Guid questionId) =>
             $"api/questions/{questionId}/topics";
+
+        public static string GetQuestionTicketsRoute(Guid questionId) =>
+           $"api/questions/{questionId}/tickets";
     }
 }

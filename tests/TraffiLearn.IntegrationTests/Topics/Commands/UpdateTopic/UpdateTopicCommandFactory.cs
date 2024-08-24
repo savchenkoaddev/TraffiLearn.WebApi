@@ -2,7 +2,7 @@
 
 namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
 {
-    internal static class UpdateTopicFixtureFactory
+    internal static class UpdateTopicCommandFactory
     {
         public static List<UpdateTopicCommand> CreateInvalidCommandsWithRandomIds()
         {

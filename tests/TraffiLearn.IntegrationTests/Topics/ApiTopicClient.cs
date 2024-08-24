@@ -19,13 +19,13 @@ namespace TraffiLearn.IntegrationTests.Topics
 
         public async Task<Guid> CreateValidTopicAsync()
         {
-            var command = CreateTopicFixtureFactory.CreateValidCommand();
+            var command = CreateTopicCommandFactory.CreateValidCommand();
 
-            var response = await _requestSender.SendJsonRequest(
+            var response = await _requestSender.SendJsonAsync(
                 method: HttpMethod.Post,
                 requestUri: TopicEndpointRoutes.CreateTopicRoute,
                 command,
-                sentWithRole: Role.Owner);
+                sentFromRole: Role.Owner);
 
             response.EnsureSuccessStatusCode();
 
@@ -35,11 +35,11 @@ namespace TraffiLearn.IntegrationTests.Topics
         public async Task<Guid> CreateTopicAsync(
             CreateTopicCommand command)
         {
-            var response = await _requestSender.SendJsonRequest(
+            var response = await _requestSender.SendJsonAsync(
                 method: HttpMethod.Post,
                 requestUri: TopicEndpointRoutes.CreateTopicRoute,
                 command,
-                sentWithRole: Role.Owner);
+                sentFromRole: Role.Owner);
 
             response.EnsureSuccessStatusCode();
 
@@ -50,7 +50,7 @@ namespace TraffiLearn.IntegrationTests.Topics
         {
             return _requestSender.GetFromJsonAsync<IEnumerable<TopicResponse>>(
                 requestUri: TopicEndpointRoutes.GetAllSortedTopicsByNumberRoute,
-                getFromRole: Role.Owner);
+                getWithRole: Role.Owner);
         }
 
         public Task<IEnumerable<QuestionResponse>> GetTopicQuestionsAsync(
@@ -58,7 +58,7 @@ namespace TraffiLearn.IntegrationTests.Topics
         {
             return _requestSender.GetFromJsonAsync<IEnumerable<QuestionResponse>>(
                 requestUri: TopicEndpointRoutes.GetTopicQuestionsRoute(topicId),
-                getFromRole: Role.Owner);
+                getWithRole: Role.Owner);
         }
     }
 }

@@ -33,7 +33,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicById
             var response = await RequestSender.GetAsync(
                 requestUri: TopicEndpointRoutes.GetTopicByIdRoute(
                     topicId: Guid.NewGuid()),
-                getFromRole: role);
+                getWithRole: role);
 
             response.AssertNotFoundStatusCode();
         }
@@ -50,7 +50,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicById
             var response = await RequestSender.GetAsync(
                 requestUri: TopicEndpointRoutes.GetTopicByIdRoute(
                     topicId: topicId),
-                getFromRole: role);
+                getWithRole: role);
 
             response.AssertOkStatusCode();
         }
@@ -67,7 +67,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicById
             var response = await RequestSender.GetFromJsonAsync<TopicResponse>(
                 requestUri: TopicEndpointRoutes.GetTopicByIdRoute(
                     topicId: topicId),
-                getFromRole: role);
+                getWithRole: role);
 
             response.Should().NotBeNull();
             response.Id.Should().Be(topicId);

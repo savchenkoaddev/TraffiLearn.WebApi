@@ -8,14 +8,10 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.RemoveQuestionFromTopic
 {
     public sealed class RemoveQuestionFromTopicTests : TopicIntegrationTest
     {
-        private readonly ApiQuestionClient _apiQuestionClient;
-
         public RemoveQuestionFromTopicTests(
             WebApplicationFactory factory)
             : base(factory)
-        {
-            _apiQuestionClient = new ApiQuestionClient(RequestSender);
-        }
+        { }
 
         [Fact]
         public async Task RemoveQuestionFromTopic_IfUserIsNotAuthenticated_ShouldReturn401StatusCode()
@@ -67,7 +63,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.RemoveQuestionFromTopic
         {
             var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
-            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+            var questionId = await ApiQuestionClient.CreateValidQuestionAsync(
                 topicIds: [topicId]);
 
             var response = await RequestSender.PutAsync(
@@ -87,12 +83,12 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.RemoveQuestionFromTopic
         {
             var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
-            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+            var questionId = await ApiQuestionClient.CreateValidQuestionAsync(
                 topicIds: [topicId]);
 
             var newTopicId = await ApiTopicClient.CreateValidTopicAsync();
 
-            var newQuestionId = await _apiQuestionClient.CreateValidQuestionAsync(
+            var newQuestionId = await ApiQuestionClient.CreateValidQuestionAsync(
                 topicIds: [newTopicId]);
 
             var response = await RequestSender.PutAsync(
@@ -112,7 +108,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.RemoveQuestionFromTopic
         {
             var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
-            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+            var questionId = await ApiQuestionClient.CreateValidQuestionAsync(
                 topicIds: [topicId]);
 
             var response = await RequestSender.PutAsync(
@@ -132,7 +128,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.RemoveQuestionFromTopic
         {
             var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
-            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+            var questionId = await ApiQuestionClient.CreateValidQuestionAsync(
                 topicIds: [topicId]);
 
             var response = await RequestSender.PutAsync(
@@ -154,7 +150,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.RemoveQuestionFromTopic
         {
             var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
-            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+            var questionId = await ApiQuestionClient.CreateValidQuestionAsync(
                 topicIds: [topicId]);
 
             var response = await RequestSender.PutAsync(
@@ -163,7 +159,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.RemoveQuestionFromTopic
                     topicId: topicId),
                 putWithRole: role);
 
-            var questionTopics = await _apiQuestionClient.GetQuestionTopicsAsync(questionId);
+            var questionTopics = await ApiQuestionClient.GetQuestionTopicsAsync(questionId);
 
             questionTopics.Should().BeEmpty();
         }

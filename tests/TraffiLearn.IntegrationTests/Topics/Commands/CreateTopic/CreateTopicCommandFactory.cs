@@ -3,7 +3,7 @@ using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 
 namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
 {
-    internal static class CreateTopicFixtureFactory
+    internal static class CreateTopicCommandFactory
     {
         public static List<CreateTopicCommand> GetInvalidCommands()
         {

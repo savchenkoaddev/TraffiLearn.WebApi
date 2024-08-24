@@ -61,7 +61,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
         public async Task CreateTopic_IfPassedInvalidArgsAndUserIsEligible_ShouldReturn400StatusCode(
             Role role)
         {
-            var invalidCommands = CreateTopicFixtureFactory.GetInvalidCommands();
+            var invalidCommands = CreateTopicCommandFactory.GetInvalidCommands();
 
             foreach (var command in invalidCommands)
             {
@@ -79,7 +79,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
         public async Task CreateTopic_IfPassedInvalidArgsAndUserIsEligible_TopicShouldNotBeCreated(
             Role role)
         {
-            var invalidCommands = CreateTopicFixtureFactory.GetInvalidCommands();
+            var invalidCommands = CreateTopicCommandFactory.GetInvalidCommands();
 
             foreach (var command in invalidCommands)
             {
@@ -110,7 +110,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
         public async Task CreateTopic_IfPassedValidArgsAndUserIsEligible_TopicShouldBeCreated(
             Role role)
         {
-            var command = CreateTopicFixtureFactory.CreateValidCommand();
+            var command = CreateTopicCommandFactory.CreateValidCommand();
 
             var response = await SendCreateTopicRequestWithRoleAsync(
                 role: role,
@@ -128,7 +128,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
         public async Task CreateTopic_IfPassedValidArgsAndUserIsEligible_ShouldReturnId(
            Role role)
         {
-            var command = CreateTopicFixtureFactory.CreateValidCommand();
+            var command = CreateTopicCommandFactory.CreateValidCommand();
 
             var response = await SendCreateTopicRequestWithRoleAsync(
                 role: role,
@@ -149,7 +149,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
         public async Task CreateTopic_IfPassedValidArgsAndUserIsEligible_ShouldReturnValidTopicId(
            Role role)
         {
-            var command = CreateTopicFixtureFactory.CreateValidCommand();
+            var command = CreateTopicCommandFactory.CreateValidCommand();
 
             var response = await SendCreateTopicRequestWithRoleAsync(
                 role: role,
@@ -166,22 +166,22 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
         private async Task<HttpResponseMessage> SendValidCreateTopicRequestWithRoleAsync(
            Role role)
         {
-            var command = CreateTopicFixtureFactory.CreateValidCommand();
+            var command = CreateTopicCommandFactory.CreateValidCommand();
 
             return await RequestSender
-                .SendJsonRequest(
+                .SendJsonAsync(
                     method: HttpMethod.Post,
                     requestUri: TopicEndpointRoutes.CreateTopicRoute,
                     command,
-                    sentWithRole: role);
+                    sentFromRole: role);
         }
 
         private async Task<HttpResponseMessage> SendUnauthenticatedValidCreateTopicRequestAsync()
         {
-            var command = CreateTopicFixtureFactory.CreateValidCommand();
+            var command = CreateTopicCommandFactory.CreateValidCommand();
 
             return await RequestSender
-                .SendJsonRequest(
+                .SendJsonAsync(
                     method: HttpMethod.Post,
                     requestUri: TopicEndpointRoutes.CreateTopicRoute,
                     command);
@@ -192,11 +192,11 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
             CreateTopicCommand command)
         {
             return await RequestSender
-                .SendJsonRequest(
+                .SendJsonAsync(
                     method: HttpMethod.Post,
                     requestUri: TopicEndpointRoutes.CreateTopicRoute,
                     command,
-                    sentWithRole: role);
+                    sentFromRole: role);
         }
     }
 }

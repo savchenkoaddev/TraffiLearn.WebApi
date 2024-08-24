@@ -32,7 +32,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetAllSortedTopicsByNumber
         {
             var response = await RequestSender.GetAsync(
                 requestUri: TopicEndpointRoutes.GetAllSortedTopicsByNumberRoute,
-                getFromRole: role);
+                getWithRole: role);
 
             response.AssertOkStatusCode();
         }
@@ -46,7 +46,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetAllSortedTopicsByNumber
         {
             var topics = await RequestSender.GetFromJsonAsync<IEnumerable<TopicResponse>>(
                 requestUri: TopicEndpointRoutes.GetAllSortedTopicsByNumberRoute,
-                getFromRole: role);
+                getWithRole: role);
 
             topics.Should().NotBeNull();
             topics.Should().BeEmpty();
@@ -63,7 +63,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetAllSortedTopicsByNumber
 
             var response = await RequestSender.GetAsync(
                 requestUri: TopicEndpointRoutes.GetAllSortedTopicsByNumberRoute,
-                getFromRole: role);
+                getWithRole: role);
 
             response.AssertOkStatusCode();
         }
@@ -89,7 +89,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetAllSortedTopicsByNumber
 
             var allTopics = await RequestSender.GetFromJsonAsync<IEnumerable<TopicResponse>>(
                 requestUri: TopicEndpointRoutes.GetAllSortedTopicsByNumberRoute,
-                getFromRole: role);
+                getWithRole: role);
 
             allTopics.First().Id.Should().Be(firstTopicId);
             allTopics.Last().Id.Should().Be(lastTopicId);

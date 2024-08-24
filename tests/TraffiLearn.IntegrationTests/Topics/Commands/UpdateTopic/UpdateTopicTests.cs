@@ -16,9 +16,9 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
         [Fact]
         public async Task UpdateTopic_IfUserIsNotAuthenticated_ShouldReturn401StatusCode()
         {
-            var command = UpdateTopicFixtureFactory.CreateValidCommandWithRandomId();
+            var command = UpdateTopicCommandFactory.CreateValidCommandWithRandomId();
 
-            var response = await RequestSender.SendJsonRequest(
+            var response = await RequestSender.SendJsonAsync(
                 method: HttpMethod.Put,
                 requestUri: TopicEndpointRoutes.UpdateTopicRoute,
                 command);
@@ -31,13 +31,13 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
         public async Task UpdateTopic_IfUserIsNotEligible_ShouldReturn403StatusCode(
             Role role)
         {
-            var command = UpdateTopicFixtureFactory.CreateValidCommandWithRandomId();
+            var command = UpdateTopicCommandFactory.CreateValidCommandWithRandomId();
 
-            var response = await RequestSender.SendJsonRequest(
+            var response = await RequestSender.SendJsonAsync(
                 method: HttpMethod.Put,
                 requestUri: TopicEndpointRoutes.UpdateTopicRoute,
                 command,
-                sentWithRole: role);
+                sentFromRole: role);
 
             response.AssertForbiddenStatusCode();
         }
@@ -48,15 +48,15 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
         public async Task UpdateTopic_IfPassedInvalidArgsAndUserIsEligible_ShouldReturn400StatusCode(
             Role role)
         {
-            var invalidCommands = UpdateTopicFixtureFactory.CreateInvalidCommandsWithRandomIds();
+            var invalidCommands = UpdateTopicCommandFactory.CreateInvalidCommandsWithRandomIds();
 
             foreach (var command in invalidCommands)
             {
-                var response = await RequestSender.SendJsonRequest(
+                var response = await RequestSender.SendJsonAsync(
                     method: HttpMethod.Put,
                     requestUri: TopicEndpointRoutes.UpdateTopicRoute,
                     command,
-                    sentWithRole: role);
+                    sentFromRole: role);
 
                 response.AssertBadRequestStatusCode();
             }
@@ -68,13 +68,13 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
         public async Task UpdateTopic_IfPassedValidArgsAndUserIsEligibleButTopicDoesNotExist_ShouldReturn404StatusCode(
             Role role)
         {
-            var command = UpdateTopicFixtureFactory.CreateValidCommandWithRandomId();
+            var command = UpdateTopicCommandFactory.CreateValidCommandWithRandomId();
 
-            var response = await RequestSender.SendJsonRequest(
+            var response = await RequestSender.SendJsonAsync(
                 method: HttpMethod.Put,
                 requestUri: TopicEndpointRoutes.UpdateTopicRoute,
                 command,
-                sentWithRole: role);
+                sentFromRole: role);
 
             response.AssertNotFoundStatusCode();
         }
@@ -91,14 +91,14 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
 
             var firstTopicId = allTopics.First().Id;
 
-            var command = UpdateTopicFixtureFactory.CreateValidCommand(
+            var command = UpdateTopicCommandFactory.CreateValidCommand(
                 topicId: firstTopicId);
 
-            var response = await RequestSender.SendJsonRequest(
+            var response = await RequestSender.SendJsonAsync(
                 method: HttpMethod.Put,
                 requestUri: TopicEndpointRoutes.UpdateTopicRoute,
                 command,
-                sentWithRole: role);
+                sentFromRole: role);
 
             response.AssertNoContentStatusCode();
         }
@@ -111,14 +111,14 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
         {
             var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
-            var command = UpdateTopicFixtureFactory.CreateValidCommand(
+            var command = UpdateTopicCommandFactory.CreateValidCommand(
                 topicId: topicId);
 
-            await RequestSender.SendJsonRequest(
+            await RequestSender.SendJsonAsync(
                 method: HttpMethod.Put,
                 requestUri: TopicEndpointRoutes.UpdateTopicRoute,
                 command,
-                sentWithRole: role);
+                sentFromRole: role);
 
             var allTopics = await ApiTopicClient.GetAllTopicsSortedByNumberAsync();
 

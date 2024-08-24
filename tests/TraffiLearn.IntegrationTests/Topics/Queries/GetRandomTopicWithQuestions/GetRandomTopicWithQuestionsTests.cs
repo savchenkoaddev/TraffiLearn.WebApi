@@ -9,14 +9,10 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
 {
     public sealed class GetRandomTopicWithQuestionsTests : TopicIntegrationTest
     {
-        private readonly ApiQuestionClient _apiQuestionClient;
-
         public GetRandomTopicWithQuestionsTests(
             WebApplicationFactory factory)
             : base(factory)
-        {
-            _apiQuestionClient = new ApiQuestionClient(RequestSender);
-        }
+        { }
 
         [Fact]
         public async Task GetRandomTopicWithQuestions_IfUserIsNotAuthenticated_ShouldReturn401StatusCode()
@@ -36,7 +32,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
         {
             var response = await RequestSender.GetAsync(
                 requestUri: TopicEndpointRoutes.GetRandomTopicWithQuestionsRoute,
-                getFromRole: role);
+                getWithRole: role);
 
             response.AssertInternalServerErrorStatusCode();
         }
@@ -52,7 +48,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
 
             var response = await RequestSender.GetAsync(
                 requestUri: TopicEndpointRoutes.GetRandomTopicWithQuestionsRoute,
-                getFromRole: role);
+                getWithRole: role);
 
             response.AssertOkStatusCode();
         }
@@ -68,7 +64,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
 
             var topicWithQuestions = await RequestSender.GetFromJsonAsync<TopicWithQuestionsResponse>(
                 requestUri: TopicEndpointRoutes.GetRandomTopicWithQuestionsRoute,
-                getFromRole: role);
+                getWithRole: role);
 
             topicWithQuestions.Questions.Should().NotBeNull();
             topicWithQuestions.Questions.Should().BeEmpty();
@@ -85,7 +81,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
 
             var topicWithQuestions = await RequestSender.GetFromJsonAsync<TopicWithQuestionsResponse>(
                 requestUri: TopicEndpointRoutes.GetRandomTopicWithQuestionsRoute,
-                getFromRole: role);
+                getWithRole: role);
 
             topicWithQuestions.TopicId.Should().Be(topicId);
         }
@@ -99,12 +95,12 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
         {
             var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
-            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+            var questionId = await ApiQuestionClient.CreateValidQuestionAsync(
                 topicIds: [topicId]);
 
             var response = await RequestSender.GetAsync(
                 requestUri: TopicEndpointRoutes.GetRandomTopicWithQuestionsRoute,
-                getFromRole: role);
+                getWithRole: role);
 
             response.AssertOkStatusCode();
         }
@@ -120,12 +116,12 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
         {
             var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
-            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+            var questionId = await ApiQuestionClient.CreateValidQuestionAsync(
                 topicIds: [topicId]);
 
             var topicWithQuestions = await RequestSender.GetFromJsonAsync<TopicWithQuestionsResponse>(
                 requestUri: TopicEndpointRoutes.GetRandomTopicWithQuestionsRoute,
-                getFromRole: role);
+                getWithRole: role);
 
             topicWithQuestions.Questions.Should().HaveCount(1);
             topicWithQuestions.Questions.First().Id.Should().Be(questionId);
@@ -140,12 +136,12 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
         {
             var topicId = await ApiTopicClient.CreateValidTopicAsync();
 
-            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+            var questionId = await ApiQuestionClient.CreateValidQuestionAsync(
                 topicIds: [topicId]);
 
             var topicWithQuestions = await RequestSender.GetFromJsonAsync<TopicWithQuestionsResponse>(
                 requestUri: TopicEndpointRoutes.GetRandomTopicWithQuestionsRoute,
-                getFromRole: role);
+                getWithRole: role);
 
             topicWithQuestions.TopicId.Should().Be(topicId);
         }
