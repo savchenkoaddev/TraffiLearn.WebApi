@@ -1,8 +1,9 @@
 ﻿using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
+using TraffiLearn.Domain.Primitives;
 
 namespace TraffiLearn.Domain.Aggregates.Users
 {
-    public interface IUserRepository
+    public interface IUserRepository : IRepositoryMarker
     {
         Task<User?> GetByIdAsync(
             UserId userId,
