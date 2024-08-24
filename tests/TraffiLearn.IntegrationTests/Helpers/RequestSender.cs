@@ -93,20 +93,39 @@ namespace TraffiLearn.IntegrationTests.Helpers
             return await _httpClient.SendAsync(request);
         }
 
+        public async Task<HttpResponseMessage> PutAsJsonAsync<TRequest>(
+            string requestUri,
+            TRequest request,
+            Role? putWithRole = null)
+        {
+            var builder = new HttpRequestMessageBuilder(
+                    HttpMethod.Put, 
+                    requestUri)
+                .WithJsonContent(request);
+
+            var httpRequest = await BuildHttpRequestWithOptionalAuthorizationAsync(
+                builder, 
+                putWithRole);
+
+            return await _httpClient.SendAsync(httpRequest);
+        }
+
+
         public async Task<HttpResponseMessage> PutAsync(
             string requestUri,
             Role? putWithRole = null)
         {
             var builder = new HttpRequestMessageBuilder(
-                HttpMethod.Put, 
-                requestUri);
+                    HttpMethod.Put,
+                    requestUri);
 
-            var request = await BuildHttpRequestWithOptionalAuthorizationAsync(
-                builder, 
+            var httpRequest = await BuildHttpRequestWithOptionalAuthorizationAsync(
+                builder,
                 putWithRole);
 
-            return await _httpClient.SendAsync(request);
+            return await _httpClient.SendAsync(httpRequest);
         }
+
 
         public async Task<HttpResponseMessage> GetAsync(
             string requestUri,
@@ -123,7 +142,7 @@ namespace TraffiLearn.IntegrationTests.Helpers
             return await _httpClient.SendAsync(request);
         }
 
-        public async Task<TValue> GetFromJsonAsync<TValue>(
+        public async Task<TResponse> GetFromJsonAsync<TResponse>(
             string requestUri,
             Role? getWithRole = null)
         {
@@ -135,7 +154,7 @@ namespace TraffiLearn.IntegrationTests.Helpers
                 builder, 
                 getWithRole);
 
-            return await SendAndParseJsonResponseAsync<TValue>(request);
+            return await SendAndParseJsonResponseAsync<TResponse>(request);
         }
 
         public async Task<HttpResponseMessage> SendMultipartFormDataWithJsonAndFileRequest<TValue>(
@@ -166,15 +185,15 @@ namespace TraffiLearn.IntegrationTests.Helpers
             HttpStatusCode statusCode,
             Role? sentFromRole = null)
         {
-            foreach (var request in requests)
-            {
-                var response = await SendJsonAsync(
-                    method,
-                    requestUri,
-                    request,
-                    sentFromRole);
+            var responses = await SendAllAsJsonAsync(
+                method,
+                requestUri,
+                requests,
+                sentFromRole);
 
-                response.AssertStatusCode(statusCode);
+            foreach (var request in responses)
+            {
+                request.AssertStatusCode(statusCode);
             }
         }
 
@@ -190,6 +209,26 @@ namespace TraffiLearn.IntegrationTests.Helpers
                 requests,
                 statusCode: HttpStatusCode.BadRequest,
                 sentFromRole);
+        }
+
+        public async Task<IEnumerable<HttpResponseMessage>> SendAllAsJsonAsync<TRequest>(
+            HttpMethod method,
+            string requestUri,
+            IEnumerable<TRequest> requests,
+            Role? sentFromRole = null)
+        {
+            List<HttpResponseMessage> responses = [];
+
+            foreach (var request in requests)
+            {
+                responses.Add(await SendJsonAsync(
+                    method,
+                    requestUri,
+                    request,
+                    sentFromRole));
+            }
+
+            return responses;
         }
 
         private async Task<HttpRequestMessage> BuildHttpRequestWithOptionalAuthorizationAsync(
@@ -208,7 +247,7 @@ namespace TraffiLearn.IntegrationTests.Helpers
             return builder.Build();
         }
 
-        private async Task<TValue> SendAndParseJsonResponseAsync<TValue>(
+        private async Task<TResponse> SendAndParseJsonResponseAsync<TResponse>(
             HttpRequestMessage requestMessage)
         {
             var response = await _httpClient.SendAsync(requestMessage);
@@ -216,7 +255,7 @@ namespace TraffiLearn.IntegrationTests.Helpers
             response.EnsureSuccessStatusCode();
 
             var str = await response.Content.ReadAsStringAsync();
-            var result = await response.Content.ReadFromJsonAsync<TValue>();
+            var result = await response.Content.ReadFromJsonAsync<TResponse>();
 
             if (result is null)
             {

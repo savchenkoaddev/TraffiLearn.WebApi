@@ -23,7 +23,7 @@ namespace TraffiLearn.IntegrationTests.Tickets.CreateTicket
 
         public async Task<CreateTicketCommand> CreateValidCommandWithQuestionIdsAsync()
         {
-            var questionId = await _apiQuestionClient.CreateValidQuestionWithTopicAsync();
+            var questionId = await _apiQuestionClient.CreateValidQuestionWithTopicAsAuthorizedAsync();
 
             return CreateValidCommand(
                 questionIds: [questionId]);

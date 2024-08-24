@@ -2,6 +2,8 @@
 using TraffiLearn.IntegrationTests.Questions;
 using TraffiLearn.IntegrationTests.Tickets.CreateTicket;
 using TraffiLearn.IntegrationTests.Topics;
+using TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic;
+using TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic;
 
 namespace TraffiLearn.IntegrationTests.Tickets
 {
@@ -14,7 +16,10 @@ namespace TraffiLearn.IntegrationTests.Tickets
             WebApplicationFactory factory)
             : base(factory)
         {
-            var apiTopicClient = new ApiTopicClient(RequestSender);
+            var apiTopicClient = new ApiTopicClient(
+                RequestSender,
+                new CreateTopicCommandFactory(),
+                new UpdateTopicCommandFactory());
 
             ApiQuestionClient = new ApiQuestionClient(
                 RequestSender, 

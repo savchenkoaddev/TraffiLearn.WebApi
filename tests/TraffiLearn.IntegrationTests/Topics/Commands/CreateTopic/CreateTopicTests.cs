@@ -1,15 +1,15 @@
 ﻿using FluentAssertions;
 using System.Net.Http.Json;
-using TraffiLearn.Application.Topics.Commands.Create;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;
-using TraffiLearn.IntegrationTests.Helpers;
 
 namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
 {
     public sealed class CreateTopicTests : TopicIntegrationTest
     {
+        private readonly CreateTopicCommandFactory _commandFactory = new();
+
         public CreateTopicTests(
             WebApplicationFactory factory)
             : base(factory)
@@ -18,27 +18,30 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
         [Fact]
         public async Task CreateTopic_IfUserIsNotAuthenticated_ShouldReturn401StatusCode()
         {
-            var response = await SendUnauthenticatedValidCreateTopicRequestAsync();
+            var response = await ApiTopicClient.SendCreateTopicRequestAsync(
+                sentFromRole: null);
 
             response.AssertUnauthorizedStatusCode();
         }
 
         [Fact]
-        public async Task CreateTopic_IfUserNotAuthenticated_TopicShouldNotBeCreated()
+        public async Task CreateTopic_IfUserIsNotAuthenticated_TopicShouldNotBeCreated()
         {
-            var response = await SendUnauthenticatedValidCreateTopicRequestAsync();
+            await ApiTopicClient.SendCreateTopicRequestAsync(
+                sentFromRole: null);
 
-            var topics = await ApiTopicClient.GetAllTopicsSortedByNumberAsync();
+            var allTopics = await ApiTopicClient.GetAllTopicsSortedByNumberAsAuthorizedAsync();
 
-            topics.Should().BeEmpty();
+            allTopics.Should().BeEmpty();
         }
 
         [Theory]
         [InlineData(Role.RegularUser)]
         public async Task CreateTopic_IfUserIsNotEligible_ShouldReturn403StatusCode(
-            Role role)
+            Role nonEligibleRole)
         {
-            var response = await SendValidCreateTopicRequestWithRoleAsync(role);
+            var response = await ApiTopicClient.SendCreateTopicRequestAsync(
+                sentFromRole: nonEligibleRole);
 
             response.AssertForbiddenStatusCode();
         }
@@ -46,60 +49,58 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
         [Theory]
         [InlineData(Role.RegularUser)]
         public async Task CreateTopic_IfUserIsNotEligible_TopicShouldNotBeCreated(
-            Role role)
+            Role eligibleRole)
         {
-            var response = await SendValidCreateTopicRequestWithRoleAsync(role);
+            var response = await ApiTopicClient.SendCreateTopicRequestAsync(
+                sentFromRole: eligibleRole);
 
-            var topics = await ApiTopicClient.GetAllTopicsSortedByNumberAsync();
+            var allTopics = await ApiTopicClient.GetAllTopicsSortedByNumberAsAuthorizedAsync();
 
-            topics.Should().BeEmpty();
+            allTopics.Should().BeEmpty();
         }
 
         [Theory]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task CreateTopic_IfPassedInvalidArgsAndUserIsEligible_ShouldReturn400StatusCode(
-            Role role)
+        public async Task CreateTopic_IfPassedInvalidArgs_ShouldReturn400StatusCode(
+            Role eligibleRole)
         {
-            var invalidCommands = CreateTopicCommandFactory.GetInvalidCommands();
+            var invalidCommands = _commandFactory.GetInvalidCommands();
 
-            foreach (var command in invalidCommands)
-            {
-                var response = await SendCreateTopicRequestWithRoleAsync(
-                    role: role,
-                    command);
-
-                response.AssertBadRequestStatusCode();
-            }
+            await RequestSender.EnsureEachSentRequestReturnsBadRequestAsync(
+                method: HttpMethod.Post,
+                requestUri: TopicEndpointRoutes.CreateTopicRoute,
+                requests: invalidCommands,
+                sentFromRole: eligibleRole);
         }
 
         [Theory]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task CreateTopic_IfPassedInvalidArgsAndUserIsEligible_TopicShouldNotBeCreated(
-            Role role)
+        public async Task CreateTopic_IfPassedInvalidArgs_TopicShouldNotBeCreated(
+            Role eligibleRole)
         {
-            var invalidCommands = CreateTopicCommandFactory.GetInvalidCommands();
+            var invalidCommands = _commandFactory.GetInvalidCommands();
 
-            foreach (var command in invalidCommands)
-            {
-                await SendCreateTopicRequestWithRoleAsync(
-                    role: role,
-                    command);
+            await RequestSender.SendAllAsJsonAsync(
+                method: HttpMethod.Post,
+                requestUri: TopicEndpointRoutes.CreateTopicRoute,
+                requests: invalidCommands,
+                sentFromRole: eligibleRole);
 
-                var topics = await ApiTopicClient.GetAllTopicsSortedByNumberAsync();
+            var allTopics = await ApiTopicClient.GetAllTopicsSortedByNumberAsAuthorizedAsync();
 
-                topics.Should().BeEmpty();
-            }
+            allTopics.Should().BeEmpty();
         }
 
         [Theory]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task CreateTopic_IfPassedValidArgsAndUserIsEligible_ShouldReturn201Or204StatusCode(
-            Role role)
+        public async Task CreateTopic_IfValidCase_ShouldReturn204Or201StatusCode(
+            Role eligibleRole)
         {
-            var response = await SendValidCreateTopicRequestWithRoleAsync(role);
+            var response = await ApiTopicClient.SendCreateTopicRequestAsync(
+                sentFromRole: eligibleRole);
 
             response.AssertCreatedOrNoContentStatusCode();
         }
@@ -107,96 +108,39 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
         [Theory]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task CreateTopic_IfPassedValidArgsAndUserIsEligible_TopicShouldBeCreated(
-            Role role)
+        public async Task CreateTopic_IfValidCase_TopicShouldBeCreated(
+            Role eligibleRole)
         {
-            var command = CreateTopicCommandFactory.CreateValidCommand();
+            var topicId = await ApiTopicClient.CreateTopicAsync(
+                createdWithRole: eligibleRole);
 
-            var response = await SendCreateTopicRequestWithRoleAsync(
-                role: role,
-                command);
+            var allTopics = await ApiTopicClient.GetAllTopicsSortedByNumberAsAuthorizedAsync();
 
-            var topics = await ApiTopicClient.GetAllTopicsSortedByNumberAsync();
-
-            topics.Should().HaveCount(1);
-            topics.First().Title.Should().Be(command.Title);
+            allTopics.Should().HaveCount(1);
+            allTopics.Single().Id.Should().Be(topicId);
         }
 
         [Theory]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task CreateTopic_IfPassedValidArgsAndUserIsEligible_ShouldReturnId(
-           Role role)
+        public async Task CreateTopic_IfValidCase_ShouldReturnValidTopicId(
+           Role eligibleRole)
         {
-            var command = CreateTopicCommandFactory.CreateValidCommand();
-
-            var response = await SendCreateTopicRequestWithRoleAsync(
-                role: role,
-                command);
+            var response = await ApiTopicClient.SendCreateTopicRequestAsync(
+                sentFromRole: eligibleRole);
 
             var content = await response.Content.ReadFromJsonAsync<string>();
 
-            content.Should().NotBeNull();
+            content.Should().NotBeNullOrWhiteSpace();
 
-            var isGuid = Guid.TryParse(content, out var _);
+            var isGuid = Guid.TryParse(content, out var id);
 
             isGuid.Should().BeTrue();
-        }
+            id.Should().NotBe(Guid.Empty);
 
-        [Theory]
-        [InlineData(Role.Admin)]
-        [InlineData(Role.Owner)]
-        public async Task CreateTopic_IfPassedValidArgsAndUserIsEligible_ShouldReturnValidTopicId(
-           Role role)
-        {
-            var command = CreateTopicCommandFactory.CreateValidCommand();
+            var allTopics = await ApiTopicClient.GetAllTopicsSortedByNumberAsAuthorizedAsync();
 
-            var response = await SendCreateTopicRequestWithRoleAsync(
-                role: role,
-                command);
-
-            var topicId = await response.Content.ReadFromJsonAsync<Guid>();
-
-            var allTopics = await ApiTopicClient.GetAllTopicsSortedByNumberAsync();
-
-            allTopics.Should().HaveCount(1);
-            allTopics.First().Id.Should().Be(topicId);
-        }
-
-        private async Task<HttpResponseMessage> SendValidCreateTopicRequestWithRoleAsync(
-           Role role)
-        {
-            var command = CreateTopicCommandFactory.CreateValidCommand();
-
-            return await RequestSender
-                .SendJsonAsync(
-                    method: HttpMethod.Post,
-                    requestUri: TopicEndpointRoutes.CreateTopicRoute,
-                    command,
-                    sentFromRole: role);
-        }
-
-        private async Task<HttpResponseMessage> SendUnauthenticatedValidCreateTopicRequestAsync()
-        {
-            var command = CreateTopicCommandFactory.CreateValidCommand();
-
-            return await RequestSender
-                .SendJsonAsync(
-                    method: HttpMethod.Post,
-                    requestUri: TopicEndpointRoutes.CreateTopicRoute,
-                    command);
-        }
-
-        private async Task<HttpResponseMessage> SendCreateTopicRequestWithRoleAsync(
-            Role role,
-            CreateTopicCommand command)
-        {
-            return await RequestSender
-                .SendJsonAsync(
-                    method: HttpMethod.Post,
-                    requestUri: TopicEndpointRoutes.CreateTopicRoute,
-                    command,
-                    sentFromRole: role);
+            allTopics.Single().Id.Should().Be(id);
         }
     }
 }

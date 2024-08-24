@@ -38,6 +38,22 @@ namespace TraffiLearn.IntegrationTests.Tickets.CreateTicket
             allTickets.Should().BeEmpty();
         }
 
+        [Fact]
+        public async Task CreateTicket_IfUserIsNotAuthenticated_QuestionShouldNotContainNewlyCreatedTicket()
+        {
+            var questionId = await ApiQuestionClient.CreateValidQuestionWithTopicAsAuthorizedAsync();
+
+            await ApiTicketClient
+                .SendCreateTicketRequestAsync(
+                    questionIds: [questionId],
+                    sentFromRole: null);
+
+            var questionTickets = await ApiQuestionClient
+                .GetQuestionTicketsAsAuthorizedUserAsync(questionId);
+
+            questionTickets.Should().BeEmpty();
+        }
+
         [Theory]
         [InlineData(Role.RegularUser)]
         public async Task CreateTicket_IfUserIsNotEligible_ShouldReturn403StatusCode(
@@ -65,6 +81,24 @@ namespace TraffiLearn.IntegrationTests.Tickets.CreateTicket
         }
 
         [Theory]
+        [InlineData(Role.RegularUser)]
+        public async Task CreateTicket_IfUserIsNotEligible_QuestionShouldNotContainNewlyCreatedTicket(
+            Role nonEligibleRole)
+        {
+            var questionId = await ApiQuestionClient.CreateValidQuestionWithTopicAsAuthorizedAsync();
+
+            await ApiTicketClient
+                .SendCreateTicketRequestAsync(
+                    questionIds: [questionId],
+                    sentFromRole: nonEligibleRole);
+
+            var questionTickets = await ApiQuestionClient
+                .GetQuestionTicketsAsAuthorizedUserAsync(questionId);
+
+            questionTickets.Should().BeEmpty();
+        }
+
+        [Theory]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
         public async Task CreateTicket_IfPassedInvalidArgs_ShouldReturn400StatusCode(
@@ -87,7 +121,7 @@ namespace TraffiLearn.IntegrationTests.Tickets.CreateTicket
         {
             var invalidCommands = _commandFactory.CreateInvalidCommands();
 
-            await RequestSender.EnsureEachSentRequestReturnsBadRequestAsync(
+            await RequestSender.SendAllAsJsonAsync(
                 method: HttpMethod.Post,
                 requestUri: TicketEndpointRoutes.CreateTicketRoute,
                 requests: invalidCommands,
@@ -131,7 +165,8 @@ namespace TraffiLearn.IntegrationTests.Tickets.CreateTicket
         public async Task CreateTicket_IfValidCase_TicketShouldContainQuestions(
             Role eligibleRole)
         {
-            var questionId = await ApiQuestionClient.CreateValidQuestionWithTopicAsync();
+            var questionId = await ApiQuestionClient
+                .CreateValidQuestionWithTopicAsAuthorizedAsync();
 
             var ticketId = await ApiTicketClient.CreateValidTicketAsync(
                 questionIds: [questionId],
@@ -148,7 +183,7 @@ namespace TraffiLearn.IntegrationTests.Tickets.CreateTicket
         public async Task CreateTicket_IfValidCase_QuestionShouldContainTicket(
             Role eligibleRole)
         {
-            var questionId = await ApiQuestionClient.CreateValidQuestionWithTopicAsync();
+            var questionId = await ApiQuestionClient.CreateValidQuestionWithTopicAsAuthorizedAsync();
 
             var ticketId = await ApiTicketClient.CreateValidTicketAsync(
                 questionIds: [questionId],

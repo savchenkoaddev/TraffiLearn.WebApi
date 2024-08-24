@@ -3,9 +3,9 @@ using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 
 namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
 {
-    internal static class CreateTopicCommandFactory
+    public sealed class CreateTopicCommandFactory
     {
-        public static List<CreateTopicCommand> GetInvalidCommands()
+        public List<CreateTopicCommand> GetInvalidCommands()
         {
             return [
                 new CreateTopicCommand(null, "title"),
@@ -16,7 +16,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
             ];
         }
 
-        public static CreateTopicCommand CreateValidCommand()
+        public CreateTopicCommand CreateValidCommand()
         {
             return new CreateTopicCommand(
                 TopicNumber: 1,

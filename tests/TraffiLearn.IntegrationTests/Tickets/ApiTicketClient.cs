@@ -27,7 +27,7 @@ namespace TraffiLearn.IntegrationTests.Tickets
         public async Task<Guid> CreateValidTicketWithQuestionIdsAsync(
             Role? createdWithRole = null)
         {
-            var questionId = await _apiQuestionClient.CreateValidQuestionWithTopicAsync();
+            var questionId = await _apiQuestionClient.CreateValidQuestionWithTopicAsAuthorizedAsync();
 
             var command = _createTicketCommandFactory.CreateValidCommand(
                 questionIds: [questionId]);
@@ -53,6 +53,20 @@ namespace TraffiLearn.IntegrationTests.Tickets
         {
             var command = await _createTicketCommandFactory
                 .CreateValidCommandWithQuestionIdsAsync();
+
+            return await _requestSender.SendJsonAsync(
+                HttpMethod.Post,
+                requestUri: TicketEndpointRoutes.CreateTicketRoute,
+                value: command,
+                sentFromRole);
+        }
+
+        public async Task<HttpResponseMessage> SendCreateTicketRequestAsync(
+            List<Guid> questionIds,
+            Role? sentFromRole = null)
+        {
+            var command = _createTicketCommandFactory
+                .CreateValidCommand(questionIds);
 
             return await _requestSender.SendJsonAsync(
                 HttpMethod.Post,

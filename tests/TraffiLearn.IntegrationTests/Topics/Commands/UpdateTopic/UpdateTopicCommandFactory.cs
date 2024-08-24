@@ -2,9 +2,9 @@
 
 namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
 {
-    internal static class UpdateTopicCommandFactory
+    public sealed class UpdateTopicCommandFactory
     {
-        public static List<UpdateTopicCommand> CreateInvalidCommandsWithRandomIds()
+        public List<UpdateTopicCommand> CreateInvalidCommandsWithRandomIds()
         {
             return [
                 new UpdateTopicCommand(
@@ -39,18 +39,10 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
             ];
         }
 
-        public static UpdateTopicCommand CreateValidCommand(Guid topicId)
+        public UpdateTopicCommand CreateValidCommand(Guid topicId)
         {
             return new UpdateTopicCommand(
                 TopicId: topicId,
-                TopicNumber: 2,
-                Title: "updated-title");
-        }
-
-        public static UpdateTopicCommand CreateValidCommandWithRandomId()
-        {
-            return new UpdateTopicCommand(
-                TopicId: Guid.NewGuid(),
                 TopicNumber: 2,
                 Title: "updated-title");
         }
