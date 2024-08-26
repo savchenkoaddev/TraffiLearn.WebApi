@@ -168,11 +168,11 @@ namespace TraffiLearn.IntegrationTests.Topics
 
         public Task<HttpResponseMessage> SendDeleteTopicRequestAsync(
             Guid topicId,
-            Role? deletedWithRole = null)
+            Role? sentFromRole = null)
         {
             return _requestSender.DeleteAsync(
                 requestUri: TopicEndpointRoutes.DeleteTopicRoute(topicId),
-                deletedWithRole);
+                sentFromRole);
         }
 
         public Task<HttpResponseMessage> SendRemoveQuestionFromTopicRequestAsync(

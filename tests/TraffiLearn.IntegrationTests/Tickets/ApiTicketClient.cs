@@ -37,6 +37,18 @@ namespace TraffiLearn.IntegrationTests.Tickets
                 createdWithRole);
         }
 
+        public async Task<Guid> CreateValidTicketWithQuestionIdsAsAuthorizedAsync()
+        {
+            var questionId = await _apiQuestionClient.CreateValidQuestionWithTopicAsAuthorizedAsync();
+
+            var command = _createTicketCommandFactory.CreateValidCommand(
+                questionIds: [questionId]);
+
+            return await CreateTicketAsync(
+                command,
+                createdWithRole: Role.Owner);
+        }
+
         public async Task<Guid> CreateValidTicketAsync(
             List<Guid> questionIds,
             Role? createdWithRole = null)
@@ -46,6 +58,18 @@ namespace TraffiLearn.IntegrationTests.Tickets
             return await CreateTicketAsync(
                 command,
                 createdWithRole);
+        }
+
+        private async Task<Guid> CreateTicketAsync(
+            CreateTicketCommand command,
+            Role? createdWithRole = null)
+        {
+            return await _requestSender
+                .SendAndGetJsonAsync<CreateTicketCommand, Guid>(
+                    method: HttpMethod.Post,
+                    requestUri: TicketEndpointRoutes.CreateTicketRoute,
+                    value: command,
+                    sentWithRole: createdWithRole);
         }
 
         public async Task<HttpResponseMessage> SendCreateTicketRequestWithQuestionsAsync(
@@ -106,16 +130,24 @@ namespace TraffiLearn.IntegrationTests.Tickets
                 getWithRole: Role.Owner);
         }
 
-        private async Task<Guid> CreateTicketAsync(
-            CreateTicketCommand command,
-            Role? createdWithRole = null)
+        public Task<HttpResponseMessage> SendDeleteTicketRequestAsync(
+            Guid ticketId,
+            Role? sentFromRole = null)
         {
-            return await _requestSender
-                .SendAndGetJsonAsync<CreateTicketCommand, Guid>(
-                    method: HttpMethod.Post,
-                    requestUri: TicketEndpointRoutes.CreateTicketRoute,
-                    value: command,
-                    sentWithRole: createdWithRole);
+            return _requestSender.DeleteAsync(
+                requestUri: TicketEndpointRoutes.DeleteTicketRoute(ticketId),
+                deletedWithRole: sentFromRole);
+        }
+
+        public async Task DeleteTicketAsync(
+            Guid ticketId,
+            Role? deletedWithRole = null)
+        {
+            var response = await SendDeleteTicketRequestAsync(
+                ticketId,
+                sentFromRole: deletedWithRole);
+
+            response.EnsureSuccessStatusCode();
         }
     }
 }

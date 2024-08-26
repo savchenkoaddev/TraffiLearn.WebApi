@@ -19,7 +19,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.DeleteTopic
 
             var response = await ApiTopicClient.SendDeleteTopicRequestAsync(
                 topicId,
-                deletedWithRole: null);
+                sentFromRole: null);
 
             response.AssertUnauthorizedStatusCode();
         }
@@ -31,7 +31,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.DeleteTopic
 
             await ApiTopicClient.SendDeleteTopicRequestAsync(
                 topicId,
-                deletedWithRole: null);
+                sentFromRole: null);
 
             var allTopics = await ApiTopicClient.GetAllTopicsSortedByNumberAsAuthorizedAsync();
 
@@ -48,7 +48,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.DeleteTopic
 
             var response = await ApiTopicClient.SendDeleteTopicRequestAsync(
                 topicId,
-                deletedWithRole: nonEligibleRole);
+                sentFromRole: nonEligibleRole);
 
             response.AssertForbiddenStatusCode();
         }
@@ -62,7 +62,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.DeleteTopic
 
             var response = await ApiTopicClient.SendDeleteTopicRequestAsync(
                 topicId,
-                deletedWithRole: nonEligibleRole);
+                sentFromRole: nonEligibleRole);
 
             var allTopics = await ApiTopicClient.GetAllTopicsSortedByNumberAsAuthorizedAsync();
 
@@ -80,7 +80,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.DeleteTopic
 
             var response = await ApiTopicClient.SendDeleteTopicRequestAsync(
                 topicId,
-                deletedWithRole: eligibleRole);
+                sentFromRole: eligibleRole);
 
             response.AssertNotFoundStatusCode();
         }
@@ -95,7 +95,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.DeleteTopic
 
             var response = await ApiTopicClient.SendDeleteTopicRequestAsync(
                 topicId,
-                deletedWithRole: eligibleRole);
+                sentFromRole: eligibleRole);
 
             response.AssertNoContentStatusCode();
         }
@@ -110,7 +110,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.DeleteTopic
 
             await ApiTopicClient.SendDeleteTopicRequestAsync(
                 topicId,
-                deletedWithRole: eligibleRole);
+                sentFromRole: eligibleRole);
 
             var allTopics = await ApiTopicClient.GetAllTopicsSortedByNumberAsAuthorizedAsync();
 
