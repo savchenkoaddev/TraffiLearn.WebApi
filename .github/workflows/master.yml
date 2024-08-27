@@ -22,16 +22,16 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Clean Solution
-        run: dotnet clean ./TraffiLearn.sln
+        run: dotnet clean ./src/TraffiLearn.sln
 
       - name: Restore
-        run: dotnet restore ./TraffiLearn.sln
+        run: dotnet restore ./src/TraffiLearn.sln
 
       - name: Build
-        run: dotnet build ./TraffiLearn.sln --configuration Release --no-restore
+        run: dotnet build ./src/TraffiLearn.sln --configuration Release --no-restore
 
       - name: Test
-        run: dotnet test ./TraffiLearn.sln --configuration Release --no-restore --no-build
+        run: dotnet test ./src/TraffiLearn.sln --configuration Release --no-restore --no-build
 
       - name: Publish Test Results
         if: always()
