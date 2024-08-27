@@ -213,5 +213,17 @@ namespace TraffiLearn.IntegrationTests.Tickets
                     ticketId: ticketId),
                 putWithRole: sentFromRole);
         }
+
+        public Task<HttpResponseMessage> SendRemoveQuestionFromTicketRequestAsync(
+            Guid questionId,
+            Guid ticketId,
+            Role? sentFromRole = null)
+        {
+            return _requestSender.PutAsync(
+                requestUri: TicketEndpointRoutes.RemoveQuestionFromTicketRoute(
+                    questionId: questionId,
+                    ticketId: ticketId),
+                putWithRole: sentFromRole);
+        }
     }
 }
