@@ -9,21 +9,17 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicQuestions
 {
     public sealed class GetTopicQuestionsTests : TopicIntegrationTest
     {
-        private readonly ApiQuestionClient _apiQuestionClient;
-
         public GetTopicQuestionsTests(
             WebApplicationFactory factory)
             : base(factory)
-        {
-            _apiQuestionClient = new ApiQuestionClient(RequestSender);
-        }
+        { }
 
         [Fact]
         public async Task GetTopicQuestions_IfUserIsNotAuthenticated_ShouldReturn401StatusCode()
         {
-            var response = await RequestSender.GetAsync(
-                requestUri: TopicEndpointRoutes.GetTopicQuestionsRoute(
-                    topicId: Guid.NewGuid()));
+            var response = await ApiTopicClient.SendGetTopicQuestionsAsync(
+                topicId: Guid.NewGuid(),
+                sentWithRole: null);
 
             response.AssertUnauthorizedStatusCode();
         }
@@ -32,13 +28,12 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicQuestions
         [InlineData(Role.RegularUser)]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task GetTopicQuestions_IfUserIsEligibleButTopicNotFound_ShouldReturn404StatusCode(
-            Role role)
+        public async Task GetTopicQuestions_IfTopicIsNotFound_ShouldReturn404StatusCode(
+            Role eligibleRole)
         {
-            var response = await RequestSender.GetAsync(
-                requestUri: TopicEndpointRoutes.GetTopicQuestionsRoute(
-                    topicId: Guid.NewGuid()),
-                getFromRole: role);
+            var response = await ApiTopicClient.SendGetTopicQuestionsAsync(
+                topicId: Guid.NewGuid(),
+                sentWithRole: eligibleRole);
 
             response.AssertNotFoundStatusCode();
         }
@@ -47,15 +42,14 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicQuestions
         [InlineData(Role.RegularUser)]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task GetTopicQuestions_IfUserIsEligibleButTopicContainsNoQuestions_ShouldReturn200StatusCode(
-            Role role)
+        public async Task GetTopicQuestions_IfTopicContainsNoQuestions_ShouldReturn200StatusCode(
+            Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateValidTopicAsync();
+            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
 
-            var response = await RequestSender.GetAsync(
-                requestUri: TopicEndpointRoutes.GetTopicQuestionsRoute(
-                    topicId: topicId),
-                getFromRole: role);
+            var response = await ApiTopicClient.SendGetTopicQuestionsAsync(
+                topicId: topicId,
+                sentWithRole: eligibleRole);
 
             response.AssertOkStatusCode();
         }
@@ -65,14 +59,13 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicQuestions
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
         public async Task GetTopicQuestions_IfUserIsEligibleButTopicContainsNoQuestions_ShouldReturnEmptyCollection(
-            Role role)
+            Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateValidTopicAsync();
+            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
 
-            var topicQuestions = await RequestSender.GetFromJsonAsync<IEnumerable<QuestionResponse>>(
-                requestUri: TopicEndpointRoutes.GetTopicQuestionsRoute(
-                    topicId: topicId),
-                getFromRole: role);
+            var topicQuestions = await ApiTopicClient.GetTopicQuestionsAsync(
+                topicId,
+                getWithRole: eligibleRole);
 
             topicQuestions.Should().NotBeNull();
             topicQuestions.Should().BeEmpty();
@@ -83,17 +76,16 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicQuestions
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
         public async Task GetTopicQuestions_IfValidCase_ShouldReturn200StatusCode(
-           Role role)
+           Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateValidTopicAsync();
+            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
 
-            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+            var questionId = await ApiQuestionClient.CreateValidQuestionAsAuthorizedAsync(
                 topicIds: [topicId]);
 
-            var response = await RequestSender.GetAsync(
-                requestUri: TopicEndpointRoutes.GetTopicQuestionsRoute(
-                    topicId: topicId),
-                getFromRole: role);
+            var response = await ApiTopicClient.SendGetTopicQuestionsAsync(
+                topicId: topicId,
+                sentWithRole: eligibleRole);
 
             response.AssertOkStatusCode();
         }
@@ -103,20 +95,19 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicQuestions
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
         public async Task GetTopicQuestions_IfValidCase_ShouldReturnTopicQuestions(
-            Role role)
+            Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateValidTopicAsync();
+            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
 
-            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+            var questionId = await ApiQuestionClient.CreateValidQuestionAsAuthorizedAsync(
                 topicIds: [topicId]);
 
-            var topicQuestions = await RequestSender.GetFromJsonAsync<IEnumerable<QuestionResponse>>(
-                requestUri: TopicEndpointRoutes.GetTopicQuestionsRoute(
-                    topicId: topicId),
-                getFromRole: role);
+            var topicQuestions = await ApiTopicClient.GetTopicQuestionsAsync(
+                topicId,
+                getWithRole: eligibleRole);
 
             topicQuestions.Should().HaveCount(1);
-            topicQuestions.First().Id.Should().Be(questionId);
+            topicQuestions.Single().Id.Should().Be(questionId);
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using TraffiLearn.Application.Topics.DTO;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;
@@ -16,9 +15,9 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicById
         [Fact]
         public async Task GetTopicById_IfUserIsNotAuthenticated_ShouldReturn401StatusCode()
         {
-            var response = await RequestSender.GetAsync(
-                requestUri: TopicEndpointRoutes.GetTopicByIdRoute(
-                    topicId: Guid.NewGuid()));
+            var response = await ApiTopicClient.SendGetTopicByIdRequestAsync(
+                topicId: Guid.NewGuid(),
+                sentWithRole: null);
 
             response.AssertUnauthorizedStatusCode();
         }
@@ -27,13 +26,12 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicById
         [InlineData(Role.RegularUser)]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task GetTopicById_IfUserIsEligibleButTopicNotFound_ShouldReturn404StatusCode(
-            Role role)
+        public async Task GetTopicById_IfTopicIsNotFound_ShouldReturn404StatusCode(
+            Role eligibleRole)
         {
-            var response = await RequestSender.GetAsync(
-                requestUri: TopicEndpointRoutes.GetTopicByIdRoute(
-                    topicId: Guid.NewGuid()),
-                getFromRole: role);
+            var response = await ApiTopicClient.SendGetTopicByIdRequestAsync(
+                topicId: Guid.NewGuid(),
+                sentWithRole: eligibleRole);
 
             response.AssertNotFoundStatusCode();
         }
@@ -43,14 +41,13 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicById
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
         public async Task GetTopicById_IfValidCase_ShouldReturn200StatusCode(
-            Role role)
+            Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateValidTopicAsync();
+            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
 
-            var response = await RequestSender.GetAsync(
-                requestUri: TopicEndpointRoutes.GetTopicByIdRoute(
-                    topicId: topicId),
-                getFromRole: role);
+            var response = await ApiTopicClient.SendGetTopicByIdRequestAsync(
+                topicId: topicId,
+                sentWithRole: eligibleRole);
 
             response.AssertOkStatusCode();
         }
@@ -60,14 +57,13 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicById
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
         public async Task GetTopicById_IfValidCase_ShouldReturnValidTopic(
-            Role role)
+            Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateValidTopicAsync();
+            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
 
-            var response = await RequestSender.GetFromJsonAsync<TopicResponse>(
-                requestUri: TopicEndpointRoutes.GetTopicByIdRoute(
-                    topicId: topicId),
-                getFromRole: role);
+            var response = await ApiTopicClient.GetTopicByIdAsync(
+                topicId: topicId,
+                sentWithRole: eligibleRole);
 
             response.Should().NotBeNull();
             response.Id.Should().Be(topicId);

@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using TraffiLearn.Application.Topics.Commands.Create;
-using TraffiLearn.Application.Topics.DTO;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;
@@ -17,8 +16,9 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetAllSortedTopicsByNumber
         [Fact]
         public async Task GetAllSortedTopicsByNumber_IfUserIsNotAuthenticated_ShouldReturn401StatusCode()
         {
-            var response = await RequestSender.GetAsync(
-                requestUri: TopicEndpointRoutes.GetAllSortedTopicsByNumberRoute);
+            var response = await ApiTopicClient
+                .SendGetAllTopicsSortedByNumberRequestAsync(
+                    sentWithRole: null);
 
             response.AssertUnauthorizedStatusCode();
         }
@@ -27,12 +27,12 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetAllSortedTopicsByNumber
         [InlineData(Role.RegularUser)]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task GetAllSortedTopicsByNumber_IfUserIsEligibleButNoTopicsAdded_ShouldReturn200StatusCode(
-            Role role)
+        public async Task GetAllSortedTopicsByNumber_IfNoTopicsAdded_ShouldReturn200StatusCode(
+            Role eligibleRole)
         {
-            var response = await RequestSender.GetAsync(
-                requestUri: TopicEndpointRoutes.GetAllSortedTopicsByNumberRoute,
-                getFromRole: role);
+            var response = await ApiTopicClient
+                .SendGetAllTopicsSortedByNumberRequestAsync(
+                    sentWithRole: eligibleRole);
 
             response.AssertOkStatusCode();
         }
@@ -41,12 +41,11 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetAllSortedTopicsByNumber
         [InlineData(Role.RegularUser)]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task GetAllSortedTopicsByNumber_IfUserIsEligibleButNoTopicsAdded_ShouldReturnEmptyCollection(
-           Role role)
+        public async Task GetAllSortedTopicsByNumber_IfNoTopicsAdded_ShouldReturnEmptyCollection(
+           Role eligibleRole)
         {
-            var topics = await RequestSender.GetFromJsonAsync<IEnumerable<TopicResponse>>(
-                requestUri: TopicEndpointRoutes.GetAllSortedTopicsByNumberRoute,
-                getFromRole: role);
+            var topics = await ApiTopicClient.GetAllTopicsSortedByNumberAsync(
+                getWithRole: eligibleRole);
 
             topics.Should().NotBeNull();
             topics.Should().BeEmpty();
@@ -57,13 +56,12 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetAllSortedTopicsByNumber
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
         public async Task GetAllSortedTopicsByNumber_IfValidCase_ShouldReturn200StatusCode(
-           Role role)
+           Role eligibleRole)
         {
-            await ApiTopicClient.CreateValidTopicAsync();
+            await ApiTopicClient.CreateTopicAsAuthorizedAsync();
 
-            var response = await RequestSender.GetAsync(
-                requestUri: TopicEndpointRoutes.GetAllSortedTopicsByNumberRoute,
-                getFromRole: role);
+            var response = await ApiTopicClient.SendGetAllTopicsSortedByNumberRequestAsync(
+                sentWithRole: eligibleRole);
 
             response.AssertOkStatusCode();
         }
@@ -73,23 +71,22 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetAllSortedTopicsByNumber
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
         public async Task GetAllSortedTopicsByNumber_IfValidCase_ShouldReturnSortedTopics(
-           Role role)
+           Role eligibleRole)
         {
-            var secondTopicId = await ApiTopicClient.CreateTopicAsync(new CreateTopicCommand(
+            var secondTopicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync(new CreateTopicCommand(
                 TopicNumber: 5,
                 Title: "title-5"));
 
-            var firstTopicId = await ApiTopicClient.CreateTopicAsync(new CreateTopicCommand(
+            var firstTopicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync(new CreateTopicCommand(
                 TopicNumber: 3,
                 Title: "title-3"));
 
-            var lastTopicId = await ApiTopicClient.CreateTopicAsync(new CreateTopicCommand(
+            var lastTopicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync(new CreateTopicCommand(
                 TopicNumber: 123,
                 Title: "title-123"));
 
-            var allTopics = await RequestSender.GetFromJsonAsync<IEnumerable<TopicResponse>>(
-                requestUri: TopicEndpointRoutes.GetAllSortedTopicsByNumberRoute,
-                getFromRole: role);
+            var allTopics = await ApiTopicClient.GetAllTopicsSortedByNumberAsync(
+                getWithRole: eligibleRole);
 
             allTopics.First().Id.Should().Be(firstTopicId);
             allTopics.Last().Id.Should().Be(lastTopicId);

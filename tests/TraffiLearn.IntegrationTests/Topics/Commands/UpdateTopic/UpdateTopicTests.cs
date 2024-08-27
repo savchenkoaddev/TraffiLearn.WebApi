@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using TraffiLearn.Application.Topics.Commands.Update;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;
@@ -8,6 +9,8 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
 {
     public sealed class UpdateTopicTests : TopicIntegrationTest
     {
+        private readonly UpdateTopicCommandFactory _commandFactory = new();
+
         public UpdateTopicTests(
             WebApplicationFactory factory)
             : base(factory)
@@ -16,65 +19,97 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
         [Fact]
         public async Task UpdateTopic_IfUserIsNotAuthenticated_ShouldReturn401StatusCode()
         {
-            var command = UpdateTopicFixtureFactory.CreateValidCommandWithRandomId();
-
-            var response = await RequestSender.SendJsonRequest(
-                method: HttpMethod.Put,
-                requestUri: TopicEndpointRoutes.UpdateTopicRoute,
-                command);
+            var response = await ApiTopicClient.SendValidUpdateTopicRequestAsync(
+                topicId: Guid.NewGuid(),
+                updatedWithRole: null);
 
             response.AssertUnauthorizedStatusCode();
+        }
+
+        [Fact]
+        public async Task UpdateTopic_IfUserIsNotAuthenticated_TopicShouldNotBeUpdated()
+        {
+            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+
+            var command = new UpdateTopicCommand(
+                topicId,
+                TopicNumber: 233,
+                Title: "Updated-title");
+
+            await ApiTopicClient.SendUpdateTopicRequestAsync(
+                command,
+                updatedWithRole: null);
+
+            var allTopics = await ApiTopicClient.GetAllTopicsSortedByNumberAsAuthorizedAsync();
+
+            var singleTopic = allTopics.Single();
+
+            singleTopic.Id.Should().Be(topicId);
+            singleTopic.TopicNumber.Should().NotBe(command.TopicNumber);
+            singleTopic.Title.Should().NotBe(command.Title);
         }
 
         [Theory]
         [InlineData(Role.RegularUser)]
         public async Task UpdateTopic_IfUserIsNotEligible_ShouldReturn403StatusCode(
-            Role role)
+            Role nonEligibleRole)
         {
-            var command = UpdateTopicFixtureFactory.CreateValidCommandWithRandomId();
-
-            var response = await RequestSender.SendJsonRequest(
-                method: HttpMethod.Put,
-                requestUri: TopicEndpointRoutes.UpdateTopicRoute,
-                command,
-                sentWithRole: role);
+            var response = await ApiTopicClient.SendValidUpdateTopicRequestAsync(
+                topicId: Guid.NewGuid(),
+                updatedWithRole: nonEligibleRole);
 
             response.AssertForbiddenStatusCode();
         }
 
         [Theory]
-        [InlineData(Role.Admin)]
-        [InlineData(Role.Owner)]
-        public async Task UpdateTopic_IfPassedInvalidArgsAndUserIsEligible_ShouldReturn400StatusCode(
-            Role role)
+        [InlineData(Role.RegularUser)]
+        public async Task UpdateTopic_IfUserIsNotEligible_TopicShouldNotBeUpdated(
+            Role nonEligibleRole)
         {
-            var invalidCommands = UpdateTopicFixtureFactory.CreateInvalidCommandsWithRandomIds();
+            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
 
-            foreach (var command in invalidCommands)
-            {
-                var response = await RequestSender.SendJsonRequest(
-                    method: HttpMethod.Put,
-                    requestUri: TopicEndpointRoutes.UpdateTopicRoute,
-                    command,
-                    sentWithRole: role);
+            var command = new UpdateTopicCommand(
+                topicId,
+                TopicNumber: 233,
+                Title: "Updated-title");
 
-                response.AssertBadRequestStatusCode();
-            }
+            await ApiTopicClient.SendUpdateTopicRequestAsync(
+                command,
+                updatedWithRole: nonEligibleRole);
+
+            var allTopics = await ApiTopicClient.GetAllTopicsSortedByNumberAsAuthorizedAsync();
+
+            var singleTopic = allTopics.Single();
+
+            singleTopic.Id.Should().Be(topicId);
+            singleTopic.TopicNumber.Should().NotBe(command.TopicNumber);
+            singleTopic.Title.Should().NotBe(command.Title);
         }
 
         [Theory]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task UpdateTopic_IfPassedValidArgsAndUserIsEligibleButTopicDoesNotExist_ShouldReturn404StatusCode(
-            Role role)
+        public async Task UpdateTopic_IfPassedInvalidArgs_ShouldReturn400StatusCode(
+            Role eligibleRole)
         {
-            var command = UpdateTopicFixtureFactory.CreateValidCommandWithRandomId();
+            var invalidCommands = _commandFactory.CreateInvalidCommandsWithRandomIds();
 
-            var response = await RequestSender.SendJsonRequest(
+            await RequestSender.EnsureEachSentRequestReturnsBadRequestAsync(
                 method: HttpMethod.Put,
                 requestUri: TopicEndpointRoutes.UpdateTopicRoute,
-                command,
-                sentWithRole: role);
+                requests: invalidCommands,
+                sentFromRole: eligibleRole);
+        }
+
+        [Theory]
+        [InlineData(Role.Admin)]
+        [InlineData(Role.Owner)]
+        public async Task UpdateTopic_IfTopicDoesNotExist_ShouldReturn404StatusCode(
+            Role eligibleRole)
+        {
+            var response = await ApiTopicClient.SendValidUpdateTopicRequestAsync(
+                topicId: Guid.NewGuid(),
+                updatedWithRole: eligibleRole);
 
             response.AssertNotFoundStatusCode();
         }
@@ -82,23 +117,19 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
         [Theory]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task UpdateTopic_IfPassedValidArgsAndUserIsEligible_ShouldReturn204StatusCode(
-            Role role)
+        public async Task UpdateTopic_IfValidCase_ShouldReturn204StatusCode(
+            Role eligibleRole)
         {
-            await ApiTopicClient.CreateValidTopicAsync();
+            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
 
-            var allTopics = await ApiTopicClient.GetAllTopicsSortedByNumberAsync();
+            var command = new UpdateTopicCommand(
+                TopicId: topicId,
+                TopicNumber: 552,
+                Title: "Updated-title");
 
-            var firstTopicId = allTopics.First().Id;
-
-            var command = UpdateTopicFixtureFactory.CreateValidCommand(
-                topicId: firstTopicId);
-
-            var response = await RequestSender.SendJsonRequest(
-                method: HttpMethod.Put,
-                requestUri: TopicEndpointRoutes.UpdateTopicRoute,
+            var response = await ApiTopicClient.SendUpdateTopicRequestAsync(
                 command,
-                sentWithRole: role);
+                updatedWithRole: eligibleRole);
 
             response.AssertNoContentStatusCode();
         }
@@ -106,24 +137,31 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
         [Theory]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task UpdateTopic_IfPassedValidArgsAndUserIsEligible_TopicShouldBeUpdated(
-            Role role)
+        public async Task UpdateTopic_IfValidCase_TopicShouldBeUpdated(
+            Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateValidTopicAsync();
+            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
 
-            var command = UpdateTopicFixtureFactory.CreateValidCommand(
-                topicId: topicId);
+            var command = new UpdateTopicCommand(
+                TopicId: topicId,
+                TopicNumber: 552,
+                Title: "Updated-title");
 
-            await RequestSender.SendJsonRequest(
-                method: HttpMethod.Put,
-                requestUri: TopicEndpointRoutes.UpdateTopicRoute,
+            var response = await ApiTopicClient.SendUpdateTopicRequestAsync(
                 command,
-                sentWithRole: role);
+                updatedWithRole: eligibleRole);
 
-            var allTopics = await ApiTopicClient.GetAllTopicsSortedByNumberAsync();
+            var allTopics = await ApiTopicClient
+                .GetAllTopicsSortedByNumberAsAuthorizedAsync();
 
-            allTopics.First().Title.Should().Be(command.Title);
-            allTopics.First().Id.Should().Be(topicId);
+            allTopics.Should().HaveCount(1);
+
+            var singleTopic = allTopics.Single();
+
+            singleTopic.Id.Should().Be(topicId);
+
+            singleTopic.TopicNumber.Should().Be(command.TopicNumber);
+            singleTopic.Title.Should().Be(command.Title);
         }
     }
 }

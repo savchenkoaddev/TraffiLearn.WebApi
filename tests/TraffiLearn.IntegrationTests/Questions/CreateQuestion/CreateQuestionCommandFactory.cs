@@ -5,7 +5,7 @@ using TraffiLearn.Testing.Shared.Factories;
 
 namespace TraffiLearn.IntegrationTests.Questions.CreateQuestion
 {
-    internal sealed class CreateQuestionFixtureFactory
+    internal sealed class CreateQuestionCommandFactory
     {
         public static CreateQuestionCommand CreateValidCommand(
             List<Guid> topicIds,

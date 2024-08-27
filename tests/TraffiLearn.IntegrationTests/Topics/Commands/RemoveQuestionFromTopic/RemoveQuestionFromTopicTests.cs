@@ -8,53 +8,128 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.RemoveQuestionFromTopic
 {
     public sealed class RemoveQuestionFromTopicTests : TopicIntegrationTest
     {
-        private readonly ApiQuestionClient _apiQuestionClient;
-
         public RemoveQuestionFromTopicTests(
             WebApplicationFactory factory)
             : base(factory)
-        {
-            _apiQuestionClient = new ApiQuestionClient(RequestSender);
-        }
+        { }
 
         [Fact]
         public async Task RemoveQuestionFromTopic_IfUserIsNotAuthenticated_ShouldReturn401StatusCode()
         {
-            var response = await RequestSender.PutAsync(
-                requestUri: TopicEndpointRoutes.RemoveQuestionFromTopicRoute(
-                    questionId: Guid.NewGuid(),
-                    topicId: Guid.NewGuid()));
+            var response = await ApiTopicClient.SendRemoveQuestionFromTopicRequestAsync(
+                questionId: Guid.NewGuid(),
+                topicId: Guid.NewGuid());
 
             response.AssertUnauthorizedStatusCode();
+        }
+
+        [Fact]
+        public async Task RemoveQuestionFromTopic_IfUserIsNotAuthenticated_QuestionShouldNotBeRemovedFromTopic()
+        {
+            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+
+            var questionId = await ApiQuestionClient.CreateValidQuestionAsAuthorizedAsync(
+                topicIds: [topicId]);
+
+            await ApiTopicClient.SendRemoveQuestionFromTopicRequestAsync(
+                questionId: questionId,
+                topicId: topicId);
+
+            var topicQuestions = await ApiTopicClient.GetTopicQuestionsAsAuthorizedAsync(
+                topicId);
+
+            topicQuestions.Should().NotBeEmpty();
+            topicQuestions.Single().Id.Should().Be(questionId);
+        }
+
+        [Fact]
+        public async Task RemoveQuestionFromTopic_IfUserIsNotAuthenticated_TopicShouldNotBeRemovedFromQuestion()
+        {
+            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+
+            var questionId = await ApiQuestionClient.CreateValidQuestionAsAuthorizedAsync(
+                topicIds: [topicId]);
+
+            await ApiTopicClient.SendRemoveQuestionFromTopicRequestAsync(
+                questionId: questionId,
+                topicId: topicId);
+
+            var topicQuestions = await ApiQuestionClient.GetQuestionTopicsAsAuthorizedUserAsync(
+                questionId);
+
+            topicQuestions.Should().NotBeEmpty();
+            topicQuestions.Single().Id.Should().Be(topicId);
         }
 
         [Theory]
         [InlineData(Role.RegularUser)]
         public async Task RemoveQuestionFromTopic_IfUserIsNotEligible_ShouldReturn403StatusCode(
-            Role role)
+            Role nonEligibleRole)
         {
-            var response = await RequestSender.PutAsync(
-                requestUri: TopicEndpointRoutes.AddQuestionToTopicRoute(
-                    questionId: Guid.NewGuid(),
-                    topicId: Guid.NewGuid()),
-                putWithRole: role);
+            var response = await ApiTopicClient.SendRemoveQuestionFromTopicRequestAsync(
+                questionId: Guid.NewGuid(),
+                topicId: Guid.NewGuid(),
+                sentFromRole: nonEligibleRole);
 
             response.AssertForbiddenStatusCode();
         }
 
         [Theory]
+        [InlineData(Role.RegularUser)]
+        public async Task RemoveQuestionFromTopic_IfUserIsNotEligible_QuestionShouldNotBeRemovedFromTopic(
+            Role nonEligibleRole)
+        {
+            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+
+            var questionId = await ApiQuestionClient.CreateValidQuestionAsAuthorizedAsync(
+                topicIds: [topicId]);
+
+            var response = await ApiTopicClient.SendRemoveQuestionFromTopicRequestAsync(
+                questionId: questionId,
+                topicId: topicId,
+                sentFromRole: nonEligibleRole);
+
+            var topicQuestions = await ApiTopicClient.GetTopicQuestionsAsAuthorizedAsync(
+                topicId);
+
+            topicQuestions.Should().NotBeEmpty();
+            topicQuestions.Single().Id.Should().Be(questionId);
+        }
+
+        [Theory]
+        [InlineData(Role.RegularUser)]
+        public async Task RemoveQuestionFromTopic_IfUserIsNotEligible_TopicShouldNotBeRemovedFromQuestion(
+           Role nonEligibleRole)
+        {
+            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+
+            var questionId = await ApiQuestionClient.CreateValidQuestionAsAuthorizedAsync(
+                topicIds: [topicId]);
+
+            await ApiTopicClient.SendRemoveQuestionFromTopicRequestAsync(
+                questionId: questionId,
+                topicId: topicId,
+                sentFromRole: nonEligibleRole);
+
+            var questionTopics = await ApiQuestionClient.GetQuestionTopicsAsAuthorizedUserAsync(
+                questionId);
+
+            questionTopics.Should().NotBeEmpty();
+            questionTopics.Single().Id.Should().Be(topicId);
+        }
+
+        [Theory]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task RemoveQuestionFromTopic_IfUserIsEligibleButQuestionNotFound_ShouldReturn404StatusCode(
-            Role role)
+        public async Task RemoveQuestionFromTopic_IfQuestionIsNotFound_ShouldReturn404StatusCode(
+            Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateValidTopicAsync();
+            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
 
-            var response = await RequestSender.PutAsync(
-                requestUri: TopicEndpointRoutes.RemoveQuestionFromTopicRoute(
-                    questionId: Guid.NewGuid(),
-                    topicId: topicId),
-                putWithRole: role);
+            var response = await ApiTopicClient.SendRemoveQuestionFromTopicRequestAsync(
+                questionId: Guid.NewGuid(),
+                topicId: topicId,
+                sentFromRole: eligibleRole);
 
             response.AssertNotFoundStatusCode();
         }
@@ -62,19 +137,18 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.RemoveQuestionFromTopic
         [Theory]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task RemoveQuestionFromTopic_IfUserIsEligibleButTopicNotFound_ShouldReturn404StatusCode(
-            Role role)
+        public async Task RemoveQuestionFromTopic_IfTopicIsNotFound_ShouldReturn404StatusCode(
+            Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateValidTopicAsync();
+            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
 
-            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+            var questionId = await ApiQuestionClient.CreateValidQuestionAsAuthorizedAsync(
                 topicIds: [topicId]);
 
-            var response = await RequestSender.PutAsync(
-                requestUri: TopicEndpointRoutes.RemoveQuestionFromTopicRoute(
-                    questionId: questionId,
-                    topicId: Guid.NewGuid()),
-                putWithRole: role);
+            var response = await ApiTopicClient.SendRemoveQuestionFromTopicRequestAsync(
+                questionId: questionId,
+                topicId: Guid.NewGuid(),
+                sentFromRole: eligibleRole);
 
             response.AssertNotFoundStatusCode();
         }
@@ -82,24 +156,18 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.RemoveQuestionFromTopic
         [Theory]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task RemoveQuestionFromTopic_IfUserIsEligibleButQuestionIsNotAdded_ShouldReturn404StatusCode(
-            Role role)
+        public async Task RemoveQuestionFromTopic_IfQuestionIsNotAdded_ShouldReturn404StatusCode(
+            Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateValidTopicAsync();
+            var questionId = await ApiQuestionClient
+                .CreateValidQuestionWithTopicAsAuthorizedAsync();
 
-            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
-                topicIds: [topicId]);
+            var newTopicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
 
-            var newTopicId = await ApiTopicClient.CreateValidTopicAsync();
-
-            var newQuestionId = await _apiQuestionClient.CreateValidQuestionAsync(
-                topicIds: [newTopicId]);
-
-            var response = await RequestSender.PutAsync(
-                requestUri: TopicEndpointRoutes.RemoveQuestionFromTopicRoute(
-                    questionId: questionId,
-                    topicId: newTopicId),
-                putWithRole: role);
+            var response = await ApiTopicClient.SendRemoveQuestionFromTopicRequestAsync(
+                questionId: questionId,
+                topicId: newTopicId,
+                sentFromRole: eligibleRole);
 
             response.AssertNotFoundStatusCode();
         }
@@ -108,18 +176,17 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.RemoveQuestionFromTopic
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
         public async Task RemoveQuestionFromTopic_IfValidCase_ShouldReturn204StatusCode(
-            Role role)
+            Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateValidTopicAsync();
+            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
 
-            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+            var questionId = await ApiQuestionClient.CreateValidQuestionAsAuthorizedAsync(
                 topicIds: [topicId]);
 
-            var response = await RequestSender.PutAsync(
-                requestUri: TopicEndpointRoutes.RemoveQuestionFromTopicRoute(
-                    questionId: questionId,
-                    topicId: topicId),
-                putWithRole: role);
+            var response = await ApiTopicClient.SendRemoveQuestionFromTopicRequestAsync(
+                questionId: questionId,
+                topicId: topicId,
+                sentFromRole: eligibleRole);
 
             response.AssertNoContentStatusCode();
         }
@@ -128,20 +195,20 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.RemoveQuestionFromTopic
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
         public async Task RemoveQuestionFromTopic_IfValidCase_QuestionShouldBeRemovedFromTopic(
-            Role role)
+            Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateValidTopicAsync();
+            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
 
-            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+            var questionId = await ApiQuestionClient.CreateValidQuestionAsAuthorizedAsync(
                 topicIds: [topicId]);
 
-            var response = await RequestSender.PutAsync(
-                requestUri: TopicEndpointRoutes.RemoveQuestionFromTopicRoute(
-                    questionId: questionId,
-                    topicId: topicId),
-                putWithRole: role);
+            var response = await ApiTopicClient.SendRemoveQuestionFromTopicRequestAsync(
+                questionId: questionId,
+                topicId: topicId,
+                sentFromRole: eligibleRole);
 
-            var topicQuestions = await ApiTopicClient.GetTopicQuestionsAsync(topicId);
+            var topicQuestions = await ApiTopicClient
+                .GetTopicQuestionsAsAuthorizedAsync(topicId);
 
             topicQuestions.Should().BeEmpty();
         }
@@ -150,20 +217,20 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.RemoveQuestionFromTopic
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
         public async Task RemoveQuestionFromTopic_IfValidCase_TopicShouldBeRemovedFromQuestion(
-            Role role)
+            Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateValidTopicAsync();
+            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
 
-            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+            var questionId = await ApiQuestionClient.CreateValidQuestionAsAuthorizedAsync(
                 topicIds: [topicId]);
 
-            var response = await RequestSender.PutAsync(
-                requestUri: TopicEndpointRoutes.RemoveQuestionFromTopicRoute(
-                    questionId: questionId,
-                    topicId: topicId),
-                putWithRole: role);
+            var response = await ApiTopicClient.SendRemoveQuestionFromTopicRequestAsync(
+                questionId: questionId,
+                topicId: topicId,
+                sentFromRole: eligibleRole);
 
-            var questionTopics = await _apiQuestionClient.GetQuestionTopicsAsync(questionId);
+            var questionTopics = await ApiQuestionClient
+                .GetQuestionTopicsAsAuthorizedUserAsync(questionId);
 
             questionTopics.Should().BeEmpty();
         }

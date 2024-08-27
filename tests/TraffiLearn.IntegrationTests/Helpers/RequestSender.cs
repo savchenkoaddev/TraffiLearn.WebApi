@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
+using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
@@ -30,11 +31,11 @@ namespace TraffiLearn.IntegrationTests.Helpers
             _cache = cache;
         }
 
-        public async Task<HttpResponseMessage> SendJsonRequest<TValue>(
+        public async Task<HttpResponseMessage> SendJsonAsync<TValue>(
             HttpMethod method,
             string requestUri,
             TValue value,
-            Role? sentWithRole = null)
+            Role? sentFromRole = null)
         {
             var builder = new HttpRequestMessageBuilder(
                     method, 
@@ -43,9 +44,38 @@ namespace TraffiLearn.IntegrationTests.Helpers
 
             var request = await BuildHttpRequestWithOptionalAuthorizationAsync(
                 builder, 
-                sentWithRole);
+                sentFromRole);
 
             return await _httpClient.SendAsync(request);
+        }
+
+        public async Task<TResponse> SendAndGetJsonAsync<TRequest, TResponse>(
+           HttpMethod method,
+           string requestUri,
+           TRequest value,
+           Role? sentWithRole = null)
+        {
+            var builder = new HttpRequestMessageBuilder(
+                    method,
+                    requestUri)
+                .WithJsonContent(value);
+
+            var request = await BuildHttpRequestWithOptionalAuthorizationAsync(
+                builder,
+                sentWithRole);
+
+            var response = await _httpClient.SendAsync(request);
+
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadFromJsonAsync<TResponse>();
+
+            if (content is null)
+            {
+                throw new InvalidOperationException(nameof(content));
+            }
+
+            return content;
         }
 
         public async Task<HttpResponseMessage> DeleteAsync(
@@ -63,24 +93,43 @@ namespace TraffiLearn.IntegrationTests.Helpers
             return await _httpClient.SendAsync(request);
         }
 
+        public async Task<HttpResponseMessage> PutAsJsonAsync<TRequest>(
+            string requestUri,
+            TRequest request,
+            Role? putWithRole = null)
+        {
+            var builder = new HttpRequestMessageBuilder(
+                    HttpMethod.Put, 
+                    requestUri)
+                .WithJsonContent(request);
+
+            var httpRequest = await BuildHttpRequestWithOptionalAuthorizationAsync(
+                builder, 
+                putWithRole);
+
+            return await _httpClient.SendAsync(httpRequest);
+        }
+
+
         public async Task<HttpResponseMessage> PutAsync(
             string requestUri,
             Role? putWithRole = null)
         {
             var builder = new HttpRequestMessageBuilder(
-                HttpMethod.Put, 
-                requestUri);
+                    HttpMethod.Put,
+                    requestUri);
 
-            var request = await BuildHttpRequestWithOptionalAuthorizationAsync(
-                builder, 
+            var httpRequest = await BuildHttpRequestWithOptionalAuthorizationAsync(
+                builder,
                 putWithRole);
 
-            return await _httpClient.SendAsync(request);
+            return await _httpClient.SendAsync(httpRequest);
         }
+
 
         public async Task<HttpResponseMessage> GetAsync(
             string requestUri,
-            Role? getFromRole = null)
+            Role? getWithRole = null)
         {
             var builder = new HttpRequestMessageBuilder(
                 HttpMethod.Get,
@@ -88,14 +137,14 @@ namespace TraffiLearn.IntegrationTests.Helpers
 
             var request = await BuildHttpRequestWithOptionalAuthorizationAsync(
                 builder,
-                getFromRole);
+                getWithRole);
 
             return await _httpClient.SendAsync(request);
         }
 
-        public async Task<TValue> GetFromJsonAsync<TValue>(
+        public async Task<TResponse> GetFromJsonAsync<TResponse>(
             string requestUri,
-            Role? getFromRole = null)
+            Role? getWithRole = null)
         {
             var builder = new HttpRequestMessageBuilder(
                 HttpMethod.Get,
@@ -103,9 +152,9 @@ namespace TraffiLearn.IntegrationTests.Helpers
 
             var request = await BuildHttpRequestWithOptionalAuthorizationAsync(
                 builder, 
-                getFromRole);
+                getWithRole);
 
-            return await SendAndParseJsonResponseAsync<TValue>(request);
+            return await SendAndParseJsonResponseAsync<TResponse>(request);
         }
 
         public async Task<HttpResponseMessage> SendMultipartFormDataWithJsonAndFileRequest<TValue>(
@@ -129,6 +178,59 @@ namespace TraffiLearn.IntegrationTests.Helpers
             return await _httpClient.SendAsync(request);
         }
 
+        public async Task EnsureEachSentRequestReturnsStatusCodeAsync<TRequest>(
+            HttpMethod method,
+            string requestUri,
+            IEnumerable<TRequest> requests,
+            HttpStatusCode statusCode,
+            Role? sentFromRole = null)
+        {
+            var responses = await SendAllAsJsonAsync(
+                method,
+                requestUri,
+                requests,
+                sentFromRole);
+
+            foreach (var request in responses)
+            {
+                request.AssertStatusCode(statusCode);
+            }
+        }
+
+        public Task EnsureEachSentRequestReturnsBadRequestAsync<TRequest>(
+            HttpMethod method,
+            string requestUri,
+            IEnumerable<TRequest> requests,
+            Role? sentFromRole = null)
+        {
+            return EnsureEachSentRequestReturnsStatusCodeAsync(
+                method, 
+                requestUri,
+                requests,
+                statusCode: HttpStatusCode.BadRequest,
+                sentFromRole);
+        }
+
+        public async Task<IEnumerable<HttpResponseMessage>> SendAllAsJsonAsync<TRequest>(
+            HttpMethod method,
+            string requestUri,
+            IEnumerable<TRequest> requests,
+            Role? sentFromRole = null)
+        {
+            List<HttpResponseMessage> responses = [];
+
+            foreach (var request in requests)
+            {
+                responses.Add(await SendJsonAsync(
+                    method,
+                    requestUri,
+                    request,
+                    sentFromRole));
+            }
+
+            return responses;
+        }
+
         private async Task<HttpRequestMessage> BuildHttpRequestWithOptionalAuthorizationAsync(
             HttpRequestMessageBuilder builder,
             Role? role)
@@ -145,14 +247,15 @@ namespace TraffiLearn.IntegrationTests.Helpers
             return builder.Build();
         }
 
-        private async Task<TValue> SendAndParseJsonResponseAsync<TValue>(
+        private async Task<TResponse> SendAndParseJsonResponseAsync<TResponse>(
             HttpRequestMessage requestMessage)
         {
             var response = await _httpClient.SendAsync(requestMessage);
 
             response.EnsureSuccessStatusCode();
 
-            var result = await response.Content.ReadFromJsonAsync<TValue>();
+            var str = await response.Content.ReadAsStringAsync();
+            var result = await response.Content.ReadFromJsonAsync<TResponse>();
 
             if (result is null)
             {

@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using TraffiLearn.Application.Topics.DTO;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;
@@ -9,20 +8,16 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
 {
     public sealed class GetRandomTopicWithQuestionsTests : TopicIntegrationTest
     {
-        private readonly ApiQuestionClient _apiQuestionClient;
-
         public GetRandomTopicWithQuestionsTests(
             WebApplicationFactory factory)
             : base(factory)
-        {
-            _apiQuestionClient = new ApiQuestionClient(RequestSender);
-        }
+        { }
 
         [Fact]
         public async Task GetRandomTopicWithQuestions_IfUserIsNotAuthenticated_ShouldReturn401StatusCode()
         {
-            var response = await RequestSender.GetAsync(
-                requestUri: TopicEndpointRoutes.GetRandomTopicWithQuestionsRoute);
+            var response = await ApiTopicClient.SendGetRandomTopicWithQuestionsAsync(
+                sentWithRole: null);
 
             response.AssertUnauthorizedStatusCode();
         }
@@ -31,12 +26,11 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
         [InlineData(Role.RegularUser)]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task GetRandomTopicWithQuestions_IfUserIsEligibleButNoTopicsExist_ShouldReturn500StatusCode(
-            Role role)
+        public async Task GetRandomTopicWithQuestions_IfNoTopicsExist_ShouldReturn500StatusCode(
+            Role eligibleRole)
         {
-            var response = await RequestSender.GetAsync(
-                requestUri: TopicEndpointRoutes.GetRandomTopicWithQuestionsRoute,
-                getFromRole: role);
+            var response = await ApiTopicClient.SendGetRandomTopicWithQuestionsAsync(
+                sentWithRole: eligibleRole);
 
             response.AssertInternalServerErrorStatusCode();
         }
@@ -45,14 +39,13 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
         [InlineData(Role.RegularUser)]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task GetRandomTopicWithQuestions_IfUserIsEligibleAndTopicDoesNotContainQuestions_ShouldReturn200StatusCode(
-            Role role)
+        public async Task GetRandomTopicWithQuestions_IfTopicDoesNotContainQuestions_ShouldReturn200StatusCode(
+            Role eligibleRole)
         {
-            await ApiTopicClient.CreateValidTopicAsync();
+            await ApiTopicClient.CreateTopicAsAuthorizedAsync();
 
-            var response = await RequestSender.GetAsync(
-                requestUri: TopicEndpointRoutes.GetRandomTopicWithQuestionsRoute,
-                getFromRole: role);
+            var response = await ApiTopicClient.SendGetRandomTopicWithQuestionsAsync(
+                sentWithRole: eligibleRole);
 
             response.AssertOkStatusCode();
         }
@@ -61,14 +54,13 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
         [InlineData(Role.RegularUser)]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task GetRandomTopicWithQuestions_IfUserIsEligibleAndTopicDoesNotContainQuestions_ShouldReturnTopicWithEmptyQuestions(
-            Role role)
+        public async Task GetRandomTopicWithQuestions_IfTopicDoesNotContainQuestions_ShouldReturnTopicWithEmptyQuestions(
+            Role eligibleRole)
         {
-            await ApiTopicClient.CreateValidTopicAsync();
+            await ApiTopicClient.CreateTopicAsAuthorizedAsync();
 
-            var topicWithQuestions = await RequestSender.GetFromJsonAsync<TopicWithQuestionsResponse>(
-                requestUri: TopicEndpointRoutes.GetRandomTopicWithQuestionsRoute,
-                getFromRole: role);
+            var topicWithQuestions = await ApiTopicClient.GetRandomTopicWithQuestionsAsync(
+                sentWithRole: eligibleRole);
 
             topicWithQuestions.Questions.Should().NotBeNull();
             topicWithQuestions.Questions.Should().BeEmpty();
@@ -78,14 +70,13 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
         [InlineData(Role.RegularUser)]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task GetRandomTopicWithQuestions_IfUserIsEligibleAndTopicDoesNotContainQuestions_TopicShouldBeCorrect(
-            Role role)
+        public async Task GetRandomTopicWithQuestions_IfTopicDoesNotContainQuestions_TopicShouldBeCorrect(
+            Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateValidTopicAsync();
+            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
 
-            var topicWithQuestions = await RequestSender.GetFromJsonAsync<TopicWithQuestionsResponse>(
-                requestUri: TopicEndpointRoutes.GetRandomTopicWithQuestionsRoute,
-                getFromRole: role);
+            var topicWithQuestions = await ApiTopicClient.GetRandomTopicWithQuestionsAsync(
+                sentWithRole: eligibleRole);
 
             topicWithQuestions.TopicId.Should().Be(topicId);
         }
@@ -95,16 +86,13 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
         public async Task GetRandomTopicWithQuestions_IfValidCase_ShouldReturn200StatusCode(
-            Role role)
+            Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateValidTopicAsync();
+            var questionId = await ApiQuestionClient
+                .CreateValidQuestionWithTopicAsAuthorizedAsync();
 
-            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
-                topicIds: [topicId]);
-
-            var response = await RequestSender.GetAsync(
-                requestUri: TopicEndpointRoutes.GetRandomTopicWithQuestionsRoute,
-                getFromRole: role);
+            var response = await ApiTopicClient.SendGetRandomTopicWithQuestionsAsync(
+                sentWithRole: eligibleRole);
 
             response.AssertOkStatusCode();
         }
@@ -116,16 +104,13 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
         public async Task GetRandomTopicWithQuestions_IfOnlyOneTopicExists_ShouldReturnRandomTopicWithQuestions(
-            Role role)
+            Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateValidTopicAsync();
+            var questionId = await ApiQuestionClient
+                .CreateValidQuestionWithTopicAsAuthorizedAsync();
 
-            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
-                topicIds: [topicId]);
-
-            var topicWithQuestions = await RequestSender.GetFromJsonAsync<TopicWithQuestionsResponse>(
-                requestUri: TopicEndpointRoutes.GetRandomTopicWithQuestionsRoute,
-                getFromRole: role);
+            var topicWithQuestions = await ApiTopicClient.GetRandomTopicWithQuestionsAsync(
+                sentWithRole: eligibleRole);
 
             topicWithQuestions.Questions.Should().HaveCount(1);
             topicWithQuestions.Questions.First().Id.Should().Be(questionId);
@@ -136,16 +121,15 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
         public async Task GetRandomTopicWithQuestions_IfOnlyOneTopicExists_TopicShouldBeCorrect(
-            Role role)
+            Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateValidTopicAsync();
+            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
 
-            var questionId = await _apiQuestionClient.CreateValidQuestionAsync(
+            var questionId = await ApiQuestionClient.CreateValidQuestionAsAuthorizedAsync(
                 topicIds: [topicId]);
 
-            var topicWithQuestions = await RequestSender.GetFromJsonAsync<TopicWithQuestionsResponse>(
-                requestUri: TopicEndpointRoutes.GetRandomTopicWithQuestionsRoute,
-                getFromRole: role);
+            var topicWithQuestions = await ApiTopicClient.GetRandomTopicWithQuestionsAsync(
+                sentWithRole: eligibleRole);
 
             topicWithQuestions.TopicId.Should().Be(topicId);
         }
