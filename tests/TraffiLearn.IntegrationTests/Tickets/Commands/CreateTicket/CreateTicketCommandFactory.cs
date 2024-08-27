@@ -2,7 +2,7 @@
 using TraffiLearn.IntegrationTests.Questions;
 using TraffiLearn.Testing.Shared.Factories;
 
-namespace TraffiLearn.IntegrationTests.Tickets.CreateTicket
+namespace TraffiLearn.IntegrationTests.Tickets.Commands.CreateTicket
 {
     public sealed class CreateTicketCommandFactory
     {

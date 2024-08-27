@@ -3,7 +3,7 @@ using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;
 
-namespace TraffiLearn.IntegrationTests.Tickets.CreateTicket
+namespace TraffiLearn.IntegrationTests.Tickets.Commands.CreateTicket
 {
     public sealed class CreateTicketTests : TicketIntegrationTest
     {

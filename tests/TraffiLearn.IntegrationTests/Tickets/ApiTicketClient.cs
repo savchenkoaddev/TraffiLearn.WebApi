@@ -1,10 +1,13 @@
 ﻿using TraffiLearn.Application.Questions.DTO;
 using TraffiLearn.Application.Tickets.Commands.Create;
+using TraffiLearn.Application.Tickets.Commands.Update;
 using TraffiLearn.Application.Tickets.DTO;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Helpers;
 using TraffiLearn.IntegrationTests.Questions;
-using TraffiLearn.IntegrationTests.Tickets.CreateTicket;
+using TraffiLearn.IntegrationTests.Tickets.Commands.CreateTicket;
+using TraffiLearn.IntegrationTests.Tickets.Commands.UpdateTicket;
+using TraffiLearn.Testing.Shared.Factories;
 
 namespace TraffiLearn.IntegrationTests.Tickets
 {
@@ -13,15 +16,18 @@ namespace TraffiLearn.IntegrationTests.Tickets
         private readonly RequestSender _requestSender;
         private readonly ApiQuestionClient _apiQuestionClient;
         private readonly CreateTicketCommandFactory _createTicketCommandFactory;
+        private readonly UpdateTicketCommandFactory _updateTicketCommandFactory;
 
         public ApiTicketClient(
             RequestSender requestSender,
             ApiQuestionClient apiQuestionClient,
-            CreateTicketCommandFactory createTicketCommandFactory)
+            CreateTicketCommandFactory createTicketCommandFactory,
+            UpdateTicketCommandFactory updateTicketCommandFactory)
         {
             _requestSender = requestSender;
             _apiQuestionClient = apiQuestionClient;
             _createTicketCommandFactory = createTicketCommandFactory;
+            _updateTicketCommandFactory = updateTicketCommandFactory;
         }
 
         public async Task<Guid> CreateValidTicketWithQuestionIdsAsync(
@@ -70,6 +76,14 @@ namespace TraffiLearn.IntegrationTests.Tickets
                     requestUri: TicketEndpointRoutes.CreateTicketRoute,
                     value: command,
                     sentWithRole: createdWithRole);
+        }
+
+        public Task<Guid> CreateValidTicketAsAuthorizedAsync(
+            List<Guid> questionIds)
+        {
+            return CreateValidTicketAsync(
+                questionIds: questionIds,
+                createdWithRole: Role.Owner);
         }
 
         public async Task<HttpResponseMessage> SendCreateTicketRequestWithQuestionsAsync(
@@ -148,6 +162,44 @@ namespace TraffiLearn.IntegrationTests.Tickets
                 sentFromRole: deletedWithRole);
 
             response.EnsureSuccessStatusCode();
+        }
+
+        public async Task<HttpResponseMessage> SendValidUpdateTicketRequestWithRandomQuestionIdsAsync(
+            Guid ticketId,
+            Role? updatedWithRole = null)
+        {
+            var command = await _updateTicketCommandFactory
+                .CreateValidCommandWithRandomQuestionIdsAsync(ticketId);
+
+            return await SendUpdateTicketRequestAsync(
+                command,
+                sentFromRole: updatedWithRole);
+        }
+
+        public async Task<HttpResponseMessage> SendValidUpdateTicketRequestAsync(
+            Guid ticketId,
+            List<Guid> questionIds,
+            Role? sentFromRole = null)
+        {
+            var command = _updateTicketCommandFactory
+                .CreateValidCommand(
+                    ticketId,
+                    questionIds);
+
+            return await SendUpdateTicketRequestAsync(
+                command,
+                sentFromRole: sentFromRole);
+        }
+
+        public Task<HttpResponseMessage> SendUpdateTicketRequestAsync(
+            UpdateTicketCommand request,
+            Role? sentFromRole = null)
+        {
+            return _requestSender.SendJsonAsync(
+                method: HttpMethod.Put,
+                requestUri: TicketEndpointRoutes.UpdateTicketRoute,
+                value: request,
+                sentFromRole: sentFromRole);
         }
     }
 }

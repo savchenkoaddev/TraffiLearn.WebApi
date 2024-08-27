@@ -8,6 +8,9 @@
         public static readonly string GetAllTicketsRoute =
             "api/tickets";
 
+        public static readonly string UpdateTicketRoute =
+            "api/tickets";
+
         public static string DeleteTicketRoute(Guid ticketId) =>
             $"api/tickets/{ticketId}";
 
