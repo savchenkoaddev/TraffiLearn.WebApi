@@ -2,6 +2,7 @@
 using TraffiLearn.Application.Tickets.Commands.Create;
 using TraffiLearn.Application.Tickets.Commands.Update;
 using TraffiLearn.Application.Tickets.DTO;
+using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Helpers;
 using TraffiLearn.IntegrationTests.Questions;
@@ -272,6 +273,22 @@ namespace TraffiLearn.IntegrationTests.Tickets
             return _requestSender.GetAsync(
                 requestUri: TicketEndpointRoutes.GetTicketQuestionsRoute(ticketId),
                 getWithRole: sentFromRole);
+        }
+
+        public Task<HttpResponseMessage> SendGetRandomTicketWithQuestionsRequestAsync(
+            Role? sentFromRole = null)
+        {
+            return _requestSender.GetAsync(
+                requestUri: TicketEndpointRoutes.GetRandomTicketWithQuestionsRoute,
+                getWithRole: sentFromRole);
+        }
+
+        public Task<TicketWithQuestionsResponse> GetRandomTicketWithQuestionsAsync(
+            Role? getWithRole = null)
+        {
+            return _requestSender.GetFromJsonAsync<TicketWithQuestionsResponse>(
+                requestUri: TicketEndpointRoutes.GetRandomTicketWithQuestionsRoute,
+                getWithRole: getWithRole);
         }
     }
 }

@@ -11,6 +11,9 @@
         public static readonly string UpdateTicketRoute =
             "api/tickets";
 
+        public static readonly string GetRandomTicketWithQuestionsRoute =
+            "api/tickets/random/with-questions";
+
         public static string GetTicketByIdRoute(Guid ticketId) =>
             $"api/tickets/{ticketId}";
 
