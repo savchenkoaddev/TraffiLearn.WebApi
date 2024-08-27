@@ -11,6 +11,9 @@
         public static readonly string UpdateTicketRoute =
             "api/tickets";
 
+        public static string GetTicketByIdRoute(Guid ticketId) =>
+            $"api/tickets/{ticketId}";
+
         public static string DeleteTicketRoute(Guid ticketId) =>
             $"api/tickets/{ticketId}";
 

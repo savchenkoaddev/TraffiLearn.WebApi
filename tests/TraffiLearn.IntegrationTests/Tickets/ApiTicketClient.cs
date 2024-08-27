@@ -225,5 +225,31 @@ namespace TraffiLearn.IntegrationTests.Tickets
                     ticketId: ticketId),
                 putWithRole: sentFromRole);
         }
+
+        public Task<HttpResponseMessage> SendGetAllTicketsRequestAsync(
+            Role? sentFromRole = null)
+        {
+            return _requestSender.GetAsync(
+                requestUri: TicketEndpointRoutes.GetAllTicketsRoute,
+                getWithRole: sentFromRole);
+        }
+
+        public Task<HttpResponseMessage> SendGetTicketByIdRequestAsync(
+            Guid ticketId,
+            Role? sentFromRole = null)
+        {
+            return _requestSender.GetAsync(
+                requestUri: TicketEndpointRoutes.GetTicketByIdRoute(ticketId),
+                getWithRole: sentFromRole);
+        }
+
+        public Task<TicketResponse> GetTicketByIdAsync(
+           Guid ticketId,
+           Role? getWithRole = null)
+        {
+            return _requestSender.GetFromJsonAsync<TicketResponse>(
+                requestUri: TicketEndpointRoutes.GetTicketByIdRoute(ticketId),
+                getWithRole: getWithRole);
+        }
     }
 }
