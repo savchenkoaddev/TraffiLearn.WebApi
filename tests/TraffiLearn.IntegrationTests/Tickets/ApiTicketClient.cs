@@ -226,6 +226,19 @@ namespace TraffiLearn.IntegrationTests.Tickets
                 putWithRole: sentFromRole);
         }
 
+        public async Task RemoveQuestionFromTicketAsAuthorizedAsync(
+           Guid questionId,
+           Guid ticketId)
+        {
+            var response = await _requestSender.PutAsync(
+                requestUri: TicketEndpointRoutes.RemoveQuestionFromTicketRoute(
+                    questionId: questionId,
+                    ticketId: ticketId),
+                putWithRole: Role.Owner);
+
+            response.EnsureSuccessStatusCode();
+        }
+
         public Task<HttpResponseMessage> SendGetAllTicketsRequestAsync(
             Role? sentFromRole = null)
         {
@@ -250,6 +263,15 @@ namespace TraffiLearn.IntegrationTests.Tickets
             return _requestSender.GetFromJsonAsync<TicketResponse>(
                 requestUri: TicketEndpointRoutes.GetTicketByIdRoute(ticketId),
                 getWithRole: getWithRole);
+        }
+
+        public Task<HttpResponseMessage> SendGetTicketQuestionsRequestAsync(
+            Guid ticketId,
+            Role? sentFromRole = null)
+        {
+            return _requestSender.GetAsync(
+                requestUri: TicketEndpointRoutes.GetTicketQuestionsRoute(ticketId),
+                getWithRole: sentFromRole);
         }
     }
 }
