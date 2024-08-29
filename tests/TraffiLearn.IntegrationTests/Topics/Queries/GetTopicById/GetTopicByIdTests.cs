@@ -17,7 +17,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicById
         {
             var response = await ApiTopicClient.SendGetTopicByIdRequestAsync(
                 topicId: Guid.NewGuid(),
-                sentWithRole: null);
+                sentFromRole: null);
 
             response.AssertUnauthorizedStatusCode();
         }
@@ -31,7 +31,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicById
         {
             var response = await ApiTopicClient.SendGetTopicByIdRequestAsync(
                 topicId: Guid.NewGuid(),
-                sentWithRole: eligibleRole);
+                sentFromRole: eligibleRole);
 
             response.AssertNotFoundStatusCode();
         }
@@ -47,7 +47,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicById
 
             var response = await ApiTopicClient.SendGetTopicByIdRequestAsync(
                 topicId: topicId,
-                sentWithRole: eligibleRole);
+                sentFromRole: eligibleRole);
 
             response.AssertOkStatusCode();
         }
@@ -63,7 +63,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicById
 
             var response = await ApiTopicClient.GetTopicByIdAsync(
                 topicId: topicId,
-                sentWithRole: eligibleRole);
+                sentFromRole: eligibleRole);
 
             response.Should().NotBeNull();
             response.Id.Should().Be(topicId);

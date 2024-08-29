@@ -18,7 +18,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetAllSortedTopicsByNumber
         {
             var response = await ApiTopicClient
                 .SendGetAllTopicsSortedByNumberRequestAsync(
-                    sentWithRole: null);
+                    sentFromRole: null);
 
             response.AssertUnauthorizedStatusCode();
         }
@@ -32,7 +32,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetAllSortedTopicsByNumber
         {
             var response = await ApiTopicClient
                 .SendGetAllTopicsSortedByNumberRequestAsync(
-                    sentWithRole: eligibleRole);
+                    sentFromRole: eligibleRole);
 
             response.AssertOkStatusCode();
         }
@@ -61,7 +61,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetAllSortedTopicsByNumber
             await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var response = await ApiTopicClient.SendGetAllTopicsSortedByNumberRequestAsync(
-                sentWithRole: eligibleRole);
+                sentFromRole: eligibleRole);
 
             response.AssertOkStatusCode();
         }

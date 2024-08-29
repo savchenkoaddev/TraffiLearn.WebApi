@@ -17,7 +17,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
         public async Task GetRandomTopicWithQuestions_IfUserIsNotAuthenticated_ShouldReturn401StatusCode()
         {
             var response = await ApiTopicClient.SendGetRandomTopicWithQuestionsAsync(
-                sentWithRole: null);
+                sentFromRole: null);
 
             response.AssertUnauthorizedStatusCode();
         }
@@ -30,7 +30,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
             Role eligibleRole)
         {
             var response = await ApiTopicClient.SendGetRandomTopicWithQuestionsAsync(
-                sentWithRole: eligibleRole);
+                sentFromRole: eligibleRole);
 
             response.AssertInternalServerErrorStatusCode();
         }
@@ -45,7 +45,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
             await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var response = await ApiTopicClient.SendGetRandomTopicWithQuestionsAsync(
-                sentWithRole: eligibleRole);
+                sentFromRole: eligibleRole);
 
             response.AssertOkStatusCode();
         }
@@ -60,7 +60,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
             await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var topicWithQuestions = await ApiTopicClient.GetRandomTopicWithQuestionsAsync(
-                sentWithRole: eligibleRole);
+                sentFromRole: eligibleRole);
 
             topicWithQuestions.Questions.Should().NotBeNull();
             topicWithQuestions.Questions.Should().BeEmpty();
@@ -76,7 +76,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
             var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var topicWithQuestions = await ApiTopicClient.GetRandomTopicWithQuestionsAsync(
-                sentWithRole: eligibleRole);
+                sentFromRole: eligibleRole);
 
             topicWithQuestions.TopicId.Should().Be(topicId);
         }
@@ -92,7 +92,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
                 .CreateValidQuestionWithTopicAsAuthorizedAsync();
 
             var response = await ApiTopicClient.SendGetRandomTopicWithQuestionsAsync(
-                sentWithRole: eligibleRole);
+                sentFromRole: eligibleRole);
 
             response.AssertOkStatusCode();
         }
@@ -110,7 +110,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
                 .CreateValidQuestionWithTopicAsAuthorizedAsync();
 
             var topicWithQuestions = await ApiTopicClient.GetRandomTopicWithQuestionsAsync(
-                sentWithRole: eligibleRole);
+                sentFromRole: eligibleRole);
 
             topicWithQuestions.Questions.Should().HaveCount(1);
             topicWithQuestions.Questions.First().Id.Should().Be(questionId);
@@ -129,7 +129,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
                 topicIds: [topicId]);
 
             var topicWithQuestions = await ApiTopicClient.GetRandomTopicWithQuestionsAsync(
-                sentWithRole: eligibleRole);
+                sentFromRole: eligibleRole);
 
             topicWithQuestions.TopicId.Should().Be(topicId);
         }

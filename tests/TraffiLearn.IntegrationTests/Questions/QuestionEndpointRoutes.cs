@@ -11,6 +11,9 @@
         public static string DeleteQuestionRoute(Guid questionId) =>
             $"api/questions/{questionId}";
 
+        public static string GetQuestionByIdRoute(Guid questionId) =>
+            $"api/questions/{questionId}";
+
         public static string GetQuestionTopicsRoute(Guid questionId) =>
             $"api/questions/{questionId}/topics";
 
