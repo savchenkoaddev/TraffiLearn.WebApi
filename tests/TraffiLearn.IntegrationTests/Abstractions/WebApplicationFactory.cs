@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using Respawn;
 using System.Data.Common;
 using Testcontainers.Azurite;
@@ -15,8 +16,8 @@ using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Users.Identity;
 using TraffiLearn.Domain.Aggregates.Users;
+using TraffiLearn.Infrastructure.External.Blobs.Options;
 using TraffiLearn.Infrastructure.Persistence;
-using TraffiLearn.IntegrationTests.Docker;
 using TraffiLearn.IntegrationTests.Helpers;
 using TraffiLearn.WebAPI;
 
@@ -25,10 +26,12 @@ namespace TraffiLearn.IntegrationTests.Abstractions
     public sealed class WebApplicationFactory
         : WebApplicationFactory<Program>, IAsyncLifetime
     {
+        private const string AzuriteContainerImage = "mcr.microsoft.com/azure-storage/azurite:latest";
+
         private readonly MsSqlContainer _dbContainer = new MsSqlBuilder()
             .Build();
         private readonly AzuriteContainer _azuriteContainer = new AzuriteBuilder()
-            .WithImage(DockerConstants.AzuriteContainerImage)
+            .WithImage(AzuriteContainerImage)
             .Build();
 
         private DbConnection _dbConnection = default!;
@@ -49,7 +52,16 @@ namespace TraffiLearn.IntegrationTests.Abstractions
 
                 services.AddSingleton((serviceProvider) =>
                 {
-                    return new BlobServiceClient(_azuriteContainer.GetConnectionString());
+                    var blobStorageSettings = serviceProvider.GetRequiredService<IOptions<AzureBlobStorageSettings>>().Value;
+
+                    var blobServiceClient = new BlobServiceClient(_azuriteContainer.GetConnectionString());
+
+                    var containerClient = blobServiceClient.GetBlobContainerClient(
+                        blobStorageSettings.ContainerName);
+
+                    containerClient.CreateIfNotExists();
+
+                    return blobServiceClient;
                 });
             });
         }
@@ -80,7 +92,7 @@ namespace TraffiLearn.IntegrationTests.Abstractions
             await _azuriteContainer.StartAsync();
 
             _userSeeder = BuildUserSeeder();
-            
+
             await RunMigration();
 
             await _userSeeder.Seed();

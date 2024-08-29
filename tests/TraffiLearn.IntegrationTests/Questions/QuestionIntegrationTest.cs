@@ -1,4 +1,5 @@
-﻿using TraffiLearn.IntegrationTests.Abstractions;
+﻿using Azure.Storage.Blobs;
+using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Questions.CreateQuestion;
 using TraffiLearn.IntegrationTests.Topics;
 using TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic;

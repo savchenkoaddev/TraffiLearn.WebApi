@@ -178,7 +178,7 @@ namespace TraffiLearn.IntegrationTests.Helpers
             return await _httpClient.SendAsync(request);
         }
 
-        public async Task EnsureEachSentRequestReturnsStatusCodeAsync<TRequest>(
+        public async Task EnsureEachSentJsonRequestReturnsStatusCodeAsync<TRequest>(
             HttpMethod method,
             string requestUri,
             IEnumerable<TRequest> requests,
@@ -197,13 +197,13 @@ namespace TraffiLearn.IntegrationTests.Helpers
             }
         }
 
-        public Task EnsureEachSentRequestReturnsBadRequestAsync<TRequest>(
+        public Task EnsureEachSentJsonRequestReturnsBadRequestAsync<TRequest>(
             HttpMethod method,
             string requestUri,
             IEnumerable<TRequest> requests,
             Role? sentFromRole = null)
         {
-            return EnsureEachSentRequestReturnsStatusCodeAsync(
+            return EnsureEachSentJsonRequestReturnsStatusCodeAsync(
                 method, 
                 requestUri,
                 requests,

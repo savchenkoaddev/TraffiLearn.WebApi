@@ -94,7 +94,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
         {
             var invalidCommands = _commandFactory.CreateInvalidCommandsWithRandomIds();
 
-            await RequestSender.EnsureEachSentRequestReturnsBadRequestAsync(
+            await RequestSender.EnsureEachSentJsonRequestReturnsBadRequestAsync(
                 method: HttpMethod.Put,
                 requestUri: TopicEndpointRoutes.UpdateTopicRoute,
                 requests: invalidCommands,

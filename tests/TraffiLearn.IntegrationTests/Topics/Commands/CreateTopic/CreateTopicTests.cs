@@ -67,7 +67,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
         {
             var invalidCommands = _commandFactory.GetInvalidCommands();
 
-            await RequestSender.EnsureEachSentRequestReturnsBadRequestAsync(
+            await RequestSender.EnsureEachSentJsonRequestReturnsBadRequestAsync(
                 method: HttpMethod.Post,
                 requestUri: TopicEndpointRoutes.CreateTopicRoute,
                 requests: invalidCommands,

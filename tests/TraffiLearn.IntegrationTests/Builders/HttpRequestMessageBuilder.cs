@@ -45,17 +45,35 @@ namespace TraffiLearn.IntegrationTests.Builders
             TValue value,
             IFormFile? file = null)
         {
-            MultipartFormDataContent content = new MultipartFormDataContent();
+            var content = new MultipartFormDataContent();
 
-            HttpContent valueContent = new StringContent(
+            var valueContent = new StringContent(
                 content: JsonSerializer.Serialize(value),
-                encoding: _encoding);
+                encoding: _encoding,
+                mediaType: MediaTypeNames.Application.Json);
 
-            content.Add(valueContent, "Request");
+            valueContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+            {
+                Name = "\"Request\""
+            };
+
+            content.Add(valueContent);
 
             if (file is not null)
             {
-                content.Add(new StreamContent(file.OpenReadStream()), "Image");
+                var fileContent = new StreamContent(file.OpenReadStream());
+
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+
+                var dispositionType = "form-data";
+
+                fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue(dispositionType)
+                {
+                    Name = "\"Image\"",
+                    FileName = $"\"{file.FileName}\""
+                };
+
+                content.Add(fileContent);
             }
 
             _httpRequestMessage.Content = content;

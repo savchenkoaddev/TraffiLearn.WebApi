@@ -204,7 +204,7 @@ namespace TraffiLearn.IntegrationTests.Tickets.Commands.UpdateTicket
             var invalidCommands = _commandFactory
                 .CreateInvalidCommandsWithRandomIds();
 
-            await RequestSender.EnsureEachSentRequestReturnsBadRequestAsync(
+            await RequestSender.EnsureEachSentJsonRequestReturnsBadRequestAsync(
                 method: HttpMethod.Put,
                 requestUri: TicketEndpointRoutes.UpdateTicketRoute,
                 requests: invalidCommands,

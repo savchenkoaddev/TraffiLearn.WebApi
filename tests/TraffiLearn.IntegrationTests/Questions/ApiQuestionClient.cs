@@ -32,8 +32,7 @@ namespace TraffiLearn.IntegrationTests.Questions
 
             return await SendCreateQuestionRequestAsync(
                 command,
-                image,
-                createdWithRole: sentFromRole);
+                sentFromRole: sentFromRole);
         }
 
         public Task<Guid> CreateValidQuestionWithTopicAsAuthorizedAsync(
@@ -53,7 +52,6 @@ namespace TraffiLearn.IntegrationTests.Questions
 
             return await CreateQuestionAsync(
                 command,
-                image,
                 createdWithRole);
         }
 
@@ -68,8 +66,7 @@ namespace TraffiLearn.IntegrationTests.Questions
 
             return await SendCreateQuestionRequestAsync(
                 command,
-                image,
-                createdWithRole: sentFromRole);
+                sentFromRole: sentFromRole);
         }
 
         public Task<Guid> CreateValidQuestionAsAuthorizedAsync(
@@ -93,7 +90,6 @@ namespace TraffiLearn.IntegrationTests.Questions
 
             var questionId = await CreateQuestionAsync(
                 command: request,
-                image,
                 createdWithRole: createdWithRole);
 
             return questionId;
@@ -101,12 +97,10 @@ namespace TraffiLearn.IntegrationTests.Questions
 
         private async Task<Guid> CreateQuestionAsync(
             CreateQuestionCommand command,
-            IFormFile? image,
             Role? createdWithRole = null)
         {
             var response = await SendCreateQuestionRequestAsync(
                 command,
-                image,
                 createdWithRole);
 
             response.EnsureSuccessStatusCode();
@@ -114,17 +108,16 @@ namespace TraffiLearn.IntegrationTests.Questions
             return await response.Content.ReadFromJsonAsync<Guid>();
         }
 
-        private async Task<HttpResponseMessage> SendCreateQuestionRequestAsync(
+        public async Task<HttpResponseMessage> SendCreateQuestionRequestAsync(
             CreateQuestionCommand command,
-            IFormFile? image,
-            Role? createdWithRole = null)
+            Role? sentFromRole = null)
         {
             return await _requestSender.SendMultipartFormDataWithJsonAndFileRequest(
                 method: HttpMethod.Post,
                 requestUri: QuestionEndpointRoutes.CreateQuestionRoute,
                 value: command,
-                file: image,
-                sentFromRole: createdWithRole);
+                file: command.Image,
+                sentFromRole: sentFromRole);
         }
 
         public Task<IEnumerable<QuestionResponse>> GetAllQuestionsAsAuthorizedAsync()
