@@ -58,7 +58,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicQuestions
         [InlineData(Role.RegularUser)]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task GetTopicQuestions_IfUserIsEligibleButTopicContainsNoQuestions_ShouldReturnEmptyCollection(
+        public async Task GetTopicQuestions_IfTopicContainsNoQuestions_ShouldReturnEmptyCollection(
             Role eligibleRole)
         {
             var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();

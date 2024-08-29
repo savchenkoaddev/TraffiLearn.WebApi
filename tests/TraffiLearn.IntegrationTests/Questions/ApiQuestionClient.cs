@@ -204,6 +204,14 @@ namespace TraffiLearn.IntegrationTests.Questions
                 getWithRole: sentFromRole);
         }
 
+        public Task<IEnumerable<TopicResponse>> GetQuestionTopicsAsAuthorizedUserAsync(
+            Guid questionId)
+        {
+            return GetQuestionTopicsAsync(
+                questionId,
+                getWithRole: Role.Owner);
+        }
+
         public Task<IEnumerable<TopicResponse>> GetQuestionTopicsAsync(
             Guid questionId,
             Role? getWithRole = null)
@@ -213,11 +221,20 @@ namespace TraffiLearn.IntegrationTests.Questions
                 getWithRole: getWithRole);
         }
 
-        public Task<IEnumerable<TopicResponse>> GetQuestionTopicsAsAuthorizedUserAsync(
+        public Task<HttpResponseMessage> SendGetQuestionTopicsRequestAsync(
+            Guid questionId,
+            Role? sentFromRole = null)
+        {
+            return _requestSender.GetAsync(
+                requestUri: QuestionEndpointRoutes.GetQuestionTopicsRoute(questionId),
+                getWithRole: sentFromRole);
+        }
+
+        public Task<IEnumerable<TicketResponse>> GetQuestionTicketsAsAuthorizedUserAsync(
             Guid questionId)
         {
-            return _requestSender.GetFromJsonAsync<IEnumerable<TopicResponse>>(
-                requestUri: QuestionEndpointRoutes.GetQuestionTopicsRoute(questionId),
+            return GetQuestionTicketsAsync(
+                questionId,
                 getWithRole: Role.Owner);
         }
 
@@ -228,14 +245,6 @@ namespace TraffiLearn.IntegrationTests.Questions
             return _requestSender.GetFromJsonAsync<IEnumerable<TicketResponse>>(
                 requestUri: QuestionEndpointRoutes.GetQuestionTicketsRoute(questionId),
                 getWithRole);
-        }
-
-        public Task<IEnumerable<TicketResponse>> GetQuestionTicketsAsAuthorizedUserAsync(
-            Guid questionId)
-        {
-            return GetQuestionTicketsAsync(
-                questionId,
-                getWithRole: Role.Owner);
         }
     }
 }
