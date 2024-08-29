@@ -58,7 +58,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetAllSortedTopicsByNumber
         public async Task GetAllSortedTopicsByNumber_IfValidCase_ShouldReturn200StatusCode(
            Role eligibleRole)
         {
-            await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var response = await ApiTopicClient.SendGetAllTopicsSortedByNumberRequestAsync(
                 sentWithRole: eligibleRole);

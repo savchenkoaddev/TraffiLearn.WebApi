@@ -1,5 +1,6 @@
 ﻿using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Questions;
+using TraffiLearn.IntegrationTests.Questions.CreateQuestion;
 using TraffiLearn.IntegrationTests.Tickets.Commands.CreateTicket;
 using TraffiLearn.IntegrationTests.Tickets.Commands.UpdateTicket;
 using TraffiLearn.IntegrationTests.Topics;
@@ -24,7 +25,7 @@ namespace TraffiLearn.IntegrationTests.Tickets
 
             ApiQuestionClient = new ApiQuestionClient(
                 RequestSender,
-                apiTopicClient);
+                new CreateQuestionCommandFactory(apiTopicClient));
 
             ApiTicketClient = new ApiTicketClient(
                 RequestSender,

@@ -45,7 +45,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicQuestions
         public async Task GetTopicQuestions_IfTopicContainsNoQuestions_ShouldReturn200StatusCode(
             Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var response = await ApiTopicClient.SendGetTopicQuestionsAsync(
                 topicId: topicId,
@@ -61,7 +61,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicQuestions
         public async Task GetTopicQuestions_IfUserIsEligibleButTopicContainsNoQuestions_ShouldReturnEmptyCollection(
             Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var topicQuestions = await ApiTopicClient.GetTopicQuestionsAsync(
                 topicId,
@@ -78,7 +78,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicQuestions
         public async Task GetTopicQuestions_IfValidCase_ShouldReturn200StatusCode(
            Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var questionId = await ApiQuestionClient.CreateValidQuestionAsAuthorizedAsync(
                 topicIds: [topicId]);
@@ -97,7 +97,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicQuestions
         public async Task GetTopicQuestions_IfValidCase_ShouldReturnTopicQuestions(
             Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var questionId = await ApiQuestionClient.CreateValidQuestionAsAuthorizedAsync(
                 topicIds: [topicId]);

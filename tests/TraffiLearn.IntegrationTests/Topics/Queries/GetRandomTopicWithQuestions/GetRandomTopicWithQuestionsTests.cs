@@ -42,7 +42,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
         public async Task GetRandomTopicWithQuestions_IfTopicDoesNotContainQuestions_ShouldReturn200StatusCode(
             Role eligibleRole)
         {
-            await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var response = await ApiTopicClient.SendGetRandomTopicWithQuestionsAsync(
                 sentWithRole: eligibleRole);
@@ -57,7 +57,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
         public async Task GetRandomTopicWithQuestions_IfTopicDoesNotContainQuestions_ShouldReturnTopicWithEmptyQuestions(
             Role eligibleRole)
         {
-            await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var topicWithQuestions = await ApiTopicClient.GetRandomTopicWithQuestionsAsync(
                 sentWithRole: eligibleRole);
@@ -73,7 +73,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
         public async Task GetRandomTopicWithQuestions_IfTopicDoesNotContainQuestions_TopicShouldBeCorrect(
             Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var topicWithQuestions = await ApiTopicClient.GetRandomTopicWithQuestionsAsync(
                 sentWithRole: eligibleRole);
@@ -123,7 +123,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetRandomTopicWithQuestion
         public async Task GetRandomTopicWithQuestions_IfOnlyOneTopicExists_TopicShouldBeCorrect(
             Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var questionId = await ApiQuestionClient.CreateValidQuestionAsAuthorizedAsync(
                 topicIds: [topicId]);

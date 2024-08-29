@@ -1,17 +1,17 @@
 ﻿using TraffiLearn.IntegrationTests.Abstractions;
-using TraffiLearn.IntegrationTests.Questions;
 using TraffiLearn.IntegrationTests.Questions.CreateQuestion;
+using TraffiLearn.IntegrationTests.Topics;
 using TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic;
 using TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic;
 
-namespace TraffiLearn.IntegrationTests.Topics
+namespace TraffiLearn.IntegrationTests.Questions
 {
-    public class TopicIntegrationTest : BaseIntegrationTest
+    public class QuestionIntegrationTest : BaseIntegrationTest
     {
-        protected readonly ApiTopicClient ApiTopicClient;
         protected readonly ApiQuestionClient ApiQuestionClient;
+        protected readonly ApiTopicClient ApiTopicClient;
 
-        public TopicIntegrationTest(
+        public QuestionIntegrationTest(
             WebApplicationFactory factory)
             : base(factory)
         {
@@ -20,7 +20,7 @@ namespace TraffiLearn.IntegrationTests.Topics
                 new CreateTopicCommandFactory(),
                 new UpdateTopicCommandFactory());
 
-            ApiQuestionClient = new ApiQuestionClient(
+            ApiQuestionClient = new(
                 RequestSender,
                 new CreateQuestionCommandFactory(ApiTopicClient));
         }

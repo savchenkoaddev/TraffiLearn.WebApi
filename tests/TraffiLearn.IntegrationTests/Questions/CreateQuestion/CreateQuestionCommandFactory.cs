@@ -1,13 +1,21 @@
 ﻿using Microsoft.AspNetCore.Http;
 using TraffiLearn.Application.Questions.Commands.Create;
 using TraffiLearn.Application.Questions.DTO;
+using TraffiLearn.IntegrationTests.Topics;
 using TraffiLearn.Testing.Shared.Factories;
 
 namespace TraffiLearn.IntegrationTests.Questions.CreateQuestion
 {
-    internal sealed class CreateQuestionCommandFactory
+    public sealed class CreateQuestionCommandFactory
     {
-        public static CreateQuestionCommand CreateValidCommand(
+        private readonly ApiTopicClient _apiTopicClient;
+
+        public CreateQuestionCommandFactory(ApiTopicClient apiTopicClient)
+        {
+            _apiTopicClient = apiTopicClient;
+        }
+
+        public CreateQuestionCommand CreateValidCommand(
             List<Guid> topicIds,
             IFormFile? image = null)
         {
@@ -24,6 +32,16 @@ namespace TraffiLearn.IntegrationTests.Questions.CreateQuestion
                 TopicIds: topicIds,
                 Answers: answers,
                 Image: image);
+        }
+
+        public async Task<CreateQuestionCommand> CreateValidCommandWithTopicAsync(
+            IFormFile? image = null)
+        {
+            var topicId = await _apiTopicClient.CreateValidTopicAsAuthorizedAsync();
+
+            return CreateValidCommand(
+                topicIds: [topicId],
+                image: image);
         }
     }
 }

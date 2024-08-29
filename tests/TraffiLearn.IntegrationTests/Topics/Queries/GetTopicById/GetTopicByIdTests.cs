@@ -43,7 +43,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicById
         public async Task GetTopicById_IfValidCase_ShouldReturn200StatusCode(
             Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var response = await ApiTopicClient.SendGetTopicByIdRequestAsync(
                 topicId: topicId,
@@ -59,7 +59,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicById
         public async Task GetTopicById_IfValidCase_ShouldReturnValidTopic(
             Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var response = await ApiTopicClient.GetTopicByIdAsync(
                 topicId: topicId,

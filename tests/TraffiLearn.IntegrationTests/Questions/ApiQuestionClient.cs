@@ -7,37 +7,33 @@ using TraffiLearn.Application.Topics.DTO;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Helpers;
 using TraffiLearn.IntegrationTests.Questions.CreateQuestion;
-using TraffiLearn.IntegrationTests.Topics;
 
 namespace TraffiLearn.IntegrationTests.Questions
 {
     public sealed class ApiQuestionClient
     {
         private readonly RequestSender _requestSender;
-        private readonly ApiTopicClient _topicClient;
+        private readonly CreateQuestionCommandFactory _createQuestionCommandFactory;
 
         public ApiQuestionClient(
             RequestSender requestSender,
-            ApiTopicClient apiTopicClient)
+            CreateQuestionCommandFactory createQuestionCommandFactory)
         {
             _requestSender = requestSender;
-            _topicClient = apiTopicClient;
+            _createQuestionCommandFactory = createQuestionCommandFactory;
         }
 
-        public async Task<Guid> CreateValidQuestionWithTopicAsync(
+        public async Task<HttpResponseMessage> SendValidCreateQuestionRequestWithTopicAsync(
             IFormFile? image = null,
-            Role? createdWithRole = null)
+            Role? sentFromRole = null)
         {
-            var topicId = await _topicClient.CreateTopicAsAuthorizedAsync();
-
-            var command = CreateQuestionCommandFactory.CreateValidCommand(
-                topicIds: [topicId],
+            var command = await _createQuestionCommandFactory.CreateValidCommandWithTopicAsync(
                 image);
 
-            return await CreateValidQuestionAsync(
-                topicIds: [topicId],
+            return await SendCreateQuestionRequestAsync(
+                command,
                 image,
-                createdWithRole);
+                createdWithRole: sentFromRole);
         }
 
         public Task<Guid> CreateValidQuestionWithTopicAsAuthorizedAsync(
@@ -48,12 +44,50 @@ namespace TraffiLearn.IntegrationTests.Questions
                 createdWithRole: Role.Owner);
         }
 
+        public async Task<Guid> CreateValidQuestionWithTopicAsync(
+            IFormFile? image = null,
+            Role? createdWithRole = null)
+        {
+            var command = await _createQuestionCommandFactory.CreateValidCommandWithTopicAsync(
+                image);
+
+            return await CreateQuestionAsync(
+                command,
+                image,
+                createdWithRole);
+        }
+
+        public async Task<HttpResponseMessage> SendValidCreateQuestionRequestAsync(
+            List<Guid> topicIds,
+            IFormFile? image = null,
+            Role? sentFromRole = null)
+        {
+            var command = _createQuestionCommandFactory.CreateValidCommand(
+                topicIds,
+                image);
+
+            return await SendCreateQuestionRequestAsync(
+                command,
+                image,
+                createdWithRole: sentFromRole);
+        }
+
+        public Task<Guid> CreateValidQuestionAsAuthorizedAsync(
+            List<Guid> topicIds,
+            IFormFile? image = null)
+        {
+            return CreateValidQuestionAsync(
+                topicIds,
+                image,
+                createdWithRole: Role.Owner);
+        }
+
         public async Task<Guid> CreateValidQuestionAsync(
             List<Guid> topicIds,
             IFormFile? image = null,
             Role? createdWithRole = null)
         {
-            var request = CreateQuestionCommandFactory.CreateValidCommand(
+            var request = _createQuestionCommandFactory.CreateValidCommand(
                 topicIds,
                 image);
 
@@ -65,37 +99,38 @@ namespace TraffiLearn.IntegrationTests.Questions
             return questionId;
         }
 
-        public async Task<Guid> CreateValidQuestionAsAuthorizedAsync(
-            List<Guid> topicIds,
-            IFormFile? image = null)
-        {
-            var request = CreateQuestionCommandFactory.CreateValidCommand(
-                topicIds,
-                image);
-
-            var questionId = await CreateQuestionAsync(
-                command: request,
-                image,
-                createdWithRole: Role.Owner);
-
-            return questionId;
-        }
-
         private async Task<Guid> CreateQuestionAsync(
-            CreateQuestionCommand command, 
+            CreateQuestionCommand command,
             IFormFile? image,
             Role? createdWithRole = null)
         {
-            var response = await _requestSender.SendMultipartFormDataWithJsonAndFileRequest(
+            var response = await SendCreateQuestionRequestAsync(
+                command,
+                image,
+                createdWithRole);
+
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadFromJsonAsync<Guid>();
+        }
+
+        private async Task<HttpResponseMessage> SendCreateQuestionRequestAsync(
+            CreateQuestionCommand command,
+            IFormFile? image,
+            Role? createdWithRole = null)
+        {
+            return await _requestSender.SendMultipartFormDataWithJsonAndFileRequest(
                 method: HttpMethod.Post,
                 requestUri: QuestionEndpointRoutes.CreateQuestionRoute,
                 value: command,
                 file: image,
                 sentFromRole: createdWithRole);
+        }
 
-            response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadFromJsonAsync<Guid>();
+        public Task<IEnumerable<QuestionResponse>> GetAllQuestionsAsAuthorizedAsync()
+        {
+            return GetAllQuestionsAsync(
+                getWithRole: Role.Owner);
         }
 
         public Task<IEnumerable<QuestionResponse>> GetAllQuestionsAsync(

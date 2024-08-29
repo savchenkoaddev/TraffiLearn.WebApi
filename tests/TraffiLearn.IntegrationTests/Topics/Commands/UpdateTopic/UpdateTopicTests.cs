@@ -29,7 +29,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
         [Fact]
         public async Task UpdateTopic_IfUserIsNotAuthenticated_TopicShouldNotBeUpdated()
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var command = new UpdateTopicCommand(
                 topicId,
@@ -66,7 +66,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
         public async Task UpdateTopic_IfUserIsNotEligible_TopicShouldNotBeUpdated(
             Role nonEligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var command = new UpdateTopicCommand(
                 topicId,
@@ -120,7 +120,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
         public async Task UpdateTopic_IfValidCase_ShouldReturn204StatusCode(
             Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var command = new UpdateTopicCommand(
                 TopicId: topicId,
@@ -140,7 +140,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
         public async Task UpdateTopic_IfValidCase_TopicShouldBeUpdated(
             Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var command = new UpdateTopicCommand(
                 TopicId: topicId,

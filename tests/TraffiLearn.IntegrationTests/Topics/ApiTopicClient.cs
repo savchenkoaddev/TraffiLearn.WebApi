@@ -55,7 +55,7 @@ namespace TraffiLearn.IntegrationTests.Topics
                 createdWithRole: Role.Owner);
         }
 
-        public Task<Guid> CreateTopicAsAuthorizedAsync()
+        public Task<Guid> CreateValidTopicAsAuthorizedAsync()
         {
             return CreateTopicAsync(
                 createdWithRole: Role.Owner);
