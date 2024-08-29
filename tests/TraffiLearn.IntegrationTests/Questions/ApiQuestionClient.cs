@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Net.Http.Json;
 using TraffiLearn.Application.Questions.Commands.Create;
+using TraffiLearn.Application.Questions.Commands.Update;
 using TraffiLearn.Application.Questions.DTO;
 using TraffiLearn.Application.Tickets.DTO;
 using TraffiLearn.Application.Topics.DTO;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Helpers;
-using TraffiLearn.IntegrationTests.Questions.CreateQuestion;
+using TraffiLearn.IntegrationTests.Questions.Commands.CreateQuestion;
+using TraffiLearn.IntegrationTests.Questions.Commands.UpdateQuestion;
 
 namespace TraffiLearn.IntegrationTests.Questions
 {
@@ -14,13 +16,16 @@ namespace TraffiLearn.IntegrationTests.Questions
     {
         private readonly RequestSender _requestSender;
         private readonly CreateQuestionCommandFactory _createQuestionCommandFactory;
+        private readonly UpdateQuestionCommandFactory _updateQuestionCommandFactory;
 
         public ApiQuestionClient(
             RequestSender requestSender,
-            CreateQuestionCommandFactory createQuestionCommandFactory)
+            CreateQuestionCommandFactory createQuestionCommandFactory,
+            UpdateQuestionCommandFactory updateQuestionCommandFactory)
         {
             _requestSender = requestSender;
             _createQuestionCommandFactory = createQuestionCommandFactory;
+            _updateQuestionCommandFactory = updateQuestionCommandFactory;
         }
 
         public async Task<HttpResponseMessage> SendValidCreateQuestionRequestWithTopicAsync(
@@ -127,7 +132,37 @@ namespace TraffiLearn.IntegrationTests.Questions
             return _requestSender.DeleteAsync(
                 requestUri: QuestionEndpointRoutes.DeleteQuestionRoute(questionId),
                 deletedWithRole: sentFromRole);
-        } 
+        }
+
+        public Task<HttpResponseMessage> SendUpdateQuestionRequestAsync(
+            UpdateQuestionCommand request,
+            Role? sentFromRole = null)
+        {
+            return _requestSender.SendMultipartFormDataWithJsonAndFileRequest(
+                method: HttpMethod.Put,
+                requestUri: QuestionEndpointRoutes.UpdateQuestionRoute,
+                value: request,
+                file: request.Image,
+                sentFromRole: sentFromRole);
+        }
+
+        public Task<HttpResponseMessage> SendValidUpdateQuestionRequestAsync(
+            Guid questionId,
+            List<Guid>? topicIds,
+            IFormFile? image = null,
+            bool? removeOldImageIfNewImageMissing = true,
+            Role? sentFromRole = null)
+        {
+            var validCommand = _updateQuestionCommandFactory.CreateValidCommand(
+                questionId,
+                topicIds,
+                image,
+                removeOldImageIfNewImageMissing);
+
+            return SendUpdateQuestionRequestAsync(
+                request: validCommand,
+                sentFromRole: sentFromRole);
+        }
 
         public Task<IEnumerable<QuestionResponse>> GetAllQuestionsAsAuthorizedAsync()
         {
@@ -141,6 +176,14 @@ namespace TraffiLearn.IntegrationTests.Questions
             return _requestSender.GetFromJsonAsync<IEnumerable<QuestionResponse>>(
                 requestUri: QuestionEndpointRoutes.GetAllQuestionsRoute,
                 getWithRole: getWithRole);
+        }
+
+        public Task<HttpResponseMessage> SendGetAllQuestionsRequestAsync(
+            Role? sentFromRole = null)
+        {
+            return _requestSender.GetAsync(
+                requestUri: QuestionEndpointRoutes.GetAllQuestionsRoute,
+                getWithRole: sentFromRole);
         }
 
         public Task<IEnumerable<TopicResponse>> GetQuestionTopicsAsync(

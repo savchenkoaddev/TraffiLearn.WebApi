@@ -6,7 +6,7 @@ using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;
 using TraffiLearn.Testing.Shared.Factories;
 
-namespace TraffiLearn.IntegrationTests.Questions.CreateQuestion
+namespace TraffiLearn.IntegrationTests.Questions.Commands.CreateQuestion
 {
     public sealed class CreateQuestionTests : QuestionIntegrationTest
     {

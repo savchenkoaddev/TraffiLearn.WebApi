@@ -6,6 +6,8 @@
 
         public const string GetAllQuestionsRoute = "api/questions";
 
+        public const string UpdateQuestionRoute = "api/questions";
+
         public static string DeleteQuestionRoute(Guid questionId) =>
             $"api/questions/{questionId}";
 

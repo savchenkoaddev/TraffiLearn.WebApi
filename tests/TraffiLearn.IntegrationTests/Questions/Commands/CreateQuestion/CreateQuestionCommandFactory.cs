@@ -5,7 +5,7 @@ using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.IntegrationTests.Topics;
 using TraffiLearn.Testing.Shared.Factories;
 
-namespace TraffiLearn.IntegrationTests.Questions.CreateQuestion
+namespace TraffiLearn.IntegrationTests.Questions.Commands.CreateQuestion
 {
     public sealed class CreateQuestionCommandFactory
     {

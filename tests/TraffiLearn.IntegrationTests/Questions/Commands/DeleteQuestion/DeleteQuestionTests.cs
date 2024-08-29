@@ -3,7 +3,7 @@ using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;
 
-namespace TraffiLearn.IntegrationTests.Questions.DeleteQuestion
+namespace TraffiLearn.IntegrationTests.Questions.Commands.DeleteQuestion
 {
     public sealed class DeleteQuestionTests : QuestionIntegrationTest
     {
