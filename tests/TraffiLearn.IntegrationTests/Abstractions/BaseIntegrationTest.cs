@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using Azure.Storage.Blobs;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using TraffiLearn.IntegrationTests.Auth;
 using TraffiLearn.IntegrationTests.Helpers;

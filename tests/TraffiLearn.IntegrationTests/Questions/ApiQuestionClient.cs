@@ -108,17 +108,26 @@ namespace TraffiLearn.IntegrationTests.Questions
             return await response.Content.ReadFromJsonAsync<Guid>();
         }
 
-        public async Task<HttpResponseMessage> SendCreateQuestionRequestAsync(
+        public Task<HttpResponseMessage> SendCreateQuestionRequestAsync(
             CreateQuestionCommand command,
             Role? sentFromRole = null)
         {
-            return await _requestSender.SendMultipartFormDataWithJsonAndFileRequest(
+            return _requestSender.SendMultipartFormDataWithJsonAndFileRequest(
                 method: HttpMethod.Post,
                 requestUri: QuestionEndpointRoutes.CreateQuestionRoute,
                 value: command,
                 file: command.Image,
                 sentFromRole: sentFromRole);
         }
+
+        public Task<HttpResponseMessage> SendDeleteQuestionRequestAsync(
+            Guid questionId,
+            Role? sentFromRole = null)
+        {
+            return _requestSender.DeleteAsync(
+                requestUri: QuestionEndpointRoutes.DeleteQuestionRoute(questionId),
+                deletedWithRole: sentFromRole);
+        } 
 
         public Task<IEnumerable<QuestionResponse>> GetAllQuestionsAsAuthorizedAsync()
         {
