@@ -5,16 +5,16 @@ namespace TraffiLearn.Testing.Shared.Factories
 {
     public static class TicketFixtureFactory
     {
-        public static Ticket CreateTicket()
+        public static Ticket CreateTicket(int number = TicketNumber.MinValue)
         {
             return Ticket.Create(
                 ticketId: new TicketId(Guid.NewGuid()),
-                CreateNumber()).Value;
+                CreateNumber(number)).Value;
         }
 
-        public static TicketNumber CreateNumber()
+        public static TicketNumber CreateNumber(int number = TicketNumber.MinValue)
         {
-            return TicketNumber.Create(TicketNumber.MinValue).Value;
+            return TicketNumber.Create(number).Value;
         }
     }
 }
