@@ -1,9 +1,10 @@
 ﻿using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
+using TraffiLearn.Domain.Primitives;
 
 namespace TraffiLearn.Domain.Aggregates.Topics
 {
-    public interface ITopicRepository
+    public interface ITopicRepository : IRepositoryMarker
     {
         Task<Topic?> GetByIdAsync(
             TopicId topicId,

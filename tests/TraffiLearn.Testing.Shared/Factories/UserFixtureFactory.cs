@@ -6,24 +6,24 @@ namespace TraffiLearn.Testing.Shared.Factories
 {
     public static class UserFixtureFactory
     {
-        public static User CreateUser()
+        public static User CreateUser(string email = "email@email.com",
+            string username = "Username")
         {
             return User.Create(
                 new UserId(Guid.NewGuid()),
-                CreateEmail(),
-                CreateUsername(),
+                CreateEmail(email),
+                CreateUsername(username),
                 CreateRole()).Value;
         }
 
-        public static Username CreateUsername()
+        public static Username CreateUsername(string username = "Username")
         {
-            return Username.Create("Username").Value;
+            return Username.Create(username).Value;
         }
 
-        public static Email CreateEmail()
+        public static Email CreateEmail(string email = "email@email.com")
         {
-            return Email.Create(
-                "email@email.com").Value;
+            return Email.Create(email).Value;
         }
 
         public static Role CreateRole()

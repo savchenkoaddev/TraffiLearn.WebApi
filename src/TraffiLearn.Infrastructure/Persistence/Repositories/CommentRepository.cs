@@ -56,7 +56,7 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
                     SELECT 
                         Id, 
                         Content, 
-                        UserId, 
+                        CreatorId, 
                         QuestionId, 
                         RootCommentId,
                         0 AS Level
@@ -68,7 +68,7 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
                     SELECT 
                         c.Id, 
                         c.Content, 
-                        c.UserId, 
+                        c.CreatorId, 
                         c.QuestionId, 
                         c.RootCommentId,
                         rc.Level + 1 AS Level
@@ -78,7 +78,7 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
                 SELECT 
                     rc.Id, 
                     rc.Content, 
-                    rc.UserId, 
+                    rc.CreatorId, 
                     rc.QuestionId, 
                     rc.RootCommentId,
                     rc.Level
@@ -87,7 +87,7 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
             """;
 
             var result = await _dbContext.Comments
-                .FromSqlRaw(sql, commentId)
+                .FromSqlRaw(sql, commentId.Value)
                 .ToListAsync(cancellationToken);
 
             var rootComment = result.FirstOrDefault();

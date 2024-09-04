@@ -1,10 +1,11 @@
 ﻿using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
+using TraffiLearn.Domain.Primitives;
 
 namespace TraffiLearn.Domain.Aggregates.Comments
 {
-    public interface ICommentRepository
+    public interface ICommentRepository : IRepositoryMarker
     {
         Task<Comment?> GetByIdAsync(
             CommentId commentId,

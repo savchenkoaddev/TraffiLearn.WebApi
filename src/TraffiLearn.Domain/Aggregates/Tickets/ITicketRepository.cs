@@ -1,9 +1,10 @@
 ﻿using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
+using TraffiLearn.Domain.Primitives;
 
 namespace TraffiLearn.Domain.Aggregates.Tickets
 {
-    public interface ITicketRepository
+    public interface ITicketRepository : IRepositoryMarker
     {
         Task<Ticket?> GetByIdAsync(
             TicketId ticketId,

@@ -5,30 +5,33 @@ namespace TraffiLearn.Testing.Shared.Factories
 {
     public static class QuestionFixtureFactory
     {
-        public static Question CreateQuestion()
+        public static Question CreateQuestion(string content = "value",
+            string explanantion = "value",
+            int number = QuestionNumber.MinValue,
+            string imageUri = "http://127.0.0.1:10000/devstoreaccount1")
         {
             return Question.Create(
                 new QuestionId(Guid.NewGuid()),
-                CreateContent(),
-                CreateExplanation(),
-                CreateNumber(),
+                CreateContent(content),
+                CreateExplanation(explanantion),
+                CreateNumber(number),
                 CreateAnswers(),
-                CreateImageUri()).Value;
+                CreateImageUri(imageUri)).Value;
         }
 
-        public static QuestionContent CreateContent()
+        public static QuestionContent CreateContent(string content = "value")
         {
-            return QuestionContent.Create("value").Value;
+            return QuestionContent.Create(content).Value;
         }
 
-        public static QuestionExplanation CreateExplanation()
+        public static QuestionExplanation CreateExplanation(string explanantion = "value")
         {
-            return QuestionExplanation.Create("value").Value;
+            return QuestionExplanation.Create(explanantion).Value;
         }
 
-        public static QuestionNumber CreateNumber()
+        public static QuestionNumber CreateNumber(int number = QuestionNumber.MinValue)
         {
-            return QuestionNumber.Create(QuestionNumber.MinValue).Value;
+            return QuestionNumber.Create(number).Value;
         }
 
         public static Answer CreateAnswer()
@@ -44,9 +47,9 @@ namespace TraffiLearn.Testing.Shared.Factories
             ];
         }
 
-        public static ImageUri CreateImageUri()
+        public static ImageUri CreateImageUri(string imageUri = "http://127.0.0.1:10000/devstoreaccount1")
         {
-            return ImageUri.Create("http://127.0.0.1:10000/devstoreaccount1").Value;
+            return ImageUri.Create(imageUri).Value;
         }
     }
 }
