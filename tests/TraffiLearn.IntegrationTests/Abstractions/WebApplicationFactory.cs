@@ -80,7 +80,7 @@ namespace TraffiLearn.IntegrationTests.Abstractions
                     { "QuestionsSettings:TheoryTestQuestionsCount", "20" }
                 };
 
-                config.AddInMemoryCollection(inMemorySettings);
+                config.AddInMemoryCollection(inMemorySettings!);
             });
         }
 
