@@ -19,8 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\TraffiLearn.Infrastructure\TraffiLearn.Infrastructure.csproj" />
     <ProjectReference Include="..\..\tests\TraffiLearn.Testing.Shared\TraffiLearn.Testing.Shared.csproj" />
-    <ProjectReference Include="..\TraffiLearn.Infrastructure\TraffiLearn.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

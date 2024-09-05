@@ -1,6 +1,4 @@
 ﻿using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
-using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
