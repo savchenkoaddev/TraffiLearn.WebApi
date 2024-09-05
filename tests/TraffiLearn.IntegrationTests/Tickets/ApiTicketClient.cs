@@ -2,13 +2,11 @@
 using TraffiLearn.Application.Tickets.Commands.Create;
 using TraffiLearn.Application.Tickets.Commands.Update;
 using TraffiLearn.Application.Tickets.DTO;
-using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Helpers;
 using TraffiLearn.IntegrationTests.Questions;
 using TraffiLearn.IntegrationTests.Tickets.Commands.CreateTicket;
 using TraffiLearn.IntegrationTests.Tickets.Commands.UpdateTicket;
-using TraffiLearn.Testing.Shared.Factories;
 
 namespace TraffiLearn.IntegrationTests.Tickets
 {
@@ -76,7 +74,7 @@ namespace TraffiLearn.IntegrationTests.Tickets
                     method: HttpMethod.Post,
                     requestUri: TicketEndpointRoutes.CreateTicketRoute,
                     value: command,
-                    sentWithRole: createdWithRole);
+                    sentFromRole: createdWithRole);
         }
 
         public Task<Guid> CreateValidTicketAsAuthorizedAsync(

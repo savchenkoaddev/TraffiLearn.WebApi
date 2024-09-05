@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Storage;
+using TraffiLearn.Application.Storage.Blobs.DTO;
 using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Topics;
@@ -11,7 +12,7 @@ using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Questions.Commands.Create
 {
-    internal sealed class CreateQuestionCommandHandler 
+    internal sealed class CreateQuestionCommandHandler
         : IRequestHandler<CreateQuestionCommand, Result<Guid>>
     {
         private readonly IQuestionRepository _questionRepository;
@@ -57,14 +58,20 @@ namespace TraffiLearn.Application.Questions.Commands.Create
                 return Result.Failure<Guid>(addResult.Error);
             }
 
-            var imageResult = await HandleImage(
-                question,
-                image: request.Image,
-                cancellationToken);
-
-            if (imageResult.IsFailure)
+            if (ImageIsProvidedIn(request))
             {
-                return Result.Failure<Guid>(imageResult.Error);
+                var uploadResponse = await UploadImage(
+                    image: request.Image,
+                    cancellationToken);
+
+                var assignResult = AssignImageUriToQuestion(
+                    question, 
+                    uploadResponse);
+
+                if (assignResult.IsFailure)
+                {
+                    return Result.Failure<Guid>(assignResult.Error);
+                }
             }
 
             await _questionRepository.AddAsync(
@@ -74,6 +81,11 @@ namespace TraffiLearn.Application.Questions.Commands.Create
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success(question.Id.Value);
+        }
+
+        private bool ImageIsProvidedIn(CreateQuestionCommand request)
+        {
+            return request.Image is not null;
         }
 
         private async Task<Result> HandleTopics(
@@ -96,36 +108,39 @@ namespace TraffiLearn.Application.Questions.Commands.Create
 
                 if (topicAddResult.IsFailure)
                 {
-                    return topicAddResult.Error;
+                    return Error.InternalFailure();
                 }
             }
 
             return Result.Success();
         }
 
-        private async Task<Result> HandleImage(
-            Question question,
+        private async Task<UploadBlobResponse> UploadImage(
             IFormFile? image,
             CancellationToken cancellationToken)
         {
-            if (image is not null)
+            using Stream stream = image.OpenReadStream();
+
+            var uploadResponse = await _blobService.UploadAsync(
+                stream,
+                contentType: image.ContentType,
+                cancellationToken);
+
+            return uploadResponse;
+        }
+
+        private static Result AssignImageUriToQuestion(
+            Question question, 
+            UploadBlobResponse uploadResponse)
+        {
+            Result<ImageUri> imageUriResult = ImageUri.Create(uploadResponse.BlobUri);
+
+            if (imageUriResult.IsFailure)
             {
-                using Stream stream = image.OpenReadStream();
-
-                var uploadResponse = await _blobService.UploadAsync(
-                    stream,
-                    contentType: image.ContentType,
-                    cancellationToken);
-
-                Result<ImageUri> imageUriResult = ImageUri.Create(uploadResponse.BlobUri);
-
-                if (imageUriResult.IsFailure)
-                {
-                    return imageUriResult.Error;
-                }
-
-                question.SetImageUri(imageUriResult.Value);
+                return imageUriResult.Error;
             }
+
+            question.SetImageUri(imageUriResult.Value);
 
             return Result.Success();
         }

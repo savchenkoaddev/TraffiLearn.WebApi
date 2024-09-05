@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using TraffiLearn.Domain.Aggregates.Users.Enums;
+﻿using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;
 
@@ -17,7 +16,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicById
         {
             var response = await ApiTopicClient.SendGetTopicByIdRequestAsync(
                 topicId: Guid.NewGuid(),
-                sentWithRole: null);
+                sentFromRole: null);
 
             response.AssertUnauthorizedStatusCode();
         }
@@ -31,7 +30,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicById
         {
             var response = await ApiTopicClient.SendGetTopicByIdRequestAsync(
                 topicId: Guid.NewGuid(),
-                sentWithRole: eligibleRole);
+                sentFromRole: eligibleRole);
 
             response.AssertNotFoundStatusCode();
         }
@@ -43,11 +42,11 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicById
         public async Task GetTopicById_IfValidCase_ShouldReturn200StatusCode(
             Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var response = await ApiTopicClient.SendGetTopicByIdRequestAsync(
                 topicId: topicId,
-                sentWithRole: eligibleRole);
+                sentFromRole: eligibleRole);
 
             response.AssertOkStatusCode();
         }
@@ -59,11 +58,11 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetTopicById
         public async Task GetTopicById_IfValidCase_ShouldReturnValidTopic(
             Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var response = await ApiTopicClient.GetTopicByIdAsync(
                 topicId: topicId,
-                sentWithRole: eligibleRole);
+                sentFromRole: eligibleRole);
 
             response.Should().NotBeNull();
             response.Id.Should().Be(topicId);

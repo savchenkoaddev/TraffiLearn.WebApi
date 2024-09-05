@@ -55,7 +55,7 @@ namespace TraffiLearn.IntegrationTests.Topics
                 createdWithRole: Role.Owner);
         }
 
-        public Task<Guid> CreateTopicAsAuthorizedAsync()
+        public Task<Guid> CreateValidTopicAsAuthorizedAsync()
         {
             return CreateTopicAsync(
                 createdWithRole: Role.Owner);
@@ -70,7 +70,7 @@ namespace TraffiLearn.IntegrationTests.Topics
                     method: HttpMethod.Post,
                     requestUri: TopicEndpointRoutes.CreateTopicRoute,
                     value: command,
-                    sentWithRole: createdWithRole);
+                    sentFromRole: createdWithRole);
         }
 
         private Task<HttpResponseMessage> SendCreateTopicRequestAsync(
@@ -99,54 +99,54 @@ namespace TraffiLearn.IntegrationTests.Topics
         }
 
         public Task<HttpResponseMessage> SendGetAllTopicsSortedByNumberRequestAsync(
-            Role? sentWithRole = null)
+            Role? sentFromRole = null)
         {
             return _requestSender.GetAsync(
                 requestUri: TopicEndpointRoutes.GetAllSortedTopicsByNumberRoute,
-                getWithRole: sentWithRole);
+                getWithRole: sentFromRole);
         }
 
         public Task<HttpResponseMessage> SendGetTopicByIdRequestAsync(
             Guid topicId,
-            Role? sentWithRole = null)
+            Role? sentFromRole = null)
         {
             return _requestSender.GetAsync(
                 requestUri: TopicEndpointRoutes.GetTopicByIdRoute(topicId),
-                getWithRole: sentWithRole);
+                getWithRole: sentFromRole);
         }
 
         public Task<TopicResponse> GetTopicByIdAsync(
             Guid topicId,
-            Role? sentWithRole = null)
+            Role? sentFromRole = null)
         {
             return _requestSender.GetFromJsonAsync<TopicResponse>(
                 requestUri: TopicEndpointRoutes.GetTopicByIdRoute(topicId),
-                getWithRole: sentWithRole);
+                getWithRole: sentFromRole);
         }
 
         public Task<HttpResponseMessage> SendGetRandomTopicWithQuestionsAsync(
-            Role? sentWithRole = null)
+            Role? sentFromRole = null)
         {
             return _requestSender.GetAsync(
                 requestUri: TopicEndpointRoutes.GetRandomTopicWithQuestionsRoute,
-                getWithRole: sentWithRole);
+                getWithRole: sentFromRole);
         }
 
         public Task<TopicWithQuestionsResponse> GetRandomTopicWithQuestionsAsync(
-            Role? sentWithRole = null)
+            Role? sentFromRole = null)
         {
             return _requestSender.GetFromJsonAsync<TopicWithQuestionsResponse>(
                 requestUri: TopicEndpointRoutes.GetRandomTopicWithQuestionsRoute,
-                getWithRole: sentWithRole);
+                getWithRole: sentFromRole);
         }
 
         public Task<HttpResponseMessage> SendGetTopicQuestionsAsync(
             Guid topicId,
-            Role? sentWithRole = null)
+            Role? sentFromRole = null)
         {
             return _requestSender.GetAsync(
                 requestUri: TopicEndpointRoutes.GetTopicQuestionsRoute(topicId),
-                getWithRole: sentWithRole);
+                getWithRole: sentFromRole);
         }
 
         public Task<IEnumerable<QuestionResponse>> GetTopicQuestionsAsync(

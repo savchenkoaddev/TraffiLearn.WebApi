@@ -1,18 +1,23 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Azure.Storage.Blobs;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using Respawn;
 using System.Data.Common;
+using Testcontainers.Azurite;
 using Testcontainers.MsSql;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Users.Identity;
 using TraffiLearn.Domain.Aggregates.Users;
+using TraffiLearn.Infrastructure.External.Blobs.Options;
 using TraffiLearn.Infrastructure.Persistence;
 using TraffiLearn.IntegrationTests.Helpers;
 using TraffiLearn.WebAPI;
@@ -22,7 +27,12 @@ namespace TraffiLearn.IntegrationTests.Abstractions
     public sealed class WebApplicationFactory
         : WebApplicationFactory<Program>, IAsyncLifetime
     {
+        private const string AzuriteContainerImage = "mcr.microsoft.com/azure-storage/azurite:latest";
+
         private readonly MsSqlContainer _dbContainer = new MsSqlBuilder()
+            .Build();
+        private readonly AzuriteContainer _azuriteContainer = new AzuriteBuilder()
+            .WithImage(AzuriteContainerImage)
             .Build();
 
         private DbConnection _dbConnection = default!;
@@ -31,6 +41,8 @@ namespace TraffiLearn.IntegrationTests.Abstractions
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+            ConfigureAppConfiguration(builder);
+
             builder.ConfigureTestServices(services =>
             {
                 RemoveExistingDbContext(services);
@@ -38,6 +50,37 @@ namespace TraffiLearn.IntegrationTests.Abstractions
                 RegisterTestingDbContext(services);
 
                 RegisterTestingMemoryCache(services);
+
+                services.RemoveAll(typeof(BlobServiceClient));
+
+                services.AddSingleton((serviceProvider) =>
+                {
+                    var blobStorageSettings = serviceProvider.GetRequiredService<IOptions<AzureBlobStorageSettings>>().Value;
+
+                    var blobServiceClient = new BlobServiceClient(_azuriteContainer.GetConnectionString());
+
+                    var containerClient = blobServiceClient.GetBlobContainerClient(
+                        blobStorageSettings.ContainerName);
+
+                    containerClient.CreateIfNotExists();
+
+                    return blobServiceClient;
+                });
+            });
+        }
+
+        private static void ConfigureAppConfiguration(IWebHostBuilder builder)
+        {
+            builder.ConfigureAppConfiguration((context, config) =>
+            {
+                var builtConfig = config.Build();
+
+                var inMemorySettings = new Dictionary<string, string>
+                {
+                    { "QuestionsSettings:TheoryTestQuestionsCount", "20" }
+                };
+
+                config.AddInMemoryCollection(inMemorySettings!);
             });
         }
 
@@ -52,12 +95,19 @@ namespace TraffiLearn.IntegrationTests.Abstractions
             await _userSeeder.Seed();
         }
 
+        public async Task ResetBlobStorageAsync()
+        {
+            var execResult = await _azuriteContainer.ExecAsync(
+                command: ["sh", "-c", "rm -rf /data/blob/*"]);
+        }
+
         public async Task InitializeAsync()
         {
             await _dbContainer.StartAsync();
             _dbConnection = new SqlConnection(_dbContainer.GetConnectionString());
 
             await _dbConnection.OpenAsync();
+            await _azuriteContainer.StartAsync();
 
             _userSeeder = BuildUserSeeder();
 
@@ -68,9 +118,10 @@ namespace TraffiLearn.IntegrationTests.Abstractions
             await InitializeRespawner();
         }
 
-        public new Task DisposeAsync()
+        public new async Task DisposeAsync()
         {
-            return _dbContainer.StopAsync();
+            await _dbContainer.StopAsync();
+            await _azuriteContainer.StopAsync();
         }
 
         private async Task InitializeRespawner()

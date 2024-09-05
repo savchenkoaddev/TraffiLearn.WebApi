@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using TraffiLearn.Application.Topics.Commands.Update;
+﻿using TraffiLearn.Application.Topics.Commands.Update;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;
@@ -29,7 +28,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
         [Fact]
         public async Task UpdateTopic_IfUserIsNotAuthenticated_TopicShouldNotBeUpdated()
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var command = new UpdateTopicCommand(
                 topicId,
@@ -66,7 +65,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
         public async Task UpdateTopic_IfUserIsNotEligible_TopicShouldNotBeUpdated(
             Role nonEligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var command = new UpdateTopicCommand(
                 topicId,
@@ -94,7 +93,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
         {
             var invalidCommands = _commandFactory.CreateInvalidCommandsWithRandomIds();
 
-            await RequestSender.EnsureEachSentRequestReturnsBadRequestAsync(
+            await RequestSender.EnsureEachSentJsonRequestReturnsBadRequestAsync(
                 method: HttpMethod.Put,
                 requestUri: TopicEndpointRoutes.UpdateTopicRoute,
                 requests: invalidCommands,
@@ -120,7 +119,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
         public async Task UpdateTopic_IfValidCase_ShouldReturn204StatusCode(
             Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var command = new UpdateTopicCommand(
                 TopicId: topicId,
@@ -140,7 +139,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
         public async Task UpdateTopic_IfValidCase_TopicShouldBeUpdated(
             Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var command = new UpdateTopicCommand(
                 TopicId: topicId,

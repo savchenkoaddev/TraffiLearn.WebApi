@@ -24,7 +24,7 @@
             $"api/topics/{topicId}";
 
         public static string AddQuestionToTopicRoute(
-            Guid questionId, 
+            Guid questionId,
             Guid topicId) => $"api/topics/{topicId}/add-question/{questionId}";
 
         public static string RemoveQuestionFromTopicRoute(

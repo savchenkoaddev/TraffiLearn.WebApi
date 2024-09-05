@@ -40,7 +40,7 @@ namespace TraffiLearn.IntegrationTests.Tickets.Commands.UpdateTicket
                     TicketId: Guid.NewGuid(),
                     TicketNumber: -1,
                     QuestionIds: [Guid.NewGuid()]),
-                    
+
                 new UpdateTicketCommand(
                     TicketId: Guid.NewGuid(),
                     TicketNumber: null,

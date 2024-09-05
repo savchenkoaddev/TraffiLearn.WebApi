@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Storage;
 using TraffiLearn.Domain.Aggregates.Questions;
@@ -19,19 +20,22 @@ namespace TraffiLearn.Application.Questions.Commands.Update
         private readonly IBlobService _blobService;
         private readonly Mapper<UpdateQuestionCommand, Result<Question>> _commandMapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<UpdateQuestionCommandHandler> _logger;
 
         public UpdateQuestionCommandHandler(
             IQuestionRepository questionRepository,
             ITopicRepository topicRepository,
             IBlobService blobService,
             Mapper<UpdateQuestionCommand, Result<Question>> commandMapper,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            ILogger<UpdateQuestionCommandHandler> logger)
         {
             _questionRepository = questionRepository;
             _topicRepository = topicRepository;
             _blobService = blobService;
             _commandMapper = commandMapper;
             _unitOfWork = unitOfWork;
+            _logger = logger;
         }
 
         public async Task<Result> Handle(
@@ -61,7 +65,7 @@ namespace TraffiLearn.Application.Questions.Commands.Update
                 newQuestion.Explanation,
                 newQuestion.QuestionNumber,
                 newQuestion.Answers.ToList(),
-                imageUri: null);
+                imageUri: question.ImageUri);
 
             if (updateResult.IsFailure)
             {
@@ -81,7 +85,7 @@ namespace TraffiLearn.Application.Questions.Commands.Update
             await _questionRepository.UpdateAsync(question);
 
             var removeOldImageIfNewImageMissing =
-                request.RemoveOldImageIfNewImageMissing.Value;
+                request.RemoveOldImageIfNewImageMissing!.Value;
 
             var imageUpdateResult = await HandleImageAsync(
                 image: request.Image,
@@ -150,14 +154,12 @@ namespace TraffiLearn.Application.Questions.Commands.Update
             bool removeOldImageIfNewImageMissing,
             CancellationToken cancellationToken = default)
         {
-            var blobUri = question.ImageUri.Value;
-
             if (image is null)
             {
                 if (question.ImageUri is not null && removeOldImageIfNewImageMissing)
                 {
                     await _blobService.DeleteAsync(
-                        blobUri,
+                        question.ImageUri.Value,
                         cancellationToken);
 
                     question.SetImageUri(null);
@@ -168,7 +170,7 @@ namespace TraffiLearn.Application.Questions.Commands.Update
                 if (question.ImageUri is not null)
                 {
                     await _blobService.DeleteAsync(
-                        blobUri,
+                        question.ImageUri.Value,
                         cancellationToken);
                 }
 

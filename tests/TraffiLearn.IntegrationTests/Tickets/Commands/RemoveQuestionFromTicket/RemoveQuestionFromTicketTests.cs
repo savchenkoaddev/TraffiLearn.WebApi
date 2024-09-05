@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using TraffiLearn.Domain.Aggregates.Users.Enums;
+﻿using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;
 
@@ -47,7 +46,7 @@ namespace TraffiLearn.IntegrationTests.Tickets.Commands.RemoveQuestionFromTicket
             ticketQuestions.Should().NotBeEmpty();
         }
 
-        [Fact] 
+        [Fact]
         public async Task RemoveQuestionFromTicket_IfUserIsNotAuthenticated_TicketShouldNotBeRemovedFromQuestion()
         {
             var questionId = await ApiQuestionClient

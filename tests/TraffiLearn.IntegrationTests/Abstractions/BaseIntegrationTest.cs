@@ -8,12 +8,15 @@ namespace TraffiLearn.IntegrationTests.Abstractions
     [Collection(Constants.CollectionName)]
     public abstract class BaseIntegrationTest : IAsyncLifetime
     {
-        private readonly Func<Task> ResetDatabase;
+        private readonly Func<Task> _resetDatabase;
+        private readonly Func<Task> _resetBlobStorage;
 
         protected BaseIntegrationTest(
             WebApplicationFactory factory)
         {
-            ResetDatabase = factory.ResetDatabaseAsync;
+            _resetDatabase = factory.ResetDatabaseAsync;
+            _resetBlobStorage = factory.ResetBlobStorageAsync;
+
             HttpClient = factory.CreateClient();
 
             Authenticator = new Authenticator(HttpClient);
@@ -36,6 +39,10 @@ namespace TraffiLearn.IntegrationTests.Abstractions
 
         public Task InitializeAsync() => Task.CompletedTask;
 
-        public Task DisposeAsync() => ResetDatabase();
+        public async Task DisposeAsync()
+        {
+            await _resetDatabase();
+            await _resetBlobStorage();
+        }
     }
 }

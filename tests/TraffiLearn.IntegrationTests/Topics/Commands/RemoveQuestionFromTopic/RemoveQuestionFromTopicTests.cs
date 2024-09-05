@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using TraffiLearn.Domain.Aggregates.Users.Enums;
+﻿using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;
 using TraffiLearn.IntegrationTests.Questions;
@@ -26,7 +25,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.RemoveQuestionFromTopic
         [Fact]
         public async Task RemoveQuestionFromTopic_IfUserIsNotAuthenticated_QuestionShouldNotBeRemovedFromTopic()
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var questionId = await ApiQuestionClient.CreateValidQuestionAsAuthorizedAsync(
                 topicIds: [topicId]);
@@ -45,7 +44,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.RemoveQuestionFromTopic
         [Fact]
         public async Task RemoveQuestionFromTopic_IfUserIsNotAuthenticated_TopicShouldNotBeRemovedFromQuestion()
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var questionId = await ApiQuestionClient.CreateValidQuestionAsAuthorizedAsync(
                 topicIds: [topicId]);
@@ -79,7 +78,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.RemoveQuestionFromTopic
         public async Task RemoveQuestionFromTopic_IfUserIsNotEligible_QuestionShouldNotBeRemovedFromTopic(
             Role nonEligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var questionId = await ApiQuestionClient.CreateValidQuestionAsAuthorizedAsync(
                 topicIds: [topicId]);
@@ -101,7 +100,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.RemoveQuestionFromTopic
         public async Task RemoveQuestionFromTopic_IfUserIsNotEligible_TopicShouldNotBeRemovedFromQuestion(
            Role nonEligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var questionId = await ApiQuestionClient.CreateValidQuestionAsAuthorizedAsync(
                 topicIds: [topicId]);
@@ -124,7 +123,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.RemoveQuestionFromTopic
         public async Task RemoveQuestionFromTopic_IfQuestionIsNotFound_ShouldReturn404StatusCode(
             Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var response = await ApiTopicClient.SendRemoveQuestionFromTopicRequestAsync(
                 questionId: Guid.NewGuid(),
@@ -140,7 +139,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.RemoveQuestionFromTopic
         public async Task RemoveQuestionFromTopic_IfTopicIsNotFound_ShouldReturn404StatusCode(
             Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var questionId = await ApiQuestionClient.CreateValidQuestionAsAuthorizedAsync(
                 topicIds: [topicId]);
@@ -162,7 +161,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.RemoveQuestionFromTopic
             var questionId = await ApiQuestionClient
                 .CreateValidQuestionWithTopicAsAuthorizedAsync();
 
-            var newTopicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var newTopicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var response = await ApiTopicClient.SendRemoveQuestionFromTopicRequestAsync(
                 questionId: questionId,
@@ -178,7 +177,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.RemoveQuestionFromTopic
         public async Task RemoveQuestionFromTopic_IfValidCase_ShouldReturn204StatusCode(
             Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var questionId = await ApiQuestionClient.CreateValidQuestionAsAuthorizedAsync(
                 topicIds: [topicId]);
@@ -197,7 +196,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.RemoveQuestionFromTopic
         public async Task RemoveQuestionFromTopic_IfValidCase_QuestionShouldBeRemovedFromTopic(
             Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var questionId = await ApiQuestionClient.CreateValidQuestionAsAuthorizedAsync(
                 topicIds: [topicId]);
@@ -219,7 +218,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.RemoveQuestionFromTopic
         public async Task RemoveQuestionFromTopic_IfValidCase_TopicShouldBeRemovedFromQuestion(
             Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var questionId = await ApiQuestionClient.CreateValidQuestionAsAuthorizedAsync(
                 topicIds: [topicId]);

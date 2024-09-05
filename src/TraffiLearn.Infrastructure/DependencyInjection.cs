@@ -100,7 +100,13 @@ namespace TraffiLearn.Infrastructure
             {
                 var blobStorageSettings = serviceProvider.GetRequiredService<IOptions<AzureBlobStorageSettings>>().Value;
 
-                return new BlobServiceClient(blobStorageSettings.ConnectionString);
+                var blobServiceClient = new BlobServiceClient(blobStorageSettings.ConnectionString);
+
+                var containerClient = blobServiceClient.GetBlobContainerClient(blobStorageSettings.ContainerName);
+
+                containerClient.CreateIfNotExists();
+
+                return blobServiceClient;
             });
 
             services.AddSingleton<IBlobService, AzureBlobService>();

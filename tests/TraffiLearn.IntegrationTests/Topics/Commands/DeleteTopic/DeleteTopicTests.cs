@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using TraffiLearn.Domain.Aggregates.Users.Enums;
+﻿using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;
 
@@ -27,7 +26,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.DeleteTopic
         [Fact]
         public async Task DeleteTopic_IfUserNotAuthenticated_TopicShouldNotBeDeleted()
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             await ApiTopicClient.SendDeleteTopicRequestAsync(
                 topicId,
@@ -58,7 +57,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.DeleteTopic
         public async Task DeleteTopic_IfUserIsNotEligible_TopicShouldNotBeDeleted(
             Role nonEligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var response = await ApiTopicClient.SendDeleteTopicRequestAsync(
                 topicId,
@@ -91,7 +90,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.DeleteTopic
         public async Task DeleteTopic_IfValidCase_ShouldReturn204StatusCode(
             Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var response = await ApiTopicClient.SendDeleteTopicRequestAsync(
                 topicId,
@@ -106,7 +105,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.DeleteTopic
         public async Task DeleteTopic_IfValidCase_TopicShouldBeDeleted(
             Role eligibleRole)
         {
-            var topicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             await ApiTopicClient.SendDeleteTopicRequestAsync(
                 topicId,

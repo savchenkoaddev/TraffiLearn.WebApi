@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using TraffiLearn.Domain.Aggregates.Users.Enums;
+﻿using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;
 
@@ -106,7 +105,7 @@ namespace TraffiLearn.IntegrationTests.Tickets.Commands.CreateTicket
         {
             var invalidCommands = _commandFactory.CreateInvalidCommands();
 
-            await RequestSender.EnsureEachSentRequestReturnsBadRequestAsync(
+            await RequestSender.EnsureEachSentJsonRequestReturnsBadRequestAsync(
                 method: HttpMethod.Post,
                 requestUri: TicketEndpointRoutes.CreateTicketRoute,
                 requests: invalidCommands,

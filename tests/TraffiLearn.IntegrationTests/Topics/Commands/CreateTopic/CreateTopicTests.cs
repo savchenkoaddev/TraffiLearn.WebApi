@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;
@@ -67,7 +66,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
         {
             var invalidCommands = _commandFactory.GetInvalidCommands();
 
-            await RequestSender.EnsureEachSentRequestReturnsBadRequestAsync(
+            await RequestSender.EnsureEachSentJsonRequestReturnsBadRequestAsync(
                 method: HttpMethod.Post,
                 requestUri: TopicEndpointRoutes.CreateTopicRoute,
                 requests: invalidCommands,

@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using TraffiLearn.Application.Topics.Commands.Create;
+﻿using TraffiLearn.Application.Topics.Commands.Create;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;
@@ -18,7 +17,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetAllSortedTopicsByNumber
         {
             var response = await ApiTopicClient
                 .SendGetAllTopicsSortedByNumberRequestAsync(
-                    sentWithRole: null);
+                    sentFromRole: null);
 
             response.AssertUnauthorizedStatusCode();
         }
@@ -32,7 +31,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetAllSortedTopicsByNumber
         {
             var response = await ApiTopicClient
                 .SendGetAllTopicsSortedByNumberRequestAsync(
-                    sentWithRole: eligibleRole);
+                    sentFromRole: eligibleRole);
 
             response.AssertOkStatusCode();
         }
@@ -58,10 +57,10 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetAllSortedTopicsByNumber
         public async Task GetAllSortedTopicsByNumber_IfValidCase_ShouldReturn200StatusCode(
            Role eligibleRole)
         {
-            await ApiTopicClient.CreateTopicAsAuthorizedAsync();
+            await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
             var response = await ApiTopicClient.SendGetAllTopicsSortedByNumberRequestAsync(
-                sentWithRole: eligibleRole);
+                sentFromRole: eligibleRole);
 
             response.AssertOkStatusCode();
         }
