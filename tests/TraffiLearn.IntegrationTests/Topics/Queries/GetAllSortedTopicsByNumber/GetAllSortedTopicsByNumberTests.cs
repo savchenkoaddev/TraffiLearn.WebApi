@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using TraffiLearn.Application.Topics.Commands.Create;
+﻿using TraffiLearn.Application.Topics.Commands.Create;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;

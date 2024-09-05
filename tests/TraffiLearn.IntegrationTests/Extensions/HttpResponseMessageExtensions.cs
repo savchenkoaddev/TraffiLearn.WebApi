@@ -1,19 +1,18 @@
-﻿using FluentAssertions;
-using System.Net;
+﻿using System.Net;
 
 namespace TraffiLearn.IntegrationTests.Extensions
 {
     internal static class HttpResponseMessageExtensions
     {
         public static void AssertStatusCode(
-            this HttpResponseMessage responseMessage, 
+            this HttpResponseMessage responseMessage,
             HttpStatusCode statusCode)
         {
             responseMessage.StatusCode.Should().Be(statusCode);
         }
 
         public static void AssertStatusCodeOneOf(
-            this HttpResponseMessage responseMessage, 
+            this HttpResponseMessage responseMessage,
             params HttpStatusCode[] expectedStatusCodes)
         {
             responseMessage.StatusCode.Should().BeOneOf(expectedStatusCodes);

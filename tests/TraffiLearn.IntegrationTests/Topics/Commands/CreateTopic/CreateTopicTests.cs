@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;

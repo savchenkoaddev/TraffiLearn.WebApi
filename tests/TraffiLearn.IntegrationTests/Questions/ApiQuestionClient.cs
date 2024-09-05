@@ -186,6 +186,14 @@ namespace TraffiLearn.IntegrationTests.Questions
                 getWithRole: sentFromRole);
         }
 
+        public Task<QuestionResponse> GetQuestionByIdAsAuthorizedAsync(
+            Guid questionId)
+        {
+            return GetQuestionByIdAsync(
+                questionId,
+                getWithRole: Role.Owner);
+        }
+
         public Task<QuestionResponse> GetQuestionByIdAsync(
             Guid questionId,
             Role? getWithRole = null)
@@ -245,6 +253,15 @@ namespace TraffiLearn.IntegrationTests.Questions
             return _requestSender.GetFromJsonAsync<IEnumerable<TicketResponse>>(
                 requestUri: QuestionEndpointRoutes.GetQuestionTicketsRoute(questionId),
                 getWithRole);
+        }
+
+        public Task<HttpResponseMessage> SendGetQuestionTicketsRequestAsync(
+            Guid questionId,
+            Role? sentFromRole = null)
+        {
+            return _requestSender.GetAsync(
+                requestUri: QuestionEndpointRoutes.GetQuestionTicketsRoute(questionId),
+                getWithRole: sentFromRole);
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using FluentAssertions;
-using TraffiLearn.Application.Questions.DTO;
-using TraffiLearn.Domain.Aggregates.Users.Enums;
+﻿using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;
 using TraffiLearn.IntegrationTests.Questions;

@@ -38,12 +38,12 @@ namespace TraffiLearn.IntegrationTests.Helpers
             Role? sentFromRole = null)
         {
             var builder = new HttpRequestMessageBuilder(
-                    method, 
+                    method,
                     requestUri)
                 .WithJsonContent(value);
 
             var request = await BuildHttpRequestWithOptionalAuthorizationAsync(
-                builder, 
+                builder,
                 sentFromRole);
 
             return await _httpClient.SendAsync(request);
@@ -83,11 +83,11 @@ namespace TraffiLearn.IntegrationTests.Helpers
             Role? deletedWithRole = null)
         {
             var builder = new HttpRequestMessageBuilder(
-                HttpMethod.Delete, 
+                HttpMethod.Delete,
                 requestUri);
 
             var request = await BuildHttpRequestWithOptionalAuthorizationAsync(
-                builder, 
+                builder,
                 deletedWithRole);
 
             return await _httpClient.SendAsync(request);
@@ -99,12 +99,12 @@ namespace TraffiLearn.IntegrationTests.Helpers
             Role? putWithRole = null)
         {
             var builder = new HttpRequestMessageBuilder(
-                    HttpMethod.Put, 
+                    HttpMethod.Put,
                     requestUri)
                 .WithJsonContent(request);
 
             var httpRequest = await BuildHttpRequestWithOptionalAuthorizationAsync(
-                builder, 
+                builder,
                 putWithRole);
 
             return await _httpClient.SendAsync(httpRequest);
@@ -151,7 +151,7 @@ namespace TraffiLearn.IntegrationTests.Helpers
                 requestUri);
 
             var request = await BuildHttpRequestWithOptionalAuthorizationAsync(
-                builder, 
+                builder,
                 getWithRole);
 
             return await SendAndParseJsonResponseAsync<TResponse>(request);
@@ -204,7 +204,7 @@ namespace TraffiLearn.IntegrationTests.Helpers
             Role? sentFromRole = null)
         {
             return EnsureEachSentJsonRequestReturnsStatusCodeAsync(
-                method, 
+                method,
                 requestUri,
                 requests,
                 statusCode: HttpStatusCode.BadRequest,
@@ -240,7 +240,7 @@ namespace TraffiLearn.IntegrationTests.Helpers
                 var accessToken = await GetAccessTokenForRoleAsync(role.Value);
 
                 builder.WithAuthorization(
-                    scheme: AuthConstants.Scheme, 
+                    scheme: AuthConstants.Scheme,
                     parameter: accessToken);
             }
 

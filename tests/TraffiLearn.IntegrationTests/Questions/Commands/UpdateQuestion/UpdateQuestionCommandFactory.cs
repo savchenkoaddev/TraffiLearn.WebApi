@@ -25,6 +25,70 @@ namespace TraffiLearn.IntegrationTests.Questions.Commands.UpdateQuestion
                 removeOldImageIfNewImageMissing);
         }
 
+        public List<UpdateQuestionCommand> CreateInvalidCommands(
+            Guid questionId,
+            List<Guid>? topicIds,
+            IFormFile? image = null,
+            bool? removeOldImageIfNewImageMissing = true)
+        {
+            var command = CreateValidCommand(
+                questionId,
+                topicIds,
+                image,
+                removeOldImageIfNewImageMissing);
+
+            return [
+                command with { QuestionId = null },
+                command with { Content = null },
+                command with { Content = " " },
+                command with { Explanation = null },
+                command with { Explanation = " " },
+                command with { QuestionNumber = -1 },
+                command with { QuestionNumber = 0 },
+                command with { Answers = null },
+                command with { Answers = [] },
+
+                command with { Answers = [
+                    new AnswerRequest(
+                        Text: null,
+                        IsCorrect: true)
+                ] },
+
+                command with { Answers = [
+                    new AnswerRequest(
+                        Text: " ",
+                        IsCorrect: true)
+                ] },
+
+                command with { Answers = [
+                    new AnswerRequest(
+                        Text: "Content",
+                        IsCorrect: false)
+                ] },
+
+                command with { Answers = [
+                    new AnswerRequest(
+                        Text: "Content",
+                        IsCorrect: false),
+                    new AnswerRequest(
+                        Text: "Content",
+                        IsCorrect: true)
+                ] },
+
+                command with { Answers = [
+                    new AnswerRequest(
+                        Text: "Content",
+                        IsCorrect: false),
+                    new AnswerRequest(
+                        Text: "Content1",
+                        IsCorrect: false)
+                ] },
+
+                command with { TopicIds = null },
+                command with { TopicIds = [] }
+            ];
+        }
+
         private List<AnswerRequest> ConvertAnswers(List<Answer> answers)
         {
             return answers

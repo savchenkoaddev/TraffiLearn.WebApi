@@ -18,9 +18,10 @@ namespace TraffiLearn.IntegrationTests.Auth
         {
             var loginResponse = await _httpClient.PostAsJsonAsync(
                 requestUri: AuthRoutes.LoginRoute,
-                new { 
-                    email = credentials.Email, 
-                    password = credentials.Password 
+                new
+                {
+                    email = credentials.Email,
+                    password = credentials.Password
                 });
 
             loginResponse.EnsureSuccessStatusCode();
