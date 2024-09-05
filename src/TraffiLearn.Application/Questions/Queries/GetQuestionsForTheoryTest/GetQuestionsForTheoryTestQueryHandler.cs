@@ -38,8 +38,7 @@ namespace TraffiLearn.Application.Questions.Queries.GetQuestionsForTheoryTest
             var questions = await _questionRepository.GetRandomRecordsAsync(
                 amount: neededQuestionsCount);
 
-            if (NotEnoughQuestions(questions) &&
-                SufficientRecordsRequired())
+            if (NotEnoughQuestions(questions))
             {
                 throw new InsufficientRecordsException(
                     requiredRecords: neededQuestionsCount,
@@ -52,11 +51,6 @@ namespace TraffiLearn.Application.Questions.Queries.GetQuestionsForTheoryTest
         private bool NotEnoughQuestions(IEnumerable<Question> questions)
         {
             return questions.Count() < _questionsSettings.TheoryTestQuestionsCount;
-        }
-
-        private bool SufficientRecordsRequired()
-        {
-            return _questionsSettings.DemandEnoughRecordsOnTheoryTestFetching;
         }
     }
 }

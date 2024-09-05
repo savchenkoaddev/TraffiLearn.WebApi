@@ -32,11 +32,11 @@ namespace TraffiLearn.Application.Questions.Queries.GetQuestionTickets
         {
             var questionId = new QuestionId(request.QuestionId.Value);
 
-            var exists = await _questionRepository.ExistsAsync(
+            var questionExists = await _questionRepository.ExistsAsync(
                 questionId,
                 cancellationToken);
 
-            if (!exists)
+            if (!questionExists)
             {
                 return Result.Failure<IEnumerable<TicketResponse>>(QuestionErrors.NotFound);
             }

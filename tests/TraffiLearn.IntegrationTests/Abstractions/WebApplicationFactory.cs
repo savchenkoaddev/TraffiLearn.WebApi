@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -40,6 +41,8 @@ namespace TraffiLearn.IntegrationTests.Abstractions
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+            ConfigureAppConfiguration(builder);
+
             builder.ConfigureTestServices(services =>
             {
                 RemoveExistingDbContext(services);
@@ -63,6 +66,21 @@ namespace TraffiLearn.IntegrationTests.Abstractions
 
                     return blobServiceClient;
                 });
+            });
+        }
+
+        private static void ConfigureAppConfiguration(IWebHostBuilder builder)
+        {
+            builder.ConfigureAppConfiguration((context, config) =>
+            {
+                var builtConfig = config.Build();
+
+                var inMemorySettings = new Dictionary<string, string>
+                {
+                    { "QuestionsSettings:TheoryTestQuestionsCount", "20" }
+                };
+
+                config.AddInMemoryCollection(inMemorySettings);
             });
         }
 

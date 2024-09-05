@@ -11,6 +11,9 @@
         public static string DeleteQuestionRoute(Guid questionId) =>
             $"api/questions/{questionId}";
 
+        public static string GetQuestionsForTheoryTestRoute =
+           $"api/questions/theory-test";
+
         public static string GetRandomQuestionsRoute() =>
            $"api/questions/random";
 

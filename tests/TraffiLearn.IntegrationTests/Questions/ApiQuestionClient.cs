@@ -286,5 +286,21 @@ namespace TraffiLearn.IntegrationTests.Questions
                     requestUri: QuestionEndpointRoutes.GetRandomQuestionsRoute(amount),
                     getWithRole: getWithRole);
         }
+
+        public Task<HttpResponseMessage> SendGetQuestionsForTheoryTestRequestAsync(
+            Role? sentFromRole = null)
+        {
+            return _requestSender.GetAsync(
+                requestUri: QuestionEndpointRoutes.GetQuestionsForTheoryTestRoute,
+                getWithRole: sentFromRole);
+        }
+
+        public Task<IEnumerable<QuestionResponse>> GetQuestionsForTheoryTestAsync(
+            Role? getWithRole = null)
+        {
+            return _requestSender.GetFromJsonAsync<IEnumerable<QuestionResponse>>(
+                requestUri: QuestionEndpointRoutes.GetQuestionsForTheoryTestRoute,
+                getWithRole: getWithRole);
+        }
     }
 }

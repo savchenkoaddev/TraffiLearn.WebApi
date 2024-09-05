@@ -8,7 +8,5 @@ namespace TraffiLearn.Application.Questions.Options
 
         [Range(1, 50)]
         public int TheoryTestQuestionsCount { get; set; } = 20;
-
-        public bool DemandEnoughRecordsOnTheoryTestFetching { get; set; } = true;
     }
 }
