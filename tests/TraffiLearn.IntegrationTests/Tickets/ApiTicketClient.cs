@@ -74,7 +74,7 @@ namespace TraffiLearn.IntegrationTests.Tickets
                     method: HttpMethod.Post,
                     requestUri: TicketEndpointRoutes.CreateTicketRoute,
                     value: command,
-                    sentWithRole: createdWithRole);
+                    sentFromRole: createdWithRole);
         }
 
         public Task<Guid> CreateValidTicketAsAuthorizedAsync(

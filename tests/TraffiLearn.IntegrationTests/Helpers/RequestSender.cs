@@ -53,7 +53,7 @@ namespace TraffiLearn.IntegrationTests.Helpers
            HttpMethod method,
            string requestUri,
            TRequest value,
-           Role? sentWithRole = null)
+           Role? sentFromRole = null)
         {
             var builder = new HttpRequestMessageBuilder(
                     method,
@@ -62,7 +62,7 @@ namespace TraffiLearn.IntegrationTests.Helpers
 
             var request = await BuildHttpRequestWithOptionalAuthorizationAsync(
                 builder,
-                sentWithRole);
+                sentFromRole);
 
             var response = await _httpClient.SendAsync(request);
 

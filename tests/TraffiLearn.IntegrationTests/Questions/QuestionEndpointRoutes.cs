@@ -11,6 +11,12 @@
         public static string DeleteQuestionRoute(Guid questionId) =>
             $"api/questions/{questionId}";
 
+        public static string GetRandomQuestionsRoute() =>
+           $"api/questions/random";
+
+        public static string GetRandomQuestionsRoute(int? amount) =>
+            $"api/questions/random?amount={amount}";
+
         public static string GetQuestionByIdRoute(Guid questionId) =>
             $"api/questions/{questionId}";
 

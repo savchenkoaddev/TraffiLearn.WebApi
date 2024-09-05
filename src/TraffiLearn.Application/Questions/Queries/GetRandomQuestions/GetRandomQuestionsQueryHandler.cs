@@ -2,7 +2,6 @@
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Questions.DTO;
 using TraffiLearn.Domain.Aggregates.Questions;
-using TraffiLearn.Domain.Aggregates.Questions.Errors;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Questions.Queries.GetRandomQuestions
@@ -29,12 +28,6 @@ namespace TraffiLearn.Application.Questions.Queries.GetRandomQuestions
             var randomQuestions = await _questionRepository.GetRandomRecordsAsync(
                 request.Amount.Value,
                 cancellationToken: cancellationToken);
-
-            if (randomQuestions is null)
-            {
-                return Result.Failure<IEnumerable<QuestionResponse>>(
-                    QuestionErrors.NotFound);
-            }
 
             return Result.Success(_questionMapper.Map(randomQuestions));
         }

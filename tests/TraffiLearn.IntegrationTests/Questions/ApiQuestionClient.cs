@@ -3,12 +3,14 @@ using System.Net.Http.Json;
 using TraffiLearn.Application.Questions.Commands.Create;
 using TraffiLearn.Application.Questions.Commands.Update;
 using TraffiLearn.Application.Questions.DTO;
+using TraffiLearn.Application.Questions.Queries.GetRandomQuestions;
 using TraffiLearn.Application.Tickets.DTO;
 using TraffiLearn.Application.Topics.DTO;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.IntegrationTests.Helpers;
 using TraffiLearn.IntegrationTests.Questions.Commands.CreateQuestion;
 using TraffiLearn.IntegrationTests.Questions.Commands.UpdateQuestion;
+using TraffiLearn.IntegrationTests.Questions.Queries.GetRandomQuestions;
 
 namespace TraffiLearn.IntegrationTests.Questions
 {
@@ -17,15 +19,18 @@ namespace TraffiLearn.IntegrationTests.Questions
         private readonly RequestSender _requestSender;
         private readonly CreateQuestionCommandFactory _createQuestionCommandFactory;
         private readonly UpdateQuestionCommandFactory _updateQuestionCommandFactory;
+        private readonly GetRandomQuestionsQueryFactory _getRandomQuestionsQueryFactory;
 
         public ApiQuestionClient(
             RequestSender requestSender,
             CreateQuestionCommandFactory createQuestionCommandFactory,
-            UpdateQuestionCommandFactory updateQuestionCommandFactory)
+            UpdateQuestionCommandFactory updateQuestionCommandFactory,
+            GetRandomQuestionsQueryFactory getRandomQuestionsQueryFactory)
         {
             _requestSender = requestSender;
             _createQuestionCommandFactory = createQuestionCommandFactory;
             _updateQuestionCommandFactory = updateQuestionCommandFactory;
+            _getRandomQuestionsQueryFactory = getRandomQuestionsQueryFactory;
         }
 
         public async Task<HttpResponseMessage> SendValidCreateQuestionRequestWithTopicAsync(
@@ -262,6 +267,24 @@ namespace TraffiLearn.IntegrationTests.Questions
             return _requestSender.GetAsync(
                 requestUri: QuestionEndpointRoutes.GetQuestionTicketsRoute(questionId),
                 getWithRole: sentFromRole);
+        }
+
+        public Task<HttpResponseMessage> SendGetRandomQuestionsRequestAsync(
+            int? amount = null,
+            Role? sentFromRole = null)
+        {
+            return _requestSender.GetAsync(
+                requestUri: QuestionEndpointRoutes.GetRandomQuestionsRoute(amount),
+                getWithRole: sentFromRole);
+        }
+
+        public Task<IEnumerable<QuestionResponse>> GetRandomQuestionsAsync(
+            int? amount = null,
+            Role? getWithRole = null)
+        {
+            return _requestSender.GetFromJsonAsync<IEnumerable<QuestionResponse>>(
+                    requestUri: QuestionEndpointRoutes.GetRandomQuestionsRoute(amount),
+                    getWithRole: getWithRole);
         }
     }
 }

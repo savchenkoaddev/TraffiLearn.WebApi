@@ -70,7 +70,7 @@ namespace TraffiLearn.IntegrationTests.Topics
                     method: HttpMethod.Post,
                     requestUri: TopicEndpointRoutes.CreateTopicRoute,
                     value: command,
-                    sentWithRole: createdWithRole);
+                    sentFromRole: createdWithRole);
         }
 
         private Task<HttpResponseMessage> SendCreateTopicRequestAsync(
