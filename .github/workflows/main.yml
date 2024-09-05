@@ -46,13 +46,16 @@ jobs:
         run: dotnet build ./src/TraffiLearn.sln --configuration Release --no-restore
 
       - name: Run Unit Tests
-        run: dotnet test ./src/TraffiLearn.UnitTests/TraffiLearn.UnitTests.csproj --configuration Release --no-restore --no-build --logger "trx;LogFileName=TraffiLearn.UnitTests.trx" --results-directory ./TestResults
+        run: dotnet test ./tests/TraffiLearn.UnitTests/TraffiLearn.UnitTests.csproj --configuration Release --no-restore --no-build --logger "trx;LogFileName=TraffiLearn.UnitTests.trx" --results-directory ./TestResults
 
       - name: Run Domain Tests
-        run: dotnet test ./src/TraffiLearn.DomainTests/TraffiLearn.DomainTests.csproj --configuration Release --no-restore --no-build --logger "trx;LogFileName=TraffiLearn.DomainTests.trx" --results-directory ./TestResults
+        run: dotnet test ./tests/TraffiLearn.DomainTests/TraffiLearn.DomainTests.csproj --configuration Release --no-restore --no-build --logger "trx;LogFileName=TraffiLearn.DomainTests.trx" --results-directory ./TestResults
 
       - name: Run Architecture Tests
-        run: dotnet test ./src/TraffiLearn.ArchitectureTests/TraffiLearn.ArchitectureTests.csproj --configuration Release --no-restore --no-build --logger "trx;LogFileName=TraffiLearn.ArchitectureTests.trx" --results-directory ./TestResults
+        run: dotnet test ./tests/TraffiLearn.ArchitectureTests/TraffiLearn.ArchitectureTests.csproj --configuration Release --no-restore --no-build --logger "trx;LogFileName=TraffiLearn.ArchitectureTests.trx" --results-directory ./TestResults
+
+      - name: Run Integration Tests
+        run: dotnet test ./tests/TraffiLearn.IntegrationTests/TraffiLearn.IntegrationTests.csproj --configuration Release --no-restore --no-build --logger "trx;LogFileName=TraffiLearn.IntegrationTests.trx" --results-directory ./TestResults
 
       - name: Publish Test Results
         if: always()
