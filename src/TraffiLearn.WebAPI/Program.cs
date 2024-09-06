@@ -9,7 +9,9 @@ using TraffiLearn.Infrastructure;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.Infrastructure.Authentication.Options;
 using TraffiLearn.Infrastructure.Extensions;
+using TraffiLearn.WebAPI.Extensions;
 using TraffiLearn.WebAPI.Middleware;
+using TraffiLearn.WebAPI.Options;
 
 namespace TraffiLearn.WebAPI
 {
@@ -29,6 +31,9 @@ namespace TraffiLearn.WebAPI
 
             builder.Services.AddApplication(builder.Configuration);
             builder.Services.AddInfrastructure();
+
+            builder.Services.ConfigureValidatableOnStartOptions<SuperUserSettings>(
+                SuperUserSettings.SectionName);
 
             ConfigureAuthentication(
                 builder.Services,
@@ -57,6 +62,7 @@ namespace TraffiLearn.WebAPI
             app.MapControllers();
 
             app.SeedRoles().Wait();
+            app.SeedSuperUserIfNotSeeded().Wait();
 
             app.Run();
         }

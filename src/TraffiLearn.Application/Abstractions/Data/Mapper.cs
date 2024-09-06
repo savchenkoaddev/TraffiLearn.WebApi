@@ -1,6 +1,6 @@
 ﻿namespace TraffiLearn.Application.Abstractions.Data
 {
-    internal abstract class Mapper<TSource, TDestination>
+    public abstract class Mapper<TSource, TDestination>
     {
         public abstract TDestination Map(TSource source);
 

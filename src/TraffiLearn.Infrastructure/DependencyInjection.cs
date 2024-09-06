@@ -81,7 +81,7 @@ namespace TraffiLearn.Infrastructure
             return services;
         }
 
-        private static IServiceCollection ConfigureValidatableOnStartOptions<TOptions>(
+        public static IServiceCollection ConfigureValidatableOnStartOptions<TOptions>(
             this IServiceCollection services,
             string configSectionPath)
             where TOptions : class

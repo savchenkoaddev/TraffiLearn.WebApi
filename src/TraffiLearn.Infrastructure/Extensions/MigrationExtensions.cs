@@ -26,6 +26,7 @@ namespace TraffiLearn.Infrastructure.Extensions
             using ApplicationDbContext dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
             var roleService = scope.ServiceProvider.GetRequiredService<IRoleService<IdentityRole>>();
+
             await RoleSeeder.SeedRolesAsync(roleService);
         }
     }
