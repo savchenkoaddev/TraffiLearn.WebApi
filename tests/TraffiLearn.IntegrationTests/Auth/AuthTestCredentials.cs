@@ -16,8 +16,8 @@
 
         public static readonly RoleCredentials Owner =
             new RoleCredentials(
-                email: "owner@owner.com",
-                username: "owner",
+                email: "test-owner@owner.com",
+                username: "test-owner",
                 password: CommonPassword);
 
         private const string CommonPassword = "Strong123!.";

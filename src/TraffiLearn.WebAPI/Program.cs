@@ -1,7 +1,11 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Linq;
 using Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Extensions;
 using Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Integrations;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Net;
 using System.Text;
 using TraffiLearn.Application;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
@@ -9,7 +13,9 @@ using TraffiLearn.Infrastructure;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.Infrastructure.Authentication.Options;
 using TraffiLearn.Infrastructure.Extensions;
+using TraffiLearn.WebAPI.Extensions;
 using TraffiLearn.WebAPI.Middleware;
+using TraffiLearn.WebAPI.Options;
 
 namespace TraffiLearn.WebAPI
 {
@@ -25,10 +31,16 @@ namespace TraffiLearn.WebAPI
 
             builder.Services.AddEndpointsApiExplorer();
 
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                ConfigureSwaggerAuthorization(options);
+            });
 
             builder.Services.AddApplication(builder.Configuration);
             builder.Services.AddInfrastructure();
+
+            builder.Services.ConfigureValidatableOnStartOptions<SuperUserSettings>(
+                SuperUserSettings.SectionName);
 
             ConfigureAuthentication(
                 builder.Services,
@@ -57,8 +69,37 @@ namespace TraffiLearn.WebAPI
             app.MapControllers();
 
             app.SeedRoles().Wait();
+            app.SeedSuperUserIfNotSeeded().Wait();
 
             app.Run();
+        }
+
+        private static void ConfigureSwaggerAuthorization(SwaggerGenOptions options)
+        {
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                Scheme = "Bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer { token }\""
+            });
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] { }
+                    }
+                });
         }
 
         private static void ConfigureAuthorization(IServiceCollection services)
