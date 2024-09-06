@@ -1,0 +1,21 @@
+services:
+  traffilearn.webapi:
+    image: ${DOCKER_REGISTRY-}traffilearnwebapi
+    container_name: traffilearn.api
+    build:
+      context: .
+      dockerfile: TraffiLearn.WebAPI/Dockerfile
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    depends_on: 
+      - traffilearn.database
+
+  traffilearn.database:
+    container_name: traffilearn.database
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Password1*
+    ports:
+      - "1433:1433"
