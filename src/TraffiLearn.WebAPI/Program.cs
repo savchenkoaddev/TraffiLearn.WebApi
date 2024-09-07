@@ -1,11 +1,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json.Linq;
 using Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Extensions;
 using Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Integrations;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System.Net;
 using System.Text;
 using TraffiLearn.Application;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
@@ -52,7 +50,10 @@ namespace TraffiLearn.WebAPI
 
             app.UseExceptionHandlingMiddleware();
 
-            app.UseHttpsRedirection();
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseHttpsRedirection();
+            }
 
             if (app.Environment.IsDevelopment())
             {

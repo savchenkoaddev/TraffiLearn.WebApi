@@ -7,7 +7,6 @@ services:
       dockerfile: TraffiLearn.WebAPI/Dockerfile
     ports:
       - "5000:5000"
-      - "5001:5001"
     depends_on: 
       - traffilearn-database
       - traffilearn-blob-storage
