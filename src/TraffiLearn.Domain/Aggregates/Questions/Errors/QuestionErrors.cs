@@ -113,5 +113,10 @@ namespace TraffiLearn.Domain.Aggregates.Questions.Errors
             Error.Validation(
                 code: "Question.CantLikeIfDislikedByUser",
                 description: "Unable to like the question, because the question has already been disliked by the user.");
+
+        public static readonly Error CantGenerateExplanationIfQuestionHasImage =
+            Error.Validation(
+                code: "Question.CantGenerateExplanationIfQuestionHasImage",
+                description: "Unable to generate an explanation for the question, because the question has an image.");
     }
 }

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using TraffiLearn.Application.Questions.Commands.AddCommentToQuestion;
 using TraffiLearn.Application.Questions.Commands.Delete;
+using TraffiLearn.Application.Questions.DTO;
+using TraffiLearn.Application.Questions.Queries.GetAIQuestionComments;
 using TraffiLearn.Application.Questions.Queries.GetAll;
 using TraffiLearn.Application.Questions.Queries.GetById;
 using TraffiLearn.Application.Questions.Queries.GetQuestionComments;
@@ -19,6 +21,7 @@ using TraffiLearn.Application.Users.Commands.UnmarkQuestion;
 using TraffiLearn.Application.Users.Queries.GetCurrentUserDislikedQuestions;
 using TraffiLearn.Application.Users.Queries.GetCurrentUserLikedQuestions;
 using TraffiLearn.Application.Users.Queries.GetMarkedQuestions;
+using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.CommandWrappers.CreateQuestion;
 using TraffiLearn.WebAPI.CommandWrappers.UpdateQuestion;
@@ -98,6 +101,15 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(
                 new GetQuestionCommentsQuery(questionId));
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+
+        [HttpGet("{questionId:guid}/ai-explanation")]
+        public async Task<IActionResult> GetAIQuestionExplanation(Guid questionId)
+        {
+            var queryResult = await _sender.Send(
+                new GetAIQuestionExplanationQuery(questionId));
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
