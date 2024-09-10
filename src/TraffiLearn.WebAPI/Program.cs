@@ -164,6 +164,13 @@ namespace TraffiLearn.WebAPI
                                 Role.Owner.ToString()
                             ]);
                     });
+
+                options.AddPolicy(
+                    Permission.AccessSpecificAdminData.ToString(),
+                    policy =>
+                    {
+                        policy.RequireRole(Role.Owner.ToString());
+                    });
             });
         }
 
