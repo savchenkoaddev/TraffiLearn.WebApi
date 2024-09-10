@@ -9,10 +9,17 @@ namespace TraffiLearn.Application.Questions.Mappers
     {
         public override QuestionResponse Map(Question source)
         {
+            string? explanation = null;
+
+            if (source.Explanation is not null)
+            {
+                explanation = source.Explanation.Value;
+            }
+
             return new QuestionResponse(
                 Id: source.Id.Value,
                 Content: source.Content.Value,
-                Explanation: source.Explanation.Value,
+                Explanation: explanation,
                 ImageUri: source.ImageUri?.Value,
                 LikesCount: source.LikesCount,
                 DislikesCount: source.DislikesCount,

@@ -8,8 +8,8 @@ namespace TraffiLearn.Application.Questions.Commands.Create
         public CreateQuestionCommandValidator()
         {
             RuleFor(x => x.Explanation)
-                .NotEmpty()
-                .MaximumLength(QuestionExplanation.MaxLength);
+                .MaximumLength(QuestionExplanation.MaxLength)
+                .When(x => x.Explanation is not null);
 
             RuleFor(x => x.Content)
                 .NotEmpty()

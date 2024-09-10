@@ -20,6 +20,7 @@ namespace TraffiLearn.Infrastructure.Persistence.Configurations
                     value => QuestionContent.Create(value).Value);
 
             builder.Property(q => q.Explanation)
+                .IsRequired(false)
                 .HasMaxLength(QuestionExplanation.MaxLength)
                 .HasConversion(
                     exp => exp.Value,

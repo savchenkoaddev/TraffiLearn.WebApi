@@ -41,8 +41,6 @@ namespace TraffiLearn.IntegrationTests.Questions.Commands.UpdateQuestion
                 command with { QuestionId = null },
                 command with { Content = null },
                 command with { Content = " " },
-                command with { Explanation = null },
-                command with { Explanation = " " },
                 command with { QuestionNumber = -1 },
                 command with { QuestionNumber = 0 },
                 command with { Answers = null },

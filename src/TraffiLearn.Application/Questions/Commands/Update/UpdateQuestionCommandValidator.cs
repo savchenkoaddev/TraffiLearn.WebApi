@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 
 namespace TraffiLearn.Application.Questions.Commands.Update
 {
@@ -11,11 +12,11 @@ namespace TraffiLearn.Application.Questions.Commands.Update
 
             RuleFor(x => x.Content)
                 .NotEmpty()
-                .MaximumLength(2000);
+                .MaximumLength(QuestionContent.MaxLength);
 
             RuleFor(x => x.Explanation)
-                .NotEmpty()
-                .MaximumLength(2000);
+                .MaximumLength(QuestionExplanation.MaxLength)
+                .When(x => x.Explanation is not null);
 
             RuleFor(x => x.QuestionNumber)
                 .GreaterThan(0)
@@ -30,7 +31,7 @@ namespace TraffiLearn.Application.Questions.Commands.Update
                 {
                     x.RuleFor(x => x.Text)
                         .NotEmpty()
-                        .MaximumLength(300);
+                        .MaximumLength(Answer.MaxTextLength);
 
                     x.RuleFor(x => x.IsCorrect)
                         .NotEmpty();
