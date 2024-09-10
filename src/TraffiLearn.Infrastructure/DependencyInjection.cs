@@ -1,8 +1,13 @@
 ﻿using Azure.Storage.Blobs;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.Net.Http.Headers;
+using System.Net.Http.Headers;
+using System.Net.Mime;
+using TraffiLearn.Application.Abstractions.AI;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Abstractions.Storage;
@@ -16,6 +21,8 @@ using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Infrastructure.Authentication.Options;
 using TraffiLearn.Infrastructure.External.Blobs;
 using TraffiLearn.Infrastructure.External.Blobs.Options;
+using TraffiLearn.Infrastructure.External.GroqAI;
+using TraffiLearn.Infrastructure.External.GroqAI.Options;
 using TraffiLearn.Infrastructure.Persistence;
 using TraffiLearn.Infrastructure.Persistence.Options;
 using TraffiLearn.Infrastructure.Persistence.Repositories;
@@ -36,6 +43,8 @@ namespace TraffiLearn.Infrastructure
 
             services.AddPersistence();
             services.AddRepositories();
+
+            services.AddHttpClients();
 
             return services;
         }
@@ -77,6 +86,7 @@ namespace TraffiLearn.Infrastructure
             services.ConfigureValidatableOnStartOptions<AzureBlobStorageSettings>(AzureBlobStorageSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<JwtSettings>(JwtSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<QuestionsSettings>(QuestionsSettings.SectionName);
+            services.ConfigureValidatableOnStartOptions<GroqAISettings>(GroqAISettings.SectionName);
 
             return services;
         }
@@ -111,6 +121,8 @@ namespace TraffiLearn.Infrastructure
 
             services.AddSingleton<IBlobService, AzureBlobService>();
 
+            services.AddScoped<IAIService, GroqAIService>();
+
             return services;
         }
 
@@ -121,6 +133,26 @@ namespace TraffiLearn.Infrastructure
             services.AddScoped<ITicketRepository, TicketRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
+
+            return services;
+        }
+
+        private static IServiceCollection AddHttpClients(this IServiceCollection services)
+        {
+            var groqAISettings = services.BuildServiceProvider().GetRequiredService<IOptions<GroqAISettings>>().Value;
+
+            services.AddHttpClient<IAIService, GroqAIService>(options =>
+            {
+                options.DefaultRequestHeaders.Add(
+                    HeaderNames.Accept,
+                    MediaTypeNames.Application.Json);
+
+                options.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+                    JwtBearerDefaults.AuthenticationScheme,
+                    groqAISettings.ApiKey);
+
+                options.BaseAddress = new Uri(groqAISettings.BaseUri);
+            });
 
             return services;
         }
