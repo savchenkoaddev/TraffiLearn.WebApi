@@ -39,7 +39,7 @@ namespace TraffiLearn.WebAPI.Middleware
         }
     }
 
-    public static class ExceptionHandlingMiddlewarExtensions
+    public static class ExceptionHandlingMiddlewareExtensions
     {
         public static IApplicationBuilder UseExceptionHandlingMiddleware(this IApplicationBuilder builder)
         {
