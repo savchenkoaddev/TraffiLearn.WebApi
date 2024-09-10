@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TraffiLearn.Application.Users.Commands.DowngradeAccount;
+using TraffiLearn.Application.Users.Queries.GetAllAdmins;
+using TraffiLearn.Application.Users.Queries.GetAllUsers;
 using TraffiLearn.Application.Users.Queries.GetLoggedInUserComments;
 using TraffiLearn.Application.Users.Queries.GetUserComments;
 using TraffiLearn.Application.Users.Queries.GetUserDislikedQuestions;
@@ -23,6 +25,23 @@ namespace TraffiLearn.WebAPI.Controllers
 
         #region Queries
 
+        [HasPermission(Permission.AccessSpecificUserData)]
+        [HttpGet]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var queryResult = await _sender.Send(new GetAllUsersQuery());
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+
+        [HasPermission(Permission.AccessSpecificAdminData)]
+        [HttpGet("admins")]
+        public async Task<IActionResult> GetAllAdmins()
+        {
+            var queryResult = await _sender.Send(new GetAllAdminsQuery());
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
 
         [HasPermission(Permission.AccessSpecificUserData)]
         [HttpGet("{userId:guid}/comments")]

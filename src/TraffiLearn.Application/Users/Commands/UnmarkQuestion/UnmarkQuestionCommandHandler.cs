@@ -39,7 +39,7 @@ namespace TraffiLearn.Application.Users.Commands.UnmarkQuestion
             UnmarkQuestionCommand request,
             CancellationToken cancellationToken)
         {
-            var callerId = new UserId(_userContextService.FetchAuthenticatedUserId());
+            var callerId = new UserId(_userContextService.GetAuthenticatedUserId());
 
             var caller = await _userRepository.GetByIdWithMarkedQuestionsAsync(
                 callerId,

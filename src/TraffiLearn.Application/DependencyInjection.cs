@@ -23,7 +23,9 @@ using TraffiLearn.Application.Topics.Commands.Create;
 using TraffiLearn.Application.Topics.Commands.Update;
 using TraffiLearn.Application.Topics.DTO;
 using TraffiLearn.Application.Topics.Mappers;
+using TraffiLearn.Application.Users.DTO;
 using TraffiLearn.Application.Users.Identity;
+using TraffiLearn.Application.Users.Mappers;
 using TraffiLearn.Domain.Aggregates.Comments;
 using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Tickets;
@@ -104,6 +106,7 @@ namespace TraffiLearn.Application
                 CommentToCommentResponseMapper>();
             services.AddScoped<Mapper<RegisterAdminCommand, Result<User>>, RegisterAdminCommandMapper>();
             services.AddScoped<Mapper<User, ApplicationUser>, UserToApplicationUserMapper>();
+            services.AddScoped<Mapper<User, UserResponse>, UserToUserResponseMapper>();
 
             return services;
         }

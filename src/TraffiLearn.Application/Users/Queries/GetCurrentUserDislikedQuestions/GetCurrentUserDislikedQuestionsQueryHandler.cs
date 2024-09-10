@@ -38,7 +38,7 @@ namespace TraffiLearn.Application.Users.Queries.GetCurrentUserDislikedQuestions
             GetCurrentUserDislikedQuestionsQuery request,
             CancellationToken cancellationToken)
         {
-            var userId = new UserId(_userContextService.FetchAuthenticatedUserId());
+            var userId = new UserId(_userContextService.GetAuthenticatedUserId());
 
             var userExists = await _userRepository.ExistsAsync(
                 userId,

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TraffiLearn.Domain.Aggregates.Users;
+using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 
 namespace TraffiLearn.Infrastructure.Persistence.Repositories
@@ -55,6 +56,20 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
             return await _dbContext.Users.FirstOrDefaultAsync(
                 user => user.Username == username || user.Email == email,
                 cancellationToken: cancellationToken) is not null;
+        }
+
+        public async Task<IEnumerable<User>> GetAllAsync(
+            CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Users.ToListAsync(cancellationToken);
+        }
+
+        public async Task<IEnumerable<User>> GetAllAdminsAsync(
+            CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Users
+                .Where(user => user.Role == Role.Admin)
+                .ToListAsync(cancellationToken);
         }
 
         public Task<User?> GetByEmailAsync(
