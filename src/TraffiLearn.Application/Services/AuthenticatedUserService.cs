@@ -24,7 +24,7 @@ namespace TraffiLearn.Application.Services
         public async Task<User> GetAuthenticatedUserAsync(
             CancellationToken cancellationToken = default)
         {
-            var callerId = _userContextService.FetchAuthenticatedUserId();
+            var callerId = _userContextService.GetAuthenticatedUserId();
 
             _logger.LogInformation("Succesfully fetched caller id. Caller ID: {CallerId}", callerId);
 
