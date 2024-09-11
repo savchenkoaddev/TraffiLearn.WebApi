@@ -2,6 +2,6 @@
 {
     public interface IUserContextService<TUserId>
     {
-        TUserId FetchAuthenticatedUserId();
+        TUserId GetAuthenticatedUserId();
     }
 }

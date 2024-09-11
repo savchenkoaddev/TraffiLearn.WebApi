@@ -29,7 +29,7 @@ namespace TraffiLearn.Domain.Aggregates.Questions
         private Question(
             QuestionId questionId,
             QuestionContent content,
-            QuestionExplanation explanation,
+            QuestionExplanation? explanation,
             QuestionNumber questionNumber,
             HashSet<Answer> answers,
             ImageUri? imageUri) : base(questionId)
@@ -55,20 +55,6 @@ namespace TraffiLearn.Domain.Aggregates.Questions
             }
         }
 
-        public QuestionExplanation Explanation
-        {
-            get
-            {
-                return _explanation;
-            }
-            private set
-            {
-                ArgumentNullException.ThrowIfNull(value, nameof(value));
-
-                _explanation = value;
-            }
-        }
-
         public QuestionNumber QuestionNumber
         {
             get
@@ -82,6 +68,8 @@ namespace TraffiLearn.Domain.Aggregates.Questions
                 _questionNumber = value;
             }
         }
+
+        public QuestionExplanation? Explanation { get; private set; }
 
         public ImageUri? ImageUri { get; private set; }
 
@@ -314,7 +302,7 @@ namespace TraffiLearn.Domain.Aggregates.Questions
 
         public Result Update(
             QuestionContent content,
-            QuestionExplanation explanation,
+            QuestionExplanation? explanation,
             QuestionNumber number,
             List<Answer> answers,
             ImageUri? imageUri)
@@ -340,7 +328,7 @@ namespace TraffiLearn.Domain.Aggregates.Questions
         public static Result<Question> Create(
             QuestionId questionId,
             QuestionContent content,
-            QuestionExplanation explanation,
+            QuestionExplanation? explanation,
             QuestionNumber questionNumber,
             List<Answer> answers,
             ImageUri? imageUri)

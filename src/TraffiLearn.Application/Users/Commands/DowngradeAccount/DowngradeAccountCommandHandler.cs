@@ -16,17 +16,20 @@ namespace TraffiLearn.Application.Users.Commands.DowngradeAccount
     internal sealed class DowngradeAccountCommandHandler
         : IRequestHandler<DowngradeAccountCommand, Result>
     {
+        private readonly IAuthenticatedUserService _authenticatedUserService;
         private readonly IUserRepository _userRepository;
         private readonly IIdentityService<ApplicationUser> _identityService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<DowngradeAccountCommandHandler> _logger;
 
         public DowngradeAccountCommandHandler(
+            IAuthenticatedUserService authenticatedUserService,
             IUserRepository userRepository,
             IIdentityService<ApplicationUser> identityService,
             IUnitOfWork unitOfWork,
             ILogger<DowngradeAccountCommandHandler> logger)
         {
+            _authenticatedUserService = authenticatedUserService;
             _userRepository = userRepository;
             _identityService = identityService;
             _unitOfWork = unitOfWork;
@@ -51,6 +54,16 @@ namespace TraffiLearn.Application.Users.Commands.DowngradeAccount
             if (CannotBeDowngraded(affectedUser))
             {
                 return UserErrors.AccountCannotBeDowngraded;
+            }
+
+            var caller = await _authenticatedUserService.GetAuthenticatedUserAsync(
+                cancellationToken);
+
+            if (IsNotAllowedToDowngradeTheUser(
+                caller: caller,
+                affectedUser: affectedUser))
+            {
+                return UserErrors.NotAllowedToDowngradeAccount;
             }
 
             string previousRole = affectedUser.Role.ToString();
@@ -99,6 +112,13 @@ namespace TraffiLearn.Application.Users.Commands.DowngradeAccount
                     affectedUser.Role);
 
             return Result.Success();
+        }
+
+        private static bool IsNotAllowedToDowngradeTheUser(
+            User caller,
+            User affectedUser)
+        {
+            return caller.Role <= affectedUser.Role;
         }
 
         private bool CannotBeDowngraded(User user)

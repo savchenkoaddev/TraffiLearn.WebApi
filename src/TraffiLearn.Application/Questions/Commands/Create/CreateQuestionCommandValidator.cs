@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using TraffiLearn.Application.Validators;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 
 namespace TraffiLearn.Application.Questions.Commands.Create
@@ -8,8 +9,8 @@ namespace TraffiLearn.Application.Questions.Commands.Create
         public CreateQuestionCommandValidator()
         {
             RuleFor(x => x.Explanation)
-                .NotEmpty()
-                .MaximumLength(QuestionExplanation.MaxLength);
+                .MaximumLength(QuestionExplanation.MaxLength)
+                .When(x => x.Explanation is not null);
 
             RuleFor(x => x.Content)
                 .NotEmpty()
@@ -41,6 +42,10 @@ namespace TraffiLearn.Application.Questions.Commands.Create
                         .NotEmpty();
                 })
                 .When(x => x.Answers is not null);
+
+            RuleFor(x => x.Image)
+               .SetValidator(new ImageValidator())
+               .When(x => x.Image is not null);
         }
     }
 }

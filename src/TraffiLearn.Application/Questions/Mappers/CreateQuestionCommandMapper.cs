@@ -30,11 +30,18 @@ namespace TraffiLearn.Application.Questions.Mappers
                 return Result.Failure<Question>(contentResult.Error);
             }
 
-            Result<QuestionExplanation> explanationResult = QuestionExplanation.Create(source.Explanation);
+            QuestionExplanation? explanation = null;
 
-            if (explanationResult.IsFailure)
+            if (source.Explanation is not null)
             {
-                return Result.Failure<Question>(explanationResult.Error);
+                Result<QuestionExplanation> explanationResult = QuestionExplanation.Create(source.Explanation);
+
+                if (explanationResult.IsFailure)
+                {
+                    return Result.Failure<Question>(explanationResult.Error);
+                }
+
+                explanation = explanationResult.Value;
             }
 
             Result<QuestionNumber> questionNumberResult = QuestionNumber.Create(source.QuestionNumber.Value);
@@ -47,7 +54,7 @@ namespace TraffiLearn.Application.Questions.Mappers
             return Question.Create(
                 questionId,
                 contentResult.Value,
-                explanationResult.Value,
+                explanation,
                 questionNumberResult.Value,
                 answers: answers,
                 imageUri: null);

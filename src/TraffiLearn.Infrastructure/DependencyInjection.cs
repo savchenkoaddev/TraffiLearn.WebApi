@@ -1,5 +1,6 @@
-﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -115,6 +116,13 @@ namespace TraffiLearn.Infrastructure
                 var containerClient = blobServiceClient.GetBlobContainerClient(blobStorageSettings.ContainerName);
 
                 containerClient.CreateIfNotExists();
+
+                var properties = containerClient.GetProperties();
+
+                if (properties.Value.PublicAccess != PublicAccessType.Blob)
+                {
+                    containerClient.SetAccessPolicy(PublicAccessType.Blob);
+                }
 
                 return blobServiceClient;
             });

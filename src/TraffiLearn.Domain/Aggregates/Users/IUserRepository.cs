@@ -9,6 +9,12 @@ namespace TraffiLearn.Domain.Aggregates.Users
             UserId userId,
             CancellationToken cancellationToken = default);
 
+        Task<IEnumerable<User>> GetAllAsync(
+            CancellationToken cancellationToken = default);
+
+        Task<IEnumerable<User>> GetAllAdminsAsync(
+            CancellationToken cancellationToken = default);
+
         Task<User?> GetByIdWithLikedAndDislikedCommentsAsync(
             UserId userId,
             CancellationToken cancellationToken = default);

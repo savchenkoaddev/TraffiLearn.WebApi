@@ -13,7 +13,7 @@ namespace TraffiLearn.Infrastructure.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public Guid FetchAuthenticatedUserId()
+        public Guid GetAuthenticatedUserId()
         {
             var userClaims = _httpContextAccessor.HttpContext?.User;
 

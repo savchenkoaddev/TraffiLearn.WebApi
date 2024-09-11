@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Options;
+using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Users.Identity;
 using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
-using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.WebAPI.Options;
 
 namespace TraffiLearn.WebAPI.Extensions
@@ -26,7 +26,7 @@ namespace TraffiLearn.WebAPI.Extensions
                 role: Role.Owner).Value;
 
             if (await userRepository.ExistsAsync(
-                    superUser.Username, 
+                    superUser.Username,
                     superUser.Email))
             {
                 return;

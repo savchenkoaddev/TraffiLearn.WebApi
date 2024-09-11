@@ -661,7 +661,7 @@ namespace TraffiLearn.IntegrationTests.Questions.Commands.UpdateQuestion
                 topicIds: [topicId]);
 
             var response = await ApiQuestionClient.SendUpdateQuestionRequestAsync(
-                command, 
+                command,
                 sentFromRole: eligibleRole);
 
             response.AssertNotFoundStatusCode();
@@ -701,7 +701,8 @@ namespace TraffiLearn.IntegrationTests.Questions.Commands.UpdateQuestion
             var command = _commandFactory.CreateValidCommand(
                 questionId: questionId,
                 topicIds: [Guid.NewGuid(), Guid.NewGuid()])
-                with { Content = updatedContent };
+                with
+            { Content = updatedContent };
 
             await ApiQuestionClient.SendUpdateQuestionRequestAsync(
                 command,
@@ -709,7 +710,7 @@ namespace TraffiLearn.IntegrationTests.Questions.Commands.UpdateQuestion
 
             var question = await ApiQuestionClient.GetQuestionByIdAsAuthorizedAsync(
                 questionId);
-            
+
             question.Content.Should().NotBe(updatedContent);
         }
 
@@ -776,8 +777,9 @@ namespace TraffiLearn.IntegrationTests.Questions.Commands.UpdateQuestion
 
             var command = _commandFactory.CreateValidCommand(
                 questionId: questionId,
-                topicIds: [topicId]) 
-                with { Content = newContent };
+                topicIds: [topicId])
+                with
+            { Content = newContent };
 
             await ApiQuestionClient.SendUpdateQuestionRequestAsync(
                 request: command,

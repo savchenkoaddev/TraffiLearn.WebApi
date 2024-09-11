@@ -65,7 +65,7 @@ namespace TraffiLearn.Application.Questions.Commands.Create
                     cancellationToken);
 
                 var assignResult = AssignImageUriToQuestion(
-                    question, 
+                    question,
                     uploadResponse);
 
                 if (assignResult.IsFailure)
@@ -130,7 +130,7 @@ namespace TraffiLearn.Application.Questions.Commands.Create
         }
 
         private static Result AssignImageUriToQuestion(
-            Question question, 
+            Question question,
             UploadBlobResponse uploadResponse)
         {
             Result<ImageUri> imageUriResult = ImageUri.Create(uploadResponse.BlobUri);

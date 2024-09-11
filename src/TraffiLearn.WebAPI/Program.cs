@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json.Linq;
 using Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Extensions;
 using Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Integrations;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System.Net;
 using System.Text;
 using TraffiLearn.Application;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
@@ -52,7 +51,10 @@ namespace TraffiLearn.WebAPI
 
             app.UseExceptionHandlingMiddleware();
 
-            app.UseHttpsRedirection();
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseHttpsRedirection();
+            }
 
             if (app.Environment.IsDevelopment())
             {
@@ -76,17 +78,20 @@ namespace TraffiLearn.WebAPI
 
         private static void ConfigureSwaggerAuthorization(SwaggerGenOptions options)
         {
-            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-            {
-                Name = "Authorization",
-                Type = SecuritySchemeType.Http,
-                Scheme = "Bearer",
-                BearerFormat = "JWT",
-                In = ParameterLocation.Header,
-                Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer { token }\""
-            });
+            options.AddSecurityDefinition(
+                JwtBearerDefaults.AuthenticationScheme,
+                new OpenApiSecurityScheme
+                {
+                    Name = HeaderNames.Authorization,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = JwtBearerDefaults.AuthenticationScheme,
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer { token }\""
+                });
 
-            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            options.AddSecurityRequirement(
+                new OpenApiSecurityRequirement
                 {
                     {
                         new OpenApiSecurityScheme
@@ -94,7 +99,7 @@ namespace TraffiLearn.WebAPI
                             Reference = new OpenApiReference
                             {
                                 Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
+                                Id = JwtBearerDefaults.AuthenticationScheme
                             }
                         },
                         new string[] { }
@@ -110,7 +115,11 @@ namespace TraffiLearn.WebAPI
                     Permission.AccessSpecificUserData.ToString(),
                     policy =>
                     {
-                        policy.RequireRole(Role.Admin.ToString());
+                        policy.RequireRole(
+                            roles: [
+                                Role.Admin.ToString(),
+                                Role.Owner.ToString()
+                            ]);
                     });
 
                 options.AddPolicy(
@@ -154,6 +163,13 @@ namespace TraffiLearn.WebAPI
                                 Role.Admin.ToString(),
                                 Role.Owner.ToString()
                             ]);
+                    });
+
+                options.AddPolicy(
+                    Permission.AccessSpecificAdminData.ToString(),
+                    policy =>
+                    {
+                        policy.RequireRole(Role.Owner.ToString());
                     });
             });
         }

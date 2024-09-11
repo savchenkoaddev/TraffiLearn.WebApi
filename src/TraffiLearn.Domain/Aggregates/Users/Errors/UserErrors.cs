@@ -15,17 +15,17 @@ namespace TraffiLearn.Domain.Aggregates.Users.Errors
                 description: "The same user has already been registered. Use different email or username.");
 
         public static readonly Error NotAllowedToPerformAction =
-           Error.Unauthorized(
+            Error.Unauthorized(
                code: "User.NotAllowedToPerformAction",
                description: "You are not allowed to perform this action.");
 
         public static readonly Error RemovedAccountIsNotAdminAccount =
-           Error.Validation(
+            Error.Validation(
                code: "User.RemovedAccountIsNotAdminAccount",
                description: "Unable to remove the admin account, because the account is not an admin's one.");
 
         public static readonly Error AccountCannotBeDowngraded =
-           Error.Validation(
+            Error.Validation(
                code: "User.AccountCannotBeDowngraded",
                description: $"The account cannot be downgraded further as it is already at the lowest possible level.");
 
@@ -50,7 +50,7 @@ namespace TraffiLearn.Domain.Aggregates.Users.Errors
                 description: "The question has not been found.");
 
         public static readonly Error CommentNotFound =
-           Error.Validation(
+            Error.Validation(
                code: "User.CommentNotFound",
                description: "The comment has not been found.");
 
@@ -65,7 +65,7 @@ namespace TraffiLearn.Domain.Aggregates.Users.Errors
                 description: "The same question has already been unmarked.");
 
         public static readonly Error QuestionAlreadyLikedByUser =
-           Error.Validation(
+            Error.Validation(
                code: "User.QuestionAlreadyLikedByUser",
                description: "The question is already liked by the user.");
 
@@ -95,7 +95,7 @@ namespace TraffiLearn.Domain.Aggregates.Users.Errors
                 description: "Unable to like the question, because the question has already been disliked.");
 
         public static readonly Error CommentAlreadyLikedByUser =
-           Error.Validation(
+            Error.Validation(
                code: "User.CommentAlreadyLikedByUser",
                description: "The comment is already liked by the user.");
 
@@ -123,5 +123,10 @@ namespace TraffiLearn.Domain.Aggregates.Users.Errors
             Error.Validation(
                 code: "User.CantLikeCommentIfDisliked",
                 description: "Unable to like the comment, because the comment has already been disliked.");
+
+        public static readonly Error NotAllowedToDowngradeAccount =
+            Error.Validation(
+                code: "User.NotAllowedToDowngradeAccount",
+                description: "You are not allowed to downgrade the account.");
     }
 }

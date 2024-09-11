@@ -12,5 +12,9 @@ namespace TraffiLearn.Infrastructure.External.Blobs.Options
 
         [Required]
         public string? ConnectionString { get; set; }
+
+        [Required]
+        [Url]
+        public string? ImagesContainerUri { get; set; }
     }
 }

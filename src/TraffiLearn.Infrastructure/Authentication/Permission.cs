@@ -3,6 +3,7 @@
     public enum Permission
     {
         AccessSpecificUserData,
+        AccessSpecificAdminData,
         AccessData,
         DowngradeAccounts,
         RegisterAdmins,
