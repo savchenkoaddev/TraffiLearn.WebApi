@@ -13,14 +13,14 @@ namespace TraffiLearn.UnitTests.Services
     public sealed class GroqAIServiceTests
     {
         private readonly Mock<HttpMessageHandler> _handlerMock;
-        private readonly GroqAISettings _settings;
-        private readonly GroqAIService _service;
+        private readonly GroqApiSettings _settings;
+        private readonly GroqApiService _service;
 
         public GroqAIServiceTests()
         {
             _handlerMock = new Mock<HttpMessageHandler>();
 
-            _settings = new GroqAISettings
+            _settings = new GroqApiSettings
             {
                 Model = "model",
                 ApiKey = "key",
@@ -32,7 +32,7 @@ namespace TraffiLearn.UnitTests.Services
 
             httpClient.BaseAddress = new(_settings.BaseUri);
 
-            _service = new GroqAIService(
+            _service = new GroqApiService(
                 httpClient,
                 Options.Create(_settings));
         }
@@ -65,7 +65,7 @@ namespace TraffiLearn.UnitTests.Services
             _handlerMock
                 .Protected()
                 .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
+                    nameof(HttpClient.SendAsync),
                     ItExpr.Is<HttpRequestMessage>(req =>
                         req.Method == HttpMethod.Post &&
                         req.RequestUri.ToString() == requestUri),
@@ -90,7 +90,7 @@ namespace TraffiLearn.UnitTests.Services
             _handlerMock
                 .Protected()
                 .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
+                    nameof(HttpClient.SendAsync),
                     ItExpr.IsAny<HttpRequestMessage>(),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(response);
@@ -155,7 +155,7 @@ namespace TraffiLearn.UnitTests.Services
             _handlerMock
                 .Protected()
                 .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
+                    nameof(HttpClient.SendAsync),
                     ItExpr.IsAny<HttpRequestMessage>(),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(response);
@@ -193,7 +193,7 @@ namespace TraffiLearn.UnitTests.Services
             _handlerMock
                 .Protected()
                 .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
+                    nameof(HttpClient.SendAsync),
                     ItExpr.IsAny<HttpRequestMessage>(),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(response);
@@ -206,7 +206,7 @@ namespace TraffiLearn.UnitTests.Services
         }
 
         [Fact]
-        public async Task SendTextQueryAsync_IfPositiveScenario_ShouldReturnNonNullOrWhitespaceResponse()
+        public async Task SendTextQueryAsync_IfPositiveScenario_ShouldReturnNonNullOrNonWhitespaceResponse()
         {
             // Arrange
             var requestText = new AITextRequest("Hello.");
@@ -231,7 +231,7 @@ namespace TraffiLearn.UnitTests.Services
             _handlerMock
                 .Protected()
                 .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
+                    nameof(HttpClient.SendAsync),
                     ItExpr.IsAny<HttpRequestMessage>(),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(response);

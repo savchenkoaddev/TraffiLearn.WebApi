@@ -27,10 +27,11 @@ namespace TraffiLearn.Application.Questions.Queries.GetAIQuestionComments
             GetAIQuestionExplanationQuery request,
             CancellationToken cancellationToken)
         {
-            QuestionId questionId = new(request.QuestionId!.Value);
+            QuestionId questionId = new(request.QuestionId.Value);
 
-            var question = await _questionRepository
-                .GetByIdAsync(questionId, cancellationToken);
+            var question = await _questionRepository.GetByIdAsync(
+                questionId,
+                cancellationToken);
 
             if (question is null)
             {

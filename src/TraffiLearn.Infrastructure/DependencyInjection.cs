@@ -86,7 +86,7 @@ namespace TraffiLearn.Infrastructure
             services.ConfigureValidatableOnStartOptions<AzureBlobStorageSettings>(AzureBlobStorageSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<JwtSettings>(JwtSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<QuestionsSettings>(QuestionsSettings.SectionName);
-            services.ConfigureValidatableOnStartOptions<GroqAISettings>(GroqAISettings.SectionName);
+            services.ConfigureValidatableOnStartOptions<GroqApiSettings>(GroqApiSettings.SectionName);
 
             return services;
         }
@@ -121,7 +121,7 @@ namespace TraffiLearn.Infrastructure
 
             services.AddSingleton<IBlobService, AzureBlobService>();
 
-            services.AddScoped<IAIService, GroqAIService>();
+            services.AddScoped<IAIService, GroqApiService>();
 
             return services;
         }
@@ -139,9 +139,16 @@ namespace TraffiLearn.Infrastructure
 
         private static IServiceCollection AddHttpClients(this IServiceCollection services)
         {
-            var groqAISettings = services.BuildServiceProvider().GetRequiredService<IOptions<GroqAISettings>>().Value;
+            var groqApiSettings = services.BuildServiceProvider().GetRequiredService<IOptions<GroqApiSettings>>().Value;
 
-            services.AddHttpClient<IAIService, GroqAIService>(options =>
+            services.AddHttpClient<IAIService, GroqApiService>(ConfigureClientWithOptions(groqApiSettings));
+
+            return services;
+        }
+
+        private static Action<HttpClient> ConfigureClientWithOptions(GroqApiSettings groqAISettings)
+        {
+            return options =>
             {
                 options.DefaultRequestHeaders.Add(
                     HeaderNames.Accept,
@@ -152,9 +159,7 @@ namespace TraffiLearn.Infrastructure
                     groqAISettings.ApiKey);
 
                 options.BaseAddress = new Uri(groqAISettings.BaseUri);
-            });
-
-            return services;
+            };
         }
     }
 }

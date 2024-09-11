@@ -8,16 +8,15 @@ using TraffiLearn.Infrastructure.External.GroqAI.Options;
 
 namespace TraffiLearn.Infrastructure.External.GroqAI
 {
-    internal sealed class GroqAIService : IAIService
+    internal sealed class GroqApiService : IAIService
     {
         private const string ApiName = "GroqApi";
         private readonly HttpClient _httpClient;
-        private readonly GroqAISettings _settings;
+        private readonly GroqApiSettings _settings;
 
-
-        public GroqAIService(
+        public GroqApiService(
             HttpClient httpClient,
-            IOptions<GroqAISettings> settings)
+            IOptions<GroqApiSettings> settings)
         {
             _httpClient = httpClient;
             _settings = settings.Value;
@@ -37,7 +36,7 @@ namespace TraffiLearn.Infrastructure.External.GroqAI
                 throw new ArgumentException("Request value cannot be null or whitespace.", nameof(request));
             }
 
-            GroqAIRequest groqAIRequest = GenerateTextRequest(request);
+            GroqApiRequest groqAIRequest = GenerateTextRequest(request);
 
             var httpResponse = await _httpClient.PostAsJsonAsync(
                 _settings.CreateChatCompletionUri,
@@ -46,7 +45,7 @@ namespace TraffiLearn.Infrastructure.External.GroqAI
 
             httpResponse.EnsureSuccessStatusCode();
 
-            var apiResponse = await httpResponse.Content.ReadFromJsonAsync<GroqAIResponse>(cancellationToken);
+            var apiResponse = await httpResponse.Content.ReadFromJsonAsync<GroqApiResponse>(cancellationToken);
 
             if (ApiResponseStructureHasNoNullValues(apiResponse))
             {
@@ -56,19 +55,19 @@ namespace TraffiLearn.Infrastructure.External.GroqAI
             return ParseTextResponse(apiResponse!);
         }
 
-        private static bool ApiResponseStructureHasNoNullValues(GroqAIResponse? apiResponse)
+        private static bool ApiResponseStructureHasNoNullValues(GroqApiResponse? apiResponse)
         {
             return apiResponse is null ||
                    apiResponse.Choices is null ||
                    apiResponse.Choices.Exists(x => x.Message is null);
         }
 
-        private static AITextResponse ParseTextResponse(GroqAIResponse apiResponse)
+        private static AITextResponse ParseTextResponse(GroqApiResponse apiResponse)
         {
             return new AITextResponse(apiResponse.Choices[0].Message.Content);
         }
 
-        private GroqAIRequest GenerateTextRequest(AITextRequest request)
+        private GroqApiRequest GenerateTextRequest(AITextRequest request)
         {
             return new(
                 Messages: [

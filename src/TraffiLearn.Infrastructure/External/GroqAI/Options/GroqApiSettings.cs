@@ -2,11 +2,12 @@
 
 namespace TraffiLearn.Infrastructure.External.GroqAI.Options
 {
-    public sealed class GroqAISettings
+    public sealed class GroqApiSettings
     {
-        public const string SectionName = nameof(GroqAISettings);
+        public const string SectionName = nameof(GroqApiSettings);
 
         [Required]
+        [Url]
         public string? BaseUri { get; set; }
 
         [Required]
