@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using TraffiLearn.Application.Validators;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 
 namespace TraffiLearn.Application.Questions.Commands.Update
@@ -44,6 +45,10 @@ namespace TraffiLearn.Application.Questions.Commands.Update
             RuleForEach(x => x.TopicIds)
                 .NotEmpty()
                 .When(x => x.TopicIds is not null);
+
+            RuleFor(x => x.Image)
+               .SetValidator(new ImageValidator())
+               .When(x => x.Image is not null);
         }
     }
 }
