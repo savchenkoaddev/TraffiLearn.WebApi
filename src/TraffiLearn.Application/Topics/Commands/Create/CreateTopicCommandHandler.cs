@@ -5,7 +5,7 @@ using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Topics.Commands.Create
 {
-    internal sealed class CreateTopicCommandHandler 
+    internal sealed class CreateTopicCommandHandler
         : IRequestHandler<CreateTopicCommand, Result<Guid>>
     {
         private readonly ITopicRepository _topicRepository;

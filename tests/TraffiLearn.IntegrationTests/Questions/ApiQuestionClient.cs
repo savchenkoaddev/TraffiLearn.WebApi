@@ -3,7 +3,6 @@ using System.Net.Http.Json;
 using TraffiLearn.Application.Questions.Commands.Create;
 using TraffiLearn.Application.Questions.Commands.Update;
 using TraffiLearn.Application.Questions.DTO;
-using TraffiLearn.Application.Questions.Queries.GetRandomQuestions;
 using TraffiLearn.Application.Tickets.DTO;
 using TraffiLearn.Application.Topics.DTO;
 using TraffiLearn.Domain.Aggregates.Users.Enums;

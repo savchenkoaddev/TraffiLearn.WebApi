@@ -2,12 +2,10 @@
 using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
-using TraffiLearn.Application.Exceptions;
 using TraffiLearn.Application.Users.DTO;
 using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.Domain.Aggregates.Users.Errors;
-using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Users.Queries.GetAllAdmins
@@ -15,40 +13,29 @@ namespace TraffiLearn.Application.Users.Queries.GetAllAdmins
     internal sealed class GetAllAdminsQueryHandler
         : IRequestHandler<GetAllAdminsQuery, Result<IEnumerable<UserResponse>>>
     {
-        private readonly IUserContextService<Guid> _userContextService;
+        private readonly IAuthenticatedUserService _authenticatedUserService;
         private readonly IUserRepository _userRepository;
         private readonly Mapper<User, UserResponse> _userMapper;
         private readonly ILogger<GetAllAdminsQueryHandler> _logger;
 
         public GetAllAdminsQueryHandler(
-            IUserContextService<Guid> userContextService,
+            IAuthenticatedUserService authenticatedUserService,
             IUserRepository userRepository,
             Mapper<User, UserResponse> userMapper,
             ILogger<GetAllAdminsQueryHandler> logger)
         {
-            _userContextService = userContextService;
+            _authenticatedUserService = authenticatedUserService;
             _userRepository = userRepository;
             _userMapper = userMapper;
             _logger = logger;
         }
 
         public async Task<Result<IEnumerable<UserResponse>>> Handle(
-            GetAllAdminsQuery request, 
+            GetAllAdminsQuery request,
             CancellationToken cancellationToken)
         {
-            var callerId = _userContextService.GetAuthenticatedUserId();
-
-            var caller = await _userRepository.GetByIdAsync(
-                userId: new UserId(callerId),
+            var caller = await _authenticatedUserService.GetAuthenticatedUserAsync(
                 cancellationToken);
-
-            if (caller is null)
-            {
-                throw new AuthorizationFailureException();
-            }
-
-            _logger.LogInformation(
-                "Succesfully fetched caller with the id: {callerId}", callerId);
 
             if (CallerIsNotEligibleToGetAllAdmins(caller))
             {

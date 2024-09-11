@@ -4,6 +4,6 @@ using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Users.Queries.GetAllUsers
 {
-    public sealed record GetAllUsersQuery 
+    public sealed record GetAllUsersQuery
         : IRequest<Result<IEnumerable<UserResponse>>>;
 }
