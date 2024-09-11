@@ -1,4 +1,6 @@
-﻿namespace TraffiLearn.Application.Questions.DTO
+﻿using TraffiLearn.Application.Questions.DTO;
+
+namespace TraffiLearn.WebAPI.CommandWrappers.UpdateQuestion
 {
     public sealed record UpdateQuestionRequest(
         Guid? QuestionId,

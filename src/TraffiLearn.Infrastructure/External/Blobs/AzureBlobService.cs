@@ -26,7 +26,7 @@ namespace TraffiLearn.Infrastructure.External.Blobs
         }
 
         public async Task DeleteAsync(
-            string blobUri, 
+            string blobUri,
             CancellationToken cancellationToken = default)
         {
             var blobName = blobUri.Split('/', '\\').Last();
@@ -42,7 +42,7 @@ namespace TraffiLearn.Infrastructure.External.Blobs
         }
 
         public async Task<DownloadBlobResponse> DownloadAsync(
-            string blobName, 
+            string blobName,
             CancellationToken cancellationToken = default)
         {
             BlobClient blobClient = _containerClient.GetBlobClient(blobName);
@@ -62,8 +62,8 @@ namespace TraffiLearn.Infrastructure.External.Blobs
         }
 
         public async Task<UploadBlobResponse> UploadAsync(
-            Stream stream, 
-            string contentType, 
+            Stream stream,
+            string contentType,
             CancellationToken cancellationToken = default)
         {
             var blobName = Guid.NewGuid()
@@ -80,7 +80,7 @@ namespace TraffiLearn.Infrastructure.External.Blobs
                 cancellationToken: cancellationToken);
 
             return new UploadBlobResponse(
-                _containerClient.Uri,
+                new Uri(_storageSettings.ImagesContainerUri),
                 blobName);
         }
     }

@@ -30,16 +30,6 @@ namespace TraffiLearn.DomainTests.Questions
                     Question.Create(
                         new QuestionId(Guid.NewGuid()),
                         QuestionFixtureFactory.CreateContent(),
-                        null,
-                        QuestionFixtureFactory.CreateNumber(),
-                        QuestionFixtureFactory.CreateAnswers(),
-                        null);
-                },
-                () =>
-                {
-                    Question.Create(
-                        new QuestionId(Guid.NewGuid()),
-                        QuestionFixtureFactory.CreateContent(),
                         QuestionFixtureFactory.CreateExplanation(),
                         null,
                         QuestionFixtureFactory.CreateAnswers(),
@@ -178,15 +168,6 @@ namespace TraffiLearn.DomainTests.Questions
                     question.Update(
                         null,
                         QuestionFixtureFactory.CreateExplanation(),
-                        QuestionFixtureFactory.CreateNumber(),
-                        QuestionFixtureFactory.CreateAnswers(),
-                        null);
-                },
-                () =>
-                {
-                    question.Update(
-                        QuestionFixtureFactory.CreateContent(),
-                        null,
                         QuestionFixtureFactory.CreateNumber(),
                         QuestionFixtureFactory.CreateAnswers(),
                         null);

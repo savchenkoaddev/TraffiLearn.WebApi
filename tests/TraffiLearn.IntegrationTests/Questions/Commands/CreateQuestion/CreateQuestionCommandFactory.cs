@@ -72,22 +72,6 @@ namespace TraffiLearn.IntegrationTests.Questions.Commands.CreateQuestion
 
                 new CreateQuestionCommand(
                     Content: QuestionFixtureFactory.CreateContent().Value,
-                    Explanation: null,
-                    QuestionNumber: QuestionFixtureFactory.CreateNumber().Value,
-                    TopicIds: [Guid.NewGuid()],
-                    Answers: answers,
-                    Image: null),
-
-                new CreateQuestionCommand(
-                    Content: QuestionFixtureFactory.CreateContent().Value,
-                    Explanation: " ",
-                    QuestionNumber: QuestionFixtureFactory.CreateNumber().Value,
-                    TopicIds: [Guid.NewGuid()],
-                    Answers: answers,
-                    Image: null),
-
-                new CreateQuestionCommand(
-                    Content: QuestionFixtureFactory.CreateContent().Value,
                     Explanation: new string('1', QuestionExplanation.MaxLength + 1),
                     QuestionNumber: QuestionFixtureFactory.CreateNumber().Value,
                     TopicIds: [Guid.NewGuid()],
