@@ -35,6 +35,7 @@ jobs:
           echo "JwtSettings__SecretKey=${{ secrets.JWT_SECRET_KEY }}" >> $GITHUB_ENV
           echo "JwtSettings__Issuer=${{ secrets.JWT_ISSUER }}" >> $GITHUB_ENV
           echo "JwtSettings__Audience=${{ secrets.JWT_AUDIENCE }}" >> $GITHUB_ENV
+          echo "GroqApiSettings__ApiKey=${{ secrets.GROQ_API_KEY }}" >> $GITHUB_ENV
 
       - name: Clean Solution
         run: dotnet clean ./src/TraffiLearn.sln
