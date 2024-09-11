@@ -19,6 +19,8 @@ services:
       - MSSQL_SA_PASSWORD=Password1*
     ports:
       - "1433:1433"
+    volumes:
+      - traffilearn_db_data:/var/opt/mssql
 
   traffilearn-blob-storage:
     image: mcr.microsoft.com/azure-storage/azurite:latest
@@ -26,3 +28,9 @@ services:
     ports:
       - "10000:10000"
     command: "azurite-blob --blobHost 0.0.0.0 -l /data"
+    volumes:
+      - traffilearn_blob_data:/data
+
+volumes:
+  traffilearn_db_data:
+  traffilearn_blob_data:
