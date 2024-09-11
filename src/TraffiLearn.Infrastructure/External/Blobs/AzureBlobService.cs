@@ -80,7 +80,7 @@ namespace TraffiLearn.Infrastructure.External.Blobs
                 cancellationToken: cancellationToken);
 
             return new UploadBlobResponse(
-                _containerClient.Uri,
+                new Uri(_storageSettings.ImagesContainerUri),
                 blobName);
         }
     }
