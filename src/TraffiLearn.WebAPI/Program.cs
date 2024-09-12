@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Extensions;
 using Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Integrations;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Reflection;
 using System.Text;
 using TraffiLearn.Application;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
@@ -33,6 +34,11 @@ namespace TraffiLearn.WebAPI
             builder.Services.AddSwaggerGen(options =>
             {
                 ConfigureSwaggerAuthorization(options);
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
+                options.IncludeXmlComments(xmlPath);
             });
 
             builder.Services.AddApplication(builder.Configuration);
