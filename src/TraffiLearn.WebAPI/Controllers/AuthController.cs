@@ -31,9 +31,10 @@ namespace TraffiLearn.WebAPI.Controllers
         /// Authenticates a user using their email and password.
         /// </summary>
         /// <remarks>
-        /// **The request must include a valid email and a password that meets the required criteria:**<br /><br />
-        /// Email: Must be in a valid email format (e.g., example@example.com).<br />
-        /// Password: Must be between 8 and 30 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.<br /><br />
+        /// **The request must include a valid email and a password that meets the required criteria.**<br /><br /><br />
+        /// ***Body parameters:***<br /><br />
+        /// `Email` : Must be in a valid email format (e.g., example@example.com).<br /><br />
+        /// `Password` : Must be between 8 and 30 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.<br /><br /><br />
         /// The request body must be in **JSON** format.<br /><br />
         /// **Example request:**<br />
         /// ```json
@@ -50,11 +51,11 @@ namespace TraffiLearn.WebAPI.Controllers
         /// }
         /// ```
         /// </remarks>
-        /// <param name="command">The login command containing email and password.</param>
+        /// <param name="command">**The login command containing email and password.**</param>
         /// <response code="200">Successfully authenticated. Returns an access token.</response>
-        /// <response code="400">Bad request. Either the email or password is in an incorrect format, or the provided credentials are invalid.</response>
-        /// <response code="404">Not found. No user exists with the provided credentials.</response>
-        /// <response code="500">Internal Server Error. An unexpected error occurred during the login process.</response>
+        /// <response code="400">***Bad request.*** Either the email or password is in an incorrect format, or the provided credentials are invalid.</response>
+        /// <response code="404">***Not found.*** No user exists with the provided credentials.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the login process.</response>
         [HttpPost("login")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
@@ -74,12 +75,12 @@ namespace TraffiLearn.WebAPI.Controllers
         /// Registers a new user account.
         /// </summary>
         /// <remarks>
-        /// **The request must include a valid username, email, and password that meets the required criteria:**<br /><br />
-        /// Username: Must be a valid string. Must be unique.<br />
-        /// Email: Must be in a valid email format (e.g., example@example.com). Must be unique.<br />
-        /// Password: Must be between 8 and 30 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.<br /><br />
+        /// **The request must include a valid username, email, and password that meets the required criteria.**<br /><br /><br />
+        /// ***Body parameters:***<br /><br />
+        /// `Username` : Must be a valid string. Must be unique.<br /><br />
+        /// `Email` : Must be in a valid email format (e.g., example@example.com). Must be unique.<br /><br />
+        /// `Password` : Must be between 8 and 30 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.<br /><br /><br />
         /// The request body must be in **JSON** format.<br /><br />
-        /// **Only eligible users can create admins.**<br /><br />
         /// **Example request:**<br />
         /// ```json
         /// {
@@ -89,10 +90,10 @@ namespace TraffiLearn.WebAPI.Controllers
         /// }
         /// ```
         /// </remarks>
-        /// <param name="command">The register user command containing username, email, and password.</param>
+        /// <param name="command">**The register user command containing username, email, and password.**</param>
         /// <response code="201">Successfully registered. The user account has been created.</response>
-        /// <response code="400">Bad request. The provided data is invalid or missing, or a user with the same username or email already exists.</response>
-        /// <response code="500">Internal Server Error. An unexpected error occurred during the registration process.</response>
+        /// <response code="400">***Bad request.*** The provided data is invalid or missing, or a user with the same username or email already exists.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the registration process.</response>
         [HttpPost("register")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
@@ -110,10 +111,11 @@ namespace TraffiLearn.WebAPI.Controllers
         /// Registers a new admin account.
         /// </summary>
         /// <remarks>
-        /// **The request must include a valid username, email, and password that meets the required criteria:**<br /><br />
-        /// Username: Must be a valid string. Must be unique.<br />
-        /// Email: Must be in a valid email format (e.g., example@example.com). Must be unique.<br />
-        /// Password: Must be between 8 and 30 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.<br /><br />
+        /// **The request must include a valid username, email, and password that meets the required criteria.**<br /><br /><br />
+        /// ***Body parameters:***<br /><br />
+        /// `Username` : Must be a valid string. Must be unique.<br /><br />
+        /// `Email` : Must be in a valid email format (e.g., example@example.com). Must be unique.<br /><br />
+        /// `Password` : Must be between 8 and 30 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.<br /><br /><br />
         /// The request body must be in **JSON** format.<br /><br />
         /// **Authentication Required:**<br />
         /// The user must be authenticated using a JWT token. Only users with the `Owner` role can perform this action.<br /><br />
@@ -126,12 +128,12 @@ namespace TraffiLearn.WebAPI.Controllers
         /// }
         /// ```
         /// </remarks>
-        /// <param name="command">The register admin command containing username, email, and password.</param>
+        /// <param name="command">**The register admin command containing username, email, and password.**</param>
         /// <response code="201">Successfully registered. The admin account has been created.</response>
-        /// <response code="400">Bad request. The provided data is invalid or missing, or a user with the same username or email already exists.</response>
-        /// <response code="401">Unauthorized. The user is not authenticated.</response>
-        /// <response code="403">Forbidden. The user is not authorized to perform this action.</response>
-        /// <response code="500">Internal Server Error. An unexpected error occurred during the registration process.</response>
+        /// <response code="400">***Bad request***. The provided data is invalid or missing, or a user with the same username or email already exists.</response>
+        /// <response code="401">***Unauthorized***. The user is not authenticated.</response>
+        /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
+        /// <response code="500">***Internal Server Error***. An unexpected error occurred during the registration process.</response>
         [HasPermission(Permission.RegisterAdmins)]
         [HttpPost("register-admin")]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -150,17 +152,18 @@ namespace TraffiLearn.WebAPI.Controllers
         /// Removes an existing admin account.
         /// </summary>
         /// <remarks>
-        /// **The request must include the ID of the admin account to be removed:**<br /><br />
-        /// adminId: Must be a valid GUID representing the admin account to be removed.<br /><br />
+        /// **The request must include the ID of the admin account to be removed.**<br /><br /><br />
+        /// ***Route parameters:***<br /><br />
+        /// `AdminId` : Must be a valid GUID representing the admin account to be removed.<br /><br /><br />
         /// **Authentication Required:**<br />
         /// The user must be authenticated using a JWT token. Only users with the `Owner` role can perform this action.<br /><br />
         /// </remarks>
-        /// <param name="adminId">The admin account ID to be removed.</param>
+        /// <param name="adminId">**The admin account ID to be removed.**</param>
         /// <response code="204">Successfully removed the admin account.</response>
-        /// <response code="401">Unauthorized. The user is not authenticated.</response>
-        /// <response code="403">Forbidden. The user is not authorized to perform this action.</response>
-        /// <response code="404">Not Found. The admin with the provided ID is not found.</response>
-        /// <response code="500">Internal Server Error. An unexpected error occurred during the removal process.</response>
+        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+        /// <response code="403">***Forbidden.*** The user is not authorized to perform this action.</response>
+        /// <response code="404">***Not Found.*** The admin with the provided ID is not found.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the removal process.</response>
         [HasPermission(Permission.RemoveAdmins)]
         [HttpDelete("remove-admin/{adminId:guid}")]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]

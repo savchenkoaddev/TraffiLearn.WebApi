@@ -21,11 +21,11 @@ using TraffiLearn.Application.Users.Commands.UnmarkQuestion;
 using TraffiLearn.Application.Users.Queries.GetCurrentUserDislikedQuestions;
 using TraffiLearn.Application.Users.Queries.GetCurrentUserLikedQuestions;
 using TraffiLearn.Application.Users.Queries.GetMarkedQuestions;
-using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.CommandWrappers.CreateQuestion;
 using TraffiLearn.WebAPI.CommandWrappers.UpdateQuestion;
 using TraffiLearn.WebAPI.Extensions;
+using TraffiLearn.WebAPI.Swagger;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
@@ -44,7 +44,20 @@ namespace TraffiLearn.WebAPI.Controllers
         #region Queries
 
 
+        /// <summary>
+        /// Gets all existing questions from the storage.
+        /// </summary>
+        /// <remarks>
+        /// **Authentication Required:**<br />
+        /// The user must be authenticated using a JWT token.
+        /// </remarks>
+        /// <response code="200">Successfully retrieved all questions. Returns a list of questions.</response>
+        /// <response code="401">Unauthorized. The user is not authenticated.</response>
+        /// <response code="500">Internal Server Error. An unexpected error occurred during the retrieval process.</response>
         [HttpGet]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(IEnumerable<QuestionResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllQuestions()
         {
             var queryResult = await _sender.Send(new GetAllQuestionsQuery());
@@ -52,8 +65,26 @@ namespace TraffiLearn.WebAPI.Controllers
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
+        /// <summary>
+        /// Gets a chosen amount of random questions.
+        /// </summary>
+        /// <remarks>
+        /// **The request can include amount of random questions being retrieved.**<br /><br />
+        /// **Query parameters:**<br />
+        /// **Amount:** Must be a number greater or equal to 1. The default value is: **1**<br /><br />
+        /// **Authentication Required:**<br />
+        /// The user must be authenticated using a JWT token.<br /><br />
+        /// </remarks>
+        /// <response code="200">Successfully retrieved all questions. Returns a list of questions.</response>
+        /// <response code="400">Bad request. The provided data is invalid.</response>
+        /// <response code="401">Unauthorized. The user is not authenticated.</response>
+        /// <response code="500">Internal Server Error. An unexpected error occurred during the retrieval process.</response>
         [HttpGet("random")]
-        public async Task<IActionResult> GetRandomQuestion(
+        [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
+        [ProducesResponseType(typeof(QuestionResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetRandomQuestions(
             [FromQuery] int amount = 1)
         {
             var queryResult = await _sender.Send(new GetRandomQuestionsQuery(amount));
