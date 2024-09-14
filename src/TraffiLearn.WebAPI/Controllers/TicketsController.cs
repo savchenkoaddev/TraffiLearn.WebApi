@@ -17,7 +17,7 @@ namespace TraffiLearn.WebAPI.Controllers
     [HasPermission(Permission.AccessData)]
     [Route("api/tickets")]
     [ApiController]
-    public class TicketsController : ControllerBase
+    public sealed class TicketsController : ControllerBase
     {
         private readonly ISender _sender;
 

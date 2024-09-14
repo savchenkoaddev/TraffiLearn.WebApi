@@ -16,7 +16,7 @@ namespace TraffiLearn.WebAPI.Controllers
 
     [Route("api")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public sealed class AuthController : ControllerBase
     {
         private readonly ISender _sender;
 
@@ -55,7 +55,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="200">Successfully authenticated. Returns an access token.</response>
         /// <response code="400">***Bad request.*** Either the email or password is in an incorrect format, or the provided credentials are invalid.</response>
         /// <response code="404">***Not found.*** No user exists with the provided credentials.</response>
-        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the login process.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
         [HttpPost("login")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
@@ -93,7 +93,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <param name="command">**The register user command containing username, email, and password.**</param>
         /// <response code="201">Successfully registered. The user account has been created.</response>
         /// <response code="400">***Bad request.*** The provided data is invalid or missing, or a user with the same username or email already exists.</response>
-        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the registration process.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
         [HttpPost("register")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
@@ -133,7 +133,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="400">***Bad request***. The provided data is invalid or missing, or a user with the same username or email already exists.</response>
         /// <response code="401">***Unauthorized***. The user is not authenticated.</response>
         /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
-        /// <response code="500">***Internal Server Error***. An unexpected error occurred during the registration process.</response>
+        /// <response code="500">***Internal Server Error***. An unexpected error occurred during the process.</response>
         [HasPermission(Permission.RegisterAdmins)]
         [HttpPost("register-admin")]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -163,7 +163,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="403">***Forbidden.*** The user is not authorized to perform this action.</response>
         /// <response code="404">***Not Found.*** The admin with the provided ID is not found.</response>
-        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the removal process.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
         [HasPermission(Permission.RemoveAdmins)]
         [HttpDelete("remove-admin/{adminId:guid}")]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]

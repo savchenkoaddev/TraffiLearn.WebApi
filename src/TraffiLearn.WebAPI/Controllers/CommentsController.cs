@@ -16,7 +16,7 @@ namespace TraffiLearn.WebAPI.Controllers
     [HasPermission(Permission.AccessData)]
     [Route("api/comments")]
     [ApiController]
-    public class CommentsController : ControllerBase
+    public sealed class CommentsController : ControllerBase
     {
         private readonly ISender _sender;
 
