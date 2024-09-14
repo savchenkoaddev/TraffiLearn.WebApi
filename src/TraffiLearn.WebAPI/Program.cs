@@ -140,6 +140,17 @@ namespace TraffiLearn.WebAPI
                     });
 
                 options.AddPolicy(
+                    Permission.ModifyNonSensitiveData.ToString(),
+                    policy =>
+                    {
+                        policy.RequireRole(roles: [
+                            Role.RegularUser.ToString(),
+                            Role.Admin.ToString(),
+                            Role.Owner.ToString(),
+                        ]);
+                    });
+
+                options.AddPolicy(
                     Permission.DowngradeAccounts.ToString(),
                     policy =>
                     {

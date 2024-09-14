@@ -14,7 +14,7 @@ namespace TraffiLearn.WebAPI.Controllers
 {
     [Route("api/users")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public sealed class UsersController : ControllerBase
     {
         private readonly ISender _sender;
 

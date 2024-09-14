@@ -8,6 +8,7 @@
         DowngradeAccounts,
         RegisterAdmins,
         RemoveAdmins,
-        ModifyData
+        ModifyData,
+        ModifyNonSensitiveData
     }
 }
