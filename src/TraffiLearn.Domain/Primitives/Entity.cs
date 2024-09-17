@@ -1,14 +1,18 @@
 ﻿namespace TraffiLearn.Domain.Primitives
 {
-    public abstract class Entity<TId> : IEquatable<Entity<TId>>
+    public abstract class Entity<TId> : IEntity, IEquatable<Entity<TId>>
          where TId : notnull
     {
+        private readonly List<DomainEvent> _domainEvents = new();
+
         protected Entity(TId id)
         {
             Id = id;
         }
 
         public TId Id { get; private init; }
+
+        public IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
         public static bool operator ==(Entity<TId>? first, Entity<TId>? second)
         {
@@ -53,6 +57,11 @@
         public override int GetHashCode()
         {
             return EqualityComparer<TId>.Default.GetHashCode(Id);
+        }
+
+        protected void Raise(DomainEvent domainEvent)
+        {
+            _domainEvents.Add(domainEvent);
         }
     }
 }

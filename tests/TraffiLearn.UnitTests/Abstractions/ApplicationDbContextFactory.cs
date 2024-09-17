@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Moq;
 using TraffiLearn.Infrastructure.Persistence;
 
 namespace TraffiLearn.UnitTests.Abstractions
@@ -11,7 +13,9 @@ namespace TraffiLearn.UnitTests.Abstractions
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
 
-            return new ApplicationDbContext(options);
+            var mockPublisher = new Mock<IPublisher>();
+
+            return new ApplicationDbContext(options, mockPublisher.Object);
         }
     }
 }

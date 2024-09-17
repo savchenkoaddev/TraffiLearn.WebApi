@@ -1,4 +1,5 @@
 ﻿using Azure.Storage.Blobs;
+using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+using Moq;
 using Respawn;
 using System.Data.Common;
 using Testcontainers.Azurite;
@@ -141,7 +143,9 @@ namespace TraffiLearn.IntegrationTests.Abstractions
                             .UseSqlServer(_dbConnection)
                             .Options;
 
-            using (var dbContext = new ApplicationDbContext(options))
+            var mockPublisher = new Mock<IPublisher>();
+
+            using (var dbContext = new ApplicationDbContext(options, mockPublisher.Object))
             {
                 await dbContext.Database.MigrateAsync();
             }
