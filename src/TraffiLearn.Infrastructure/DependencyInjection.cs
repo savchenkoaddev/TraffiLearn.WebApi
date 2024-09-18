@@ -28,6 +28,9 @@ using TraffiLearn.Infrastructure.Persistence;
 using TraffiLearn.Infrastructure.Persistence.Options;
 using TraffiLearn.Infrastructure.Persistence.Repositories;
 using TraffiLearn.Infrastructure.Services;
+using TraffiLearn.Infrastructure.Persistence.Interceptors;
+using TraffiLearn.Infrastructure.BackgroundJobs.Outbox;
+using Quartz;
 
 namespace TraffiLearn.Infrastructure
 {
@@ -45,12 +48,15 @@ namespace TraffiLearn.Infrastructure
             services.AddPersistence();
             services.AddRepositories();
 
+            services.AddBackgroundJobs();
+
             services.AddHttpClients();
 
             return services;
         }
 
-        private static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
+        private static IServiceCollection AddInfrastructureServices(
+            this IServiceCollection services)
         {
             services.AddScoped<IUserContextService<Guid>, UserContextService>();
             services.AddScoped<IRoleService<IdentityRole>, RoleService<IdentityRole>>();
@@ -60,22 +66,59 @@ namespace TraffiLearn.Infrastructure
             return services;
         }
 
-        private static IServiceCollection AddPersistence(this IServiceCollection services)
+        private static IServiceCollection AddPersistence(
+            this IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(
                 (serviceProvider, options) =>
             {
+                var interceptor = serviceProvider.GetService<ConvertDomainEventsToOutboxMessagesInterceptor>();
+
                 var dbSettings = serviceProvider.GetRequiredService
                     <IOptions<DbSettings>>().Value;
 
-                options.UseSqlServer(dbSettings.ConnectionString);
+                options
+                    .UseSqlServer(dbSettings.ConnectionString)
+                    .AddInterceptors(interceptor!);
             });
+
+            services.AddSingleton<ConvertDomainEventsToOutboxMessagesInterceptor>();
 
             services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                     .AddRoleManager<RoleManager<IdentityRole>>()
                     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            return services;
+        }
+
+        private static IServiceCollection AddBackgroundJobs(
+            this IServiceCollection services)
+        {
+            services.AddQuartz(configure =>
+            {
+                var outboxSettings = services
+                    .BuildServiceProvider()
+                    .GetRequiredService<IOptions<OutboxSettings>>().Value;
+
+                var jobKey = new JobKey(nameof(ProcessOutboxMessagesJob));
+
+                configure
+                    .AddJob<ProcessOutboxMessagesJob>(jobKey)
+                    .AddTrigger(
+                        trigger => trigger
+                            .ForJob(jobKey)
+                            .WithSimpleSchedule(schedule =>
+                            {
+                                schedule
+                                    .WithIntervalInSeconds(
+                                        outboxSettings.ProcessWithIntervalInSeconds)
+                                    .RepeatForever();
+                            }));
+            });
+
+            services.AddQuartzHostedService();
 
             return services;
         }
@@ -88,6 +131,8 @@ namespace TraffiLearn.Infrastructure
             services.ConfigureValidatableOnStartOptions<JwtSettings>(JwtSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<QuestionsSettings>(QuestionsSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<GroqApiSettings>(GroqApiSettings.SectionName);
+            services.ConfigureValidatableOnStartOptions<OutboxSettings>(
+                OutboxSettings.SectionName);
 
             return services;
         }
@@ -105,7 +150,8 @@ namespace TraffiLearn.Infrastructure
             return services;
         }
 
-        private static IServiceCollection AddExternalServices(this IServiceCollection services)
+        private static IServiceCollection AddExternalServices(
+            this IServiceCollection services)
         {
             services.AddSingleton((serviceProvider) =>
             {
@@ -134,7 +180,8 @@ namespace TraffiLearn.Infrastructure
             return services;
         }
 
-        private static IServiceCollection AddRepositories(this IServiceCollection services)
+        private static IServiceCollection AddRepositories(
+            this IServiceCollection services)
         {
             services.AddScoped<ITopicRepository, TopicRepository>();
             services.AddScoped<IQuestionRepository, QuestionRepository>();
@@ -145,7 +192,8 @@ namespace TraffiLearn.Infrastructure
             return services;
         }
 
-        private static IServiceCollection AddHttpClients(this IServiceCollection services)
+        private static IServiceCollection AddHttpClients(
+            this IServiceCollection services)
         {
             var groqApiSettings = services.BuildServiceProvider().GetRequiredService<IOptions<GroqApiSettings>>().Value;
 
@@ -154,7 +202,8 @@ namespace TraffiLearn.Infrastructure
             return services;
         }
 
-        private static Action<HttpClient> ConfigureClientWithOptions(GroqApiSettings groqAISettings)
+        private static Action<HttpClient> ConfigureClientWithOptions(
+            GroqApiSettings groqAISettings)
         {
             return options =>
             {

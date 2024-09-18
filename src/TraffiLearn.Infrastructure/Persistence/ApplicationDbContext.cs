@@ -42,25 +42,5 @@ namespace TraffiLearn.Infrastructure.Persistence
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         }
-
-        public override async Task<int> SaveChangesAsync(
-            CancellationToken cancellationToken = default)
-        {
-            var domainEvents = ChangeTracker.Entries()
-                 .Where(e => e.Entity is IEntity entity && entity.DomainEvents.Any())
-                 .SelectMany(e => ((IEntity)e.Entity).DomainEvents)
-                 .ToList();
-
-            var result = await base.SaveChangesAsync(cancellationToken);
-
-            foreach (var domainEvent in domainEvents)
-            {
-                await _publisher.Publish(
-                    domainEvent,
-                    cancellationToken);
-            }
-
-            return result;
-        }
     }
 }

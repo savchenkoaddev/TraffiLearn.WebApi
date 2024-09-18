@@ -1,7 +1,9 @@
 ﻿namespace TraffiLearn.Domain.Primitives
 {
-    public interface IEntity
+    public interface IAggregateRoot
     {
         IReadOnlyCollection<DomainEvent> DomainEvents { get; }
+
+        void ClearDomainEvents();
     }
 }
