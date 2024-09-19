@@ -6,6 +6,6 @@ namespace TraffiLearn.Domain.Aggregates.Questions.DomainEvents
 {
     public sealed record TopicAddedToQuestionDomainEvent(
         Guid Id,
-        TopicId Topic,
-        QuestionId Question) : DomainEvent(Id);
+        TopicId TopicId,
+        QuestionId QuestionId) : DomainEvent(Id);
 }

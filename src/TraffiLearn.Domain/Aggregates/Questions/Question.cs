@@ -253,8 +253,8 @@ namespace TraffiLearn.Domain.Aggregates.Questions
 
             RaiseDomainEvent(new TopicAddedToQuestionDomainEvent(
                 Id: Guid.NewGuid(), 
-                Topic: topic,
-                Question: this));
+                TopicId: topic.Id,
+                QuestionId: Id));
 
             return Result.Success();
         }
