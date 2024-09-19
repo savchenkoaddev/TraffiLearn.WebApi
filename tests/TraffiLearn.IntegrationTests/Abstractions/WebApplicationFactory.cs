@@ -77,6 +77,8 @@ namespace TraffiLearn.IntegrationTests.Abstractions
 
                     configurator.SchedulerName = $"default-name-{scheduler}";
                 });
+
+                //services.RemoveAll<IHostedService>();
             });
         }
 
