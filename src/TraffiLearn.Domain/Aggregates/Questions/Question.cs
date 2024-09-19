@@ -1,5 +1,4 @@
 ﻿using TraffiLearn.Domain.Aggregates.Comments;
-using TraffiLearn.Domain.Aggregates.Questions.DomainEvents;
 using TraffiLearn.Domain.Aggregates.Questions.Errors;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Tickets;
@@ -251,10 +250,6 @@ namespace TraffiLearn.Domain.Aggregates.Questions
 
             _topics.Add(topic);
 
-            RaiseDomainEvent(new TopicAddedToQuestionDomainEvent(
-                TopicId: topic.Id,
-                QuestionId: Id));
-
             return Result.Success();
         }
 
@@ -268,10 +263,6 @@ namespace TraffiLearn.Domain.Aggregates.Questions
             }
 
             _topics.Remove(topic);
-
-            RaiseDomainEvent(new TopicRemovedFromQuestionDomainEvent(
-                TopicId: topic.Id,
-                QuestionId: Id));
 
             return Result.Success();
         }
