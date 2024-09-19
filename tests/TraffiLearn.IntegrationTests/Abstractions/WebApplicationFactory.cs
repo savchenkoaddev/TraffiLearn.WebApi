@@ -69,7 +69,14 @@ namespace TraffiLearn.IntegrationTests.Abstractions
                     return blobServiceClient;
                 });
 
-                services.RemoveAll<IHostedService>();
+                services.AddQuartz(configurator =>
+                {
+                    var scheduler = Guid.NewGuid();
+
+                    configurator.SchedulerId = $"default-id-{scheduler}";
+
+                    configurator.SchedulerName = $"default-name-{scheduler}";
+                });
             });
         }
 
