@@ -126,6 +126,9 @@ namespace TraffiLearn.IntegrationTests.Abstractions
         {
             await _dbContainer.StopAsync();
             await _azuriteContainer.StopAsync();
+
+            await _dbContainer.DisposeAsync();
+            await _azuriteContainer.DisposeAsync();
         }
 
         private async Task InitializeRespawner()
