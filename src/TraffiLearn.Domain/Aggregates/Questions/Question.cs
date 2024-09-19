@@ -252,7 +252,6 @@ namespace TraffiLearn.Domain.Aggregates.Questions
             _topics.Add(topic);
 
             RaiseDomainEvent(new TopicAddedToQuestionDomainEvent(
-                Id: Guid.NewGuid(), 
                 TopicId: topic.Id,
                 QuestionId: Id));
 
@@ -269,6 +268,10 @@ namespace TraffiLearn.Domain.Aggregates.Questions
             }
 
             _topics.Remove(topic);
+
+            RaiseDomainEvent(new TopicRemovedFromQuestionDomainEvent(
+                TopicId: topic.Id,
+                QuestionId: Id));
 
             return Result.Success();
         }

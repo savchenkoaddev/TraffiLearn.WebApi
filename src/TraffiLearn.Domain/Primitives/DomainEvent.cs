@@ -2,5 +2,10 @@
 
 namespace TraffiLearn.Domain.Primitives
 {
-    public record DomainEvent(Guid Id) : INotification;
+    public abstract record DomainEvent : INotification
+    {
+        public Guid Id { get; } = Guid.NewGuid();
+
+        protected DomainEvent() { }
+    }
 }

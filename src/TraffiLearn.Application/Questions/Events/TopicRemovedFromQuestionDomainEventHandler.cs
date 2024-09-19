@@ -7,19 +7,19 @@ using TraffiLearn.Domain.Aggregates.Topics;
 
 namespace TraffiLearn.Application.Questions.Events
 {
-    internal sealed class TopicAddedToQuestionDomainEventHandler
-        : INotificationHandler<TopicAddedToQuestionDomainEvent>
+    internal sealed class TopicRemovedFromQuestionDomainEventHandler
+        : INotificationHandler<TopicRemovedFromQuestionDomainEvent>
     {
         private readonly IQuestionRepository _questionRepository;
         private readonly ITopicRepository _topicRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<TopicAddedToQuestionDomainEventHandler> _logger;
+        private readonly ILogger<TopicRemovedFromQuestionDomainEventHandler> _logger;
 
-        public TopicAddedToQuestionDomainEventHandler(
+        public TopicRemovedFromQuestionDomainEventHandler(
             IQuestionRepository questionRepository,
             ITopicRepository topicRepository,
             IUnitOfWork unitOfWork,
-            ILogger<TopicAddedToQuestionDomainEventHandler> logger)
+            ILogger<TopicRemovedFromQuestionDomainEventHandler> logger)
         {
             _questionRepository = questionRepository;
             _topicRepository = topicRepository;
@@ -28,7 +28,7 @@ namespace TraffiLearn.Application.Questions.Events
         }
 
         public async Task Handle(
-            TopicAddedToQuestionDomainEvent notification, 
+            TopicRemovedFromQuestionDomainEvent notification, 
             CancellationToken cancellationToken)
         {
             var topic = await _topicRepository.GetByIdWithQuestionsAsync(
@@ -38,7 +38,7 @@ namespace TraffiLearn.Application.Questions.Events
             if (topic is null)
             {
                 _logger.LogCritical(
-                    "Topic with the provided id in the notification is not found. Topic id: {id}. Domain event id: {eventId}", 
+                    "Topic with the provided id in the notification is not found. Topic id: {id}. Domain event id: {eventId}",
                     notification.TopicId.Value,
                     notification.Id);
 
@@ -59,12 +59,12 @@ namespace TraffiLearn.Application.Questions.Events
                 return;
             }
 
-            var result = topic.AddQuestion(question);
+            var result = topic.RemoveQuestion(question);
 
             if (result.IsFailure)
             {
                 _logger.LogError(
-                    "Failure while adding question to topic. Error: {error}. Domain event id: {eventId}",
+                    "Failure while removing question from topic. Error: {error}. Domain event id: {eventId}",
                     result.Error.Description,
                     notification.Id);
             }
