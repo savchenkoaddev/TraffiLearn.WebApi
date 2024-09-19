@@ -8,7 +8,9 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Quartz;
 using Respawn;
 using System.Data.Common;
 using Testcontainers.Azurite;
@@ -66,6 +68,8 @@ namespace TraffiLearn.IntegrationTests.Abstractions
 
                     return blobServiceClient;
                 });
+
+                services.RemoveAll<IHostedService>();
             });
         }
 

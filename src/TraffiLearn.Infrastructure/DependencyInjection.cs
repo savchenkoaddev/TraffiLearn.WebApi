@@ -31,6 +31,8 @@ using TraffiLearn.Infrastructure.Services;
 using TraffiLearn.Infrastructure.Persistence.Interceptors;
 using TraffiLearn.Infrastructure.BackgroundJobs.Outbox;
 using Quartz;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Quartz.Spi;
 
 namespace TraffiLearn.Infrastructure
 {
@@ -117,7 +119,7 @@ namespace TraffiLearn.Infrastructure
                                     .RepeatForever();
                             }));
             });
-
+            
             services.AddQuartzHostedService();
 
             return services;
