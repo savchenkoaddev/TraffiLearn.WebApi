@@ -13,9 +13,7 @@ namespace TraffiLearn.UnitTests.Abstractions
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
 
-            var mockPublisher = new Mock<IPublisher>();
-
-            return new ApplicationDbContext(options, mockPublisher.Object);
+            return new ApplicationDbContext(options);
         }
     }
 }

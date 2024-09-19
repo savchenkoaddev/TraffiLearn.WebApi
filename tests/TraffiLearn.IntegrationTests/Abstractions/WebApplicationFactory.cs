@@ -143,9 +143,7 @@ namespace TraffiLearn.IntegrationTests.Abstractions
                             .UseSqlServer(_dbConnection)
                             .Options;
 
-            var mockPublisher = new Mock<IPublisher>();
-
-            using (var dbContext = new ApplicationDbContext(options, mockPublisher.Object))
+            using (var dbContext = new ApplicationDbContext(options))
             {
                 await dbContext.Database.MigrateAsync();
             }

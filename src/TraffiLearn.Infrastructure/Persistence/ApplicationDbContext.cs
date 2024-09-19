@@ -14,15 +14,10 @@ namespace TraffiLearn.Infrastructure.Persistence
 {
     public sealed class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IUnitOfWork
     {
-        private readonly IPublisher _publisher;
-
         public ApplicationDbContext(
-            DbContextOptions<ApplicationDbContext> options,
-            IPublisher publisher)
+            DbContextOptions<ApplicationDbContext> options)
             : base(options)
-        {
-            _publisher = publisher;
-        }
+        { }
 
         public DbSet<Question> Questions { get; set; }
 
