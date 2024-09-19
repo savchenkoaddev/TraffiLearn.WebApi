@@ -1,6 +1,6 @@
 ﻿namespace TraffiLearn.Domain.Primitives
 {
-    public interface IAggregateRoot
+    public interface IHasDomainEvents
     {
         IReadOnlyCollection<DomainEvent> DomainEvents { get; }
 

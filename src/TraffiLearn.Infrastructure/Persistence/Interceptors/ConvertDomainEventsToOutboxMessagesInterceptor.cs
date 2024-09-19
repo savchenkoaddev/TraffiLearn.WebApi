@@ -9,7 +9,7 @@ namespace TraffiLearn.Infrastructure.Persistence.Interceptors
     public sealed class ConvertDomainEventsToOutboxMessagesInterceptor
         : SaveChangesInterceptor
     {
-        public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
+        public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
             DbContextEventData eventData,
             InterceptionResult<int> result,
             CancellationToken cancellationToken = default)
@@ -18,40 +18,75 @@ namespace TraffiLearn.Infrastructure.Persistence.Interceptors
 
             if (dbContext is null)
             {
-                return base.SavingChangesAsync(eventData, result, cancellationToken);
+                return await base.SavingChangesAsync(
+                    eventData, 
+                    result, 
+                    cancellationToken);
             }
 
-            var outboxMessages = dbContext.ChangeTracker
-                .Entries<IAggregateRoot>()
-                .Select(x => x.Entity)
-                .SelectMany(root =>
-                {
-                    var domainEvents = root.DomainEvents;
+            var outboxMessages = ExtractOutboxMessages(dbContext);
 
-                    root.ClearDomainEvents();
+            if (outboxMessages.Any())
+            {
+                await InsertOutboxMessagesAsync(
+                    dbContext, 
+                    outboxMessages, 
+                    cancellationToken);
+            }
 
-                    return domainEvents;
-                })
-                .Select(domainEvent => new OutboxMessage()
-                {
-                    Id = Guid.NewGuid(),
-                    OccurredOnUtc = DateTime.UtcNow,
-                    Type = domainEvent.GetType().Name,
-                    Content = JsonConvert.SerializeObject(
-                        domainEvent,
-                        new JsonSerializerSettings()
-                        {
-                            TypeNameHandling = TypeNameHandling.All
-                        })
-                })
-                .ToList();
-
-            dbContext.Set<OutboxMessage>().AddRange(outboxMessages);
-
-            return base.SavingChangesAsync(
+            return await base.SavingChangesAsync(
                 eventData, 
                 result, 
                 cancellationToken);
+        }
+
+        private static List<OutboxMessage> ExtractOutboxMessages(
+            DbContext dbContext)
+        {
+            return dbContext.ChangeTracker
+                .Entries<IHasDomainEvents>()
+                .Select(entry => entry.Entity)
+                .SelectMany(ExtractAndClearDomainEvents)
+                .Select(ConvertToOutboxMessage)
+                .ToList();
+        }
+
+        private static IEnumerable<DomainEvent> ExtractAndClearDomainEvents(
+            IHasDomainEvents entity)
+        {
+            var domainEvents = entity.DomainEvents.ToList();
+
+            entity.ClearDomainEvents();
+
+            return domainEvents;
+        }
+
+        private static OutboxMessage ConvertToOutboxMessage(
+            DomainEvent domainEvent)
+        {
+            return new OutboxMessage
+            {
+                Id = Guid.NewGuid(),
+                OccurredOnUtc = DateTime.UtcNow,
+                Type = domainEvent.GetType().Name,
+                Content = JsonConvert.SerializeObject(
+                    domainEvent,
+                    new JsonSerializerSettings
+                    {
+                        TypeNameHandling = TypeNameHandling.All
+                    })
+            };
+        }
+
+        private static async Task InsertOutboxMessagesAsync(
+            DbContext dbContext, 
+            IEnumerable<OutboxMessage> outboxMessages, 
+            CancellationToken cancellationToken)
+        {
+            await dbContext.Set<OutboxMessage>()
+                .AddRangeAsync(
+                    outboxMessages, 
+                    cancellationToken);
         }
     }
 }

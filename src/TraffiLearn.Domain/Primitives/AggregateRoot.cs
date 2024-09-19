@@ -1,6 +1,6 @@
 ﻿namespace TraffiLearn.Domain.Primitives
 {
-    public abstract class AggregateRoot<TId> : Entity<TId>, IAggregateRoot
+    public abstract class AggregateRoot<TId> : Entity<TId>, IHasDomainEvents
         where TId : notnull
     {
         private readonly List<DomainEvent> _domainEvents = new();
