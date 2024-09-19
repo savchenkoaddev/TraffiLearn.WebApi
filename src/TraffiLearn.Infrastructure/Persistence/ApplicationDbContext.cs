@@ -9,6 +9,7 @@ using TraffiLearn.Domain.Aggregates.Tickets;
 using TraffiLearn.Domain.Aggregates.Topics;
 using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Primitives;
+using TraffiLearn.Infrastructure.Persistence.Outbox;
 
 namespace TraffiLearn.Infrastructure.Persistence
 {
@@ -28,6 +29,8 @@ namespace TraffiLearn.Infrastructure.Persistence
         public DbSet<Comment> Comments { get; set; }
 
         public DbSet<User> Users { get; set; }
+
+        public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
