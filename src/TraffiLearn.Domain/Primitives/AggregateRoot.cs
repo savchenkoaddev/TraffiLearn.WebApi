@@ -1,10 +1,17 @@
-﻿namespace TraffiLearn.Domain.Primitives
+﻿
+namespace TraffiLearn.Domain.Primitives
 {
-    public abstract class AggregateRoot<TId> : Entity<TId>
+    public abstract class AggregateRoot<TId> : Entity<TId>, IHasDomainEvents
         where TId : notnull
     {
+        private readonly List<DomainEvent> _domainEvents = new();
+
         protected AggregateRoot(TId id)
             : base(id)
         { }
+
+        public IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
+
+        public void ClearDomainEvents() => _domainEvents.Clear();
     }
 }
