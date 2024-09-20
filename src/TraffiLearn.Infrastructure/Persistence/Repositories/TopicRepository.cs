@@ -87,9 +87,10 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
             CancellationToken cancellationToken = default)
         {
             var sql = """
-                SELECT TOP 1 *
-                FROM {0}
-                ORDER BY NEWID()
+                SELECT *
+                FROM "{0}"
+                ORDER BY RANDOM()
+                LIMIT 1
             """;
 
             var formattedSql = string.Format(

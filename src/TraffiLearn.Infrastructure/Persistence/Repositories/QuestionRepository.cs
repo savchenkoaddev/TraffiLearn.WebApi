@@ -141,9 +141,10 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
 
             //REQUIRES FURTHER OPTIMIZATION
             var sql = """
-                SELECT TOP {0} *
-                FROM {1}
-                ORDER BY NEWID()
+                SELECT *
+                FROM "{1}"
+                ORDER BY RANDOM()
+                LIMIT {0}
             """;
 
             var formattedSql = string.Format(

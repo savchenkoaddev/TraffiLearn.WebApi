@@ -1,19 +1,18 @@
 ﻿using Azure.Storage.Blobs;
-using DotNet.Testcontainers.Builders;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+using Npgsql;
 using Respawn;
 using System.Data.Common;
 using Testcontainers.Azurite;
-using Testcontainers.MsSql;
+using Testcontainers.PostgreSql;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Users.Identity;
@@ -30,9 +29,12 @@ namespace TraffiLearn.IntegrationTests.Abstractions
     {
         private const string AzuriteContainerImage = "mcr.microsoft.com/azure-storage/azurite:latest";
 
-        private readonly MsSqlContainer _dbContainer = new MsSqlBuilder()
-            .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
-            .WithExposedPort(1434)
+        private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()
+            .WithImage("postgres:latest")
+            .WithDatabase("traffilearn")
+            .WithUsername("postgres")
+            .WithPassword("postgres")
+            .WithExposedPort(5433)
             .Build();
 
         private readonly AzuriteContainer _azuriteContainer = new AzuriteBuilder()
@@ -108,7 +110,7 @@ namespace TraffiLearn.IntegrationTests.Abstractions
         public async Task InitializeAsync()
         {
             await _dbContainer.StartAsync();
-            _dbConnection = new SqlConnection(_dbContainer.GetConnectionString());
+            _dbConnection = new NpgsqlConnection(_dbContainer.GetConnectionString());
 
             await _dbConnection.OpenAsync();
             await _azuriteContainer.StartAsync();
@@ -134,7 +136,7 @@ namespace TraffiLearn.IntegrationTests.Abstractions
                 _dbConnection,
                 new RespawnerOptions()
                 {
-                    DbAdapter = DbAdapter.SqlServer,
+                    DbAdapter = DbAdapter.Postgres,
                     TablesToIgnore = ["AspNetRoles", "AspNetRoleClaims"]
                 });
         }
@@ -142,7 +144,7 @@ namespace TraffiLearn.IntegrationTests.Abstractions
         private async Task RunMigration()
         {
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                            .UseSqlServer(_dbConnection)
+                            .UseNpgsql(_dbConnection)
                             .Options;
 
             using (var dbContext = new ApplicationDbContext(options))
@@ -155,7 +157,7 @@ namespace TraffiLearn.IntegrationTests.Abstractions
         {
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(_dbConnection);
+                options.UseNpgsql(_dbConnection);
             });
         }
 

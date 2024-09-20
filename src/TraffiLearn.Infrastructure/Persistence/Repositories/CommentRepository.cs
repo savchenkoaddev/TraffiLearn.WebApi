@@ -52,38 +52,38 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
             CancellationToken cancellationToken = default)
         {
             var sql = """
-                WITH RecursiveComments AS (
-                    SELECT 
-                        Id, 
-                        Content, 
-                        CreatorId, 
-                        QuestionId, 
-                        RootCommentId,
-                        0 AS Level
-                    FROM Comments
-                    WHERE Id = {0}
-
-                    UNION ALL
-
-                    SELECT 
-                        c.Id, 
-                        c.Content, 
-                        c.CreatorId, 
-                        c.QuestionId, 
-                        c.RootCommentId,
-                        rc.Level + 1 AS Level
-                    FROM Comments c
-                    INNER JOIN RecursiveComments rc ON c.RootCommentId = rc.Id
-                )
+            WITH RECURSIVE RecursiveComments AS (
                 SELECT 
-                    rc.Id, 
-                    rc.Content, 
-                    rc.CreatorId, 
-                    rc.QuestionId, 
-                    rc.RootCommentId,
-                    rc.Level
-                FROM RecursiveComments rc
-                ORDER BY rc.Level
+                    "Id", 
+                    "Content", 
+                    "CreatorId", 
+                    "QuestionId", 
+                    "RootCommentId",
+                    0 AS "Level"
+                FROM "Comments"
+                WHERE "Id" = {0}
+
+                UNION ALL
+
+                SELECT 
+                    c."Id", 
+                    c."Content", 
+                    c."CreatorId", 
+                    c."QuestionId", 
+                    c."RootCommentId",
+                    rc."Level" + 1 AS "Level"
+                FROM "Comments" c
+                INNER JOIN RecursiveComments rc ON c."RootCommentId" = rc."Id"
+            )
+            SELECT 
+                rc."Id", 
+                rc."Content", 
+                rc."CreatorId", 
+                rc."QuestionId", 
+                rc."RootCommentId",
+                rc."Level"
+            FROM RecursiveComments rc
+            ORDER BY rc."Level"
             """;
 
             var result = await _dbContext.Comments
@@ -131,6 +131,7 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
             return await _dbContext.Comments
                 .Where(c => c.Question.Id == questionId)
                 .Include(c => c.Replies)
+                .AsSplitQuery()
                 .Include(c => c.Creator)
                 .ToListAsync(cancellationToken);
         }

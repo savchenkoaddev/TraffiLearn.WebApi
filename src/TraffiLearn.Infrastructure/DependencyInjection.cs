@@ -75,7 +75,7 @@ namespace TraffiLearn.Infrastructure
                     .GetRequiredService<PublishDomainEventsInterceptor>();
 
                 options
-                    .UseSqlServer(dbSettings.ConnectionString)
+                    .UseNpgsql(dbSettings.ConnectionString)
                     .AddInterceptors(publishDomainEventsInterceptor);
             });
 
