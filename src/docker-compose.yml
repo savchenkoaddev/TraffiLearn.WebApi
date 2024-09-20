@@ -13,14 +13,15 @@ services:
 
   traffilearn-database:
     container_name: traffilearn.database
-    image: mcr.microsoft.com/mssql/server:2022-latest
+    image: postgres:latest
     environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=Password1*
+      - POSTGRES_DB=traffilearn
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     ports:
-      - "1433:1433"
+      - "5432:5432"
     volumes:
-      - traffilearn_db_data:/var/opt/mssql
+      - traffilearn_postgresdb_data:/var/lib/postgresql/data
 
   traffilearn-blob-storage:
     image: mcr.microsoft.com/azure-storage/azurite:latest
@@ -30,7 +31,7 @@ services:
     command: "azurite-blob --blobHost 0.0.0.0 -l /data"
     volumes:
       - traffilearn_blob_data:/data
-
+        
 volumes:
-  traffilearn_db_data:
+  traffilearn_postgresdb_data:
   traffilearn_blob_data:
