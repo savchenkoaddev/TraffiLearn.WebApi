@@ -340,7 +340,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// **If an image is not provided**, the image url will be null.<br /><br />
         /// If succesfully created a new question, this endpoint returns ID of the newly created question.<br /><br />
         /// ***Parameters:***<br /><br />
-        /// `Image` : Must be a valid image (possible extensions: ".jpg", ".jpeg", ".png", ".gif", ".bmp"). Not required field.<br /><br />
+        /// `Image` : Must be a valid image (possible extensions: ".jpg", ".jpeg", ".png", ".gif", ".bmp"). The size must be less than 500 Kb. Not required field.<br /><br />
         /// `Request` : Question represented as a JSON object.<br /><br /><br />
         /// **Request parameters:**<br /><br />
         /// `Content` : Content (text) of the question. Must not be empty or whitespace. Maximum length: 2000.<br /><br />
@@ -393,7 +393,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// **If the list of the new topic IDs contains a topic ID which is *already* present within the question**, the topic ID won't be added to the question's topic IDs as it's already there.<br /><br />
         /// **If the list of the new topic IDs does not contain a topic ID which is *already* present within the question**, the question's topic ID gets deleted from the question.<br /><br /><br />
         /// ***Parameters:***<br /><br />
-        /// `Image` : Must be a valid image (possible extensions: ".jpg", ".jpeg", ".png", ".gif", ".bmp"). Not required field.<br /><br />
+        /// `Image` : Must be a valid image (possible extensions: ".jpg", ".jpeg", ".png", ".gif", ".bmp"). The size must be less than 500 Kb. Not required field.<br /><br />
         /// `Request` : Question represented as a JSON object.<br /><br /><br />
         /// **Request parameters:**<br /><br />
         /// `QuestionId` : ID of the question to be updated. Must be a valid GUID.<br /><br />
