@@ -195,5 +195,20 @@ namespace TraffiLearn.ArchitectureTests.Domain
 
             failingTypes.Should().BeEmpty();
         }
+
+        [Fact]
+        public void Entities_ShouldNotInheritFromIHasDomainEvents()
+        {
+            var result = Types.InAssembly(DomainAssembly)
+                .That()
+                .Inherit(typeof(Entity<>))
+                .And().DoNotInherit(typeof(AggregateRoot<>))
+                .And().AreNotAbstract()
+                .Should()
+                .NotInherit(typeof(IHasDomainEvents))
+                .GetResult();
+
+            result.IsSuccessful.Should().BeTrue();
+        }
     }
 }
