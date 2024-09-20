@@ -1,4 +1,5 @@
 ﻿using Azure.Storage.Blobs;
+using DotNet.Testcontainers.Builders;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -30,6 +31,7 @@ namespace TraffiLearn.IntegrationTests.Abstractions
         private const string AzuriteContainerImage = "mcr.microsoft.com/azure-storage/azurite:latest";
 
         private readonly MsSqlContainer _dbContainer = new MsSqlBuilder()
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
             .Build();
 
         private readonly AzuriteContainer _azuriteContainer = new AzuriteBuilder()
@@ -104,8 +106,6 @@ namespace TraffiLearn.IntegrationTests.Abstractions
 
         public async Task InitializeAsync()
         {
-            await Task.Delay(TimeSpan.FromSeconds(10));
-
             await _dbContainer.StartAsync();
             _dbConnection = new SqlConnection(_dbContainer.GetConnectionString());
 
