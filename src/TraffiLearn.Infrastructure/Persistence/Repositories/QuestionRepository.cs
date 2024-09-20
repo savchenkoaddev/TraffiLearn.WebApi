@@ -139,20 +139,14 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
                 throw new ArgumentException("Amount of random records cannot be less than one.", nameof(amount));
             }
 
-            //REQUIRES FURTHER OPTIMIZATION
-            var sql = """
-                SELECT TOP {0} *
-                FROM {1}
-                ORDER BY NEWID()
-            """;
-
-            var formattedSql = string.Format(
-                sql,
-                amount,
-                nameof(ApplicationDbContext.Questions));
+            var sql = $@"
+                SELECT * 
+                FROM {nameof(ApplicationDbContext.Questions)} 
+                ORDER BY RANDOM() 
+                LIMIT {amount};";
 
             return await _dbContext.Questions
-                .FromSqlRaw(formattedSql)
+                .FromSqlInterpolated($"{sql}")
                 .ToListAsync(cancellationToken);
         }
     }

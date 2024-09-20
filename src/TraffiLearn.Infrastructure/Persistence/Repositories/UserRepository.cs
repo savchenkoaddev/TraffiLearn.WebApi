@@ -99,6 +99,7 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
             return _dbContext.Users
                 .Where(user => user.Id == userId)
                 .Include(user => user.LikedComments)
+                .AsSplitQuery()
                 .Include(user => user.DislikedComments)
                 .FirstOrDefaultAsync(cancellationToken);
         }
@@ -110,6 +111,7 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
             return _dbContext.Users
                 .Where(user => user.Id == userId)
                 .Include(user => user.LikedQuestions)
+                .AsSplitQuery()
                 .Include(user => user.DislikedQuestions)
                 .FirstOrDefaultAsync(cancellationToken);
         }
