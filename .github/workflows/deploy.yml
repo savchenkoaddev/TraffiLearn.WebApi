@@ -35,7 +35,7 @@ jobs:
         uses: azure/cli@v1
         with:
           inlineScript: |
-            az webapp config appsettings set --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group <your-resource-group> --settings \
+            az webapp config appsettings set --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group traffilearn --settings \
               DbSettings__ConnectionString=${{ secrets.DB_CONNECTION_STRING }} \
               JwtSettings__SecretKey=${{ secrets.JWT_SECRET_KEY }} \
               JwtSettings__Issuer=${{ secrets.JWT_ISSUER }} \
