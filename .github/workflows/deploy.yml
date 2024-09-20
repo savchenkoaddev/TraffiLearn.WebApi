@@ -5,6 +5,7 @@ on:
   pull_request:
     branches:
       - master
+
   
 env: 
   AZURE_WEBAPP_NAME: traffilearn-api
