@@ -31,6 +31,7 @@ namespace TraffiLearn.IntegrationTests.Abstractions
 
         private readonly MsSqlContainer _dbContainer = new MsSqlBuilder()
             .Build();
+
         private readonly AzuriteContainer _azuriteContainer = new AzuriteBuilder()
             .WithImage(AzuriteContainerImage)
             .Build();
@@ -103,6 +104,8 @@ namespace TraffiLearn.IntegrationTests.Abstractions
 
         public async Task InitializeAsync()
         {
+            await Task.Delay(TimeSpan.FromSeconds(10));
+
             await _dbContainer.StartAsync();
             _dbConnection = new SqlConnection(_dbContainer.GetConnectionString());
 
