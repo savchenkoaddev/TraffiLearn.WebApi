@@ -58,6 +58,9 @@ jobs:
       - name: Run Architecture Tests
         run: dotnet test ./tests/TraffiLearn.ArchitectureTests/TraffiLearn.ArchitectureTests.csproj --configuration Release --no-restore --no-build --logger "trx;LogFileName=TraffiLearn.ArchitectureTests.trx" --results-directory ./TestResults
 
+      - name: Check Docker Containers
+        run: docker ps -a
+
       - name: Run Integration Tests
         run: dotnet test ./tests/TraffiLearn.IntegrationTests/TraffiLearn.IntegrationTests.csproj --configuration Release --no-restore --no-build --logger "trx;LogFileName=TraffiLearn.IntegrationTests.trx" --results-directory ./TestResults
 
