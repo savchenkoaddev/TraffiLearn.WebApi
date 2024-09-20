@@ -31,7 +31,8 @@ namespace TraffiLearn.IntegrationTests.Abstractions
         private const string AzuriteContainerImage = "mcr.microsoft.com/azure-storage/azurite:latest";
 
         private readonly MsSqlContainer _dbContainer = new MsSqlBuilder()
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
+            .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
+            .WithExposedPort(1434)
             .Build();
 
         private readonly AzuriteContainer _azuriteContainer = new AzuriteBuilder()
