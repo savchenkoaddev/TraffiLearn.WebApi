@@ -36,19 +36,20 @@ jobs:
           echo "SuperUserSettings__Email=${{ secrets.SUPER_USER_EMAIL }}" >> $GITHUB_ENV
           echo "SuperUserSettings__Password=${{ secrets.SUPER_USER_PASSWORD }}" >> $GITHUB_ENV
 
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
       - name: Restore
         run: dotnet restore ./src/TraffiLearn.sln
 
       - name: Build
         run: dotnet build ./src/TraffiLearn.sln --configuration Release --no-restore
-
+      
       - name: Publish
         run: dotnet publish ./src/TraffiLearn.sln --configuration Release --no-build --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
+
+      - name: Azure App Service Settings
+        uses: Azure/appservice-settings@v1
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          app-settings-json: ${{ secrets.APP_SETTINGS_JSON }}
 
       - name: Deployment
         uses: azure/webapps-deploy@v2
@@ -56,18 +57,3 @@ jobs:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-
-      - name: Configure Azure App Service Settings
-        run: |
-          az webapp config appsettings set --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group traffilearn --settings \
-            DbSettings__ConnectionString=${{ secrets.DB_CONNECTION_STRING }} \
-            JwtSettings__SecretKey=${{ secrets.JWT_SECRET_KEY }} \
-            JwtSettings__Issuer=${{ secrets.JWT_ISSUER }} \
-            JwtSettings__Audience=${{ secrets.JWT_AUDIENCE }} \
-            GroqApiSettings__Model=${{ secrets.GROQ_API_MODEL }} \
-            GroqApiSettings__CreateChatCompletionUri=${{ secrets.GROQ_API_CREATE_CHAT_COMPLETION_URI }} \
-            GroqApiSettings__BaseUri=${{ secrets.GROQ_API_BASE_URI }} \
-            GroqApiSettings__ApiKey=${{ secrets.GROQ_API_KEY }} \
-            SuperUserSettings__Username=${{ secrets.SUPER_USER_USERNAME }} \
-            SuperUserSettings__Email=${{ secrets.SUPER_USER_EMAIL }} \
-            SuperUserSettings__Password=${{ secrets.SUPER_USER_PASSWORD }}
