@@ -28,6 +28,7 @@ using TraffiLearn.Infrastructure.Persistence;
 using TraffiLearn.Infrastructure.Persistence.Options;
 using TraffiLearn.Infrastructure.Persistence.Repositories;
 using TraffiLearn.Infrastructure.Services;
+using TraffiLearn.Infrastructure.Persistence.Interceptors;
 
 namespace TraffiLearn.Infrastructure
 {
@@ -62,13 +63,20 @@ namespace TraffiLearn.Infrastructure
 
         private static IServiceCollection AddPersistence(this IServiceCollection services)
         {
+            services.AddSingleton<PublishDomainEventsInterceptor>();
+            
             services.AddDbContext<ApplicationDbContext>(
                 (serviceProvider, options) =>
             {
                 var dbSettings = serviceProvider.GetRequiredService
                     <IOptions<DbSettings>>().Value;
 
-                options.UseSqlServer(dbSettings.ConnectionString);
+                var publishDomainEventsInterceptor = serviceProvider
+                    .GetRequiredService<PublishDomainEventsInterceptor>();
+
+                options
+                    .UseSqlServer(dbSettings.ConnectionString)
+                    .AddInterceptors(publishDomainEventsInterceptor);
             });
 
             services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
