@@ -62,13 +62,10 @@ namespace TraffiLearn.WebAPI
                 app.UseHttpsRedirection();
             }
 
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-                app.ApplyMigration();
-            }
-
+            app.UseSwagger();
+            app.UseSwaggerUI();
+            app.ApplyMigration();
+            
             app.UseRouting();
 
             app.UseAuthentication();
