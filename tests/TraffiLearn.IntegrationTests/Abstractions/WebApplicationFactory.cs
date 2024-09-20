@@ -1,4 +1,5 @@
 ﻿using Azure.Storage.Blobs;
+using DotNet.Testcontainers.Builders;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -30,7 +31,10 @@ namespace TraffiLearn.IntegrationTests.Abstractions
         private const string AzuriteContainerImage = "mcr.microsoft.com/azure-storage/azurite:latest";
 
         private readonly MsSqlContainer _dbContainer = new MsSqlBuilder()
+            .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
+            .WithExposedPort(1434)
             .Build();
+
         private readonly AzuriteContainer _azuriteContainer = new AzuriteBuilder()
             .WithImage(AzuriteContainerImage)
             .Build();
