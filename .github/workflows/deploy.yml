@@ -2,9 +2,10 @@ name: Deploy
 
 on: 
   workflow_dispatch:
-  release:
-    types: [published]
-
+  pull_request:
+    branches:
+      - master
+  
 env: 
   AZURE_WEBAPP_NAME: traffilearn-api
   AZURE_WEBAPP_PACKAGE_PATH: "./publish"
@@ -44,12 +45,6 @@ jobs:
       
       - name: Publish
         run: dotnet publish ./src/TraffiLearn.sln --configuration Release --no-build --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
-
-      - name: Azure App Service Settings
-        uses: Azure/appservice-settings@v1
-        with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          app-settings-json: ${{ secrets.APP_SETTINGS_JSON }}
 
       - name: Deployment
         uses: azure/webapps-deploy@v2
