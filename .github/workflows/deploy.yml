@@ -28,7 +28,13 @@ jobs:
           echo "JwtSettings__SecretKey=${{ secrets.JWT_SECRET_KEY }}" >> $GITHUB_ENV
           echo "JwtSettings__Issuer=${{ secrets.JWT_ISSUER }}" >> $GITHUB_ENV
           echo "JwtSettings__Audience=${{ secrets.JWT_AUDIENCE }}" >> $GITHUB_ENV
+          echo "GroqApiSettings__Model=${{ secrets.GROQ_API_MODEL }}" >> $GITHUB_ENV
+          echo "GroqApiSettings__CreateChatCompletionUri=${{ secrets.GROQ_API_CREATE_CHAT_COMPLETION_URI }}" >> $GITHUB_ENV
+          echo "GroqApiSettings__BaseUri=${{ secrets.GROQ_API_BASE_URI }}" >> $GITHUB_ENV
           echo "GroqApiSettings__ApiKey=${{ secrets.GROQ_API_KEY }}" >> $GITHUB_ENV
+          echo "SuperUserSettings__Username=${{ secrets.SUPER_USER_USERNAME }}" >> $GITHUB_ENV
+          echo "SuperUserSettings__Email=${{ secrets.SUPER_USER_EMAIL }}" >> $GITHUB_ENV
+          echo "SuperUserSettings__Password=${{ secrets.SUPER_USER_PASSWORD }}" >> $GITHUB_ENV
           
       - name: Restore
         run: dotnet restore ./src/TraffiLearn.sln
