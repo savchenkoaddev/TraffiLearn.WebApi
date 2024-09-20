@@ -21,7 +21,41 @@ jobs:
         uses: actions/setup-dotnet@v4
         with: 
           dotnet-version: ${{ env.DOTNET_VERSION }}
-          
+
+      - name: Set up Environment Variables
+        run: |
+          echo "DbSettings__ConnectionString=${{ secrets.DB_CONNECTION_STRING }}" >> $GITHUB_ENV
+          echo "JwtSettings__SecretKey=${{ secrets.JWT_SECRET_KEY }}" >> $GITHUB_ENV
+          echo "JwtSettings__Issuer=${{ secrets.JWT_ISSUER }}" >> $GITHUB_ENV
+          echo "JwtSettings__Audience=${{ secrets.JWT_AUDIENCE }}" >> $GITHUB_ENV
+          echo "GroqApiSettings__Model=${{ secrets.GROQ_API_MODEL }}" >> $GITHUB_ENV
+          echo "GroqApiSettings__CreateChatCompletionUri=${{ secrets.GROQ_API_CREATE_CHAT_COMPLETION_URI }}" >> $GITHUB_ENV
+          echo "GroqApiSettings__BaseUri=${{ secrets.GROQ_API_BASE_URI }}" >> $GITHUB_ENV
+          echo "GroqApiSettings__ApiKey=${{ secrets.GROQ_API_KEY }}" >> $GITHUB_ENV
+          echo "SuperUserSettings__Username=${{ secrets.SUPER_USER_USERNAME }}" >> $GITHUB_ENV
+          echo "SuperUserSettings__Email=${{ secrets.SUPER_USER_EMAIL }}" >> $GITHUB_ENV
+          echo "SuperUserSettings__Password=${{ secrets.SUPER_USER_PASSWORD }}" >> $GITHUB_ENV
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Configure Azure App Service Settings
+        run: |
+          az webapp config appsettings set --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group traffilearn --settings \
+            DbSettings__ConnectionString=${{ secrets.DB_CONNECTION_STRING }} \
+            JwtSettings__SecretKey=${{ secrets.JWT_SECRET_KEY }} \
+            JwtSettings__Issuer=${{ secrets.JWT_ISSUER }} \
+            JwtSettings__Audience=${{ secrets.JWT_AUDIENCE }} \
+            GroqApiSettings__Model=${{ secrets.GROQ_API_MODEL }} \
+            GroqApiSettings__CreateChatCompletionUri=${{ secrets.GROQ_API_CREATE_CHAT_COMPLETION_URI }} \
+            GroqApiSettings__BaseUri=${{ secrets.GROQ_API_BASE_URI }} \
+            GroqApiSettings__ApiKey=${{ secrets.GROQ_API_KEY }} \
+            SuperUserSettings__Username=${{ secrets.SUPER_USER_USERNAME }} \
+            SuperUserSettings__Email=${{ secrets.SUPER_USER_EMAIL }} \
+            SuperUserSettings__Password=${{ secrets.SUPER_USER_PASSWORD }}
+
       - name: Restore
         run: dotnet restore ./src/TraffiLearn.sln
 
@@ -31,23 +65,6 @@ jobs:
       - name: Publish
         run: dotnet publish ./src/TraffiLearn.sln --configuration Release --no-build --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
 
-      - name: Configure Azure App Service Settings
-        uses: azure/cli@v1
-        with:
-          inlineScript: |
-            az webapp config appsettings set --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group traffilearn --settings \
-              DbSettings__ConnectionString=${{ secrets.DB_CONNECTION_STRING }} \
-              JwtSettings__SecretKey=${{ secrets.JWT_SECRET_KEY }} \
-              JwtSettings__Issuer=${{ secrets.JWT_ISSUER }} \
-              JwtSettings__Audience=${{ secrets.JWT_AUDIENCE }} \
-              GroqApiSettings__Model=${{ secrets.GROQ_API_MODEL }} \
-              GroqApiSettings__CreateChatCompletionUri=${{ secrets.GROQ_API_CREATE_CHAT_COMPLETION_URI }} \
-              GroqApiSettings__BaseUri=${{ secrets.GROQ_API_BASE_URI }} \
-              GroqApiSettings__ApiKey=${{ secrets.GROQ_API_KEY }} \
-              SuperUserSettings__Username=${{ secrets.SUPER_USER_USERNAME }} \
-              SuperUserSettings__Email=${{ secrets.SUPER_USER_EMAIL }} \
-              SuperUserSettings__Password=${{ secrets.SUPER_USER_PASSWORD }}
-      
       - name: Deployment
         uses: azure/webapps-deploy@v2
         with:
