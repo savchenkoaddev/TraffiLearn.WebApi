@@ -54,36 +54,36 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
             var sql = """
             WITH RECURSIVE RecursiveComments AS (
                 SELECT 
-                    Id, 
-                    Content, 
-                    CreatorId, 
-                    QuestionId, 
-                    RootCommentId,
-                    0 AS Level
-                FROM Comments
-                WHERE Id = {0}
+                    "Id", 
+                    "Content", 
+                    "CreatorId", 
+                    "QuestionId", 
+                    "RootCommentId",
+                    0 AS "Level"
+                FROM "Comments"
+                WHERE "Id" = {0}
 
                 UNION ALL
 
                 SELECT 
-                    c.Id, 
-                    c.Content, 
-                    c.CreatorId, 
-                    c.QuestionId, 
-                    c.RootCommentId,
-                    rc.Level + 1 AS Level
-                FROM Comments c
-                INNER JOIN RecursiveComments rc ON c.RootCommentId = rc.Id
+                    c."Id", 
+                    c."Content", 
+                    c."CreatorId", 
+                    c."QuestionId", 
+                    c."RootCommentId",
+                    rc."Level" + 1 AS "Level"
+                FROM "Comments" c
+                INNER JOIN RecursiveComments rc ON c."RootCommentId" = rc."Id"
             )
             SELECT 
-                rc.Id, 
-                rc.Content, 
-                rc.CreatorId, 
-                rc.QuestionId, 
-                rc.RootCommentId,
-                rc.Level
+                rc."Id", 
+                rc."Content", 
+                rc."CreatorId", 
+                rc."QuestionId", 
+                rc."RootCommentId",
+                rc."Level"
             FROM RecursiveComments rc
-            ORDER BY rc.Level;
+            ORDER BY rc."Level"
             """;
 
             var result = await _dbContext.Comments

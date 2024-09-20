@@ -86,14 +86,19 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
         public Task<Topic?> GetRandomRecordAsync(
             CancellationToken cancellationToken = default)
         {
-            var sql = $@"
-                SELECT * 
-                FROM {nameof(ApplicationDbContext.Topics)} 
-                ORDER BY RANDOM() 
-                LIMIT 1;";
+            var sql = """
+                SELECT *
+                FROM "{0}"
+                ORDER BY RANDOM()
+                LIMIT 1
+            """;
+
+            var formattedSql = string.Format(
+               sql,
+               nameof(ApplicationDbContext.Topics));
 
             return _dbContext.Topics
-                .FromSqlInterpolated($"{sql}")
+                .FromSqlRaw(formattedSql)
                 .FirstOrDefaultAsync(cancellationToken);
         }
     }
