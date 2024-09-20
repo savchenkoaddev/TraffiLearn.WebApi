@@ -13,5 +13,8 @@ namespace TraffiLearn.Domain.Primitives
         public IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
         public void ClearDomainEvents() => _domainEvents.Clear();
+
+        protected void RaiseDomainEvent(DomainEvent domainEvent) =>
+            _domainEvents.Add(domainEvent);
     }
 }
