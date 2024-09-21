@@ -2,9 +2,8 @@ name: Deploy
 
 on: 
   workflow_dispatch:
-  pull_request:
-    branches:
-      - master
+  release:
+    types: [published]
   
 env: 
   AZURE_WEBAPP_NAME: traffilearn-api
@@ -23,20 +22,6 @@ jobs:
         with: 
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Set up Environment Variables
-        run: |
-          echo "DbSettings__ConnectionString=${{ secrets.DB_CONNECTION_STRING }}" >> $GITHUB_ENV
-          echo "JwtSettings__SecretKey=${{ secrets.JWT_SECRET_KEY }}" >> $GITHUB_ENV
-          echo "JwtSettings__Issuer=${{ secrets.JWT_ISSUER }}" >> $GITHUB_ENV
-          echo "JwtSettings__Audience=${{ secrets.JWT_AUDIENCE }}" >> $GITHUB_ENV
-          echo "GroqApiSettings__Model=${{ secrets.GROQ_API_MODEL }}" >> $GITHUB_ENV
-          echo "GroqApiSettings__CreateChatCompletionUri=${{ secrets.GROQ_API_CREATE_CHAT_COMPLETION_URI }}" >> $GITHUB_ENV
-          echo "GroqApiSettings__BaseUri=${{ secrets.GROQ_API_BASE_URI }}" >> $GITHUB_ENV
-          echo "GroqApiSettings__ApiKey=${{ secrets.GROQ_API_KEY }}" >> $GITHUB_ENV
-          echo "SuperUserSettings__Username=${{ secrets.SUPER_USER_USERNAME }}" >> $GITHUB_ENV
-          echo "SuperUserSettings__Email=${{ secrets.SUPER_USER_EMAIL }}" >> $GITHUB_ENV
-          echo "SuperUserSettings__Password=${{ secrets.SUPER_USER_PASSWORD }}" >> $GITHUB_ENV
-
       - name: Restore
         run: dotnet restore ./src/TraffiLearn.sln
 
@@ -52,3 +37,7 @@ jobs:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
+      - name: Notify Deployment Success
+        if: success()
+        run: echo "Deployment to ${{ env.AZURE_WEBAPP_NAME }} completed successfully!"
