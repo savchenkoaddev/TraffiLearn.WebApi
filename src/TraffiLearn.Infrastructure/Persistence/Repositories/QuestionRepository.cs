@@ -163,5 +163,10 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
                 .FromSqlRaw(formattedSql)
                 .ToListAsync(cancellationToken);
         }
+
+        public async Task<int> CountAsync(CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Questions.CountAsync(cancellationToken);
+        }
     }
 }
