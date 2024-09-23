@@ -170,23 +170,29 @@ namespace TraffiLearn.IntegrationTests.Questions
 
         public Task<IEnumerable<QuestionResponse>> GetAllQuestionsAsAuthorizedAsync()
         {
-            return GetAllQuestionsAsync(
+            return GetPaginatedQuestionsAsync(
                 getWithRole: Role.Owner);
         }
 
-        public Task<IEnumerable<QuestionResponse>> GetAllQuestionsAsync(
+        public Task<IEnumerable<QuestionResponse>> GetPaginatedQuestionsAsync(
+            int? page = null,
+            int? pageSize = null,
             Role? getWithRole = null)
         {
             return _requestSender.GetFromJsonAsync<IEnumerable<QuestionResponse>>(
-                requestUri: QuestionEndpointRoutes.GetAllQuestionsRoute,
+                requestUri: QuestionEndpointRoutes.GetPaginatedQuestionsRoute(
+                    page, pageSize),
                 getWithRole: getWithRole);
         }
 
-        public Task<HttpResponseMessage> SendGetAllQuestionsRequestAsync(
+        public Task<HttpResponseMessage> SendGetPaginatedQuestionsRequestAsync(
+            int? page = null,
+            int? pageSize = null,
             Role? sentFromRole = null)
         {
             return _requestSender.GetAsync(
-                requestUri: QuestionEndpointRoutes.GetAllQuestionsRoute,
+                requestUri: QuestionEndpointRoutes.GetPaginatedQuestionsRoute(
+                    page, pageSize),
                 getWithRole: sentFromRole);
         }
 
