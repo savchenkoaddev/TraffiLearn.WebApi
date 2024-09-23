@@ -126,14 +126,31 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
 
         public async Task<IEnumerable<Comment>> GetManyByQuestionIdWithRepliesAndCreatorsAsync(
             QuestionId questionId,
+            int page,
+            int pageSize,
+            CancellationToken cancellationToken = default)
+        {
+            ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(page, 0);
+            ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(pageSize, 0);
+
+            return await _dbContext.Comments
+                .Where(c => c.Question.Id == questionId)
+                .OrderBy(c => c.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Include(c => c.Replies)
+                .Include(c => c.Creator)
+                .AsSplitQuery()
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<int> CountWithQuestionIdAsync(
+            QuestionId questionId, 
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Comments
                 .Where(c => c.Question.Id == questionId)
-                .Include(c => c.Replies)
-                .AsSplitQuery()
-                .Include(c => c.Creator)
-                .ToListAsync(cancellationToken);
+                .CountAsync(cancellationToken);
         }
     }
 }
