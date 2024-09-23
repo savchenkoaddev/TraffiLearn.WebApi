@@ -35,7 +35,7 @@ namespace TraffiLearn.IntegrationTests.Questions.Commands.CreateQuestion
                 .SendValidCreateQuestionRequestWithTopicAsync(
                     sentFromRole: null);
 
-            var allQuestions = await ApiQuestionClient.GetAllQuestionsAsAuthorizedAsync();
+            var allQuestions = await ApiQuestionClient.GetPaginatedQuestionsAsAuthorizedAsync();
 
             allQuestions.Should().BeEmpty();
         }
@@ -78,7 +78,7 @@ namespace TraffiLearn.IntegrationTests.Questions.Commands.CreateQuestion
                 .SendValidCreateQuestionRequestWithTopicAsync(
                     sentFromRole: nonEligibleRole);
 
-            var allQuestions = await ApiQuestionClient.GetAllQuestionsAsAuthorizedAsync();
+            var allQuestions = await ApiQuestionClient.GetPaginatedQuestionsAsAuthorizedAsync();
 
             allQuestions.Should().BeEmpty();
         }
@@ -132,7 +132,7 @@ namespace TraffiLearn.IntegrationTests.Questions.Commands.CreateQuestion
                 invalidCommands,
                 sentFromRole: eligibleRole);
 
-            var allQuestions = await ApiQuestionClient.GetAllQuestionsAsAuthorizedAsync();
+            var allQuestions = await ApiQuestionClient.GetPaginatedQuestionsAsAuthorizedAsync();
 
             allQuestions.Should().BeEmpty();
         }
@@ -206,7 +206,7 @@ namespace TraffiLearn.IntegrationTests.Questions.Commands.CreateQuestion
                 command,
                 sentFromRole: eligibleRole);
 
-            var allQuestions = await ApiQuestionClient.GetAllQuestionsAsAuthorizedAsync();
+            var allQuestions = await ApiQuestionClient.GetPaginatedQuestionsAsAuthorizedAsync();
 
             allQuestions.Should().BeEmpty();
         }
@@ -241,7 +241,7 @@ namespace TraffiLearn.IntegrationTests.Questions.Commands.CreateQuestion
                 topicIds: [topicId],
                 createdWithRole: eligibleRole);
 
-            var allQuestions = await ApiQuestionClient.GetAllQuestionsAsAuthorizedAsync();
+            var allQuestions = await ApiQuestionClient.GetPaginatedQuestionsAsAuthorizedAsync();
 
             allQuestions.Single().Id.Should().Be(questionId);
         }
@@ -294,7 +294,7 @@ namespace TraffiLearn.IntegrationTests.Questions.Commands.CreateQuestion
                 topicIds: [topicId],
                 createdWithRole: eligibleRole);
 
-            var allQuestions = await ApiQuestionClient.GetAllQuestionsAsAuthorizedAsync();
+            var allQuestions = await ApiQuestionClient.GetPaginatedQuestionsAsAuthorizedAsync();
 
             allQuestions.Single().ImageUri.Should().BeNull();
         }
@@ -314,7 +314,7 @@ namespace TraffiLearn.IntegrationTests.Questions.Commands.CreateQuestion
                 image: image,
                 createdWithRole: eligibleRole);
 
-            var allQuestions = await ApiQuestionClient.GetAllQuestionsAsAuthorizedAsync();
+            var allQuestions = await ApiQuestionClient.GetPaginatedQuestionsAsAuthorizedAsync();
 
             var imageUriResult = ImageUri.Create(allQuestions.Single().ImageUri);
 
