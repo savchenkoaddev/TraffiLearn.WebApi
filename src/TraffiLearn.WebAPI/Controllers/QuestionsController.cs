@@ -9,7 +9,7 @@ using TraffiLearn.Application.Questions.DTO;
 using TraffiLearn.Application.Questions.Queries.GetAIQuestionComments;
 using TraffiLearn.Application.Questions.Queries.GetPaginated;
 using TraffiLearn.Application.Questions.Queries.GetById;
-using TraffiLearn.Application.Questions.Queries.GetQuestionComments;
+using TraffiLearn.Application.Questions.Queries.GetQuestionCommentsPaginated;
 using TraffiLearn.Application.Questions.Queries.GetQuestionsForTheoryTest;
 using TraffiLearn.Application.Questions.Queries.GetQuestionTickets;
 using TraffiLearn.Application.Questions.Queries.GetQuestionTopics;
@@ -237,7 +237,7 @@ namespace TraffiLearn.WebAPI.Controllers
             [FromRoute] Guid questionId)
         {
             var queryResult = await _sender.Send(
-                new GetQuestionCommentsQuery(questionId));
+                new GetQuestionCommentsPaginatedQuery(questionId));
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }

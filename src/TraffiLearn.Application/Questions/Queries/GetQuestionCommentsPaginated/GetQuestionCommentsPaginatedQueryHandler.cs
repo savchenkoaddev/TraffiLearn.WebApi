@@ -7,17 +7,17 @@ using TraffiLearn.Domain.Aggregates.Questions.Errors;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Questions.Queries.GetQuestionComments
+namespace TraffiLearn.Application.Questions.Queries.GetQuestionCommentsPaginated
 {
-    internal sealed class GetQuestionCommentsQueryHandler
-        : IRequestHandler<GetQuestionCommentsQuery,
+    internal sealed class GetQuestionCommentsPaginatedQueryHandler
+        : IRequestHandler<GetQuestionCommentsPaginatedQuery,
             Result<IEnumerable<CommentResponse>>>
     {
         private readonly ICommentRepository _commentRepository;
         private readonly IQuestionRepository _questionRepository;
         private readonly Mapper<Comment, CommentResponse> _commentMapper;
 
-        public GetQuestionCommentsQueryHandler(
+        public GetQuestionCommentsPaginatedQueryHandler(
             ICommentRepository commentRepository,
             IQuestionRepository questionRepository,
             Mapper<Comment, CommentResponse> commentMapper)
@@ -28,7 +28,7 @@ namespace TraffiLearn.Application.Questions.Queries.GetQuestionComments
         }
 
         public async Task<Result<IEnumerable<CommentResponse>>> Handle(
-            GetQuestionCommentsQuery request,
+            GetQuestionCommentsPaginatedQuery request,
             CancellationToken cancellationToken)
         {
             QuestionId questionId = new(request.QuestionId.Value);
