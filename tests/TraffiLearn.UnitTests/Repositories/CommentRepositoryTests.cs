@@ -330,7 +330,10 @@ namespace TraffiLearn.UnitTests.Repositories
                 comment1, comment2, reply1, reply2);
 
             // Act
-            var result = await _repository.GetManyByQuestionIdWithRepliesAndCreatorsAsync(question.Id);
+            var result = await _repository.GetManyByQuestionIdWithRepliesAndCreatorsAsync(
+                question.Id,
+                page: 1,
+                pageSize: 10);
 
             // Assert
             result.First(c => c.Id == comment1.Id)
