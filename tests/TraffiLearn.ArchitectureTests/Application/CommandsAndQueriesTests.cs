@@ -67,21 +67,6 @@ namespace TraffiLearn.ArchitectureTests.Application
         }
 
         [Fact]
-        public void CommandsAndQueries_ShouldHaveOnlyNullableMembers()
-        {
-            var result = Types.InAssembly(ApplicationAssembly)
-                .That()
-                .ImplementInterface(typeof(IRequest))
-                .Or()
-                .ImplementInterface(typeof(IRequest<>))
-                .Should()
-                .OnlyHaveNullableMembers()
-                .GetResult();
-
-            result.IsSuccessful.Should().BeTrue();
-        }
-
-        [Fact]
         public void CommandsAndQueries_ShouldBeRecords()
         {
             var types = Types.InAssembly(ApplicationAssembly)

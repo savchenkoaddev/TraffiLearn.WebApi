@@ -4,9 +4,19 @@
     {
         public const string CreateQuestionRoute = "api/questions";
 
-        public const string GetAllQuestionsRoute = "api/questions";
-
         public const string UpdateQuestionRoute = "api/questions";
+
+        public static string GetPaginatedQuestionsRoute(
+            int? page = null,
+            int? pageSize = null)
+        {
+            if (page is null || pageSize is null)
+            {
+                return "api/questions";
+            }
+
+            return $"api/questions?page={page}&pageSize={pageSize}";
+        }
 
         public static string DeleteQuestionRoute(Guid questionId) =>
             $"api/questions/{questionId}";

@@ -124,9 +124,16 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
         }
 
         public async Task<IEnumerable<Question>> GetAllAsync(
+            int page,
+            int pageSize,
             CancellationToken cancellationToken = default)
         {
+            ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(page, 0);
+            ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(pageSize, 0);
+
             return await _dbContext.Questions
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync(cancellationToken);
         }
 

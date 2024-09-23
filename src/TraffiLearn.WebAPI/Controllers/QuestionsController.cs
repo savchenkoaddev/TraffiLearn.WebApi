@@ -7,7 +7,7 @@ using TraffiLearn.Application.Questions.Commands.AddCommentToQuestion;
 using TraffiLearn.Application.Questions.Commands.Delete;
 using TraffiLearn.Application.Questions.DTO;
 using TraffiLearn.Application.Questions.Queries.GetAIQuestionComments;
-using TraffiLearn.Application.Questions.Queries.GetAll;
+using TraffiLearn.Application.Questions.Queries.GetPaginated;
 using TraffiLearn.Application.Questions.Queries.GetById;
 using TraffiLearn.Application.Questions.Queries.GetQuestionComments;
 using TraffiLearn.Application.Questions.Queries.GetQuestionsForTheoryTest;
@@ -49,22 +49,31 @@ namespace TraffiLearn.WebAPI.Controllers
 
 
         /// <summary>
-        /// Gets all existing questions from the storage.
+        /// Gets paginated questions from the storage.
         /// </summary>
         /// <remarks>
+        /// ***Query parameters:***<br /><br />
+        /// `Page` : Must be a number greater or equal to 1. Not required field (the default value is: **1**).<br /><br />
+        /// `PageSize` : Represents amount of questions in a page. Must be a number greater or equal to 1. Not required field (the default value is: **10**).<br /><br /><br />
         /// **Authentication Required:**<br />
         /// The user must be authenticated using a JWT token.
         /// </remarks>
         /// <response code="200">Successfully retrieved all questions. Returns a list of questions.</response>
+        /// <response code="400">***Bad request.*** The provided data is invalid.</response>
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
         [HttpGet]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(IEnumerable<QuestionResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllQuestions()
+        public async Task<IActionResult> GetPaginatedQuestions(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
         {
-            var queryResult = await _sender.Send(new GetAllQuestionsQuery());
+            var queryResult = await _sender.Send(new GetPaginatedQuestionsQuery(
+                Page: page,
+                PageSize: pageSize));
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
@@ -75,7 +84,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <remarks>
         /// **The request can include amount of random questions being retrieved.**<br /><br /><br />
         /// ***Query parameters:***<br /><br />
-        /// `Amount` : Must be a number greater or equal to 1. The default value is: **1**<br /><br /><br />
+        /// `Amount` : Represents amount of random questions to get. Must be a number greater or equal to 1. The default value is: **1**<br /><br /><br />
         /// **Authentication Required:**<br />
         /// The user must be authenticated using a JWT token.<br /><br />
         /// </remarks>
