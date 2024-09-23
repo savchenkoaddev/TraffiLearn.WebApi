@@ -33,7 +33,7 @@ namespace TraffiLearn.IntegrationTests.Questions.Commands.DeleteQuestion
                     questionId: questionId,
                     sentFromRole: null);
 
-            var allQuestions = await ApiQuestionClient.GetAllQuestionsAsAuthorizedAsync();
+            var allQuestions = await ApiQuestionClient.GetPaginatedQuestionsAsAuthorizedAsync();
 
             allQuestions.Should().NotBeEmpty();
         }
@@ -64,7 +64,7 @@ namespace TraffiLearn.IntegrationTests.Questions.Commands.DeleteQuestion
                     questionId: questionId,
                     sentFromRole: nonEligibleRole);
 
-            var allQuestions = await ApiQuestionClient.GetAllQuestionsAsAuthorizedAsync();
+            var allQuestions = await ApiQuestionClient.GetPaginatedQuestionsAsAuthorizedAsync();
 
             allQuestions.Should().NotBeEmpty();
         }
@@ -114,7 +114,7 @@ namespace TraffiLearn.IntegrationTests.Questions.Commands.DeleteQuestion
                     questionId: questionId,
                     sentFromRole: eligibleRole);
 
-            var allQuestions = await ApiQuestionClient.GetAllQuestionsAsAuthorizedAsync();
+            var allQuestions = await ApiQuestionClient.GetPaginatedQuestionsAsAuthorizedAsync();
 
             allQuestions.Should().BeEmpty();
         }

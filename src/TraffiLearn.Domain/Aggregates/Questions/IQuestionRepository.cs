@@ -45,6 +45,8 @@ namespace TraffiLearn.Domain.Aggregates.Questions
             int pageSize,
             CancellationToken cancellationToken = default);
 
+        Task<int> CountAsync(CancellationToken cancellationToken = default);
+
         Task<IEnumerable<Question>> GetRandomRecordsAsync(
             int amount,
             CancellationToken cancellationToken = default);

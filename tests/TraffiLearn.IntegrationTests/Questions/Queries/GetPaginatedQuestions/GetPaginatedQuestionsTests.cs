@@ -41,17 +41,32 @@ namespace TraffiLearn.IntegrationTests.Questions.Queries.GetPaginatedQuestions
         [InlineData(Role.RegularUser)]
         [InlineData(Role.Admin)]
         [InlineData(Role.Owner)]
-        public async Task GetPaginatedQuestions_IfNoQuestionsExist_ShouldReturnEmptyCollection(
+        public async Task GetPaginatedQuestions_IfNoQuestionsExist_ShouldReturnZeroTotalPages(
             Role eligibleRole)
         {
-            var allQuestions = await ApiQuestionClient
+            var response = await ApiQuestionClient
                 .GetPaginatedQuestionsAsync(
                     page: 1,
                     pageSize: 10,
                     getWithRole: eligibleRole);
 
-            allQuestions.Should().NotBeNull();
-            allQuestions.Should().BeEmpty();
+            response.TotalPages.Should().Be(0);
+        }
+
+        [Theory]
+        [InlineData(Role.RegularUser)]
+        [InlineData(Role.Admin)]
+        [InlineData(Role.Owner)]
+        public async Task GetPaginatedQuestions_IfNoQuestionsExist_ShouldReturnEmptyCollection(
+            Role eligibleRole)
+        {
+            var response = await ApiQuestionClient
+                .GetPaginatedQuestionsAsync(
+                    page: 1,
+                    pageSize: 10,
+                    getWithRole: eligibleRole);
+
+            response.Questions.Should().BeEmpty();
         }
 
         [Theory]
@@ -131,14 +146,13 @@ namespace TraffiLearn.IntegrationTests.Questions.Queries.GetPaginatedQuestions
         {
             await ApiQuestionClient.CreateValidQuestionWithTopicAsAuthorizedAsync();
 
-            var questions = await ApiQuestionClient
+            var response = await ApiQuestionClient
                 .GetPaginatedQuestionsAsync(
                     page: 2,
                     pageSize: 1,
                     getWithRole: eligibleRole);
 
-            questions.Should().NotBeNull();
-            questions.Should().BeEmpty();
+            response.Questions.Should().BeEmpty();
         }
 
         [Theory]
@@ -171,14 +185,14 @@ namespace TraffiLearn.IntegrationTests.Questions.Queries.GetPaginatedQuestions
                 await ApiQuestionClient.CreateValidQuestionWithTopicAsAuthorizedAsync()
             ];
 
-            var questions = await ApiQuestionClient
+            var response = await ApiQuestionClient
                 .GetPaginatedQuestionsAsync(
                     page: 1,
                     pageSize: 5,
                     getWithRole: eligibleRole);
 
-            questions.Should().HaveCount(questionIds.Count);
-            questions.Select(q => q.Id).Should().BeEquivalentTo(questionIds);
+            response.Questions.Should().HaveCount(questionIds.Count);
+            response.Questions.Select(q => q.Id).Should().BeEquivalentTo(questionIds);
         }
 
         [Theory]
@@ -196,24 +210,50 @@ namespace TraffiLearn.IntegrationTests.Questions.Queries.GetPaginatedQuestions
 
             var pageSize = 2;
 
-            var firstPageQuestions = await ApiQuestionClient
+            var firstPageQuestionsResponse = await ApiQuestionClient
                 .GetPaginatedQuestionsAsync(
                     page: 1,
                     pageSize: pageSize,
                     getWithRole: eligibleRole);
 
-            firstPageQuestions.Should().HaveCount(pageSize);
+            firstPageQuestionsResponse.Questions.Should().HaveCount(pageSize);
 
-            var secondPageQuestions = await ApiQuestionClient
+            var secondPageQuestionsResponse = await ApiQuestionClient
                 .GetPaginatedQuestionsAsync(
                     page: 2,
                     pageSize: pageSize,
                     getWithRole: eligibleRole);
 
-            secondPageQuestions.Should().HaveCount(1);
+            secondPageQuestionsResponse.Questions.Should().HaveCount(1);
 
-            firstPageQuestions.Select(q => q.Id).Should()
-                .NotContain(secondPageQuestions.Single().Id);
+            firstPageQuestionsResponse.Questions.Select(q => q.Id).Should()
+                .NotContain(secondPageQuestionsResponse.Questions.Single().Id);
+        }
+
+        [Theory]
+        [InlineData(Role.RegularUser)]
+        [InlineData(Role.Admin)]
+        [InlineData(Role.Owner)]
+        public async Task GetPaginatedQuestions_IfValidCase_ShouldReturnValidTotalPages(
+            Role eligibleRole)
+        {
+            List<Guid> questionIds = [
+                await ApiQuestionClient.CreateValidQuestionWithTopicAsAuthorizedAsync(),
+                await ApiQuestionClient.CreateValidQuestionWithTopicAsAuthorizedAsync(),
+                await ApiQuestionClient.CreateValidQuestionWithTopicAsAuthorizedAsync()
+            ];
+
+            var pageSize = 2;
+
+            var response = await ApiQuestionClient
+                .GetPaginatedQuestionsAsync(
+                    page: 1,
+                    pageSize: pageSize,
+                    getWithRole: eligibleRole);
+
+            var expectedTotalPages = 2;
+
+            response.TotalPages.Should().Be(expectedTotalPages);
         }
     }
 }

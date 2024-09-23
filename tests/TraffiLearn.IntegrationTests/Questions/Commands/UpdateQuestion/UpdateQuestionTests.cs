@@ -44,7 +44,7 @@ namespace TraffiLearn.IntegrationTests.Questions.Commands.UpdateQuestion
                     request: command,
                     sentFromRole: null);
 
-            var allQuestions = await ApiQuestionClient.GetAllQuestionsAsAuthorizedAsync();
+            var allQuestions = await ApiQuestionClient.GetPaginatedQuestionsAsAuthorizedAsync();
 
             allQuestions.Single().Explanation.Should().NotBe(updatedExplanation);
         }
@@ -239,7 +239,7 @@ namespace TraffiLearn.IntegrationTests.Questions.Commands.UpdateQuestion
                     request: command,
                     sentFromRole: nonEligibleRole);
 
-            var allQuestions = await ApiQuestionClient.GetAllQuestionsAsAuthorizedAsync();
+            var allQuestions = await ApiQuestionClient.GetPaginatedQuestionsAsAuthorizedAsync();
 
             allQuestions.Single().Explanation.Should().NotBe(updatedExplanation);
         }

@@ -58,13 +58,13 @@ namespace TraffiLearn.WebAPI.Controllers
         /// **Authentication Required:**<br />
         /// The user must be authenticated using a JWT token.
         /// </remarks>
-        /// <response code="200">Successfully retrieved all questions. Returns a list of questions.</response>
+        /// <response code="200">Successfully retrieved paginated questions. Returns a list of questions along with the total available pages count.</response>
         /// <response code="400">***Bad request.*** The provided data is invalid.</response>
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
         [HttpGet]
         [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(typeof(IEnumerable<QuestionResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginatedQuestionsResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetPaginatedQuestions(
@@ -89,7 +89,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// The user must be authenticated using a JWT token.<br /><br />
         /// </remarks>
         /// <param name="amount">**The amount of random questions to get**</param>
-        /// <response code="200">Successfully retrieved all questions. Returns a list of questions.</response>
+        /// <response code="200">Successfully the amount of random questions. Returns a list of questions.</response>
         /// <response code="400">***Bad request.*** The provided data is invalid.</response>
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
