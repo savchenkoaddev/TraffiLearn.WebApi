@@ -6,7 +6,7 @@ using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Questions.Queries.GetPaginated
 {
-    internal sealed class GetPaginatedQuestionsQueryHandler : IRequestHandler<GetPaginatedQuestionsQuery, Result<IEnumerable<PaginatedQuestionsResponse>>>
+    internal sealed class GetPaginatedQuestionsQueryHandler : IRequestHandler<GetPaginatedQuestionsQuery, Result<PaginatedQuestionsResponse>>
     {
         private readonly IQuestionRepository _questionRepository;
         private readonly Mapper<Question, QuestionResponse> _questionMapper;
@@ -19,8 +19,8 @@ namespace TraffiLearn.Application.Questions.Queries.GetPaginated
             _questionMapper = questionMapper;
         }
 
-        public async Task<Result<IEnumerable<PaginatedQuestionsResponse>>> Handle(
-            GetPaginatedQuestionsQuery request, 
+        public async Task<Result<PaginatedQuestionsResponse>> Handle(
+            GetPaginatedQuestionsQuery request,
             CancellationToken cancellationToken)
         {
             var questions = await _questionRepository.GetAllAsync(
@@ -28,7 +28,25 @@ namespace TraffiLearn.Application.Questions.Queries.GetPaginated
                 pageSize: request.PageSize,
                 cancellationToken: cancellationToken);
 
-            return Result.Success(_questionMapper.Map(questions));
+            int questionsCount = await _questionRepository.CountAsync(
+                cancellationToken);
+
+            int totalPages = CalculateTotalPages(
+                pageSize: request.PageSize,
+                questionsCount: questionsCount);
+
+            var questionsResponse = _questionMapper.Map(questions);
+
+            return new PaginatedQuestionsResponse(
+                Questions: questionsResponse,
+                TotalPages: totalPages);
+        }
+
+        private static int CalculateTotalPages(
+            int pageSize, 
+            int questionsCount)
+        {
+            return (int)Math.Ceiling((double)questionsCount / pageSize);
         }
     }
 }
