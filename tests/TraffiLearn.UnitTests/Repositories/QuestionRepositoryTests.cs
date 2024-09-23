@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
@@ -541,6 +542,30 @@ namespace TraffiLearn.UnitTests.Repositories
             // Assert
             page1Result.Should().Contain(question1).And.Contain(question2);
             page2Result.Should().Contain(question3);
+        }
+
+        [Fact]
+        public async Task CountAsync_IfNoQuestionsExist_ShouldReturnZero()
+        {
+            var count = await _repository.CountAsync();
+
+            count.Should().Be(0);
+        }
+
+        [Fact]
+        public async Task CountAsync_IfValidCase_ShouldReturnExpectedCount()
+        {
+            var question1 = QuestionFixtureFactory.CreateQuestion(number: 1);
+            var question2 = QuestionFixtureFactory.CreateQuestion(number: 2);
+            var question3 = QuestionFixtureFactory.CreateQuestion(number: 3);
+
+            await AddRangeAndSaveAsync(question1, question2, question3);
+
+            int count = await _repository.CountAsync();
+
+            int expectedCount = 3;
+
+            count.Should().Be(expectedCount);
         }
     }
 }
