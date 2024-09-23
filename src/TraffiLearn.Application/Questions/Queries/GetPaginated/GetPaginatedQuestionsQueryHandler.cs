@@ -4,14 +4,14 @@ using TraffiLearn.Application.Questions.DTO;
 using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Questions.Queries.GetAll
+namespace TraffiLearn.Application.Questions.Queries.GetPaginated
 {
-    internal sealed class GetAllQuestionsQueryHandler : IRequestHandler<GetAllQuestionsQuery, Result<IEnumerable<QuestionResponse>>>
+    internal sealed class GetPaginatedQuestionsQueryHandler : IRequestHandler<GetPaginatedQuestionsQuery, Result<IEnumerable<QuestionResponse>>>
     {
         private readonly IQuestionRepository _questionRepository;
         private readonly Mapper<Question, QuestionResponse> _questionMapper;
 
-        public GetAllQuestionsQueryHandler(
+        public GetPaginatedQuestionsQueryHandler(
             IQuestionRepository questionRepository,
             Mapper<Question, QuestionResponse> questionMapper)
         {
@@ -20,7 +20,7 @@ namespace TraffiLearn.Application.Questions.Queries.GetAll
         }
 
         public async Task<Result<IEnumerable<QuestionResponse>>> Handle(
-            GetAllQuestionsQuery request, 
+            GetPaginatedQuestionsQuery request, 
             CancellationToken cancellationToken)
         {
             var questions = await _questionRepository.GetAllAsync(
