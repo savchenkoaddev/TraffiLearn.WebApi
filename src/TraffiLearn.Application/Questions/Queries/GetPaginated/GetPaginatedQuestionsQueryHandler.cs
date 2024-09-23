@@ -6,7 +6,7 @@ using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Questions.Queries.GetPaginated
 {
-    internal sealed class GetPaginatedQuestionsQueryHandler : IRequestHandler<GetPaginatedQuestionsQuery, Result<IEnumerable<QuestionResponse>>>
+    internal sealed class GetPaginatedQuestionsQueryHandler : IRequestHandler<GetPaginatedQuestionsQuery, Result<IEnumerable<PaginatedQuestionsResponse>>>
     {
         private readonly IQuestionRepository _questionRepository;
         private readonly Mapper<Question, QuestionResponse> _questionMapper;
@@ -19,7 +19,7 @@ namespace TraffiLearn.Application.Questions.Queries.GetPaginated
             _questionMapper = questionMapper;
         }
 
-        public async Task<Result<IEnumerable<QuestionResponse>>> Handle(
+        public async Task<Result<IEnumerable<PaginatedQuestionsResponse>>> Handle(
             GetPaginatedQuestionsQuery request, 
             CancellationToken cancellationToken)
         {
