@@ -135,7 +135,7 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
 
             return await _dbContext.Comments
                 .Where(c => c.Question.Id == questionId)
-                .OrderBy(c => c.Id)
+                .OrderBy(c => c.Id.Value)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .Include(c => c.Replies)
