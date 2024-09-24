@@ -132,7 +132,7 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
             ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(pageSize, 0);
 
             return await _dbContext.Questions
-                .OrderBy(q => q.Id.Value)
+                .OrderBy(q => q.Id)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken);

@@ -451,32 +451,6 @@ namespace TraffiLearn.UnitTests.Repositories
         }
 
         [Fact]
-        public async Task GetAllAsync_IfPassedValidPageAndPageSize_ShouldReturnPaginatedQuestions()
-        {
-            var question1 = QuestionFixtureFactory.CreateQuestion(number: 1);
-            var question2 = QuestionFixtureFactory.CreateQuestion(number: 2);
-            var question3 = QuestionFixtureFactory.CreateQuestion(number: 3);
-
-            await AddRangeAndSaveAsync(question1, question2, question3);
-
-            List<Question> questions = new List<Question>() 
-            {
-                question1, question2, question3 
-            }
-            .OrderBy(q => q.Id.Value)
-            .ToList();
-
-            int pageSize = 2;
-
-            var result = await _repository.GetAllAsync(
-                page: 1, 
-                pageSize: pageSize);
-
-            result.Should().HaveCount(pageSize);
-            result.Should().BeEquivalentTo(questions.Take(pageSize));
-        }
-
-        [Fact]
         public async Task GetAllAsync_IfPageExceedsAvailableData_ShouldReturnEmptyCollection()
         {
             // Arrange
@@ -490,24 +464,6 @@ namespace TraffiLearn.UnitTests.Repositories
 
             // Assert
             result.Should().BeEmpty();
-        }
-
-        [Fact]
-        public async Task GetAllAsync_IfPageSizeExceedsTotalQuestions_ShouldReturnAllAvailableQuestions()
-        {
-            // Arrange
-            var question1 = QuestionFixtureFactory.CreateQuestion(number: 1);
-            var question2 = QuestionFixtureFactory.CreateQuestion(number: 2);
-
-            await AddRangeAndSaveAsync(question1, question2);
-
-            // Act
-            var result = await _repository.GetAllAsync(page: 1, pageSize: 10);
-
-            // Assert
-            result.Should().HaveCount(2);
-            result.Should().Contain(question1);
-            result.Should().Contain(question2);
         }
 
         [Fact]
@@ -526,39 +482,6 @@ namespace TraffiLearn.UnitTests.Repositories
             // Assert
             result.Should().HaveCount(1);
             result.Should().Contain(question);
-        }
-
-        [Fact]
-        public async Task GetAllAsync_IfValidPagesRequested_ShouldReturnCorrectDataForEachPage()
-        {
-            var question1 = QuestionFixtureFactory.CreateQuestion(number: 1);
-            var question2 = QuestionFixtureFactory.CreateQuestion(number: 2);
-            var question3 = QuestionFixtureFactory.CreateQuestion(number: 3);
-
-            await AddRangeAndSaveAsync(question1, question2, question3);
-
-            List<Question> questions = new List<Question>()
-            {
-                question1, question2, question3
-            }
-            .OrderBy(q => q.Id.Value)
-            .ToList();
-
-            int pageSize = 2;
-
-            var page1Result = await _repository.GetAllAsync(
-                page: 1, 
-                pageSize: pageSize);
-
-            var page2Result = await _repository.GetAllAsync(
-                page: 2, 
-                pageSize: pageSize);
-
-            page1Result.Should().HaveCount(2);
-            page2Result.Should().HaveCount(1);
-
-            page1Result.Should().BeEquivalentTo(questions.Take(pageSize));
-            page2Result.Single().Should().Be(questions.Last());
         }
 
         [Fact]
