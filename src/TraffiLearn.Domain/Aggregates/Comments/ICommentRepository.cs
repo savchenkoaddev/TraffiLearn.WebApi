@@ -21,6 +21,12 @@ namespace TraffiLearn.Domain.Aggregates.Comments
 
         Task<IEnumerable<Comment>> GetManyByQuestionIdWithRepliesAndCreatorsAsync(
             QuestionId questionId,
+            int page,
+            int pageSize,
+            CancellationToken cancellationToken = default);
+
+        Task<int> CountWithQuestionIdAsync(
+            QuestionId questionId,
             CancellationToken cancellationToken = default);
 
         Task<IEnumerable<Comment>> GetUserCreatedCommentsAsync(

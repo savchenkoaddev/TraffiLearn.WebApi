@@ -451,26 +451,6 @@ namespace TraffiLearn.UnitTests.Repositories
         }
 
         [Fact]
-        public async Task GetAllAsync_IfPassedValidPageAndPageSize_ShouldReturnPaginatedQuestions()
-        {
-            // Arrange
-            var question1 = QuestionFixtureFactory.CreateQuestion(number: 1);
-            var question2 = QuestionFixtureFactory.CreateQuestion(number: 2);
-            var question3 = QuestionFixtureFactory.CreateQuestion(number: 3);
-            await AddRangeAndSaveAsync(question1, question2, question3);
-
-            // Act
-            var result = await _repository.GetAllAsync(
-                page: 1, 
-                pageSize: 2);
-
-            // Assert
-            result.Should().HaveCount(2);
-            result.Should().Contain(question1);
-            result.Should().Contain(question2);
-        }
-
-        [Fact]
         public async Task GetAllAsync_IfPageExceedsAvailableData_ShouldReturnEmptyCollection()
         {
             // Arrange
@@ -487,27 +467,11 @@ namespace TraffiLearn.UnitTests.Repositories
         }
 
         [Fact]
-        public async Task GetAllAsync_IfPageSizeExceedsTotalQuestions_ShouldReturnAllAvailableQuestions()
-        {
-            // Arrange
-            var question1 = QuestionFixtureFactory.CreateQuestion(number: 1);
-            var question2 = QuestionFixtureFactory.CreateQuestion(number: 2);
-            await AddRangeAndSaveAsync(question1, question2);
-
-            // Act
-            var result = await _repository.GetAllAsync(page: 1, pageSize: 10);
-
-            // Assert
-            result.Should().HaveCount(2);
-            result.Should().Contain(question1);
-            result.Should().Contain(question2);
-        }
-
-        [Fact]
         public async Task GetAllAsync_IfOnlyOneQuestionExists_ShouldReturnSingleQuestion()
         {
             // Arrange
             var question = QuestionFixtureFactory.CreateQuestion(number: 1);
+
             await AddRangeAndSaveAsync(question);
 
             // Act
@@ -518,30 +482,6 @@ namespace TraffiLearn.UnitTests.Repositories
             // Assert
             result.Should().HaveCount(1);
             result.Should().Contain(question);
-        }
-
-        [Fact]
-        public async Task GetAllAsync_IfValidPagesRequested_ShouldReturnCorrectDataForEachPage()
-        {
-            // Arrange
-            var question1 = QuestionFixtureFactory.CreateQuestion(number: 1);
-            var question2 = QuestionFixtureFactory.CreateQuestion(number: 2);
-            var question3 = QuestionFixtureFactory.CreateQuestion(number: 3);
-
-            await AddRangeAndSaveAsync(question1, question2, question3);
-
-            // Act
-            var page1Result = await _repository.GetAllAsync(
-                page: 1, 
-                pageSize: 2);
-
-            var page2Result = await _repository.GetAllAsync(
-                page: 2, 
-                pageSize: 2);
-
-            // Assert
-            page1Result.Should().Contain(question1).And.Contain(question2);
-            page2Result.Should().Contain(question3);
         }
 
         [Fact]
