@@ -4,10 +4,10 @@ using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Users.Identity;
 using TraffiLearn.Infrastructure.Persistence.Interceptors;
 using TraffiLearn.Infrastructure.Persistence;
-using Microsoft.Extensions.Options;
 using TraffiLearn.Infrastructure.Persistence.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using TraffiLearn.Infrastructure.Extensions.DI.Shared;
 
 namespace TraffiLearn.Infrastructure.Extensions.DI
 {

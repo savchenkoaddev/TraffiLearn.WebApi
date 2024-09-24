@@ -14,7 +14,7 @@ namespace TraffiLearn.WebAPI.Extensions.DI
             {
                 ConfigureSwaggerAuthorization(options);
 
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlFile = GetSwaggerXmlFile();
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 
                 options.IncludeXmlComments(xmlPath);
@@ -23,20 +23,19 @@ namespace TraffiLearn.WebAPI.Extensions.DI
             return services;
         }
 
+        private static string GetSwaggerXmlFile()
+        {
+            return $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        }
+
         private static void ConfigureSwaggerAuthorization(SwaggerGenOptions options)
         {
-            options.AddSecurityDefinition(
-                JwtBearerDefaults.AuthenticationScheme,
-                new OpenApiSecurityScheme
-                {
-                    Name = HeaderNames.Authorization,
-                    Type = SecuritySchemeType.Http,
-                    Scheme = JwtBearerDefaults.AuthenticationScheme,
-                    BearerFormat = "JWT",
-                    In = ParameterLocation.Header,
-                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer { token }\""
-                });
+            options.ConfigureAppSecurityDefinitions();
+            options.ConfigureAppSecurityRequirements();
+        }
 
+        private static SwaggerGenOptions ConfigureAppSecurityDefinitions(this SwaggerGenOptions options)
+        {
             options.AddSecurityRequirement(
                 new OpenApiSecurityRequirement
                 {
@@ -52,6 +51,25 @@ namespace TraffiLearn.WebAPI.Extensions.DI
                         new string[] { }
                     }
                 });
+
+            return options;
+        }
+
+        private static SwaggerGenOptions ConfigureAppSecurityRequirements(this SwaggerGenOptions options)
+        {
+            options.AddSecurityDefinition(
+                JwtBearerDefaults.AuthenticationScheme,
+                new OpenApiSecurityScheme
+                {
+                    Name = HeaderNames.Authorization,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = JwtBearerDefaults.AuthenticationScheme,
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer { token }\""
+                });
+
+            return options;
         }
     }
 }

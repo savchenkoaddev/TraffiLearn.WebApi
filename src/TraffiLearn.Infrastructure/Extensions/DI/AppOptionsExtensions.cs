@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Questions.Options;
 using TraffiLearn.Infrastructure.Authentication.Options;
 using TraffiLearn.Infrastructure.Extensions.DI.Shared;
@@ -9,7 +8,7 @@ using TraffiLearn.Infrastructure.Persistence.Options;
 
 namespace TraffiLearn.Infrastructure.Extensions.DI
 {
-    internal static class OptionsExtensions
+    internal static class AppOptionsExtensions
     {
         public static IServiceCollection AddAppOptions(
             this IServiceCollection services)
@@ -21,12 +20,6 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
             services.ConfigureValidatableOnStartOptions<GroqApiSettings>(GroqApiSettings.SectionName);
 
             return services;
-        }
-
-        public static TOptions GetOptions<TOptions>(this IServiceProvider serviceProvider)
-            where TOptions : class
-        {
-            return serviceProvider.GetRequiredService<IOptions<TOptions>>().Value;
         }
     }
 }

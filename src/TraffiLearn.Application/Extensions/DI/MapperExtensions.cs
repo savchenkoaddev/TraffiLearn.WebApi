@@ -32,27 +32,38 @@ namespace TraffiLearn.Application.Extensions.DI
     {
         public static IServiceCollection AddMappers(this IServiceCollection services)
         {
-            services.AddScoped<Mapper<Question, QuestionResponse>,
+            services.AddMapper<Question, QuestionResponse,
                 QuestionToQuestionResponseMapper>();
-            services.AddScoped<Mapper<Topic, TopicResponse>, TopicToTopicResponseMapper>();
-            services.AddScoped<Mapper<CreateTopicCommand, Result<Topic>>,
+            services.AddMapper<Topic, TopicResponse, TopicToTopicResponseMapper>();
+            services.AddMapper<CreateTopicCommand, Result<Topic>,
                 CreateTopicCommandMapper>();
-            services.AddScoped<Mapper<CreateQuestionCommand, Result<Question>>,
+            services.AddMapper<CreateQuestionCommand, Result<Question>,
                 CreateQuestionCommandMapper>();
-            services.AddScoped<Mapper<CreateTicketCommand, Result<Ticket>>, CreateTicketCommandMapper>();
-            services.AddScoped<Mapper<Ticket, TicketResponse>,
+            services.AddMapper<CreateTicketCommand, Result<Ticket>, CreateTicketCommandMapper>();
+            services.AddMapper<Ticket, TicketResponse,
                 TicketToTicketResponseMapper>();
-            services.AddScoped<Mapper<RegisterUserCommand, Result<User>>,
+            services.AddMapper<RegisterUserCommand, Result<User>,
                 RegisterUserCommandMapper>();
-            services.AddScoped<Mapper<UpdateQuestionCommand, Result<Question>>,
+            services.AddMapper<UpdateQuestionCommand, Result<Question>,
                 UpdateQuestionCommandMapper>();
-            services.AddScoped<Mapper<UpdateTopicCommand, Result<Topic>>,
+            services.AddMapper<UpdateTopicCommand, Result<Topic>,
                 UpdateTopicCommandMapper>();
-            services.AddScoped<Mapper<Comment, CommentResponse>,
+            services.AddMapper<Comment, CommentResponse,
                 CommentToCommentResponseMapper>();
-            services.AddScoped<Mapper<RegisterAdminCommand, Result<User>>, RegisterAdminCommandMapper>();
-            services.AddScoped<Mapper<User, ApplicationUser>, UserToApplicationUserMapper>();
-            services.AddScoped<Mapper<User, UserResponse>, UserToUserResponseMapper>();
+            services.AddMapper<RegisterAdminCommand, Result<User>, RegisterAdminCommandMapper>();
+            services.AddMapper<User, ApplicationUser, UserToApplicationUserMapper>();
+            services.AddMapper<User, UserResponse, UserToUserResponseMapper>();
+
+            return services;
+        }
+
+        private static IServiceCollection AddMapper<TSource, TDestination, TMapper>(
+            this IServiceCollection services)
+            where TSource : class
+            where TDestination : class
+            where TMapper : Mapper<TSource, TDestination>
+        {
+            services.AddScoped<Mapper<TSource, TDestination>, TMapper>();
 
             return services;
         }

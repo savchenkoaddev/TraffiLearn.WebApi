@@ -6,6 +6,7 @@ using System.Net.Mime;
 using TraffiLearn.Application.Abstractions.AI;
 using TraffiLearn.Infrastructure.External.GroqAI.Options;
 using TraffiLearn.Infrastructure.External.GroqAI;
+using TraffiLearn.Infrastructure.Extensions.DI.Shared;
 
 namespace TraffiLearn.Infrastructure.Extensions.DI
 {

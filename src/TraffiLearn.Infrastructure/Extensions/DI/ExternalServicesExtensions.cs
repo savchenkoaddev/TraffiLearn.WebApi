@@ -4,6 +4,7 @@ using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.DependencyInjection;
 using TraffiLearn.Application.Abstractions.AI;
 using TraffiLearn.Application.Abstractions.Storage;
+using TraffiLearn.Infrastructure.Extensions.DI.Shared;
 using TraffiLearn.Infrastructure.External.Blobs;
 using TraffiLearn.Infrastructure.External.Blobs.Options;
 using TraffiLearn.Infrastructure.External.GroqAI;

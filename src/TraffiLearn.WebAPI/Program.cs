@@ -3,11 +3,9 @@ using Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Integrations;
 using TraffiLearn.Application;
 using TraffiLearn.Infrastructure;
 using TraffiLearn.Infrastructure.Extensions;
-using TraffiLearn.Infrastructure.Extensions.DI.Shared;
 using TraffiLearn.WebAPI.Extensions;
 using TraffiLearn.WebAPI.Extensions.DI;
 using TraffiLearn.WebAPI.Middleware;
-using TraffiLearn.WebAPI.Options;
 
 namespace TraffiLearn.WebAPI
 {
@@ -28,10 +26,9 @@ namespace TraffiLearn.WebAPI
             builder.Services.AddApplication(builder.Configuration);
             builder.Services.AddInfrastructure();
 
-            builder.Services.ConfigureValidatableOnStartOptions<SuperUserSettings>(
-                SuperUserSettings.SectionName);
+            builder.Services.AddPresentationOptions();
 
-            builder.Services.ConfigureAuthentication(builder.Configuration);
+            builder.Services.ConfigureAuthentication();
 
             builder.Services.ConfigureAuthorization();
 
@@ -47,7 +44,7 @@ namespace TraffiLearn.WebAPI
             app.UseSwagger();
             app.UseSwaggerUI();
             app.ApplyMigration();
-            
+
             app.UseRouting();
 
             app.UseAuthentication();
