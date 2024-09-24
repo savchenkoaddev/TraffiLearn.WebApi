@@ -238,7 +238,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
         [HttpGet("{questionId:guid}/comments")]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
-        [ProducesResponseType(typeof(IEnumerable<CommentResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginatedCommentsResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
