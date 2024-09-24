@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Helpers;
 using TraffiLearn.Application.Questions.DTO;
 using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Shared;
@@ -31,22 +32,15 @@ namespace TraffiLearn.Application.Questions.Queries.GetPaginated
             int questionsCount = await _questionRepository.CountAsync(
                 cancellationToken);
 
-            int totalPages = CalculateTotalPages(
+            int totalPages = PaginationCalculator.CalculateTotalPages(
                 pageSize: request.PageSize,
-                questionsCount: questionsCount);
+                itemsCount: questionsCount);
 
             var questionsResponse = _questionMapper.Map(questions);
 
             return new PaginatedQuestionsResponse(
                 Questions: questionsResponse,
                 TotalPages: totalPages);
-        }
-
-        private static int CalculateTotalPages(
-            int pageSize, 
-            int questionsCount)
-        {
-            return (int)Math.Ceiling((double)questionsCount / pageSize);
         }
     }
 }

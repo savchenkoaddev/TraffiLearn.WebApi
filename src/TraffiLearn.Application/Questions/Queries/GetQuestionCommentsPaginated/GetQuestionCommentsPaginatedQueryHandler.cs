@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Comments.DTO;
+using TraffiLearn.Application.Helpers;
 using TraffiLearn.Domain.Aggregates.Comments;
 using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Questions.Errors;
@@ -11,7 +12,7 @@ namespace TraffiLearn.Application.Questions.Queries.GetQuestionCommentsPaginated
 {
     internal sealed class GetQuestionCommentsPaginatedQueryHandler
         : IRequestHandler<GetQuestionCommentsPaginatedQuery,
-            Result<IEnumerable<CommentResponse>>>
+            Result<PaginatedCommentsResponse>>
     {
         private readonly ICommentRepository _commentRepository;
         private readonly IQuestionRepository _questionRepository;
@@ -27,7 +28,7 @@ namespace TraffiLearn.Application.Questions.Queries.GetQuestionCommentsPaginated
             _commentMapper = commentMapper;
         }
 
-        public async Task<Result<IEnumerable<CommentResponse>>> Handle(
+        public async Task<Result<PaginatedCommentsResponse>> Handle(
             GetQuestionCommentsPaginatedQuery request,
             CancellationToken cancellationToken)
         {
@@ -39,7 +40,7 @@ namespace TraffiLearn.Application.Questions.Queries.GetQuestionCommentsPaginated
 
             if (!exists)
             {
-                return Result.Failure<IEnumerable<CommentResponse>>(
+                return Result.Failure<PaginatedCommentsResponse>(
                    QuestionErrors.NotFound);
             }
 
@@ -50,7 +51,19 @@ namespace TraffiLearn.Application.Questions.Queries.GetQuestionCommentsPaginated
                     pageSize: request.PageSize,
                     cancellationToken);
 
-            return Result.Success(_commentMapper.Map(comments));
+            var commentsCount = await _commentRepository.CountWithQuestionIdAsync(
+                questionId,
+                cancellationToken);
+
+            var totalPages = PaginationCalculator.CalculateTotalPages(
+                pageSize: request.PageSize,
+                itemsCount: commentsCount);
+
+            var commentsResponse = _commentMapper.Map(comments);
+
+            return Result.Success(new PaginatedCommentsResponse(
+                Comments: commentsResponse,
+                TotalPages: totalPages));
         }
     }
 }
