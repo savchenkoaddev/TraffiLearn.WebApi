@@ -14,7 +14,7 @@ namespace TraffiLearn.Application.Questions.Queries.GetQuestionCommentsPaginated
                 .GreaterThanOrEqualTo(1);
 
             RuleFor(x => x.PageSize)
-                .GreaterThanOrEqualTo(1);
+                .InclusiveBetween(1, 50);
         }
     }
 }

@@ -58,6 +58,8 @@ namespace TraffiLearn.WebAPI.Controllers
         /// **Authentication Required:**<br />
         /// The user must be authenticated using a JWT token.
         /// </remarks>
+        /// <param name="page">**Number of a page to get.**</param>
+        /// <param name="pageSize">**Size of a page (amount of questions).**</param>
         /// <response code="200">Successfully retrieved paginated questions. Returns a list of questions along with the total available pages count.</response>
         /// <response code="400">***Bad request.*** The provided data is invalid.</response>
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
@@ -214,30 +216,42 @@ namespace TraffiLearn.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Gets all comments associated with a question by a question id.
+        /// Gets paginated comments associated with a question by a question id.
         /// </summary>
         /// <remarks>
         /// **The request must include an ID of a question.**<br /><br /><br />
         /// ***Route parameters:***<br /><br />
         /// `QuestionId` : Must be a valid GUID representing ID of a question.<br /><br /><br />
+        /// ***Query parameters:***<br /><br />
+        /// `Page` : Must be a number greater or equal to 1. Not required field (the default value is: **1**).<br /><br />
+        /// `PageSize` : Represents amount of comments in a page. Must be a number greater or equal to 1. Not required field (the default value is: **10**).<br /><br /><br />
         /// **Authentication Required:**<br />
         /// The user must be authenticated using a JWT token.<br /><br />
         /// </remarks>
         /// <param name="questionId">**The ID of a question used to find related comments.**</param>
+        /// <param name="page">**Number of a page to get.**</param>
+        /// <param name="pageSize">**Size of a page (amount of questions).**</param>
         /// <response code="200">Successfully retrieved comments associated with the question with the provided ID. Returns a list of comments.</response>
+        /// <response code="400">***Bad request.*** The provided data is invalid or missing.</response>
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="404">***Not found.*** No question exists with the provided ID.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
         [HttpGet("{questionId:guid}/comments")]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(IEnumerable<CommentResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetQuestionComments(
-            [FromRoute] Guid questionId)
+            [FromRoute] Guid questionId,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
         {
             var queryResult = await _sender.Send(
-                new GetQuestionCommentsPaginatedQuery(questionId));
+                new GetQuestionCommentsPaginatedQuery(
+                    QuestionId: questionId,
+                    Page: page,
+                    PageSize: pageSize));
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }

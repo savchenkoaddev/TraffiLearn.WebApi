@@ -47,7 +47,7 @@ namespace TraffiLearn.Application.Questions.Queries.GetQuestionCommentsPaginated
                 .GetManyByQuestionIdWithRepliesAndCreatorsAsync(
                     questionId,
                     page: request.Page,
-                    pageSize: request.PageCount,
+                    pageSize: request.PageSize,
                     cancellationToken);
 
             return Result.Success(_commentMapper.Map(comments));
