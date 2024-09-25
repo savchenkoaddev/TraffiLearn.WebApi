@@ -46,7 +46,7 @@ namespace TraffiLearn.WebAPI.Controllers
         [HttpGet]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(IEnumerable<TicketResponse>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllTickets()
         {
             var queryResult = await _sender.Send(new GetAllTicketsQuery());
@@ -67,7 +67,7 @@ namespace TraffiLearn.WebAPI.Controllers
         [HttpGet("random/with-questions")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(TicketResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetRandomTicketWithQuestions()
         {
             var queryResult = await _sender.Send(new GetRandomTicketWithQuestionsQuery());
@@ -93,8 +93,8 @@ namespace TraffiLearn.WebAPI.Controllers
         [HttpGet("{ticketId:guid}")]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(TicketResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetTicketById(
             [FromRoute] Guid ticketId)
         {
@@ -212,6 +212,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// Adds a question to a ticket.
         /// </summary>
         /// <remarks>
+        /// **If question is added to the ticket**, the question will contain the ticket (ID).<br /><br />
         /// **The request must include the ID of the question and ticket.**<br /><br /><br />
         /// ***Route parameters:***<br /><br />
         /// `QuestionId` : Must be a valid GUID representing ID of the question.<br /><br />
@@ -248,6 +249,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// Removes a question from a ticket.
         /// </summary>
         /// <remarks>
+        /// **If question is removed from the ticket**, The ticket (ID) will be removed from question.<br /><br />
         /// **The request must include the ID of the question and ticket.**<br /><br /><br />
         /// ***Route parameters:***<br /><br />
         /// `QuestionId` : Must be a valid GUID representing ID of the question.<br /><br />
