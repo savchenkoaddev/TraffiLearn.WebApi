@@ -407,7 +407,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// The user must be authenticated using a JWT token. Only users with the `Owner` or `Admin` role can perform this action.<br /><br />
         /// </remarks>
         /// <param name="command">**The update question command.**</param>  
-        /// <response code="201">Successfully updated an existing question.</response>
+        /// <response code="204">Successfully updated an existing question.</response>
         /// <response code="400">***Bad request.*** The provided data is invalid or missing.</response>
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
@@ -416,6 +416,7 @@ namespace TraffiLearn.WebAPI.Controllers
         [HasPermission(Permission.ModifyData)]
         [HttpPut]
         [Consumes(MediaTypeNames.Multipart.FormData)]
+        [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
@@ -438,7 +439,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// The user must be authenticated using a JWT token. Only users with the `Owner` or `Admin` role can perform this action.<br /><br />
         /// </remarks>
         /// <param name="questionId">**The ID of the question to be deleted.**</param>  
-        /// <response code="201">Successfully deleted the question.</response>
+        /// <response code="204">Successfully deleted the question.</response>
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
         /// <response code="404">***Not found.*** Question with the provided id is not found.</response>
