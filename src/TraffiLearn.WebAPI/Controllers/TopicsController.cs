@@ -58,6 +58,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// Gets a random topic with questions included.
         /// </summary>
         /// <remarks>
+        /// **Authentication Required:**<br />
         /// The user must be authenticated using a JWT token.
         /// </remarks>
         /// <response code="200">Successfully retrieved topic with questions. Returns a topic.</response>
@@ -208,7 +209,7 @@ namespace TraffiLearn.WebAPI.Controllers
 
         /// <summary>
         /// Adds a question to a topic.
-        /// </summary>
+        /// </summary>  
         /// <remarks>
         /// **The request must include the ID of the question and topic.**<br /><br /><br />
         /// ***Route parameters:***<br /><br />
@@ -217,7 +218,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// ***Authentication Required:***<br /><br />
         /// The user must be authenticated using a JWT token. Only users with the `Owner` or `Admin` role can perform this action.<br /><br />
         /// </remarks>
-        /// <param name="questionId">**The ID of the question to be added to topic.**</param>
+        /// <param name="questionId">**The ID of the question to be added to the topic.**</param>
         /// <param name="topicId">**The ID of the topic to which the question will be added.**</param>
         /// <response code="204">Successfully added question to topic.</response>
         /// <response code="400">***Bad request.*** The provided data is invalid or missing.</response>
