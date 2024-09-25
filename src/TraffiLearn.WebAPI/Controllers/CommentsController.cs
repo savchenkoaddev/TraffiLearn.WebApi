@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Mime;
 using TraffiLearn.Application.Comments.Commands.DeleteComment;
 using TraffiLearn.Application.Comments.Commands.Reply;
 using TraffiLearn.Application.Comments.Commands.UpdateComment;
+using TraffiLearn.Application.Comments.DTO;
 using TraffiLearn.Application.Comments.Queries.GetCommentReplies;
 using TraffiLearn.Application.Users.Commands.DislikeComment;
 using TraffiLearn.Application.Users.Commands.LikeComment;
@@ -10,6 +12,7 @@ using TraffiLearn.Application.Users.Commands.RemoveCommentDislike;
 using TraffiLearn.Application.Users.Commands.RemoveCommentLike;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
+using TraffiLearn.WebAPI.Swagger;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
@@ -28,8 +31,28 @@ namespace TraffiLearn.WebAPI.Controllers
         #region Queries
 
 
+        /// <summary>
+        /// Gets all replies to a comment.
+        /// </summary>
+        /// <remarks>
+        /// **The request must include an ID of a comment.**<br /><br /><br />
+        /// ***Route parameters:***<br /><br />
+        /// `CommentId` : Must be a valid GUID of a comment.<br /><br /><br />
+        /// **Authentication Required:**<br />
+        /// The user must be authenticated using a JWT token.
+        /// </remarks>
+        /// <param name="commentId">**The ID of a comment, which replies are being retrieved**</param>
+        /// <response code="200">Successfully retrieved comment replies with the provided comment ID. Returns comment replies.</response>
+        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+        /// <response code="404">***Not found.*** No comment exists with the provided ID.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
         [HttpGet("{commentId:guid}/replies")]
-        public async Task<IActionResult> GetCommentReplies(Guid commentId)
+        [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
+        [ProducesResponseType(typeof(CommentResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetCommentReplies(
+            [FromRoute] Guid commentId)
         {
             var queryResult = await _sender.Send(new GetCommentsRepliesQuery(commentId));
 
@@ -42,7 +65,29 @@ namespace TraffiLearn.WebAPI.Controllers
         #region Commands
 
 
+        /// <summary>
+        /// Adds reply to a comment.
+        /// </summary>
+        /// <remarks>
+        /// **If added reply**, comment is going to contain the reply.<br /><br />
+        /// ***Parameters:***<br /><br />
+        /// `CommentId` : ID of the comment to reply to. Must be a valid GUID.<br /><br />
+        /// `Content` : Content of the reply. Must be less than 500 characters long.<br /><br />
+        /// **Authentication Required:**<br />
+        /// The user must be authenticated using a JWT token.
+        /// </remarks>
+        /// <param name="replyCommand">The reply command.</param>
+        /// <response code="204">Successfully replied to a comment.</response>
+        /// <response code="400">***Bad request.*** The provided data is invalid or missing.</response>
+        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+        /// <response code="404">***Not found.*** Comment with the id is not found.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
         [HttpPost("reply")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Reply(ReplyCommand replyCommand)
         {
             var commandResult = await _sender.Send(replyCommand);
@@ -50,8 +95,30 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
+        /// <summary>
+        /// Updates an existing comment.
+        /// </summary>
+        /// <remarks>
+        /// ***Parameters:***<br /><br />
+        /// `CommentId` : ID of the comment to be updated. Must be a valid GUID.<br /><br />
+        /// `Content` : Content of the comment. Must be less than 500 characters long.<br /><br />
+        /// **Authentication Required:**<br />
+        /// The user must be authenticated using a JWT token. Only users with the `Owner` or `Admin` role can perform this action.<br /><br />
+        /// </remarks>
+        /// <param name="command"></param>
+        /// <response code="204">Successfully updated an existing comment.</response>
+        /// <response code="400">***Bad request.*** The provided data is invalid or missing.</response>
+        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+        /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
+        /// <response code="404">***Not found.*** Comment with the id is not found.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
         [HasPermission(Permission.ModifyData)]
         [HttpPut]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateComment(UpdateCommentCommand command)
         {
             var commandResult = await _sender.Send(command);
@@ -59,41 +126,141 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
+        /// <summary>
+        /// Deletes a comment.
+        /// </summary>
+        /// <remarks>
+        /// **The request must include the ID of the comment.**<br /><br /><br />
+        /// ***Route parameters:***<br /><br />
+        /// `CommentId` : Must be a valid GUID representing ID of the comment.<br /><br /><br />
+        /// **Authentication Required:**<br />
+        /// The user must be authenticated using a JWT token. Only users with the `Owner` or `Admin` role can perform this action.<br /><br />
+        /// </remarks>
+        /// <param name="commentId">**The ID of the comment to be deleted.**</param>
+        /// <response code="204">Successfully deleted the comment.</response>
+        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+        /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
+        /// <response code="404">***Not found.*** Comment with the provided id is not found.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
         [HasPermission(Permission.ModifyData)]
         [HttpDelete("{commentId:guid}")]
-        public async Task<IActionResult> DeleteComment(Guid commentId)
+        [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteComment(
+            [FromRoute] Guid commentId)
         {
             var commandResult = await _sender.Send(new DeleteCommentCommand(commentId));
 
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
+        /// <summary>
+        /// Adds like to a comment.
+        /// </summary>
+        /// <remarks>
+        /// **The request must include the ID of the comment.**<br /><br /><br />
+        /// ***Route parameters:***<br /><br />
+        /// `CommentId` : ID of the comment to like. Must be a valid GUID.<br /><br /><br />
+        /// **Authentication Required:**<br />
+        /// The user must be authenticated using a JWT token. Only users with the `Owner` or `Admin` role can perform this action.<br /><br />
+        /// </remarks>
+        /// <param name="commentId"></param>
+        /// <response code="204">Successfully liked the comment.</response>
+        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+        /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
+        /// <response code="404">***Not found.*** Comment with the provided id is not found.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
         [HttpPut("{commentId:guid}/like")]
-        public async Task<IActionResult> LikeComment(Guid commentId)
+        [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> LikeComment(
+            [FromRoute] Guid commentId)
         {
             var commandResult = await _sender.Send(new LikeCommentCommand(commentId));
 
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
+        /// <summary>
+        /// Adds dislike to a comment.
+        /// </summary>
+        /// <remarks>
+        /// **The request must include the ID of the comment.**<br /><br /><br />
+        /// ***Route parameters:***<br /><br />
+        /// `CommentId` : ID of the comment to dislike. Must be a valid GUID.<br /><br /><br />
+        /// **Authentication Required:**<br />
+        /// The user must be authenticated using a JWT token. Only users with the `Owner` or `Admin` role can perform this action.<br /><br />
+        /// </remarks>
+        /// <param name="commentId"></param>
+        /// <response code="204">Successfully disliked the comment.</response>
+        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+        /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
+        /// <response code="404">***Not found.*** Comment with the provided id is not found.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
         [HttpPut("{commentId:guid}/dislike")]
-        public async Task<IActionResult> DislikeComment(Guid commentId)
+        [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DislikeComment(
+            [FromRoute] Guid commentId)
         {
             var commandResult = await _sender.Send(new DislikeCommentCommand(commentId));
 
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
+        /// <summary>
+        /// Removes like from a comment.
+        /// </summary>
+        /// <remarks>
+        /// **The request must include the ID of the comment.**<br /><br /><br />
+        /// ***Route parameters:***<br /><br />
+        /// `CommentId` : ID of the comment to remove like from. Must be a valid GUID.<br /><br /><br />
+        /// **Authentication Required:**<br />
+        /// The user must be authenticated using a JWT token. Only users with the `Owner` or `Admin` role can perform this action.<br /><br />
+        /// </remarks>
+        /// <param name="commentId"></param>
+        /// <response code="204">Successfully removed like from the comment.</response>
+        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+        /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
+        /// <response code="404">***Not found.*** Comment with the provided id is not found.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
         [HttpPut("{commentId:guid}/remove-like")]
-        public async Task<IActionResult> RemoveCommentLike(Guid commentId)
+        [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> RemoveCommentLike(
+            [FromRoute] Guid commentId)
         {
             var commandResult = await _sender.Send(new RemoveCommentLikeCommand(commentId));
 
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
+        /// <summary>
+        /// Removes dislike from a comment.
+        /// </summary>
+        /// <remarks>
+        /// **The request must include the ID of the comment.**<br /><br /><br />
+        /// ***Route parameters:***<br /><br />
+        /// `CommentId` : ID of the comment to remove dislike from. Must be a valid GUID.<br /><br /><br />
+        /// **Authentication Required:**<br />
+        /// The user must be authenticated using a JWT token. Only users with the `Owner` or `Admin` role can perform this action.<br /><br />
+        /// </remarks>
+        /// <param name="commentId"></param>
+        /// <response code="204">Successfully removed dislike from the comment.</response>
+        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+        /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
+        /// <response code="404">***Not found.*** Comment with the provided id is not found.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
         [HttpPut("{commentId:guid}/remove-dislike")]
-        public async Task<IActionResult> RemoveCommentDislike(Guid commentId)
+        [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> RemoveCommentDislike(
+            [FromRoute] Guid commentId)
         {
             var commandResult = await _sender.Send(new RemoveCommentDislikeCommand(commentId));
 
