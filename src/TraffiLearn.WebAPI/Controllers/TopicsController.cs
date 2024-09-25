@@ -140,7 +140,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// Creates a new topic.
         /// </summary>
         /// <remarks>
-        /// ***Parameters:***<br /><br />
+        /// ***Body Parameters:***<br /><br />
         /// `TopicNumber` : Number of the topic. Must be greater than 0.<br /><br />
         /// `Title` : Title of the topic. Must be less than 300 characters long.<br /><br />
         /// **Authentication Required:**<br />
@@ -292,7 +292,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="204">Successfully deleted the topic.</response>
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
-        /// <response code="404">***Not found.*** Question with the provided id is not found.</response>
+        /// <response code="404">***Not found.*** Topic with the provided id is not found.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
         [HasPermission(Permission.ModifyData)]
         [HttpDelete("{topicId:guid}")]
