@@ -32,7 +32,7 @@ namespace TraffiLearn.WebAPI.Controllers
 
 
         /// <summary>
-        /// Gets all replies to a comment.
+        /// Gets all replies of a comment.
         /// </summary>
         /// <remarks>
         /// **The request must include an ID of a comment.**<br /><br /><br />
@@ -66,13 +66,14 @@ namespace TraffiLearn.WebAPI.Controllers
 
 
         /// <summary>
-        /// Adds reply to a comment.
+        /// Adds a reply to a comment.
         /// </summary>
         /// <remarks>
+        /// **Reply** is basically a comment that is a response to another comment.<br /><br />
         /// **If added reply**, comment is going to contain the reply.<br /><br />
         /// ***Parameters:***<br /><br />
         /// `CommentId` : ID of the comment to reply to. Must be a valid GUID.<br /><br />
-        /// `Content` : Content of the reply. Must be less than 500 characters long.<br /><br />
+        /// `Content` : Content of the reply. Must not be empty. Must be less than 500 characters long.<br /><br />
         /// **Authentication Required:**<br />
         /// The user must be authenticated using a JWT token.
         /// </remarks>
@@ -88,7 +89,8 @@ namespace TraffiLearn.WebAPI.Controllers
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Reply(ReplyCommand replyCommand)
+        public async Task<IActionResult> Reply(
+            [FromBody] ReplyCommand replyCommand)
         {
             var commandResult = await _sender.Send(replyCommand);
 
@@ -101,7 +103,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <remarks>
         /// ***Parameters:***<br /><br />
         /// `CommentId` : ID of the comment to be updated. Must be a valid GUID.<br /><br />
-        /// `Content` : Content of the comment. Must be less than 500 characters long.<br /><br />
+        /// `Content` : Content of the comment. Must not be empty. Must be less than 500 characters long.<br /><br />
         /// **Authentication Required:**<br />
         /// The user must be authenticated using a JWT token. Only users with the `Owner` or `Admin` role can perform this action.<br /><br />
         /// </remarks>
@@ -119,7 +121,8 @@ namespace TraffiLearn.WebAPI.Controllers
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateComment(UpdateCommentCommand command)
+        public async Task<IActionResult> UpdateComment(
+            [FromBody] UpdateCommentCommand command)
         {
             var commandResult = await _sender.Send(command);
 
@@ -156,9 +159,11 @@ namespace TraffiLearn.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Adds like to a comment.
+        /// Adds a like to a comment.
         /// </summary>
         /// <remarks>
+        /// **If comment is liked**, comment can not be liked.<br /><br />
+        /// **If comment is disliked**, comment should be undisliked first and then liked.<br /><br />
         /// **The request must include the ID of the comment.**<br /><br /><br />
         /// ***Route parameters:***<br /><br />
         /// `CommentId` : ID of the comment to like. Must be a valid GUID.<br /><br /><br />
@@ -184,9 +189,11 @@ namespace TraffiLearn.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Adds dislike to a comment.
+        /// Adds a dislike to a comment.
         /// </summary>
         /// <remarks>
+        /// **If comment is disliked**, comment can not be liked.<br /><br />
+        /// **If comment is liked**, comment should be unliked first and then disliked.<br /><br />
         /// **The request must include the ID of the comment.**<br /><br /><br />
         /// ***Route parameters:***<br /><br />
         /// `CommentId` : ID of the comment to dislike. Must be a valid GUID.<br /><br /><br />
@@ -212,9 +219,10 @@ namespace TraffiLearn.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Removes like from a comment.
+        /// Removes a like from a comment.
         /// </summary>
         /// <remarks>
+        /// **If comment is not liked**, comment can not be unliked.<br /><br />
         /// **The request must include the ID of the comment.**<br /><br /><br />
         /// ***Route parameters:***<br /><br />
         /// `CommentId` : ID of the comment to remove like from. Must be a valid GUID.<br /><br /><br />
@@ -240,9 +248,10 @@ namespace TraffiLearn.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Removes dislike from a comment.
+        /// Removes a dislike from a comment.
         /// </summary>
         /// <remarks>
+        /// **If comment is not disliked**, comment can not be undisliked.<br /><br />
         /// **The request must include the ID of the comment.**<br /><br /><br />
         /// ***Route parameters:***<br /><br />
         /// `CommentId` : ID of the comment to remove dislike from. Must be a valid GUID.<br /><br /><br />
