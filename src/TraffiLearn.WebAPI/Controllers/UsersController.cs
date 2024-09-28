@@ -199,6 +199,8 @@ namespace TraffiLearn.WebAPI.Controllers
         /// Downgrades the account of a user with a specific ID.
         /// </summary>
         /// <remarks>
+        /// **If account getting downgraded has role `Admin`**, user will be downgraded to the role `RegularUser`.<br /><br />
+        /// **`RegularUser` and `Owner` roles cannot be downgraded.**<br /><br />
         /// **The request must include an ID of a user.**<br /><br /><br />
         /// ***Route parameters:***<br /><br />
         /// `UserId` : Must be a valid GUID representing ID of a user.<br /><br /><br />
@@ -206,7 +208,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// The user must be authenticated using a JWT token. Only users with the `Owner` role can perform this action.<br /><br />
         /// </remarks>
         /// <param name="userId">**The ID of user, who is being downgraded.**</param>
-        /// <response code="204">Successfully retrieved the topic with the provided ID.</response>
+        /// <response code="204">Successfully retrieved the user with the provided ID.</response>
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
         /// <response code="404">***Not found.*** No user exists with the provided ID.</response>
