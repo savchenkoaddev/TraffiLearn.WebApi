@@ -15,11 +15,9 @@ At present, there is no official documentation available for the TraffiLearn Web
 
 ## Installation Guide
 
-To run the TraffiLearn Web API locally, you need to have **Docker** and **.NET** installed on your local machine.
+To run the TraffiLearn Web API locally, you need to have **Docker** installed on your local machine.
 
 You can download Docker from the [official Docker website](https://www.docker.com/products/docker-desktop).
-
-You can download .NET from the [official .NET website](https://dotnet.microsoft.com/en-us/download).
 
 ### **Note:**
 
@@ -44,6 +42,7 @@ After installing Docker, follow these steps to get started with the API:
      ```bash
      export GroqApiSettings__ApiKey="your-secret-key"
      ```
+
 **Make sure**, the mentioned environment variables are set correctly, otherwise, you are going to encounter the problem during the further steps.
 
 4. **Run the application** using Docker Compose (the directory should already be set to the ~/src):
@@ -59,12 +58,14 @@ After installing Docker, follow these steps to get started with the API:
 > - **10000** (Azurite)
 > - **5432** (Postgres)
 
-
-
-
+<br>
 After some time, you should be able to **access the API** at http://localhost:5000/swagger
 
 ## Tests
+
+To run the tests, you need to have **.NET** installed on your machine.
+
+You can download .NET from the [official .NET website](https://dotnet.microsoft.com/en-us/download).
 
 If you are eager to run the API tests, please follow the next steps:
 1. **Make sure** you have repository files installed.
