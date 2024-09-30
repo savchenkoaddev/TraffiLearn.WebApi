@@ -71,6 +71,19 @@ namespace TraffiLearn.Infrastructure.Services
             HandleIdentityResult(result, "Failed to remove identity user from role.");
         }
 
+        private void HandleIdentityResult(IdentityResult result, string errorMessage)
+        {
+            if (result.Succeeded)
+            {
+                return;
+            }
+
+            var errors = result.Errors.Select(x => x.Description);
+            var errorsString = string.Join(Environment.NewLine, errors);
+
+            throw new InvalidOperationException($"{errorMessage}\r\nErrors: {errorsString}");
+        }
+
         public async Task<TIdentityUser?> GetByEmailAsync(Email email)
         {
             ArgumentNullException.ThrowIfNull(email, nameof(email));
@@ -97,19 +110,6 @@ namespace TraffiLearn.Infrastructure.Services
             }
 
             return Result.Success();
-        }
-
-        private void HandleIdentityResult(IdentityResult result, string errorMessage)
-        {
-            if (result.Succeeded)
-            {
-                return;
-            }
-
-            var errors = result.Errors.Select(x => x.Description);
-            var errorsString = string.Join(Environment.NewLine, errors);
-
-            throw new InvalidOperationException($"{errorMessage}\r\nErrors: {errorsString}");
         }
     }
 }

@@ -295,7 +295,7 @@ namespace TraffiLearn.Domain.Aggregates.Users
                 username,
                 role);
 
-            user.RaiseDomainEvent(new UserCreatedDomainEvent(userId));
+            user.RaiseDomainEvent(new UserCreatedDomainEvent(userId, email));
 
             return user;
         }

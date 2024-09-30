@@ -5,6 +5,7 @@ using TraffiLearn.Infrastructure.Extensions.DI.Shared;
 using TraffiLearn.Infrastructure.External.Blobs.Options;
 using TraffiLearn.Infrastructure.External.Emails.Options;
 using TraffiLearn.Infrastructure.External.GroqAI.Options;
+using TraffiLearn.Infrastructure.Options;
 using TraffiLearn.Infrastructure.Persistence.Options;
 
 namespace TraffiLearn.Infrastructure.Extensions.DI
@@ -26,6 +27,8 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
                 GroqApiSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<SmtpClientSettings>(
                 SmtpClientSettings.SectionName);
+            services.ConfigureValidatableOnStartOptions<EmailConfirmationLinkGeneratorSettings>(
+                EmailConfirmationLinkGeneratorSettings.SectionName);
 
             return services;
         }

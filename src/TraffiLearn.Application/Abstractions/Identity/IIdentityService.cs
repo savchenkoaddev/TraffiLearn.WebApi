@@ -11,6 +11,8 @@ namespace TraffiLearn.Application.Abstractions.Identity
 
         Task<TIdentityUser?> GetByEmailAsync(Email email);
 
+        Task<string> GenerateConfirmationToken(TIdentityUser identityUser);
+
         Task AddToRoleAsync(TIdentityUser identityUser, string roleName);
 
         Task RemoveFromRoleAsync(TIdentityUser identityUser, string roleName);
