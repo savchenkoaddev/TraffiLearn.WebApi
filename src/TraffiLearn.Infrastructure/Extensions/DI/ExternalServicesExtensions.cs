@@ -28,7 +28,6 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
 
             services.AddScoped<IAIService, GroqApiService>();
 
-
             return services;
         }
 
@@ -85,10 +84,16 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
             {
                 Port = smtpClientSettings.Port,
                 EnableSsl = true,
-                Credentials = new NetworkCredential(
-                    userName: smtpClientSettings.Username,
-                    password: smtpClientSettings.Password),
+                Credentials = CreateNetworkCredentials(smtpClientSettings),
             };
+        }
+
+        private static NetworkCredential CreateNetworkCredentials(
+            SmtpClientSettings smtpClientSettings)
+        {
+            return new NetworkCredential(
+                userName: smtpClientSettings.Username,
+                password: smtpClientSettings.Password);
         }
     }
 }
