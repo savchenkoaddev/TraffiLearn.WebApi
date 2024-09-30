@@ -32,6 +32,14 @@ services:
     volumes:
       - traffilearn_blob_data:/data
         
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      - "8025:8025"
+    environment:
+      - MH_STORAGE=maildir
+
 volumes:
   traffilearn_postgresdb_data:
   traffilearn_blob_data:
