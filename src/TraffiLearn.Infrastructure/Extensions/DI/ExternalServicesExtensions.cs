@@ -1,15 +1,15 @@
-﻿using Azure;
-using Azure.Storage.Blobs;
+﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Mail;
 using TraffiLearn.Application.Abstractions.AI;
+using TraffiLearn.Application.Abstractions.Emails;
 using TraffiLearn.Application.Abstractions.Storage;
 using TraffiLearn.Infrastructure.Extensions.DI.Shared;
 using TraffiLearn.Infrastructure.External.Blobs;
 using TraffiLearn.Infrastructure.External.Blobs.Options;
+using TraffiLearn.Infrastructure.External.Emails;
 using TraffiLearn.Infrastructure.External.Emails.Options;
 using TraffiLearn.Infrastructure.External.GroqAI;
 
@@ -22,7 +22,9 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
         {
             services.AddBlobServiceClient();
 
-            services.AddEmailSender();
+            services.AddFluentEmailSender();
+
+            services.AddScoped<IEmailSender, EmailSender>();
 
             services.AddSingleton<IBlobService, AzureBlobService>();
 
@@ -63,7 +65,7 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
             return properties.PublicAccess != PublicAccessType.Blob;
         }
 
-        private static IServiceCollection AddEmailSender(
+        private static IServiceCollection AddFluentEmailSender(
             this IServiceCollection services)
         {
             var smtpClientSettings = services.BuildServiceProvider()
@@ -72,7 +74,7 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
             SmtpClient smtpClient = CreateSmtpClient(smtpClientSettings);
 
             services
-                .AddFluentEmail(smtpClientSettings.Username)
+                .AddFluentEmail(defaultFromEmail: smtpClientSettings.Username)
                 .AddSmtpSender(smtpClient);
 
             return services;

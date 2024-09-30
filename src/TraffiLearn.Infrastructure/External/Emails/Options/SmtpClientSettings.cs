@@ -7,18 +7,17 @@ namespace TraffiLearn.Infrastructure.External.Emails.Options
         public const string SectionName = nameof(SmtpClientSettings);
 
         [Required]
+        [Range(1, int.MaxValue)]
         public int Port { get; set; }
 
         [Required]
         [StringLength(100)]
-        public string Host { get; set; }
+        public string? Host { get; set; }
 
-        [Required]
         [StringLength(100)]
-        public string Username { get; set; }
+        public string? Username { get; set; }
 
-        [Required]
         [StringLength(100)]
-        public string Password { get; set; }
+        public string? Password { get; set; }
     }
 }

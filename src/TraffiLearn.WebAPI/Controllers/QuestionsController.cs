@@ -6,6 +6,7 @@ using TraffiLearn.Application.Comments.DTO;
 using TraffiLearn.Application.Questions.Commands.AddCommentToQuestion;
 using TraffiLearn.Application.Questions.Commands.Delete;
 using TraffiLearn.Application.Questions.DTO;
+using TraffiLearn.Application.Questions.Queries.GetAIQuestionExplanation;
 using TraffiLearn.Application.Questions.Queries.GetById;
 using TraffiLearn.Application.Questions.Queries.GetPaginated;
 using TraffiLearn.Application.Questions.Queries.GetQuestionCommentsPaginated;

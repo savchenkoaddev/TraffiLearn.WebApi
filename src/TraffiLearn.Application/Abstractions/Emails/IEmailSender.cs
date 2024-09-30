@@ -5,6 +5,6 @@
         Task SendEmailAsync(
             string recipientEmail,
             string subject,
-            string body);
+            string htmlBody);
     }
 }
