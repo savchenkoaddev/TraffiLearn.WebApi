@@ -64,6 +64,8 @@ namespace TraffiLearn.Domain.Aggregates.Users
 
         public Role Role { get; private set; }
 
+        public bool IsEmailConfirmed { get; private set; } = false;
+
         public IReadOnlyCollection<Comment> Comments => _comments;
 
         public IReadOnlyCollection<Question> MarkedQuestions => _markedQuestions;
