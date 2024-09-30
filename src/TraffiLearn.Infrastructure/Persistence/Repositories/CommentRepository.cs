@@ -145,7 +145,7 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
         }
 
         public async Task<int> CountWithQuestionIdAsync(
-            QuestionId questionId, 
+            QuestionId questionId,
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Comments

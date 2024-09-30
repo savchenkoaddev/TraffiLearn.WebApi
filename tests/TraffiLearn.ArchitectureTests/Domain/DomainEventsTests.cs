@@ -39,7 +39,7 @@ namespace TraffiLearn.ArchitectureTests.Domain
                 BindingFlags.Public | BindingFlags.Instance);
 
             idProperty.PropertyType.Should().Be(
-                typeof(Guid), 
+                typeof(Guid),
                 "Id should be of type Guid.");
         }
 

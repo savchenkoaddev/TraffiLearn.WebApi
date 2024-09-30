@@ -11,7 +11,7 @@ using TraffiLearn.Domain.Primitives;
 
 namespace TraffiLearn.Infrastructure.Persistence
 {
-    public sealed class ApplicationDbContext : 
+    public sealed class ApplicationDbContext :
         IdentityDbContext<ApplicationUser>, IUnitOfWork
     {
         public ApplicationDbContext(

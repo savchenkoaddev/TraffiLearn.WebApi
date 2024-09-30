@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using NetArchTest.Rules;
 using System.Reflection;
 using TraffiLearn.Domain.Primitives;
 

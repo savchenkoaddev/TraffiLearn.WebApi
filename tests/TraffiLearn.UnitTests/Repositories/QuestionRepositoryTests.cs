@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
@@ -459,7 +458,7 @@ namespace TraffiLearn.UnitTests.Repositories
 
             // Act
             var result = await _repository.GetAllAsync(
-                page: 2, 
+                page: 2,
                 pageSize: 1);
 
             // Assert
@@ -476,7 +475,7 @@ namespace TraffiLearn.UnitTests.Repositories
 
             // Act
             var result = await _repository.GetAllAsync(
-                page: 1, 
+                page: 1,
                 pageSize: 1);
 
             // Assert

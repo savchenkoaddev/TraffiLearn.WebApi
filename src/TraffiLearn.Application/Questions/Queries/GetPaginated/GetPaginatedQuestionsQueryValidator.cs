@@ -2,7 +2,7 @@
 
 namespace TraffiLearn.Application.Questions.Queries.GetPaginated
 {
-    internal sealed class GetPaginatedQuestionsQueryValidator 
+    internal sealed class GetPaginatedQuestionsQueryValidator
         : AbstractValidator<GetPaginatedQuestionsQuery>
     {
         public GetPaginatedQuestionsQueryValidator()

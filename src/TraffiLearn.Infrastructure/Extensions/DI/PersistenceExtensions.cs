@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Users.Identity;
-using TraffiLearn.Infrastructure.Persistence.Interceptors;
-using TraffiLearn.Infrastructure.Persistence;
-using TraffiLearn.Infrastructure.Persistence.Options;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using TraffiLearn.Infrastructure.Extensions.DI.Shared;
+using TraffiLearn.Infrastructure.Persistence;
+using TraffiLearn.Infrastructure.Persistence.Interceptors;
+using TraffiLearn.Infrastructure.Persistence.Options;
 
 namespace TraffiLearn.Infrastructure.Extensions.DI
 {
