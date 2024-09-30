@@ -1,4 +1,5 @@
-﻿using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
+﻿using TraffiLearn.Application.Users.Identity;
+using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Abstractions.Identity
@@ -11,7 +12,7 @@ namespace TraffiLearn.Application.Abstractions.Identity
 
         Task<TIdentityUser?> GetByEmailAsync(Email email);
 
-        Task<string> GenerateConfirmationToken(TIdentityUser identityUser);
+        Task<Result> ConfirmEmailAsync(TIdentityUser identityUser, string token);
 
         Task AddToRoleAsync(TIdentityUser identityUser, string roleName);
 

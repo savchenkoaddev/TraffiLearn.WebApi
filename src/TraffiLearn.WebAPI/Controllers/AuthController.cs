@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
+using TraffiLearn.Application.Auth.Commands.ConfirmEmail;
 using TraffiLearn.Application.Auth.Commands.Login;
 using TraffiLearn.Application.Auth.Commands.RegisterAdmin;
 using TraffiLearn.Application.Auth.Commands.RegisterUser;
@@ -9,11 +10,10 @@ using TraffiLearn.Application.Auth.DTO;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
 using TraffiLearn.WebAPI.Swagger;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
-#pragma warning disable CS1591
-
     [Route("api")]
     [ApiController]
     public sealed class AuthController : ControllerBase
@@ -107,6 +107,18 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
         }
 
+        [HttpGet("confirm-email")]
+        public async Task<IActionResult> ConfirmEmail(
+            [FromQuery] Guid? userId,
+            [FromQuery] string? token)
+        {
+            var commandResult = await _sender.Send(new ConfirmEmailCommand(
+                UserId: userId,
+                Token: token));
+
+            return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
+        }
+
         /// <summary>
         /// Registers a new admin account.
         /// </summary>
@@ -180,6 +192,4 @@ namespace TraffiLearn.WebAPI.Controllers
 
         #endregion
     }
-
-#pragma warning restore
 }

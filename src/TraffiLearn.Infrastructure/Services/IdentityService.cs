@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Domain.Aggregates.Users.Errors;
@@ -14,15 +15,18 @@ namespace TraffiLearn.Infrastructure.Services
         private readonly UserManager<TIdentityUser> _userManager;
         private readonly SignInManager<TIdentityUser> _signInManager;
         private readonly LoginSettings _loginSettings;
+        private readonly ILogger<IdentityService<TIdentityUser>> _logger;
 
         public IdentityService(
             UserManager<TIdentityUser> userManager,
             SignInManager<TIdentityUser> signInManager,
-            IOptions<LoginSettings> loginSettings)
+            IOptions<LoginSettings> loginSettings,
+            ILogger<IdentityService<TIdentityUser>> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _loginSettings = loginSettings.Value;
+            _logger = logger;
         }
 
         public async Task CreateAsync(
@@ -54,7 +58,6 @@ namespace TraffiLearn.Infrastructure.Services
             ArgumentException.ThrowIfNullOrWhiteSpace(roleName, nameof(roleName));
 
             var result = await _userManager.AddToRoleAsync(identityUser, roleName);
-
 
             HandleIdentityResult(result, "Failed to add identity user to role.");
         }
@@ -107,6 +110,22 @@ namespace TraffiLearn.Infrastructure.Services
             if (!result.Succeeded)
             {
                 return UserErrors.InvalidCredentials;
+            }
+
+            return Result.Success();
+        }
+
+        public async Task<Result> ConfirmEmailAsync(
+            TIdentityUser identityUser, 
+            string token)
+        {
+            var result = await _userManager.ConfirmEmailAsync(identityUser, token);
+
+            if (!result.Succeeded)
+            {
+                _logger.LogWarning("Failed to confirm email. Potential internal failures. Errors: {errors}", string.Join(", ", result.Errors.Select(e => e.Description)));
+
+                return UserErrors.EmailConfirmationFailure;
             }
 
             return Result.Success();
