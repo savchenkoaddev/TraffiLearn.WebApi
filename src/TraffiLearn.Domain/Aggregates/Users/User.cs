@@ -270,6 +270,18 @@ namespace TraffiLearn.Domain.Aggregates.Users
             return Result.Success();
         }
 
+        public Result ConfirmEmail()
+        {
+            if (IsEmailConfirmed)
+            {
+                return UserErrors.EmailAlreadyConfirmed;
+            }
+
+            IsEmailConfirmed = true;
+
+            return Result.Success();
+        }
+
         public static Result<User> Create(
             UserId userId,
             Email email,

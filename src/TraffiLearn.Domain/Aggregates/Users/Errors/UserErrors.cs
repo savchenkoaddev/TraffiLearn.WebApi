@@ -128,5 +128,15 @@ namespace TraffiLearn.Domain.Aggregates.Users.Errors
             Error.Validation(
                 code: "User.NotAllowedToDowngradeAccount",
                 description: "You are not allowed to downgrade the account.");
+
+        public static readonly Error EmailAlreadyConfirmed =
+            Error.Validation(
+                code: "User.EmailAlreadyConfirmed",
+                description: "Unable to confirm email, because it's already confirmed.");
+
+        public static readonly Error EmailNotConfirmed =
+            Error.Validation(
+                code: "User.EmailNotConfirmed",
+                description: "Confirm your email to log in to your account.");
     }
 }
