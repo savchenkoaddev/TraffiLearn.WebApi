@@ -40,15 +40,20 @@ namespace TraffiLearn.Application.Services
         }
 
         private static string CreateEmailConfirmationSubject() =>
-            "Confirm your registration";
+            "Welcome to TraffiLearn! Please Confirm Your Email Address";
 
         private static string CreateEmailConfirmationBody(string confirmationLink)
         {
             return $@"
-                <h1>Welcome to TraffiLearn!</h1>
-                <p>Please confirm your account by clicking the link below:</p>
-                <a href=""{confirmationLink}"">Confirm your registration</a>
-                <p>If you did not register, you can safely ignore this email.</p>";
+                <html>
+                <body style='font-family: Arial, sans-serif; line-height: 1.5;'>
+                    <h1 style='color: #4CAF50;'>Welcome to TraffiLearn!</h1>
+                    <p>Thank you for registering with us! To activate your account and start using our services, please confirm your email address by clicking the link below:</p>
+                    <a href=""{confirmationLink}"" style='background-color: #4CAF50; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;'>Confirm Your Registration</a>
+                    <p>If you did not create an account, please ignore this email.</p>
+                    <p>Best regards,<br>The TraffiLearn Team</p>
+                </body>
+                </html>";
         }
     }
 }
