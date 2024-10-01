@@ -110,11 +110,11 @@ namespace TraffiLearn.WebAPI.Controllers
         [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmail(
             [FromQuery] Guid? userId,
-            [FromQuery] string? token)
+            [FromQuery] string? encodedToken)
         {
             var commandResult = await _sender.Send(new ConfirmEmailCommand(
                 UserId: userId,
-                Token: token));
+                EncodedToken: encodedToken));
 
             return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
         }

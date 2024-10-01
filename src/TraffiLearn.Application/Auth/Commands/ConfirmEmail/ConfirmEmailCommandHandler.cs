@@ -1,5 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using System.Transactions;
+using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Exceptions;
 using TraffiLearn.Application.Users.Identity;
@@ -15,15 +17,18 @@ namespace TraffiLearn.Application.Auth.Commands.ConfirmEmail
     {
         private readonly IUserRepository _userRepository;
         private readonly IIdentityService<ApplicationUser> _identityService;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<ConfirmEmailCommandHandler> _logger;
 
         public ConfirmEmailCommandHandler(
             IUserRepository userRepository,
             IIdentityService<ApplicationUser> identityService,
+            IUnitOfWork unitOfWork,
             ILogger<ConfirmEmailCommandHandler> logger)
         {
             _userRepository = userRepository;
             _identityService = identityService;
+            _unitOfWork = unitOfWork;
             _logger = logger;
         }
 
@@ -57,14 +62,33 @@ namespace TraffiLearn.Application.Auth.Commands.ConfirmEmail
                 throw new DataInconsistencyException();
             }
 
-            var result = await _identityService.ConfirmEmailAsync(
-                identityUser,
-                token: request.Token);
+            var decodedToken = Uri.UnescapeDataString(request.EncodedToken);
 
-            if (result.IsFailure)
+            using (var transaction = new TransactionScope(
+                TransactionScopeAsyncFlowOption.Enabled))
             {
-                return result.Error;
+                var identityResult = await _identityService.ConfirmEmailAsync(
+                    identityUser,
+                    token: decodedToken);
+
+                if (identityResult.IsFailure)
+                {
+                    return identityResult.Error;
+                }
+
+                var result = user.ConfirmEmail();
+
+                if (result.IsFailure)
+                {
+                    throw new InvalidOperationException($"Failed to confirm email of a user. Error: {result.Error.Description}");
+                }
+
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                transaction.Complete();
             }
+
+            _logger.LogInformation("Succesfully confirmed the email: {email}", user.Email.Value);
 
             return Result.Success();
         }
