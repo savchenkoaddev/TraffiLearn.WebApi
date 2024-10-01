@@ -25,15 +25,13 @@ namespace TraffiLearn.Application.Services
             ApplicationUser applicationUser)
         {
             var token = await _confirmationTokenGenerator.Generate(applicationUser);
-            var encodedToken = Uri.EscapeDataString(token);
 
-            var link = _confirmationLinkGenerator.Generate(userId, encodedToken);
+            var escapedToken = Uri.EscapeDataString(token);
+
+            var link = _confirmationLinkGenerator.Generate(userId, escapedToken);
 
             string subject = CreateEmailConfirmationSubject();
             string htmlBody = CreateEmailConfirmationBody(link);
-
-            Console.WriteLine(subject);
-            Console.WriteLine(htmlBody);
 
             await _emailSender.SendEmailAsync(
                 recipientEmail,

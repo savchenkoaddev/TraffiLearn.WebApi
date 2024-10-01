@@ -62,14 +62,12 @@ namespace TraffiLearn.Application.Auth.Commands.ConfirmEmail
                 throw new DataInconsistencyException();
             }
 
-            var decodedToken = Uri.UnescapeDataString(request.EncodedToken);
-
             using (var transaction = new TransactionScope(
                 TransactionScopeAsyncFlowOption.Enabled))
             {
                 var identityResult = await _identityService.ConfirmEmailAsync(
                     identityUser,
-                    token: decodedToken);
+                    token: request.Token);
 
                 if (identityResult.IsFailure)
                 {

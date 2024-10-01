@@ -10,7 +10,7 @@ namespace TraffiLearn.Application.Auth.Commands.ConfirmEmail
             RuleFor(x => x.UserId)
                 .NotEmpty();
 
-            RuleFor(x => x.EncodedToken)
+            RuleFor(x => x.Token)
                 .NotEmpty();
         }
     }

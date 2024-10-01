@@ -5,5 +5,5 @@ namespace TraffiLearn.Application.Auth.Commands.ConfirmEmail
 {
     public sealed record ConfirmEmailCommand(
         Guid? UserId,
-        string? EncodedToken) : IRequest<Result>;
+        string? Token) : IRequest<Result>;
 }

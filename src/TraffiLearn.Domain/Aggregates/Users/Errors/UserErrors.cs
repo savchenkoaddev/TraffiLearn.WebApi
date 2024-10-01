@@ -142,6 +142,6 @@ namespace TraffiLearn.Domain.Aggregates.Users.Errors
         public static readonly Error EmailConfirmationFailure =
             Error.Validation(
                 code: "User.EmailConfirmationFailure",
-                description: "Failed to confirm the email. The reason may be the token is invalid.");
+                description: "Failed to confirm the email. The reason may be the token is invalid or expired.");
     }
 }
