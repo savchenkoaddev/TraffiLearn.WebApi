@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Emails;
 using TraffiLearn.Infrastructure.Exceptions;
 
-namespace TraffiLearn.Infrastructure.External.Emails
+namespace TraffiLearn.Infrastructure.Services.Emails
 {
     internal sealed class EmailSender : IEmailSender
     {
@@ -11,7 +11,7 @@ namespace TraffiLearn.Infrastructure.External.Emails
         private readonly ILogger<EmailSender> _logger;
 
         public EmailSender(
-            IFluentEmailFactory emailFactory, 
+            IFluentEmailFactory emailFactory,
             ILogger<EmailSender> logger)
         {
             _emailFactory = emailFactory;
@@ -19,8 +19,8 @@ namespace TraffiLearn.Infrastructure.External.Emails
         }
 
         public async Task SendEmailAsync(
-            string recipientEmail, 
-            string subject, 
+            string recipientEmail,
+            string subject,
             string htmlBody)
         {
             var emailMessage = _emailFactory

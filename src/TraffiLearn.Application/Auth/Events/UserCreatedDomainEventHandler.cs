@@ -38,7 +38,8 @@ namespace TraffiLearn.Application.Auth.Events
             UserCreatedDomainEvent notification,
             CancellationToken cancellationToken)
         {
-            var identityUser = await _identityService.GetByEmailAsync(notification.Email);
+            var identityUser = await _identityService.GetByEmailAsync(
+                notification.Email);
 
             if (identityUser is null)
             {

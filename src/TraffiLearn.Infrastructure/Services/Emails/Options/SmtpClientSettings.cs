@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TraffiLearn.Infrastructure.External.Emails.Options
+namespace TraffiLearn.Infrastructure.Services.Emails.Options
 {
     public sealed class SmtpClientSettings
     {

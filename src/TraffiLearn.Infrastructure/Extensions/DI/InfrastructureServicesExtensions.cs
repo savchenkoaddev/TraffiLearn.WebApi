@@ -1,9 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net.Mail;
+using System.Net;
 using TraffiLearn.Application.Abstractions.Emails;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Users.Identity;
+using TraffiLearn.Infrastructure.Extensions.DI.Shared;
 using TraffiLearn.Infrastructure.Services;
+using TraffiLearn.Infrastructure.Services.Emails;
+using TraffiLearn.Infrastructure.Services.Emails.Options;
 
 namespace TraffiLearn.Infrastructure.Extensions.DI
 {
@@ -14,12 +19,46 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
         {
             services.AddScoped<IUserContextService<Guid>, UserContextService>();
             services.AddScoped<IRoleService<IdentityRole>, RoleService<IdentityRole>>();
-            services.AddScoped<IIdentityService<ApplicationUser>, IdentityService<ApplicationUser>>();
             services.AddScoped<ITokenService, JwtTokenService>();
-            services.AddScoped<IConfirmationTokenGenerator, ConfirmationTokenGenerator>();
-            services.AddScoped<IEmailConfirmationLinkGenerator, EmailConfirmationLinkGenerator>();
+            services.AddScoped<IIdentityService<ApplicationUser>, IdentityService<ApplicationUser>>();
+            services.AddScoped<IEmailSender, EmailSender>();
+
+            services.AddFluentEmailSender();
 
             return services;
+        }
+
+        private static IServiceCollection AddFluentEmailSender(
+           this IServiceCollection services)
+        {
+            var smtpClientSettings = services.BuildServiceProvider()
+                .GetOptions<SmtpClientSettings>();
+
+            SmtpClient smtpClient = CreateSmtpClient(smtpClientSettings);
+
+            services
+                .AddFluentEmail(defaultFromEmail: smtpClientSettings.Username)
+                .AddSmtpSender(smtpClient);
+
+            return services;
+        }
+
+        private static SmtpClient CreateSmtpClient(SmtpClientSettings smtpClientSettings)
+        {
+            return new SmtpClient(smtpClientSettings.Host)
+            {
+                Port = smtpClientSettings.Port,
+                EnableSsl = true,
+                Credentials = CreateNetworkCredentials(smtpClientSettings),
+            };
+        }
+
+        private static NetworkCredential CreateNetworkCredentials(
+            SmtpClientSettings smtpClientSettings)
+        {
+            return new NetworkCredential(
+                userName: smtpClientSettings.Username,
+                password: smtpClientSettings.Password);
         }
     }
 }
