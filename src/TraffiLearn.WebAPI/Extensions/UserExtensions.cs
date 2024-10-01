@@ -17,6 +17,8 @@ namespace TraffiLearn.WebAPI.Extensions
 
             var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
 
+            var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+
             var superUserSettings = scope.ServiceProvider.GetRequiredService<IOptions<SuperUserSettings>>()
                 .Value;
 
@@ -25,16 +27,24 @@ namespace TraffiLearn.WebAPI.Extensions
                 username: Username.Create(superUserSettings.Username).Value,
                 role: Role.Owner).Value;
 
-            if (await userRepository.ExistsAsync(
-                    superUser.Username,
-                    superUser.Email))
+            var existingUser = await userRepository.GetByUsernameAsync(
+                superUser.Username);
+
+            if (existingUser is not null)
             {
+                if (!existingUser.IsEmailConfirmed)
+                {
+                    existingUser.ConfirmEmail();
+
+                    await unitOfWork.SaveChangesAsync();
+                }
+
                 return;
             }
 
-            await userRepository.AddAsync(superUser);
+            superUser.ConfirmEmail();
 
-            var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+            await userRepository.AddAsync(superUser);
 
             await unitOfWork.SaveChangesAsync();
 

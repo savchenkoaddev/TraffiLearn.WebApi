@@ -1,5 +1,6 @@
 ﻿using TraffiLearn.Domain.Aggregates.Comments;
 using TraffiLearn.Domain.Aggregates.Questions;
+using TraffiLearn.Domain.Aggregates.Users.DomainEvents;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.Domain.Aggregates.Users.Errors;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
@@ -63,6 +64,8 @@ namespace TraffiLearn.Domain.Aggregates.Users
         }
 
         public Role Role { get; private set; }
+
+        public bool IsEmailConfirmed { get; private set; } = false;
 
         public IReadOnlyCollection<Comment> Comments => _comments;
 
@@ -268,17 +271,33 @@ namespace TraffiLearn.Domain.Aggregates.Users
             return Result.Success();
         }
 
+        public Result ConfirmEmail()
+        {
+            if (IsEmailConfirmed)
+            {
+                return UserErrors.EmailAlreadyConfirmed;
+            }
+
+            IsEmailConfirmed = true;
+
+            return Result.Success();
+        }
+
         public static Result<User> Create(
             UserId userId,
             Email email,
             Username username,
             Role role)
         {
-            return new User(
+            var user = new User(
                 userId,
                 email,
                 username,
                 role);
+
+            user.RaiseDomainEvent(new UserCreatedDomainEvent(userId, email));
+
+            return user;
         }
     }
 }

@@ -65,7 +65,7 @@ namespace TraffiLearn.WebAPI.Extensions.DI
             string name,
             params string[] roles)
         {
-            options.AddPolicy(name, 
+            options.AddPolicy(name,
                 options =>
                 {
                     options.RequireRole(roles);

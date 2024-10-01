@@ -4,9 +4,9 @@ using Microsoft.Net.Http.Headers;
 using System.Net.Http.Headers;
 using System.Net.Mime;
 using TraffiLearn.Application.Abstractions.AI;
-using TraffiLearn.Infrastructure.External.GroqAI.Options;
-using TraffiLearn.Infrastructure.External.GroqAI;
 using TraffiLearn.Infrastructure.Extensions.DI.Shared;
+using TraffiLearn.Infrastructure.External.GroqAI;
+using TraffiLearn.Infrastructure.External.GroqAI.Options;
 
 namespace TraffiLearn.Infrastructure.Extensions.DI
 {

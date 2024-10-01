@@ -3,7 +3,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=5000
-      - GroqApiSettings__ApiKey=${GroqApiSettings__ApiKey}
+      - GroqApiSettings__ApiKey
     ports:
       - "5000:5000"
     volumes:

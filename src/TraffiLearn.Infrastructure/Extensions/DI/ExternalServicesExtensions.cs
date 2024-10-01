@@ -1,5 +1,4 @@
-﻿using Azure;
-using Azure.Storage.Blobs;
+﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.DependencyInjection;
 using TraffiLearn.Application.Abstractions.AI;
@@ -40,7 +39,7 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
 
                 var properties = containerClient.GetProperties();
 
-                if (ContainerHasPublicAccess(properties))
+                if (ContainerHasPublicAccess(properties.Value))
                 {
                     containerClient.SetAccessPolicy(PublicAccessType.Blob);
                 }
@@ -52,9 +51,9 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
         }
 
         private static bool ContainerHasPublicAccess(
-            Response<BlobContainerProperties> properties)
+            BlobContainerProperties properties)
         {
-            return properties.Value.PublicAccess != PublicAccessType.Blob;
+            return properties.PublicAccess != PublicAccessType.Blob;
         }
     }
 }
