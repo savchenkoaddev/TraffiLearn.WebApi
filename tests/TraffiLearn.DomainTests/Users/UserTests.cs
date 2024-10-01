@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using TraffiLearn.Domain.Aggregates.Users;
+using TraffiLearn.Domain.Aggregates.Users.DomainEvents;
 using TraffiLearn.Domain.Aggregates.Users.Enums;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Primitives;
@@ -65,6 +66,31 @@ namespace TraffiLearn.DomainTests.Users
             user.LikedComments.Should().BeEmpty();
             user.DislikedComments.Should().BeEmpty();
             user.MarkedQuestions.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Create_IfPassedValidArgs_ShouldRaiseValidUserCreatedDomainEvent()
+        {
+            var id = new UserId(Guid.NewGuid());
+            var email = UserFixtureFactory.CreateEmail();
+            var username = UserFixtureFactory.CreateUsername();
+            var role = UserFixtureFactory.CreateRole();
+
+            var result = User.Create(
+                id,
+                email,
+                username,
+                role);
+
+            var user = result.Value;
+
+            user.DomainEvents.Should().HaveCount(1);
+            user.DomainEvents.Single().Should().BeOfType<UserCreatedDomainEvent>();
+
+            var actualDomainEvent = (UserCreatedDomainEvent) user.DomainEvents.Single();
+
+            actualDomainEvent.UserId.Should().Be(id);
+            actualDomainEvent.Email.Should().Be(email);
         }
 
         [Fact]
