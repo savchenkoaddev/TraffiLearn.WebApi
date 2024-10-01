@@ -22,6 +22,8 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
             services.AddScoped<ITokenService, JwtTokenService>();
             services.AddScoped<IIdentityService<ApplicationUser>, IdentityService<ApplicationUser>>();
             services.AddScoped<IEmailSender, EmailSender>();
+            services.AddScoped<IConfirmationTokenGenerator, ConfirmationTokenGenerator>();
+            services.AddScoped<IEmailConfirmationLinkGenerator, EmailConfirmationLinkGenerator>();
 
             services.AddFluentEmailSender();
 
@@ -48,7 +50,7 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
             return new SmtpClient(smtpClientSettings.Host)
             {
                 Port = smtpClientSettings.Port,
-                EnableSsl = true,
+                EnableSsl = smtpClientSettings.EnableSsl,
                 Credentials = CreateNetworkCredentials(smtpClientSettings),
             };
         }

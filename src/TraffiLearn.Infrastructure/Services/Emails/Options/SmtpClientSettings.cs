@@ -11,6 +11,9 @@ namespace TraffiLearn.Infrastructure.Services.Emails.Options
         public int Port { get; set; }
 
         [Required]
+        public bool EnableSsl { get; set; }
+
+        [Required]
         [StringLength(100)]
         public string? Host { get; set; }
 

@@ -12,7 +12,7 @@ namespace TraffiLearn.Application.Extensions.DI
             services.AddHttpContextAccessor();
             services.AddScoped<IAuthenticatedUserService, AuthenticatedUserService>();
 
-            services.AddTransient<IEmailService, EmailService>();
+            services.AddScoped<IEmailService, EmailService>();
 
             return services;
         }

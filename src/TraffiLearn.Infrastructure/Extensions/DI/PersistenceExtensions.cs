@@ -81,9 +81,13 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
         private static IdentityBuilder AddAppIdentity(
             this IServiceCollection services)
         {
-            return services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddRoleManager<RoleManager<IdentityRole>>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            return services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.Tokens.AuthenticatorTokenProvider = "Default";
+            })
+            .AddRoleManager<RoleManager<IdentityRole>>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
         }
     }
 }

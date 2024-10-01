@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Emails;
 using TraffiLearn.Application.Abstractions.Identity;
@@ -13,24 +14,19 @@ namespace TraffiLearn.Application.Auth.Events
     {
         private readonly IEmailService _emailService;
         private readonly IIdentityService<ApplicationUser> _identityService;
-        private readonly IConfirmationTokenGenerator _confirmationTokenGenerator;
-        private readonly IEmailConfirmationLinkGenerator _confirmationLinkGenerator;
         private readonly IUserRepository _userRepository;
         private readonly ILogger<UserCreatedDomainEventHandler> _logger;
 
         public UserCreatedDomainEventHandler(
-            IEmailService emailService,
-            IIdentityService<ApplicationUser> identityService,
-            IConfirmationTokenGenerator confirmationTokenGenerator,
-            IEmailConfirmationLinkGenerator confirmationLinkGenerator,
-            IUserRepository userRepository,
+            IServiceProvider serviceProvider,
             ILogger<UserCreatedDomainEventHandler> logger)
         {
-            _emailService = emailService;
-            _identityService = identityService;
-            _confirmationTokenGenerator = confirmationTokenGenerator;
-            _confirmationLinkGenerator = confirmationLinkGenerator;
-            _userRepository = userRepository;
+            var sp = serviceProvider.CreateScope().ServiceProvider;
+
+            _emailService = sp.GetRequiredService<IEmailService>();
+            _identityService = sp.GetRequiredService<IIdentityService<ApplicationUser>>();
+            _userRepository = sp.GetRequiredService<IUserRepository>();
+
             _logger = logger;
         }
 
@@ -50,15 +46,13 @@ namespace TraffiLearn.Application.Auth.Events
                 return;
             }
 
-            var token = await _confirmationTokenGenerator.Generate(identityUser);
-
-            var confirmationLink = _confirmationLinkGenerator.Generate(
-                userId: notification.UserId.Value.ToString(),
-                token: token);
+            string recipientEmail = notification.Email.Value;
+            string userId = notification.UserId.Value.ToString();
 
             await _emailService.SendConfirmationEmail(
-                recipientEmail: notification.Email.Value,
-                confirmationLink: confirmationLink);
+                recipientEmail: recipientEmail,
+                userId: userId,
+                applicationUser: identityUser);
         }
     }
 }

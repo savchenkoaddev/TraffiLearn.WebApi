@@ -1,33 +1,44 @@
 ﻿using TraffiLearn.Application.Abstractions.Emails;
+using TraffiLearn.Application.Users.Identity;
 
 namespace TraffiLearn.Application.Services
 {
     internal sealed class EmailService : IEmailService
     {
         private readonly IEmailSender _emailSender;
+        private readonly IConfirmationTokenGenerator _confirmationTokenGenerator;
+        private readonly IEmailConfirmationLinkGenerator _confirmationLinkGenerator;
 
-        public EmailService(IEmailSender emailSender)
+        public EmailService(
+            IEmailSender emailSender,
+            IConfirmationTokenGenerator confirmationTokenGenerator,
+            IEmailConfirmationLinkGenerator confirmationLinkGenerator)
         {
             _emailSender = emailSender;
+            _confirmationTokenGenerator = confirmationTokenGenerator;
+            _confirmationLinkGenerator = confirmationLinkGenerator;
         }
 
-        public Task SendConfirmationEmail(
-            string recipientEmail, 
-            string confirmationLink)
+        public async Task SendConfirmationEmail(
+            string recipientEmail,
+            string userId,
+            ApplicationUser applicationUser)
         {
-            string subject = CreateEmailConfirmationSubject();
-            string htmlBody = CreateEmailConfirmationBody(confirmationLink);
+            var token = await _confirmationTokenGenerator.Generate(applicationUser);
 
-            return _emailSender.SendEmailAsync(
+            var link = _confirmationLinkGenerator.Generate(userId, token);
+
+            string subject = CreateEmailConfirmationSubject();
+            string htmlBody = CreateEmailConfirmationBody(link);
+
+            await _emailSender.SendEmailAsync(
                 recipientEmail,
                 subject,
                 htmlBody);
         }
 
-        private static string CreateEmailConfirmationSubject()
-        {
-            return "Confirm your registration";
-        }
+        private static string CreateEmailConfirmationSubject() =>
+            "Confirm your registration";
 
         private static string CreateEmailConfirmationBody(string confirmationLink)
         {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TraffiLearn.Infrastructure.Options
+namespace TraffiLearn.Infrastructure.Services.Emails.Options
 {
     public sealed class EmailConfirmationLinkGeneratorSettings
     {
@@ -10,10 +10,12 @@ namespace TraffiLearn.Infrastructure.Options
         [StringLength(200)]
         public string? BaseConfirmationEndpointUri { get; set; }
 
+        [Required]
         [StringLength(20)]
-        public string? UserIdParameterName { get; set; } = "userId";
+        public string? UserIdParameterName { get; set; }
 
+        [Required]
         [StringLength(20)]
-        public string? TokenParameterName { get; set; } = "token";
+        public string? TokenParameterName { get; set; }
     }
 }
