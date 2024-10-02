@@ -15,7 +15,7 @@ namespace TraffiLearn.Application.Regions.Queries.GetById
         private readonly Mapper<Region, RegionResponse> _mapper;
 
         public GetRegionByIdQueryHandler(
-            IRegionRepository regionRepository, 
+            IRegionRepository regionRepository,
             Mapper<Region, RegionResponse> mapper)
         {
             _regionRepository = regionRepository;
@@ -23,7 +23,7 @@ namespace TraffiLearn.Application.Regions.Queries.GetById
         }
 
         public async Task<Result<RegionResponse>> Handle(
-            GetRegionByIdQuery request, 
+            GetRegionByIdQuery request,
             CancellationToken cancellationToken)
         {
             var regionId = new RegionId(request.RegionId.Value);
