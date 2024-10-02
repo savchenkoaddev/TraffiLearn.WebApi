@@ -31,7 +31,8 @@ namespace TraffiLearn.Application.Questions.Queries.GetById
 
             if (question is null)
             {
-                return Result.Failure<QuestionResponse>(QuestionErrors.NotFound);
+                return Result.Failure<QuestionResponse>(
+                    QuestionErrors.NotFound);
             }
 
             return _questionMapper.Map(question);
