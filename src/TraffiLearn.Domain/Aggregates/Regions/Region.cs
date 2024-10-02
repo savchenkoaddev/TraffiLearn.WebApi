@@ -25,7 +25,7 @@ namespace TraffiLearn.Domain.Aggregates.Regions
             {
                 return _name;
             }
-            set
+            private set
             {
                 ArgumentNullException.ThrowIfNull(value, nameof(value));
 
