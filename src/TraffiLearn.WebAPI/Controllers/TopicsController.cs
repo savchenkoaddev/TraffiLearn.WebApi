@@ -284,7 +284,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <remarks>
         /// **The request must include the ID of the topic.**<br /><br /><br />
         /// ***Route parameters:***<br /><br />
-        /// `TopicId` : Must be a valid GUID representing ID of the topic.<br /><br /><br />
+        /// `TopicId` : Must be a valid GUID representing ID of a topic.<br /><br /><br />
         /// **Authentication Required:**<br />
         /// The user must be authenticated using a JWT token. Only users with the `Owner` or `Admin` role can perform this action.<br /><br />
         /// </remarks>
