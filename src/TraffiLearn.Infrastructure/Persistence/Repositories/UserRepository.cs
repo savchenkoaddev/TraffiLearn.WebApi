@@ -14,7 +14,7 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task AddAsync(
+        public async Task InsertAsync(
             User user,
             CancellationToken cancellationToken = default)
         {

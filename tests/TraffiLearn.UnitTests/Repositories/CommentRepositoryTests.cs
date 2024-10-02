@@ -25,7 +25,7 @@ namespace TraffiLearn.UnitTests.Repositories
             var comment = CommentFixtureFactory.CreateComment();
 
             // Act
-            await _repository.AddAsync(comment);
+            await _repository.InsertAsync(comment);
             await DbContext.SaveChangesAsync();
 
             // Assert

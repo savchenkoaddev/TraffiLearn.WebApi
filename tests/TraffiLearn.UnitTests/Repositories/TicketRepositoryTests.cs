@@ -25,7 +25,7 @@ namespace TraffiLearn.UnitTests.Repositories
             var ticket = TicketFixtureFactory.CreateTicket();
 
             // Act
-            await _repository.AddAsync(ticket);
+            await _repository.InsertAsync(ticket);
             await DbContext.SaveChangesAsync();
 
             // Assert

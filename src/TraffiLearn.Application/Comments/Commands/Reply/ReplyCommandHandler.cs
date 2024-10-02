@@ -73,7 +73,7 @@ namespace TraffiLearn.Application.Comments.Commands.Reply
                 return replyResult.Error;
             }
 
-            await _commentRepository.AddAsync(
+            await _commentRepository.InsertAsync(
                 replyComment,
                 cancellationToken);
 

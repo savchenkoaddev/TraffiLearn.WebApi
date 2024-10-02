@@ -74,7 +74,7 @@ namespace TraffiLearn.Application.Questions.Commands.Create
                 }
             }
 
-            await _questionRepository.AddAsync(
+            await _questionRepository.InsertAsync(
                 question,
                 cancellationToken);
 

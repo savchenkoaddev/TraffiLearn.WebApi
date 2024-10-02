@@ -26,7 +26,7 @@ namespace TraffiLearn.UnitTests.Repositories
             var user = UserFixtureFactory.CreateUser();
 
             // Act
-            await _repository.AddAsync(user);
+            await _repository.InsertAsync(user);
             await DbContext.SaveChangesAsync();
 
             // Assert

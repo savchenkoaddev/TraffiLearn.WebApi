@@ -24,7 +24,7 @@ namespace TraffiLearn.UnitTests.Repositories
             var topic = TopicFixtureFactory.CreateTopic();
 
             // Act
-            await _repository.AddAsync(topic);
+            await _repository.InsertAsync(topic);
             await DbContext.SaveChangesAsync();
 
             // Assert

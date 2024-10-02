@@ -28,7 +28,7 @@ namespace TraffiLearn.Domain.Aggregates.Tickets
             TicketId ticketId,
             CancellationToken cancellationToken = default);
 
-        Task AddAsync(
+        Task InsertAsync(
             Ticket ticket,
             CancellationToken cancellationToken = default);
 

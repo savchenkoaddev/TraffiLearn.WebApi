@@ -60,7 +60,7 @@ namespace TraffiLearn.Application.Tickets.Commands.Create
                 }
             }
 
-            await _ticketRepository.AddAsync(
+            await _ticketRepository.InsertAsync(
                 ticket,
                 cancellationToken);
 

@@ -79,7 +79,7 @@ namespace TraffiLearn.IntegrationTests.Helpers
 
                 user.ConfirmEmail();
 
-                await _userRepository.AddAsync(user);
+                await _userRepository.InsertAsync(user);
 
                 var identityUser = new ApplicationUser
                 {
