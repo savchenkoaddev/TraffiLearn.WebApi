@@ -4,6 +4,7 @@ using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Users.Identity;
 using TraffiLearn.Domain.Aggregates.Comments;
 using TraffiLearn.Domain.Aggregates.Questions;
+using TraffiLearn.Domain.Aggregates.Regions;
 using TraffiLearn.Domain.Aggregates.Tickets;
 using TraffiLearn.Domain.Aggregates.Topics;
 using TraffiLearn.Domain.Aggregates.Users;
@@ -28,6 +29,8 @@ namespace TraffiLearn.Infrastructure.Persistence
         public DbSet<Comment> Comments { get; set; }
 
         public DbSet<User> Users { get; set; }
+
+        public DbSet<Region> Regions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

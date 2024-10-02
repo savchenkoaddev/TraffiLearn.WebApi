@@ -12,7 +12,7 @@ namespace TraffiLearn.Domain.Aggregates.Regions
             CancellationToken cancellationToken = default);
 
         Task<bool> ExistsAsync(
-            Region region,
+            RegionId regionId,
             CancellationToken cancellationToken = default);
 
         Task InsertAsync(
