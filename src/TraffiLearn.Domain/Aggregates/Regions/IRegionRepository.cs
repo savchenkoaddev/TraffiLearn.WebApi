@@ -4,7 +4,7 @@ namespace TraffiLearn.Domain.Aggregates.Regions
 {
     public interface IRegionRepository
     {
-        Task<IEnumerable<Region>> GetAllRegionsAsync(
+        Task<IEnumerable<Region>> GetAllAsync(
             CancellationToken cancellationToken = default);
 
         Task<Region?> GetByIdAsync(

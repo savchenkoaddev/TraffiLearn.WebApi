@@ -20,7 +20,7 @@ namespace TraffiLearn.UnitTests.Repositories
         }
 
         [Fact]
-        public async Task AddAsync_ShouldAddUser()
+        public async Task InsertAsync_ShouldAddUser()
         {
             // Arrange
             var user = UserFixtureFactory.CreateUser();

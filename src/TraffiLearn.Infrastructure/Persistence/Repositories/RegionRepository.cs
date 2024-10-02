@@ -31,7 +31,7 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
                 cancellationToken) is not null;
         }
 
-        public async Task<IEnumerable<Region>> GetAllRegionsAsync(
+        public async Task<IEnumerable<Region>> GetAllAsync(
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Regions.ToListAsync(cancellationToken);
@@ -68,7 +68,7 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
 
         private static void EnsurePassedRegionIsNotNull(Region region)
         {
-            ArgumentNullException.ThrowIfNull(nameof(region), "Region can't be null");
+            ArgumentNullException.ThrowIfNull(region, "Region can't be null");
         }
     }
 }

@@ -24,7 +24,7 @@ namespace TraffiLearn.Application.Regions.Queries.GetAll
             GetAllRegionsQuery request,
             CancellationToken cancellationToken)
         {
-            var regions = await _regionRepository.GetAllRegionsAsync(
+            var regions = await _regionRepository.GetAllAsync(
                 cancellationToken);
 
             return Result.Success(_regionMapper.Map(regions));

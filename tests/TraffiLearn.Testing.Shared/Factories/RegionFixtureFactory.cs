@@ -10,13 +10,11 @@ namespace TraffiLearn.Testing.Shared.Factories
             return RegionName.Create("Region1").Value;
         }
 
-        public static Region CreateRegion()
+        public static Region CreateRegion(RegionName? regionName = null)
         {
-            var regionName = CreateRegionName();
-
             return Region.Create(
                 regionId: new RegionId(Guid.NewGuid()),
-                name: regionName).Value;
+                name: regionName ?? CreateRegionName()).Value;
         }
     }
 }

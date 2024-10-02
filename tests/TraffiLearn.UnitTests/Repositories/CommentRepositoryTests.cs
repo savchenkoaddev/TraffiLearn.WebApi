@@ -19,7 +19,7 @@ namespace TraffiLearn.UnitTests.Repositories
         }
 
         [Fact]
-        public async Task AddAsync_ShouldAddComment()
+        public async Task InsertAsync_ShouldAddComment()
         {
             // Arrange
             var comment = CommentFixtureFactory.CreateComment();

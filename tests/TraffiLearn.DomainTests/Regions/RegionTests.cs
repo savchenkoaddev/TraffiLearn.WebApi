@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using TraffiLearn.Domain.Aggregates.Regions;
 using TraffiLearn.Domain.Aggregates.Regions.ValueObjects;
-using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
 using TraffiLearn.Testing.Shared.Factories;
 
 namespace TraffiLearn.DomainTests.Regions

@@ -18,7 +18,7 @@ namespace TraffiLearn.UnitTests.Repositories
         }
 
         [Fact]
-        public async Task AddAsync_ShouldAddTopic()
+        public async Task InsertAsync_ShouldAddTopic()
         {
             // Arrange
             var topic = TopicFixtureFactory.CreateTopic();
