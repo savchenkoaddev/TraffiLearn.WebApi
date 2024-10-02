@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using TraffiLearn.Application.Regions.Commands.Create;
+using TraffiLearn.Application.Regions.Commands.Update;
 using TraffiLearn.Application.Regions.DTO;
 using TraffiLearn.Application.Regions.Queries.GetAll;
 using TraffiLearn.Application.Regions.Queries.GetById;
-using TraffiLearn.Application.Tickets.Commands.Create;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
 using TraffiLearn.WebAPI.Swagger;
@@ -117,6 +117,37 @@ namespace TraffiLearn.WebAPI.Controllers
             }
 
             return commandResult.ToProblemDetails();
+        }
+
+        /// <summary>
+        /// Updates an existing region.
+        /// </summary>
+        /// <remarks>
+        /// ***Body Parameters:***<br /><br />
+        /// `RegionId` : ID of the region to be updated. Must be a valid GUID.<br /><br />
+        /// `RegionName` : Represents a new name of a region. Must not be empty. Must be less than 100 characters long.<br /><br />
+        /// **Authentication Required:**<br />
+        /// The user must be authenticated using a JWT token. Only users with the `Owner` or `Admin` role can perform this action.<br /><br />
+        /// </remarks>
+        /// <param name="command">**The update region command.**</param>
+        /// <response code="204">Successfully updated an existing region.</response>
+        /// <response code="400">***Bad request.*** The provided data is invalid or missing.</response>
+        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+        /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
+        /// <response code="404">***Not found.*** Region with the ID is not found.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        [HasPermission(Permission.ModifyData)]
+        [HttpPut]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateRegion(UpdateRegionCommand command)
+        {
+            var commandResult = await _sender.Send(command);
+
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
 

@@ -178,7 +178,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// Updates an existing topic.
         /// </summary>
         /// <remarks>
-        /// ***Parameters:***<br /><br />
+        /// ***Body Parameters:***<br /><br />
         /// `TopicId` : ID of the topic to be updated. Must be a valid GUID.<br /><br />
         /// `TopicNumber` : Number of the topic. Must be greater than 0.<br /><br />
         /// `Title` : Title of the topic. Must be less than 300 characters long.<br /><br />
@@ -190,7 +190,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="400">***Bad request.*** The provided data is invalid or missing.</response>
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
-        /// <response code="404">***Not found.*** Topic with the id is not found.</response>
+        /// <response code="404">***Not found.*** Topic with the ID is not found.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
         [HasPermission(Permission.ModifyData)]
         [HttpPut]
