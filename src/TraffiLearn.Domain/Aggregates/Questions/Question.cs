@@ -19,7 +19,6 @@ namespace TraffiLearn.Domain.Aggregates.Questions
         private readonly HashSet<User> _markedByUsers = [];
         private HashSet<Answer> _answers = [];
         private QuestionContent _content;
-        private QuestionExplanation _explanation;
         private QuestionNumber _questionNumber;
 
         private Question()
