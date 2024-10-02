@@ -35,7 +35,7 @@ namespace TraffiLearn.Domain.Aggregates.Users
             Username username,
             CancellationToken cancellationToken = default);
 
-        Task AddAsync(
+        Task InsertAsync(
             User user,
             CancellationToken cancellationToken = default);
 

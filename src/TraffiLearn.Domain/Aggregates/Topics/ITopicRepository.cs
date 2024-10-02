@@ -28,7 +28,7 @@ namespace TraffiLearn.Domain.Aggregates.Topics
             TopicId topicId,
             CancellationToken cancellationToken = default);
 
-        Task AddAsync(
+        Task InsertAsync(
             Topic topic,
             CancellationToken cancellationToken = default);
 

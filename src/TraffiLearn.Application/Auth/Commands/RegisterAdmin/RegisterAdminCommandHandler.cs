@@ -81,7 +81,7 @@ namespace TraffiLearn.Application.Auth.Commands.RegisterAdmin
             using (var transaction = new TransactionScope(
                 TransactionScopeAsyncFlowOption.Enabled))
             {
-                await _userRepository.AddAsync(
+                await _userRepository.InsertAsync(
                     newUser,
                     cancellationToken);
 

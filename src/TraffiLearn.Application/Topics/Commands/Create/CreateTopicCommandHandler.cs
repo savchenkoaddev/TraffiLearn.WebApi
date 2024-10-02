@@ -35,7 +35,7 @@ namespace TraffiLearn.Application.Topics.Commands.Create
 
             var topic = mappingResult.Value;
 
-            await _topicRepository.AddAsync(
+            await _topicRepository.InsertAsync(
                 topic,
                 cancellationToken);
 

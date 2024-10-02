@@ -44,7 +44,7 @@ namespace TraffiLearn.WebAPI.Extensions
 
             superUser.ConfirmEmail();
 
-            await userRepository.AddAsync(superUser);
+            await userRepository.InsertAsync(superUser);
 
             await unitOfWork.SaveChangesAsync();
 

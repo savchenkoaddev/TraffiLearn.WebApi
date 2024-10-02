@@ -71,7 +71,7 @@ namespace TraffiLearn.Application.Questions.Commands.AddCommentToQuestion
 
             question.AddComment(comment);
 
-            await _commentRepository.AddAsync(comment);
+            await _commentRepository.InsertAsync(comment);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Added the comment to the question succesfully.");

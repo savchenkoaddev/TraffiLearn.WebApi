@@ -37,7 +37,7 @@ namespace TraffiLearn.Domain.Aggregates.Comments
             CommentId commentId,
             CancellationToken cancellationToken = default);
 
-        Task AddAsync(
+        Task InsertAsync(
             Comment comment,
             CancellationToken cancellationToken = default);
 

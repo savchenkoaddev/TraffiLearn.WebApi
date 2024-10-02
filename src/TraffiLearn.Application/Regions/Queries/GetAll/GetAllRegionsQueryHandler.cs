@@ -13,7 +13,7 @@ namespace TraffiLearn.Application.Regions.Queries.GetAll
         private readonly Mapper<Region, RegionResponse> _regionMapper;
 
         public GetAllRegionsQueryHandler(
-            IRegionRepository regionRepository, 
+            IRegionRepository regionRepository,
             Mapper<Region, RegionResponse> regionMapper)
         {
             _regionRepository = regionRepository;
@@ -21,10 +21,10 @@ namespace TraffiLearn.Application.Regions.Queries.GetAll
         }
 
         public async Task<Result<IEnumerable<RegionResponse>>> Handle(
-            GetAllRegionsQuery request, 
+            GetAllRegionsQuery request,
             CancellationToken cancellationToken)
         {
-            var regions = await _regionRepository.GetAllRegionsAsync(
+            var regions = await _regionRepository.GetAllAsync(
                 cancellationToken);
 
             return Result.Success(_regionMapper.Map(regions));

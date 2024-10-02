@@ -1,29 +1,28 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Application.Regions.DTO;
 using TraffiLearn.Domain.Aggregates.Regions;
 using TraffiLearn.Domain.Aggregates.Regions.Errors;
 using TraffiLearn.Domain.Aggregates.Regions.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Regions.Queries.GetById
+namespace TraffiLearn.Application.Regions.Commands.Delete
 {
-    internal sealed class GetRegionByIdQueryHandler
-        : IRequestHandler<GetRegionByIdQuery, Result<RegionResponse>>
+    internal sealed class DeleteRegionCommandHandler
+        : IRequestHandler<DeleteRegionCommand, Result>
     {
         private readonly IRegionRepository _regionRepository;
-        private readonly Mapper<Region, RegionResponse> _mapper;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public GetRegionByIdQueryHandler(
-            IRegionRepository regionRepository,
-            Mapper<Region, RegionResponse> mapper)
+        public DeleteRegionCommandHandler(
+            IRegionRepository regionRepository, 
+            IUnitOfWork unitOfWork)
         {
             _regionRepository = regionRepository;
-            _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result<RegionResponse>> Handle(
-            GetRegionByIdQuery request,
+        public async Task<Result> Handle(
+            DeleteRegionCommand request, 
             CancellationToken cancellationToken)
         {
             var regionId = new RegionId(request.RegionId.Value);
@@ -34,10 +33,13 @@ namespace TraffiLearn.Application.Regions.Queries.GetById
 
             if (region is null)
             {
-                return Result.Failure<RegionResponse>(RegionErrors.NotFound);
+                return RegionErrors.NotFound;
             }
 
-            return _mapper.Map(region);
+            await _regionRepository.DeleteAsync(region);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return Result.Success();
         }
     }
 }

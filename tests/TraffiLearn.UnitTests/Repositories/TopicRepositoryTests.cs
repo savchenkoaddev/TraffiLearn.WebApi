@@ -18,13 +18,13 @@ namespace TraffiLearn.UnitTests.Repositories
         }
 
         [Fact]
-        public async Task AddAsync_ShouldAddTopic()
+        public async Task InsertAsync_ShouldAddTopic()
         {
             // Arrange
             var topic = TopicFixtureFactory.CreateTopic();
 
             // Act
-            await _repository.AddAsync(topic);
+            await _repository.InsertAsync(topic);
             await DbContext.SaveChangesAsync();
 
             // Assert
