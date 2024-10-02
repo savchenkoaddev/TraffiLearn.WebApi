@@ -9,6 +9,7 @@ using TraffiLearn.Application.Questions.Commands.Create;
 using TraffiLearn.Application.Questions.Commands.Update;
 using TraffiLearn.Application.Questions.DTO;
 using TraffiLearn.Application.Questions.Mappers;
+using TraffiLearn.Application.Regions.Commands.Create;
 using TraffiLearn.Application.Regions.DTO;
 using TraffiLearn.Application.Regions.Mappers;
 using TraffiLearn.Application.Tickets.Commands.Create;
@@ -57,6 +58,7 @@ namespace TraffiLearn.Application.Extensions.DI
             services.AddMapper<User, ApplicationUser, UserToApplicationUserMapper>();
             services.AddMapper<User, UserResponse, UserToUserResponseMapper>();
             services.AddMapper<Region, RegionResponse, RegionToRegionResponseMapper>();
+            services.AddMapper<CreateRegionCommand, Result<Region>, CreateRegionCommandMapper>();
 
             return services;
         }
