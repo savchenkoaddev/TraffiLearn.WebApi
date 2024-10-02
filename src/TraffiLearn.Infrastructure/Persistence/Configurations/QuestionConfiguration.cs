@@ -9,6 +9,9 @@ namespace TraffiLearn.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Question> builder)
         {
+            builder.HasIndex(q => q.Id)
+                .IsUnique();
+
             builder.Property(q => q.Id).HasConversion(
                  id => id.Value,
                  value => new QuestionId(value));
