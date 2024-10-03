@@ -57,9 +57,11 @@ After installing Docker, follow these steps to get started with the API:
 > - **5000** (API)
 > - **10000** (Azurite)
 > - **5432** (Postgres)
+> - **8025** (MailHog)
 
 <br>
 After some time, you should be able to **access the API** at http://localhost:5000/swagger
+<br>
 
 ## Tests
 
@@ -67,7 +69,7 @@ To run the tests, you need to have **.NET** installed on your machine.
 
 You can download .NET from the [official .NET website](https://dotnet.microsoft.com/en-us/download).
 
-If you are eager to run the API tests, please follow the next steps:
+After installing .NET, please follow the next steps:
 1. **Make sure** you have repository files installed.
 2. **Navigate to the `src` folder of the API** in your terminal.
 3. **Set the needed environment variables via CLI** (see previous sections).
