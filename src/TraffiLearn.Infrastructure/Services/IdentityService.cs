@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Security.Claims;
 using TraffiLearn.Application.Abstractions.Identity;
+using TraffiLearn.Application.Abstractions.Services;
+using TraffiLearn.Application.Users.Identity;
 using TraffiLearn.Domain.Aggregates.Users.Errors;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Shared;
@@ -9,28 +12,35 @@ using TraffiLearn.Infrastructure.Authentication.Options;
 
 namespace TraffiLearn.Infrastructure.Services
 {
-    internal sealed class IdentityService<TIdentityUser> : IIdentityService<TIdentityUser>
-        where TIdentityUser : class
+    internal sealed class IdentityService : IIdentityService<ApplicationUser>
     {
-        private readonly UserManager<TIdentityUser> _userManager;
-        private readonly SignInManager<TIdentityUser> _signInManager;
+        private const string EMAIL_CLAIM_TYPE = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress";
+
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly LoginSettings _loginSettings;
-        private readonly ILogger<IdentityService<TIdentityUser>> _logger;
+        private readonly ILogger<IdentityService> _logger;
+        private readonly ITokenService _tokenService;
+        private readonly IHasher _hasher;
 
         public IdentityService(
-            UserManager<TIdentityUser> userManager,
-            SignInManager<TIdentityUser> signInManager,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
             IOptions<LoginSettings> loginSettings,
-            ILogger<IdentityService<TIdentityUser>> logger)
+            ILogger<IdentityService> logger,
+            ITokenService tokenService,
+            IHasher hasher)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _loginSettings = loginSettings.Value;
             _logger = logger;
+            _tokenService = tokenService;
+            _hasher = hasher;
         }
 
         public async Task CreateAsync(
-            TIdentityUser identityUser,
+            ApplicationUser identityUser,
             string password)
         {
             ArgumentNullException.ThrowIfNull(identityUser, nameof(identityUser));
@@ -41,7 +51,7 @@ namespace TraffiLearn.Infrastructure.Services
             HandleIdentityResult(result, "Failed to create identity user.");
         }
 
-        public async Task DeleteAsync(TIdentityUser identityUser)
+        public async Task DeleteAsync(ApplicationUser identityUser)
         {
             ArgumentNullException.ThrowIfNull(identityUser, nameof(identityUser));
 
@@ -51,7 +61,7 @@ namespace TraffiLearn.Infrastructure.Services
         }
 
         public async Task AddToRoleAsync(
-            TIdentityUser identityUser,
+            ApplicationUser identityUser,
             string roleName)
         {
             ArgumentNullException.ThrowIfNull(identityUser, nameof(identityUser));
@@ -63,7 +73,7 @@ namespace TraffiLearn.Infrastructure.Services
         }
 
         public async Task RemoveFromRoleAsync(
-            TIdentityUser identityUser,
+            ApplicationUser identityUser,
             string roleName)
         {
             ArgumentNullException.ThrowIfNull(identityUser, nameof(identityUser));
@@ -87,7 +97,7 @@ namespace TraffiLearn.Infrastructure.Services
             throw new InvalidOperationException($"{errorMessage}\r\nErrors: {errorsString}");
         }
 
-        public async Task<TIdentityUser?> GetByEmailAsync(Email email)
+        public async Task<ApplicationUser?> GetByEmailAsync(Email email)
         {
             ArgumentNullException.ThrowIfNull(email, nameof(email));
 
@@ -95,7 +105,7 @@ namespace TraffiLearn.Infrastructure.Services
         }
 
         public async Task<Result> LoginAsync(
-            TIdentityUser identityUser,
+            ApplicationUser identityUser,
             string password)
         {
             ArgumentNullException.ThrowIfNull(identityUser);
@@ -116,7 +126,7 @@ namespace TraffiLearn.Infrastructure.Services
         }
 
         public async Task<Result> ConfirmEmailAsync(
-            TIdentityUser identityUser, 
+            ApplicationUser identityUser,
             string token)
         {
             var result = await _userManager.ConfirmEmailAsync(identityUser, token);
@@ -129,6 +139,70 @@ namespace TraffiLearn.Infrastructure.Services
             }
 
             return Result.Success();
+        }
+
+        public async Task<Result> PopulateRefreshTokenAsync(ApplicationUser user, string refreshToken)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(refreshToken);
+
+            var refreshTokenHash = _hasher.Hash(refreshToken);
+
+            user.RefreshToken = refreshTokenHash;
+
+            user.RefreshTokenExpirationTime = DateTime.UtcNow.AddDays(
+                _loginSettings.RefreshTokenExpiryInDays);
+
+            await _userManager.UpdateAsync(user);
+
+            return Result.Success();
+        }
+
+        public async Task<Result> ValidateRefreshTokenAsync(ApplicationUser user, string refreshToken)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(refreshToken);
+
+            var refreshTokenHash = _hasher.Hash(refreshToken);
+
+            if (user.RefreshToken != refreshTokenHash)
+            {
+                return Result.Failure(UserErrors.InvalidRefreshToken);
+            }
+
+            if (user.RefreshTokenExpirationTime < DateTime.UtcNow)
+            {
+                return Result.Failure<ApplicationUser>(UserErrors.RefreshTokenExpired);
+            }
+
+            return Result.Success();
+        }
+
+        public async Task<Result<ApplicationUser>> GetByAccessTokenAsync(string accessToken)
+        {
+            ClaimsPrincipal principal;
+
+            try
+            {
+                principal = _tokenService.ValidateToken(accessToken, false);
+            } catch (Exception)
+            {
+                return Result.Failure<ApplicationUser>(UserErrors.InvalidAccessToken);
+            }
+
+            var email = principal.FindFirstValue(EMAIL_CLAIM_TYPE);
+
+            if (email is null)
+            {
+                return Result.Failure<ApplicationUser>(UserErrors.InvalidAccessToken);
+            }
+
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user is null)
+            {
+                return Result.Failure<ApplicationUser>(UserErrors.NotFound);
+            }
+
+            return Result.Success(user);
         }
     }
 }

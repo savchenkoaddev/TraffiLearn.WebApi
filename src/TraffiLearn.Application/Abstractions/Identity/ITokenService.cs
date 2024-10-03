@@ -9,6 +9,7 @@ namespace TraffiLearn.Application.Abstractions.Identity
 
         string GenerateRefreshToken();
 
-        ClaimsPrincipal ValidateToken(string token);
+        ClaimsPrincipal ValidateToken(
+            string token, bool validateLifetime = true);
     }
 }

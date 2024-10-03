@@ -18,5 +18,11 @@ namespace TraffiLearn.Application.Abstractions.Identity
         Task RemoveFromRoleAsync(TIdentityUser identityUser, string roleName);
 
         Task<Result> LoginAsync(TIdentityUser identityUser, string password);
+
+        Task<Result> PopulateRefreshTokenAsync(TIdentityUser identityUser, string refreshToken);
+
+        Task<Result> ValidateRefreshTokenAsync(TIdentityUser user, string refreshToken);
+
+        Task<Result<TIdentityUser>> GetByAccessTokenAsync(string accessToken);
     }
 }

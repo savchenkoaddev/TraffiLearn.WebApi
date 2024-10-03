@@ -4,6 +4,7 @@ using System.Net.Mail;
 using System.Net;
 using TraffiLearn.Application.Abstractions.Emails;
 using TraffiLearn.Application.Abstractions.Identity;
+using TraffiLearn.Application.Abstractions.Services;
 using TraffiLearn.Application.Users.Identity;
 using TraffiLearn.Infrastructure.Extensions.DI.Shared;
 using TraffiLearn.Infrastructure.Services;
@@ -20,7 +21,8 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
             services.AddScoped<IUserContextService<Guid>, UserContextService>();
             services.AddScoped<IRoleService<IdentityRole>, RoleService<IdentityRole>>();
             services.AddScoped<ITokenService, JwtTokenService>();
-            services.AddScoped<IIdentityService<ApplicationUser>, IdentityService<ApplicationUser>>();
+            services.AddScoped<IIdentityService<ApplicationUser>, IdentityService>();
+            services.AddScoped<IHasher, Sha256Hasher>();
             services.AddScoped<IEmailSender, EmailSender>();
             services.AddScoped<IConfirmationTokenGenerator, ConfirmationTokenGenerator>();
             services.AddScoped<IEmailConfirmationLinkGenerator, EmailConfirmationLinkGenerator>();

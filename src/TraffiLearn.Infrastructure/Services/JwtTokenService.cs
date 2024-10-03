@@ -35,27 +35,27 @@ namespace TraffiLearn.Infrastructure.Services
             return GetJwtTokenString(token);
         }
 
-        public string GenerateRefreshToken()
-        {
-            return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
-        }
-
-        public ClaimsPrincipal ValidateToken(string token)
+        public ClaimsPrincipal ValidateToken(string token, bool validateLifetime = true)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
 
-            var validationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = _jwtSettings.Issuer,
-                ValidAudience = _jwtSettings.Audience,
-                IssuerSigningKey = _symmetricSecurityKey
-            };
+            var validationParameters = GetTokenValidationParameters(
+                validateLifetime);
 
-            return tokenHandler.ValidateToken(token, validationParameters, out _);
+            var principal = tokenHandler.ValidateToken(
+                token, validationParameters, out var securityToken);
+
+            if (!IsTokenValid(securityToken))
+            {
+                throw new SecurityTokenException("Invalid token");
+            }
+
+            return principal;
+        }
+
+        public string GenerateRefreshToken()
+        {
+            return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
         }
 
         #region Private Methods
@@ -86,6 +86,27 @@ namespace TraffiLearn.Infrastructure.Services
                 new(JwtRegisteredClaimNames.Email, user.Email.Value.ToString()),
                 new("role", user.Role.ToString())
             ];
+        }
+
+        private TokenValidationParameters GetTokenValidationParameters(
+            bool validateLifeTime = true)
+        {
+            return new()
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = validateLifeTime,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = _jwtSettings.Issuer,
+                ValidAudience = _jwtSettings.Audience,
+                IssuerSigningKey = _symmetricSecurityKey
+            };
+        }
+
+        private bool IsTokenValid(SecurityToken securityToken)
+        {
+            return (securityToken is JwtSecurityToken jwtSecurityToken) && jwtSecurityToken.Header.Alg
+                .Equals(_jwtSettings.SecurityAlgorithm, StringComparison.InvariantCultureIgnoreCase);
         }
 
         #endregion

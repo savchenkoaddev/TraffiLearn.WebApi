@@ -47,11 +47,16 @@ namespace TraffiLearn.WebAPI.Controllers
         /// ```json
         /// {
         ///     "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+        ///     "refreshToken": "s1x/m6Xc3H+bWdBVYViBKvNverG2DMtNgt7Ac0nl/fEeTcEfwT5uzCIzaME6H4cy2/r66+Lm7E5Wcyig+Tv8xA=="
         /// }
         /// ```
+        /// 
+        /// **Access token** is used to authenticate the user for a specific period of time. **Access token** expires in a short time. For example in **20 minutes**. <br /><br />
+        /// **Refresh token** is used to obtain a new access token when the current one expires. **Refresh token** expires in a long time. For example in **7 days**. <br /><br />
+        /// Every time the user logs in, **refresh token expiration time** is extended (e.g. for 7 days) from current time. <br /><br />
         /// </remarks>
         /// <param name="command">**The login command containing email and password.**</param>
-        /// <response code="200">Successfully authenticated. Returns an access token.</response>
+        /// <response code="200">Successfully authenticated. Returns an access and refresh token.</response>
         /// <response code="400">***Bad request.*** Either the email or password is in an incorrect format, or the provided credentials are invalid.</response>
         /// <response code="404">***Not found.*** No user exists with the provided credentials.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>

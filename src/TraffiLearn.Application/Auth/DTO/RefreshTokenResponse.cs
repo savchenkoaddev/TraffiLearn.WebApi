@@ -1,6 +1,6 @@
 ﻿namespace TraffiLearn.Application.Auth.DTO
 {
-    public sealed record LoginResponse(
+    public sealed record RefreshTokenResponse(
         string AccessToken,
         string RefreshToken);
 }

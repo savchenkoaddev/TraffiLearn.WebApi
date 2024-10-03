@@ -7,5 +7,7 @@
         public bool IsPersistent = true;
 
         public bool LockoutOnFailure = false;
+
+        public int RefreshTokenExpiryInDays = 7;
     }
 }
