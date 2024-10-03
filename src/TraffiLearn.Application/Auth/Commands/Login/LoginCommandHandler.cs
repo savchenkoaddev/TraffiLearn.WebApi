@@ -11,7 +11,8 @@ using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Auth.Commands.Login
 {
-    internal sealed class LoginCommandHandler : IRequestHandler<LoginCommand, Result<LoginResponse>>
+    internal sealed class LoginCommandHandler 
+        : IRequestHandler<LoginCommand, Result<LoginResponse>>
     {
         private readonly IIdentityService<ApplicationUser> _identityService;
         private readonly IUserRepository _userRepository;

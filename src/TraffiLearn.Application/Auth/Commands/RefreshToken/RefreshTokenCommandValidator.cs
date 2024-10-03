@@ -2,7 +2,8 @@
 
 namespace TraffiLearn.Application.Auth.Commands.RefreshToken
 {
-    public sealed class RefreshTokenCommandValidator : AbstractValidator<RefreshTokenCommand>
+    internal sealed class RefreshTokenCommandValidator 
+        : AbstractValidator<RefreshTokenCommand>
     {
         public RefreshTokenCommandValidator()
         {
