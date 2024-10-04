@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
@@ -14,8 +15,6 @@ namespace TraffiLearn.Infrastructure.Services
 {
     internal sealed class IdentityService : IIdentityService<ApplicationUser>
     {
-        private const string EMAIL_CLAIM_TYPE = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress";
-
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly LoginSettings _loginSettings;
@@ -157,17 +156,8 @@ namespace TraffiLearn.Infrastructure.Services
             return Result.Success();
         }
 
-        public async Task<Result> ValidateRefreshTokenAsync(ApplicationUser user, string refreshToken)
+        public async Task<Result> ValidateUserRefreshTokenAsync(ApplicationUser user)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(refreshToken);
-
-            var refreshTokenHash = _hasher.Hash(refreshToken);
-
-            if (user.RefreshToken != refreshTokenHash)
-            {
-                return Result.Failure(UserErrors.InvalidRefreshToken);
-            }
-
             if (user.RefreshTokenExpirationTime < DateTime.UtcNow)
             {
                 return Result.Failure<ApplicationUser>(UserErrors.RefreshTokenExpired);
@@ -176,30 +166,16 @@ namespace TraffiLearn.Infrastructure.Services
             return Result.Success();
         }
 
-        public async Task<Result<ApplicationUser>> GetByAccessTokenAsync(string accessToken)
+        public async Task<Result<ApplicationUser>> GetByRefreshTokenAsync(string refreshToken)
         {
-            ClaimsPrincipal principal;
+            var refreshTokenHash = _hasher.Hash(refreshToken);
 
-            try
-            {
-                principal = _tokenService.ValidateToken(accessToken, false);
-            } catch (Exception)
-            {
-                return Result.Failure<ApplicationUser>(UserErrors.InvalidAccessToken);
-            }
-
-            var email = principal.FindFirstValue(EMAIL_CLAIM_TYPE);
-
-            if (email is null)
-            {
-                return Result.Failure<ApplicationUser>(UserErrors.InvalidAccessToken);
-            }
-
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.Users
+                .FirstOrDefaultAsync(x => x.RefreshToken == refreshTokenHash);
 
             if (user is null)
             {
-                return Result.Failure<ApplicationUser>(UserErrors.NotFound);
+                return Result.Failure<ApplicationUser>(UserErrors.InvalidRefreshToken);
             }
 
             return Result.Success(user);
