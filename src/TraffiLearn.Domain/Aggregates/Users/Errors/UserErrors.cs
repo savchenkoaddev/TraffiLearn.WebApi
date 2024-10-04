@@ -52,7 +52,7 @@ namespace TraffiLearn.Domain.Aggregates.Users.Errors
         public static readonly Error RefreshTokenExpired =
             Error.Validation(
                 code: "User.RefreshTokenExpired",
-                description: "The provided refresh token has expired");
+                description: "The provided refresh token has expired.");
 
         public static readonly Error CommentAlreadyAdded =
             Error.Validation(

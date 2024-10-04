@@ -6,6 +6,8 @@ using System.Security.Cryptography;
 using System.Text;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Domain.Aggregates.Users;
+using TraffiLearn.Domain.Aggregates.Users.Errors;
+using TraffiLearn.Domain.Shared;
 using TraffiLearn.Infrastructure.Authentication.Options;
 
 namespace TraffiLearn.Infrastructure.Services
@@ -35,22 +37,22 @@ namespace TraffiLearn.Infrastructure.Services
             return GetJwtTokenString(token);
         }
 
-        public ClaimsPrincipal ValidateToken(string token, bool validateLifetime = true)
+        public async Task<Result> ValidateAccessTokenAsync(string token, bool validateLifetime = true)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
 
             var validationParameters = GetTokenValidationParameters(
                 validateLifetime);
 
-            var principal = tokenHandler.ValidateToken(
-                token, validationParameters, out var securityToken);
+            var validationResult = await tokenHandler.ValidateTokenAsync(
+                token, validationParameters);
 
-            if (!IsTokenValid(securityToken))
+            if (!validationResult.IsValid)
             {
-                throw new SecurityTokenException("Invalid token");
+                return Result.Failure(UserErrors.InvalidAccessToken);
             }
 
-            return principal;
+            return Result.Success();
         }
 
         public string GenerateRefreshToken()
@@ -101,12 +103,6 @@ namespace TraffiLearn.Infrastructure.Services
                 ValidAudience = _jwtSettings.Audience,
                 IssuerSigningKey = _symmetricSecurityKey
             };
-        }
-
-        private bool IsTokenValid(SecurityToken securityToken)
-        {
-            return (securityToken is JwtSecurityToken jwtSecurityToken) && jwtSecurityToken.Header.Alg
-                .Equals(_jwtSettings.SecurityAlgorithm, StringComparison.InvariantCultureIgnoreCase);
         }
 
         #endregion

@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -12,7 +11,7 @@ namespace TraffiLearn.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "RefreshToken",
+                name: "RefreshTokenHash",
                 table: "AspNetUsers",
                 type: "text",
                 nullable: true);
@@ -29,7 +28,7 @@ namespace TraffiLearn.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "RefreshToken",
+                name: "RefreshTokenHash",
                 table: "AspNetUsers");
 
             migrationBuilder.DropColumn(

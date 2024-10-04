@@ -7,7 +7,6 @@ using TraffiLearn.Application.Regions.Commands.Update;
 using TraffiLearn.Application.Regions.DTO;
 using TraffiLearn.Application.Regions.Queries.GetAll;
 using TraffiLearn.Application.Regions.Queries.GetById;
-using TraffiLearn.Application.Topics.Commands.Delete;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
 using TraffiLearn.WebAPI.Swagger;

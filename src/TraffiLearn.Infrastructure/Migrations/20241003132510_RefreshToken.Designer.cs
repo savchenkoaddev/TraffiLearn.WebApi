@@ -304,7 +304,7 @@ namespace TraffiLearn.Infrastructure.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("RefreshToken")
+                    b.Property<string>("RefreshTokenHash")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("RefreshTokenExpirationTime")

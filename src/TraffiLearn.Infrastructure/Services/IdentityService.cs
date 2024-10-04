@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Security.Claims;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Abstractions.Services;
 using TraffiLearn.Application.Users.Identity;
@@ -143,11 +143,9 @@ namespace TraffiLearn.Infrastructure.Services
 
         public async Task<Result> PopulateRefreshTokenAsync(ApplicationUser user, string refreshToken)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(refreshToken);
-
             var refreshTokenHash = _hasher.Hash(refreshToken);
 
-            user.RefreshToken = refreshTokenHash;
+            user.RefreshTokenHash = refreshTokenHash;
 
             user.RefreshTokenExpirationTime = DateTime.UtcNow.AddDays(
                 _loginSettings.RefreshTokenExpiryInDays);
@@ -157,17 +155,8 @@ namespace TraffiLearn.Infrastructure.Services
             return Result.Success();
         }
 
-        public async Task<Result> ValidateRefreshTokenAsync(ApplicationUser user, string refreshToken)
+        public Result ValidateRefreshToken(ApplicationUser user)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(refreshToken);
-
-            var refreshTokenHash = _hasher.Hash(refreshToken);
-
-            if (user.RefreshToken != refreshTokenHash)
-            {
-                return Result.Failure(UserErrors.InvalidRefreshToken);
-            }
-
             if (user.RefreshTokenExpirationTime < DateTime.UtcNow)
             {
                 return Result.Failure<ApplicationUser>(UserErrors.RefreshTokenExpired);
@@ -176,30 +165,16 @@ namespace TraffiLearn.Infrastructure.Services
             return Result.Success();
         }
 
-        public async Task<Result<ApplicationUser>> GetByAccessTokenAsync(string accessToken)
+        public async Task<Result<ApplicationUser>> GetByRefreshTokenAsync(string refreshToken)
         {
-            ClaimsPrincipal principal;
+            var refreshTokenHash = _hasher.Hash(refreshToken);
 
-            try
-            {
-                principal = _tokenService.ValidateToken(accessToken, false);
-            } catch (Exception)
-            {
-                return Result.Failure<ApplicationUser>(UserErrors.InvalidAccessToken);
-            }
-
-            var email = principal.FindFirstValue(EMAIL_CLAIM_TYPE);
-
-            if (email is null)
-            {
-                return Result.Failure<ApplicationUser>(UserErrors.InvalidAccessToken);
-            }
-
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.Users
+                .FirstOrDefaultAsync(x => x.RefreshTokenHash == refreshTokenHash);
 
             if (user is null)
             {
-                return Result.Failure<ApplicationUser>(UserErrors.NotFound);
+                return Result.Failure<ApplicationUser>(UserErrors.InvalidRefreshToken);
             }
 
             return Result.Success(user);

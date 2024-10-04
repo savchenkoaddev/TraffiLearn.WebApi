@@ -1,5 +1,5 @@
-﻿using System.Security.Claims;
-using TraffiLearn.Domain.Aggregates.Users;
+﻿using TraffiLearn.Domain.Aggregates.Users;
+using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Abstractions.Identity
 {
@@ -9,7 +9,7 @@ namespace TraffiLearn.Application.Abstractions.Identity
 
         string GenerateRefreshToken();
 
-        ClaimsPrincipal ValidateToken(
+        Task<Result> ValidateAccessTokenAsync(
             string token, bool validateLifetime = true);
     }
 }

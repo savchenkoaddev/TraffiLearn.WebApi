@@ -14,7 +14,7 @@ namespace TraffiLearn.Application.Regions.Commands.Delete
         private readonly IUnitOfWork _unitOfWork;
 
         public DeleteRegionCommandHandler(
-            IRegionRepository regionRepository, 
+            IRegionRepository regionRepository,
             IUnitOfWork unitOfWork)
         {
             _regionRepository = regionRepository;
@@ -22,7 +22,7 @@ namespace TraffiLearn.Application.Regions.Commands.Delete
         }
 
         public async Task<Result> Handle(
-            DeleteRegionCommand request, 
+            DeleteRegionCommand request,
             CancellationToken cancellationToken)
         {
             var regionId = new RegionId(request.RegionId.Value);
