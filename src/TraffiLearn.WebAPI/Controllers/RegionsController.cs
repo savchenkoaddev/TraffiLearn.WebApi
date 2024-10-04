@@ -7,7 +7,6 @@ using TraffiLearn.Application.Regions.Commands.Update;
 using TraffiLearn.Application.Regions.DTO;
 using TraffiLearn.Application.Regions.Queries.GetAll;
 using TraffiLearn.Application.Regions.Queries.GetById;
-using TraffiLearn.Application.Topics.Commands.Delete;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
 using TraffiLearn.WebAPI.Swagger;
@@ -88,7 +87,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// Creates a new region.
         /// </summary>
         /// <remarks>
-        /// ***Parameters:***<br /><br />
+        /// ***Body Parameters:***<br /><br />
         /// `RegionName` : Represents name of a region. Must not be empty. Must be less than 100 characters long.<br /><br /><br />
         /// **Authentication Required:**<br />
         /// The user must be authenticated using a JWT token. Only users with the `Owner` or `Admin` role can perform this action.<br /><br />
@@ -106,7 +105,8 @@ namespace TraffiLearn.WebAPI.Controllers
         [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateRegion(CreateRegionCommand command)
+        public async Task<IActionResult> CreateRegion(
+            [FromBody] CreateRegionCommand command)
         {
             var commandResult = await _sender.Send(command);
 
@@ -145,7 +145,8 @@ namespace TraffiLearn.WebAPI.Controllers
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateRegion(UpdateRegionCommand command)
+        public async Task<IActionResult> UpdateRegion(
+            [FromBody] UpdateRegionCommand command)
         {
             var commandResult = await _sender.Send(command);
 
@@ -173,7 +174,7 @@ namespace TraffiLearn.WebAPI.Controllers
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteTopic(
+        public async Task<IActionResult> DeleteRegion(
             [FromRoute] Guid regionId)
         {
             var commandResult = await _sender.Send(new DeleteRegionCommand(regionId));

@@ -17,12 +17,10 @@ namespace TraffiLearn.Domain.Aggregates.ServiceCenters
 
         private ServiceCenter(
             ServiceCenterId id,
-            Region region,
             Address address,
             ServiceCenterNumber number)
             : base(id)
         {
-            Region = region;
             Address = address;
             Number = number;
         }
@@ -55,18 +53,15 @@ namespace TraffiLearn.Domain.Aggregates.ServiceCenters
             }
         }
 
-        public Region Region
-        {
-            get
-            {
-                return _region;
-            }
-            private set
-            {
-                ArgumentNullException.ThrowIfNull(value, "Region cannot be null.");
+        public Region? Region { get; private set; } = default;
 
-                _region = value;
-            }
+        public Result SetRegion(Region region)
+        {
+            ArgumentNullException.ThrowIfNull(region, nameof(region));
+
+            Region = region;
+
+            return Result.Success();
         }
 
         public Result Update(
@@ -81,11 +76,10 @@ namespace TraffiLearn.Domain.Aggregates.ServiceCenters
 
         public static Result<ServiceCenter> Create(
             ServiceCenterId id,
-            Region region,
             Address address,
             ServiceCenterNumber number)
         {
-            return new ServiceCenter(id, region, address, number);
+            return new ServiceCenter(id, address, number);
         }
     }
 }

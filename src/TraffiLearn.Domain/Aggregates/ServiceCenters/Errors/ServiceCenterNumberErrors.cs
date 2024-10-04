@@ -9,6 +9,11 @@ namespace TraffiLearn.Domain.Aggregates.ServiceCenters.Errors
                 code: "ServiceCenterNumber.Empty",
                 description: "Service center number cannot be empty.");
 
+        public static readonly Error NotNumber =
+            Error.Validation(
+                code: "ServiceCenterNumber.NotNumber",
+                description: "Service center number must be a number.");
+
         public static Error TooLong(int allowedLength) =>
             Error.Validation(
                 code: "ServiceCenterNumber.TooLong",

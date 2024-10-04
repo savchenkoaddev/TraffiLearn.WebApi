@@ -30,6 +30,12 @@ namespace TraffiLearn.Domain.Aggregates.ServiceCenters.ValueObjects
                         allowedLength: MaxLength));
             }
 
+            if (int.TryParse(value, out _) == false)
+            {
+                return Result.Failure<ServiceCenterNumber>(
+                    ServiceCenterNumberErrors.NotNumber);
+            }
+
             return new ServiceCenterNumber(value);
         }
 

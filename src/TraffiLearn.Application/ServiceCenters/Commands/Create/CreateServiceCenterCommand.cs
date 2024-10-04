@@ -5,6 +5,7 @@ namespace TraffiLearn.Application.ServiceCenters.Commands.Create
 {
     public sealed record CreateServiceCenterCommand(
         Guid? RegionId,
+        string? ServiceCenterNumber,
         string? LocationName,
         string? RoadName,
         string? BuildingNumber) : IRequest<Result<Guid>>;

@@ -13,13 +13,13 @@ namespace TraffiLearn.Application.ServiceCenters.Commands.Create
     {
         private readonly IServiceCenterRepository _scRepository;
         private readonly IRegionRepository _regionRepository;
-        private readonly Mapper<CreateServiceCenterCommand, ServiceCenter> _requestMapper;
+        private readonly Mapper<CreateServiceCenterCommand, Result<ServiceCenter>> _requestMapper;
         private readonly IUnitOfWork _unitOfWork;
 
         public CreateServiceCenterCommandHandler(
             IServiceCenterRepository scRepository,
             IRegionRepository regionRepository,
-            Mapper<CreateServiceCenterCommand, ServiceCenter> requestMapper,
+            Mapper<CreateServiceCenterCommand, Result<ServiceCenter>> requestMapper,
             IUnitOfWork unitOfWork)
         {
             _scRepository = scRepository;
@@ -32,6 +32,13 @@ namespace TraffiLearn.Application.ServiceCenters.Commands.Create
             CreateServiceCenterCommand request,
             CancellationToken cancellationToken)
         {
+            var mappingResult = _requestMapper.Map(request);
+
+            if (mappingResult.IsFailure)
+            {
+                return Result.Failure<Guid>(mappingResult.Error);
+            }
+
             var regionId = new RegionId(request.RegionId.Value);
 
             var region = await _regionRepository.GetByIdAsync(
@@ -43,7 +50,7 @@ namespace TraffiLearn.Application.ServiceCenters.Commands.Create
                 return Result.Failure<Guid>(RegionErrors.NotFound);
             }
 
-            var serviceCenter = _requestMapper.Map(request);
+            var serviceCenter = mappingResult.Value;
 
             var result = serviceCenter.SetRegion(region);
 
