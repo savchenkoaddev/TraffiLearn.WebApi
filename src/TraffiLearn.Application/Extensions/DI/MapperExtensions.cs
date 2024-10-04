@@ -12,6 +12,8 @@ using TraffiLearn.Application.Questions.Mappers;
 using TraffiLearn.Application.Regions.Commands.Create;
 using TraffiLearn.Application.Regions.DTO;
 using TraffiLearn.Application.Regions.Mappers;
+using TraffiLearn.Application.ServiceCenters.DTO;
+using TraffiLearn.Application.ServiceCenters.Mappers;
 using TraffiLearn.Application.Tickets.Commands.Create;
 using TraffiLearn.Application.Tickets.DTO;
 using TraffiLearn.Application.Tickets.Mappers;
@@ -25,6 +27,7 @@ using TraffiLearn.Application.Users.Mappers;
 using TraffiLearn.Domain.Aggregates.Comments;
 using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Regions;
+using TraffiLearn.Domain.Aggregates.ServiceCenters;
 using TraffiLearn.Domain.Aggregates.Tickets;
 using TraffiLearn.Domain.Aggregates.Topics;
 using TraffiLearn.Domain.Aggregates.Users;
@@ -59,6 +62,7 @@ namespace TraffiLearn.Application.Extensions.DI
             services.AddMapper<User, UserResponse, UserToUserResponseMapper>();
             services.AddMapper<Region, RegionResponse, RegionToRegionResponseMapper>();
             services.AddMapper<CreateRegionCommand, Result<Region>, CreateRegionCommandMapper>();
+            services.AddMapper<ServiceCenter, ServiceCenterResponse, ServiceCenterToResponseDtoMapper>();
 
             return services;
         }
