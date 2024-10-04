@@ -21,6 +21,11 @@ namespace TraffiLearn.Infrastructure.Persistence.Configurations
                 .HasConversion(
                     content => content.Value,
                     value => RegionName.Create(value).Value);
+
+            builder
+                .HasMany(r => r.ServiceCenters)
+                .WithOne(sc => sc.Region)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
