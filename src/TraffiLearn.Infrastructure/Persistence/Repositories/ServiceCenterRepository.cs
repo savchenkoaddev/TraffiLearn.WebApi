@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TraffiLearn.Domain.Aggregates.Regions;
 using TraffiLearn.Domain.Aggregates.Regions.ValueObjects;
 using TraffiLearn.Domain.Aggregates.ServiceCenters;
 using TraffiLearn.Domain.Aggregates.ServiceCenters.ValueObjects;
-using TraffiLearn.Infrastructure.Migrations;
 
 namespace TraffiLearn.Infrastructure.Persistence.Repositories
 {
@@ -24,7 +22,7 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
         }
 
         public async Task<ServiceCenter?> GetByIdAsync(
-            ServiceCenterId serviceCenterId, 
+            ServiceCenterId serviceCenterId,
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.ServiceCenters
@@ -34,7 +32,7 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
         }
 
         public async Task<IEnumerable<ServiceCenter>> GetServiceCentersByRegionId(
-            RegionId regionId, 
+            RegionId regionId,
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.ServiceCenters
@@ -43,7 +41,7 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
         }
 
         public async Task InsertAsync(
-            ServiceCenter serviceCenter, 
+            ServiceCenter serviceCenter,
             CancellationToken cancellationToken = default)
         {
             EnsureServiceCenterIsNotNull(serviceCenter);

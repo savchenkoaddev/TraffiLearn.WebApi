@@ -34,7 +34,7 @@ namespace TraffiLearn.Domain.Aggregates.ServiceCenters.ValueObjects
 
         public override IEnumerable<object> GetAtomicValues()
         {
-            throw new NotImplementedException();
+            yield return Value;
         }
     }
 }

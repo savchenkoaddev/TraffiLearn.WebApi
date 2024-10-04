@@ -9,6 +9,7 @@ namespace TraffiLearn.Domain.Aggregates.ServiceCenters
     {
         private Address _address;
         private ServiceCenterNumber _number;
+        private Region _region;
 
         private ServiceCenter()
             : base(new(Guid.Empty))
@@ -54,7 +55,19 @@ namespace TraffiLearn.Domain.Aggregates.ServiceCenters
             }
         }
 
-        public Region Region { get; private set; }
+        public Region Region
+        {
+            get
+            {
+                return _region;
+            }
+            private set
+            {
+                ArgumentNullException.ThrowIfNull(value, "Region cannot be null.");
+
+                _region = value;
+            }
+        }
 
         public Result Update(
             Address address, 
