@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace TraffiLearn.Application.ServiceCenters.Queries
+namespace TraffiLearn.Application.ServiceCenters.Queries.GetById
 {
     internal sealed class GetServiceCenterByIdQueryValidator
         : AbstractValidator<GetServiceCenterByIdQuery>

@@ -6,7 +6,7 @@ using TraffiLearn.Domain.Aggregates.ServiceCenters.Errors;
 using TraffiLearn.Domain.Aggregates.ServiceCenters.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.ServiceCenters.Queries
+namespace TraffiLearn.Application.ServiceCenters.Queries.GetById
 {
     internal sealed class GetServiceCenterByIdQueryHandler
         : IRequestHandler<GetServiceCenterByIdQuery, Result<ServiceCenterResponse>>
