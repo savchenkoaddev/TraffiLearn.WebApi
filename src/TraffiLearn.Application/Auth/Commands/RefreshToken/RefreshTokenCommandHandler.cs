@@ -21,6 +21,7 @@ namespace TraffiLearn.Application.Auth.Commands.RefreshToken
             IIdentityService<ApplicationUser> identityService,
             IUserRepository userRepository)
         {
+
             _tokenService = tokenService;
             _identityService = identityService;
             _userRepository = userRepository;
@@ -29,7 +30,7 @@ namespace TraffiLearn.Application.Auth.Commands.RefreshToken
         public async Task<Result<RefreshTokenResponse>> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
         {
             var appUserResult = await _identityService
-                .GetByRefreshTokenAsync(request.RefreshToken);
+                .GetByAccessTokenAsync(request.AccessToken);
 
             if (appUserResult.IsFailure)
             {
@@ -39,7 +40,7 @@ namespace TraffiLearn.Application.Auth.Commands.RefreshToken
             var applicationUser = appUserResult.Value;
 
             var refreshValidationResult = await _identityService
-                .ValidateUserRefreshTokenAsync(applicationUser);
+                .ValidateRefreshTokenAsync(applicationUser, request.RefreshToken);
 
             if (refreshValidationResult.IsFailure)
             {
