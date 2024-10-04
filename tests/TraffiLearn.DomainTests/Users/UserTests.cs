@@ -87,7 +87,7 @@ namespace TraffiLearn.DomainTests.Users
             user.DomainEvents.Should().HaveCount(1);
             user.DomainEvents.Single().Should().BeOfType<UserCreatedDomainEvent>();
 
-            var actualDomainEvent = (UserCreatedDomainEvent) user.DomainEvents.Single();
+            var actualDomainEvent = (UserCreatedDomainEvent)user.DomainEvents.Single();
 
             actualDomainEvent.UserId.Should().Be(id);
             actualDomainEvent.Email.Should().Be(email);

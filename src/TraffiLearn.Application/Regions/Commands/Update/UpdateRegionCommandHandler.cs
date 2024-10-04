@@ -14,7 +14,7 @@ namespace TraffiLearn.Application.Regions.Commands.Update
         private readonly IUnitOfWork _unitOfWork;
 
         public UpdateRegionCommandHandler(
-            IRegionRepository regionRepository, 
+            IRegionRepository regionRepository,
             IUnitOfWork unitOfWork)
         {
             _regionRepository = regionRepository;
@@ -22,13 +22,13 @@ namespace TraffiLearn.Application.Regions.Commands.Update
         }
 
         public async Task<Result> Handle(
-            UpdateRegionCommand request, 
+            UpdateRegionCommand request,
             CancellationToken cancellationToken)
         {
             var regionId = new RegionId(request.RegionId.Value);
 
             var region = await _regionRepository.GetByIdAsync(
-                regionId, 
+                regionId,
                 cancellationToken);
 
             if (region is null)

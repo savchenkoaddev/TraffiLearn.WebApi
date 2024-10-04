@@ -6,6 +6,8 @@ using System.Security.Cryptography;
 using System.Text;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Domain.Aggregates.Users;
+using TraffiLearn.Domain.Aggregates.Users.Errors;
+using TraffiLearn.Domain.Shared;
 using TraffiLearn.Infrastructure.Authentication.Options;
 
 namespace TraffiLearn.Infrastructure.Services
@@ -35,27 +37,27 @@ namespace TraffiLearn.Infrastructure.Services
             return GetJwtTokenString(token);
         }
 
-        public string GenerateRefreshToken()
-        {
-            return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
-        }
-
-        public ClaimsPrincipal ValidateToken(string token)
+        public async Task<Result> ValidateAccessTokenAsync(string token, bool validateLifetime = true)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
 
-            var validationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = _jwtSettings.Issuer,
-                ValidAudience = _jwtSettings.Audience,
-                IssuerSigningKey = _symmetricSecurityKey
-            };
+            var validationParameters = GetTokenValidationParameters(
+                validateLifetime);
 
-            return tokenHandler.ValidateToken(token, validationParameters, out _);
+            var validationResult = await tokenHandler.ValidateTokenAsync(
+                token, validationParameters);
+
+            if (!validationResult.IsValid)
+            {
+                return Result.Failure(UserErrors.InvalidAccessToken);
+            }
+
+            return Result.Success();
+        }
+
+        public string GenerateRefreshToken()
+        {
+            return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
         }
 
         #region Private Methods
@@ -86,6 +88,21 @@ namespace TraffiLearn.Infrastructure.Services
                 new(JwtRegisteredClaimNames.Email, user.Email.Value.ToString()),
                 new("role", user.Role.ToString())
             ];
+        }
+
+        private TokenValidationParameters GetTokenValidationParameters(
+            bool validateLifeTime = true)
+        {
+            return new()
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = validateLifeTime,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = _jwtSettings.Issuer,
+                ValidAudience = _jwtSettings.Audience,
+                IssuerSigningKey = _symmetricSecurityKey
+            };
         }
 
         #endregion

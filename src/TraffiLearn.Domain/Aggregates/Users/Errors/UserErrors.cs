@@ -39,6 +39,21 @@ namespace TraffiLearn.Domain.Aggregates.Users.Errors
                 code: "User.CannotLogin",
                 description: "The user cannot login due to some reasons. Check if the email is confirmed.");
 
+        public static readonly Error InvalidAccessToken =
+           Error.Validation(
+               code: "User.InvalidAccessToken",
+               description: "The provided access token is invalid.");
+
+        public static readonly Error InvalidRefreshToken =
+            Error.Validation(
+                code: "User.InvalidRefreshToken",
+                description: "The provided refresh token is invalid.");
+
+        public static readonly Error RefreshTokenExpired =
+            Error.Validation(
+                code: "User.RefreshTokenExpired",
+                description: "The provided refresh token has expired.");
+
         public static readonly Error CommentAlreadyAdded =
             Error.Validation(
                 code: "User.CommentAlreadyAdded",

@@ -1,5 +1,4 @@
 ﻿using TraffiLearn.Application.Users.Identity;
-using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 
 namespace TraffiLearn.Application.Abstractions.Emails
 {

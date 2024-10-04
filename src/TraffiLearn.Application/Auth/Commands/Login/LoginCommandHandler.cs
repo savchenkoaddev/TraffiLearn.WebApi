@@ -11,7 +11,8 @@ using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Auth.Commands.Login
 {
-    internal sealed class LoginCommandHandler : IRequestHandler<LoginCommand, Result<LoginResponse>>
+    internal sealed class LoginCommandHandler
+        : IRequestHandler<LoginCommand, Result<LoginResponse>>
     {
         private readonly IIdentityService<ApplicationUser> _identityService;
         private readonly IUserRepository _userRepository;
@@ -82,11 +83,18 @@ namespace TraffiLearn.Application.Auth.Commands.Login
                     UserErrors.EmailNotConfirmed);
             }
 
+            var refreshToken = _tokenService.GenerateRefreshToken();
+
+            await _identityService.PopulateRefreshTokenAsync(identityUser, refreshToken);
+
+            _logger.LogInformation("Successfully generated and populated refresh token for user: {UserId}", user.Id.Value);
+
             var accessToken = _tokenService.GenerateAccessToken(user);
 
             _logger.LogInformation("Successfully generated access token for user: {UserId}", user.Id.Value);
 
-            return new LoginResponse(accessToken);
+            return new LoginResponse(
+                accessToken, refreshToken);
         }
     }
 }

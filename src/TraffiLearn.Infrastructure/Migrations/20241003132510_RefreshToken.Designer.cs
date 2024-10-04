@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TraffiLearn.Infrastructure.Persistence;
@@ -11,9 +12,11 @@ using TraffiLearn.Infrastructure.Persistence;
 namespace TraffiLearn.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241003132510_RefreshToken")]
+    partial class RefreshToken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -409,29 +412,6 @@ namespace TraffiLearn.Infrastructure.Migrations
                     b.ToTable("Regions");
                 });
 
-            modelBuilder.Entity("TraffiLearn.Domain.Aggregates.ServiceCenters.ServiceCenter", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Number")
-                        .IsRequired()
-                        .HasMaxLength(7)
-                        .HasColumnType("character varying(7)");
-
-                    b.Property<Guid>("RegionId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Id")
-                        .IsUnique();
-
-                    b.HasIndex("RegionId");
-
-                    b.ToTable("ServiceCenters");
-                });
-
             modelBuilder.Entity("TraffiLearn.Domain.Aggregates.Tickets.Ticket", b =>
                 {
                     b.Property<Guid>("Id")
@@ -718,48 +698,6 @@ namespace TraffiLearn.Infrastructure.Migrations
                     b.Navigation("Answers");
                 });
 
-            modelBuilder.Entity("TraffiLearn.Domain.Aggregates.ServiceCenters.ServiceCenter", b =>
-                {
-                    b.HasOne("TraffiLearn.Domain.Aggregates.Regions.Region", "Region")
-                        .WithMany("ServiceCenters")
-                        .HasForeignKey("RegionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.OwnsOne("TraffiLearn.Domain.Aggregates.ServiceCenters.ValueObjects.Address", "Address", b1 =>
-                        {
-                            b1.Property<Guid>("ServiceCenterId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<string>("BuildingNumber")
-                                .IsRequired()
-                                .HasMaxLength(25)
-                                .HasColumnType("character varying(25)");
-
-                            b1.Property<string>("LocationName")
-                                .IsRequired()
-                                .HasMaxLength(200)
-                                .HasColumnType("character varying(200)");
-
-                            b1.Property<string>("RoadName")
-                                .IsRequired()
-                                .HasMaxLength(200)
-                                .HasColumnType("character varying(200)");
-
-                            b1.HasKey("ServiceCenterId");
-
-                            b1.ToTable("ServiceCenters");
-
-                            b1.WithOwner()
-                                .HasForeignKey("ServiceCenterId");
-                        });
-
-                    b.Navigation("Address")
-                        .IsRequired();
-
-                    b.Navigation("Region");
-                });
-
             modelBuilder.Entity("TraffiLearn.Domain.Aggregates.Comments.Comment", b =>
                 {
                     b.Navigation("Replies");
@@ -768,11 +706,6 @@ namespace TraffiLearn.Infrastructure.Migrations
             modelBuilder.Entity("TraffiLearn.Domain.Aggregates.Questions.Question", b =>
                 {
                     b.Navigation("Comments");
-                });
-
-            modelBuilder.Entity("TraffiLearn.Domain.Aggregates.Regions.Region", b =>
-                {
-                    b.Navigation("ServiceCenters");
                 });
 
             modelBuilder.Entity("TraffiLearn.Domain.Aggregates.Users.User", b =>

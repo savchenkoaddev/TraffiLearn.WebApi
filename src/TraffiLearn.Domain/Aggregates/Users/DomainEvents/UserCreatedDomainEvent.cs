@@ -4,6 +4,6 @@ using TraffiLearn.Domain.Primitives;
 namespace TraffiLearn.Domain.Aggregates.Users.DomainEvents
 {
     public sealed record UserCreatedDomainEvent(
-        UserId UserId, 
+        UserId UserId,
         Email Email) : DomainEvent;
 }
