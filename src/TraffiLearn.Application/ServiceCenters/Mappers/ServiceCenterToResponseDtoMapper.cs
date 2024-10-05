@@ -11,6 +11,7 @@ namespace TraffiLearn.Application.ServiceCenters.Mappers
         {
             return new ServiceCenterResponse(
                 Id: source.Id.Value,
+                ServiceCenterNumber: source.Number.Value,
                 LocationName: source.Address.LocationName.Value,
                 RoadName: source.Address.RoadName.Value,
                 BuildingNumber: source.Address.BuildingNumber.Value);
