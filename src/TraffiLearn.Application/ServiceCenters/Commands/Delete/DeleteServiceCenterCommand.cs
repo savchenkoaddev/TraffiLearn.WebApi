@@ -1,6 +1,8 @@
-﻿namespace TraffiLearn.Application.ServiceCenters.Commands.Delete
+﻿using MediatR;
+using TraffiLearn.Domain.Shared;
+
+namespace TraffiLearn.Application.ServiceCenters.Commands.Delete
 {
-    internal sealed class DeleteServiceCenterCommand
-    {
-    }
+    public sealed record DeleteServiceCenterCommand(
+        Guid? ServiceCenterId) : IRequest<Result>;
 }

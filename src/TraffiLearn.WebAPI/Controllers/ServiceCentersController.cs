@@ -1,11 +1,14 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
+using TraffiLearn.Application.Regions.Commands.Delete;
 using TraffiLearn.Application.ServiceCenters.Commands.Create;
+using TraffiLearn.Application.ServiceCenters.Commands.Delete;
 using TraffiLearn.Application.ServiceCenters.Commands.Update;
 using TraffiLearn.Application.ServiceCenters.DTO;
 using TraffiLearn.Application.ServiceCenters.Queries.GetAll;
 using TraffiLearn.Application.ServiceCenters.Queries.GetById;
+using TraffiLearn.Domain.Aggregates.ServiceCenters;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
 using TraffiLearn.WebAPI.Swagger;
@@ -160,6 +163,35 @@ namespace TraffiLearn.WebAPI.Controllers
             [FromBody] UpdateServiceCenterCommand command)
         {
             var commandResult = await _sender.Send(command);
+
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+        }
+
+        /// <summary>
+        /// Deletes a service center using its ID.
+        /// </summary>
+        /// <remarks>
+        /// **The request must include the ID of a service center.**<br /><br /><br />
+        /// ***Route parameters:***<br /><br />
+        /// `ServiceCenterId` : Must be a valid GUID representing ID of a service center.<br /><br /><br />
+        /// **Authentication Required:**<br />
+        /// The user must be authenticated using a JWT token. Only users with the `Owner` or `Admin` role can perform this action.<br /><br />
+        /// </remarks>
+        /// <param name="serviceCenterId">**The ID of the service center to be deleted.**</param>
+        /// <response code="204">Successfully deleted the service center.</response>
+        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+        /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
+        /// <response code="404">***Not found.*** Service center with the provided id is not found.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        [HasPermission(Permission.ModifyData)]
+        [HttpDelete("{serviceCenterId:guid}")]
+        [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteServiceCenter(
+            [FromRoute] Guid serviceCenterId)
+        {
+            var commandResult = await _sender.Send(new DeleteServiceCenterCommand(serviceCenterId));
 
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
