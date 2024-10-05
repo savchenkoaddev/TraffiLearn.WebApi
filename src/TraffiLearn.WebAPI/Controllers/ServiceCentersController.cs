@@ -1,14 +1,13 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
-using TraffiLearn.Application.Regions.Commands.Delete;
 using TraffiLearn.Application.ServiceCenters.Commands.Create;
 using TraffiLearn.Application.ServiceCenters.Commands.Delete;
 using TraffiLearn.Application.ServiceCenters.Commands.Update;
 using TraffiLearn.Application.ServiceCenters.DTO;
 using TraffiLearn.Application.ServiceCenters.Queries.GetAll;
 using TraffiLearn.Application.ServiceCenters.Queries.GetById;
-using TraffiLearn.Domain.Aggregates.ServiceCenters;
+using TraffiLearn.Application.ServiceCenters.Queries.GetByRegionId;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
 using TraffiLearn.WebAPI.Swagger;
@@ -76,6 +75,35 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(
                 new GetServiceCenterByIdQuery(serviceCenterId));
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+
+        /// <summary>
+        /// Gets service centers within a certain region.
+        /// </summary>
+        /// <remarks>
+        /// **The request must include an ID of a region.**<br /><br /><br />
+        /// ***Route parameters:***<br /><br />
+        /// `RegionId` : Must be a valid GUID representing ID of a region used to find related service centers. Must not be empty.<br /><br /><br />
+        /// **Authentication Required:**<br />
+        /// The user must be authenticated using a JWT token.<br /><br />
+        /// </remarks>
+        /// <param name="regionId">**The ID of a region used to find related service centers.**</param>
+        /// <response code="200">Successfully retrieved service centers using the provided region ID. Returns the found service centers.</response>
+        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+        /// <response code="404">***Not found.*** No region exists with the provided ID.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        [HttpGet("from-region/{regionId:guid}")]
+        [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
+        [ProducesResponseType(typeof(IEnumerable<ServiceCenterResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetServiceCentersByRegionId(
+            [FromRoute] Guid regionId)
+        {
+            var queryResult = await _sender.Send(
+                new GetServiceCentersByRegionIdQuery(regionId));
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
