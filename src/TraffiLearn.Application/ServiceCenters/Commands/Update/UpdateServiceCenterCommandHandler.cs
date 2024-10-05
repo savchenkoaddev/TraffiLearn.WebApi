@@ -75,6 +75,13 @@ namespace TraffiLearn.Application.ServiceCenters.Commands.Update
                 return updateResult.Error;
             }
 
+            var setRegionResult = serviceCenter.SetRegion(region);
+
+            if (setRegionResult.IsFailure)
+            {
+                return setRegionResult.Error;
+            }
+
             await _serviceCenterRepository.UpdateAsync(serviceCenter);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
