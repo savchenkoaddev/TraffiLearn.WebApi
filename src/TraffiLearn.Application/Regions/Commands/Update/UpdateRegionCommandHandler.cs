@@ -50,6 +50,7 @@ namespace TraffiLearn.Application.Regions.Commands.Update
                 return updateResult.Error;
             }
 
+            await _regionRepository.UpdateAsync(region);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
