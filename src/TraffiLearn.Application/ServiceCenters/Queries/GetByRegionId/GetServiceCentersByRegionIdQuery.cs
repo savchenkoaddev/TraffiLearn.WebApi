@@ -1,6 +1,9 @@
-﻿namespace TraffiLearn.Application.ServiceCenters.Queries.GetByRegionId
+﻿using MediatR;
+using TraffiLearn.Application.ServiceCenters.DTO;
+using TraffiLearn.Domain.Shared;
+
+namespace TraffiLearn.Application.ServiceCenters.Queries.GetByRegionId
 {
-    internal sealed class GetServiceCentersByRegionIdQuery
-    {
-    }
+    public sealed record GetServiceCentersByRegionIdQuery(
+        Guid? RegionId) : IRequest<Result<IEnumerable<ServiceCenterResponse>>>;
 }
