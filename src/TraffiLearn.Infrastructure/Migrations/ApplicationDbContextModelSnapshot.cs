@@ -367,10 +367,6 @@ namespace TraffiLearn.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Answers")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasMaxLength(2000)
@@ -688,6 +684,38 @@ namespace TraffiLearn.Infrastructure.Migrations
                     b.Navigation("Question");
 
                     b.Navigation("RootComment");
+                });
+
+            modelBuilder.Entity("TraffiLearn.Domain.Aggregates.Questions.Question", b =>
+                {
+                    b.OwnsMany("TraffiLearn.Domain.Aggregates.Questions.ValueObjects.Answer", "Answers", b1 =>
+                        {
+                            b1.Property<Guid>("QuestionId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer");
+
+                            b1.Property<bool>("IsCorrect")
+                                .HasColumnType("boolean");
+
+                            b1.Property<string>("Text")
+                                .IsRequired()
+                                .HasMaxLength(300)
+                                .HasColumnType("character varying(300)");
+
+                            b1.HasKey("QuestionId", "Id");
+
+                            b1.ToTable("Questions");
+
+                            b1.ToJson("Answers");
+
+                            b1.WithOwner()
+                                .HasForeignKey("QuestionId");
+                        });
+
+                    b.Navigation("Answers");
                 });
 
             modelBuilder.Entity("TraffiLearn.Domain.Aggregates.ServiceCenters.ServiceCenter", b =>
