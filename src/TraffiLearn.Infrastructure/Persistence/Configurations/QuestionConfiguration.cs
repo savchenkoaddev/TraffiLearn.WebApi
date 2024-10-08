@@ -1,10 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Newtonsoft.Json;
 using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
-using TraffiLearn.Infrastructure.Extensions;
-using TraffiLearn.Infrastructure.Persistence.Converters;
 
 namespace TraffiLearn.Infrastructure.Persistence.Configurations
 {
@@ -44,9 +41,15 @@ namespace TraffiLearn.Infrastructure.Persistence.Configurations
                     uri => uri.Value,
                     value => ImageUri.Create(value).Value);
 
-            builder.Property(q => q.Answers)
-                .HasJsonConversion<IReadOnlyCollection<Answer>, HashSet<Answer>>(
-                    new AnswerJsonConverter());
+            builder.OwnsMany(q => q.Answers, answersBuilder =>
+            {
+                answersBuilder.ToJson();
+
+                answersBuilder.Property(a => a.Text)
+                              .HasMaxLength(Answer.MaxTextLength);
+
+                answersBuilder.Property(a => a.IsCorrect);
+            });
 
             builder
                 .HasMany(q => q.Topics)
@@ -81,14 +84,6 @@ namespace TraffiLearn.Infrastructure.Persistence.Configurations
 
             builder
                 .Ignore(q => q.DislikesCount);
-        }
-
-        private JsonSerializerSettings GetJsonSerializerSettings()
-        {
-            return new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore
-            };
         }
     }
 }

@@ -369,7 +369,7 @@ namespace TraffiLearn.Infrastructure.Migrations
 
                     b.Property<string>("Answers")
                         .IsRequired()
-                        .HasColumnType("jsonb");
+                        .HasColumnType("text");
 
                     b.Property<string>("Content")
                         .IsRequired()

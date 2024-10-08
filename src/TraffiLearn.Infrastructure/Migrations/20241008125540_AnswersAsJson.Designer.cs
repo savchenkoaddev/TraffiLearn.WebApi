@@ -12,7 +12,7 @@ using TraffiLearn.Infrastructure.Persistence;
 namespace TraffiLearn.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241006175514_AnswersAsJson")]
+    [Migration("20241008125540_AnswersAsJson")]
     partial class AnswersAsJson
     {
         /// <inheritdoc />
@@ -372,7 +372,7 @@ namespace TraffiLearn.Infrastructure.Migrations
 
                     b.Property<string>("Answers")
                         .IsRequired()
-                        .HasColumnType("jsonb");
+                        .HasColumnType("text");
 
                     b.Property<string>("Content")
                         .IsRequired()
