@@ -8,6 +8,8 @@ namespace TraffiLearn.Domain.Aggregates.Questions.ValueObjects
     {
         public const int MaxTextLength = 300;
 
+        private Answer() { }
+
         private Answer(
             string text,
             bool isCorrect)
