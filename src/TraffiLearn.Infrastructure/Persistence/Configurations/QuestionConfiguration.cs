@@ -43,6 +43,8 @@ namespace TraffiLearn.Infrastructure.Persistence.Configurations
 
             builder.OwnsMany(q => q.Answers, answersBuilder =>
             {
+                answersBuilder.ToJson();
+
                 answersBuilder.Property(a => a.Text)
                               .HasMaxLength(Answer.MaxTextLength);
 
