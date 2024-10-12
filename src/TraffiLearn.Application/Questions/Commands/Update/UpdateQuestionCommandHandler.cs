@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Storage;
+using TraffiLearn.Domain.Aggregates.Common.ImageUri;
 using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Questions.Errors;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;

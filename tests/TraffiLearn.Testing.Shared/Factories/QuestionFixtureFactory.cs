@@ -1,4 +1,5 @@
-﻿using TraffiLearn.Domain.Aggregates.Questions;
+﻿using TraffiLearn.Domain.Aggregates.Common.ImageUri;
+using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 
 namespace TraffiLearn.Testing.Shared.Factories

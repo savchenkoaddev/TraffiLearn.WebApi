@@ -1,4 +1,5 @@
 ﻿using TraffiLearn.Domain.Aggregates.Comments;
+using TraffiLearn.Domain.Aggregates.Common.ImageUri;
 using TraffiLearn.Domain.Aggregates.Questions.Errors;
 using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Tickets;
