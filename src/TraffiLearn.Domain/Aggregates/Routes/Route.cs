@@ -9,9 +9,7 @@ namespace TraffiLearn.Domain.Aggregates.Routes
     public sealed class Route : AggregateRoot<RouteId>
     {
         private RouteNumber _routeNumber;
-        private RouteDescription _description;
         private ImageUri _imageUri;
-        private ServiceCenter _serviceCenter;
 
         public Route()
             : base(new(Guid.Empty))
@@ -20,7 +18,7 @@ namespace TraffiLearn.Domain.Aggregates.Routes
         private Route(
             RouteId id,
             RouteNumber routeNumber,
-            RouteDescription description,
+            RouteDescription? description,
             ImageUri imageUri) : base(id)
         {
             RouteNumber = routeNumber;
@@ -42,20 +40,6 @@ namespace TraffiLearn.Domain.Aggregates.Routes
             }
         }
 
-        public RouteDescription Description
-        {
-            get
-            {
-                return _description;
-            }
-            private set
-            {
-                ArgumentNullException.ThrowIfNull(value, "Route description cannot be null.");
-
-                _description = value;
-            }
-        }
-
         public ImageUri ImageUri
         {
             get
@@ -70,6 +54,8 @@ namespace TraffiLearn.Domain.Aggregates.Routes
             }
         }
 
+        public RouteDescription? Description { get; private set; }
+
         public ServiceCenter? ServiceCenter { get; private set; } = default;
 
         public Result SetServiceCenter(ServiceCenter serviceCenter)
@@ -83,7 +69,7 @@ namespace TraffiLearn.Domain.Aggregates.Routes
 
         public Result Update(
             RouteNumber routeNumber,
-            RouteDescription routeDescription,
+            RouteDescription? routeDescription,
             ImageUri imageUri)
         {
             RouteNumber = routeNumber;
@@ -96,7 +82,7 @@ namespace TraffiLearn.Domain.Aggregates.Routes
         public static Result<Route> Create(
             RouteId routeId,
             RouteNumber routeNumber,
-            RouteDescription routeDescription,
+            RouteDescription? routeDescription,
             ImageUri imageUri)
         {
             return new Route(routeId, routeNumber, routeDescription, imageUri);
