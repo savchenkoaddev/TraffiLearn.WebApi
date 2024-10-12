@@ -11,7 +11,7 @@ namespace TraffiLearn.Domain.Aggregates.Routes
         private RouteNumber _routeNumber;
         private ImageUri _imageUri;
 
-        public Route()
+        private Route()
             : base(new(Guid.Empty))
         { }
 
