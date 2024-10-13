@@ -47,6 +47,11 @@ namespace TraffiLearn.Infrastructure.Persistence.Configurations
             builder
                 .HasOne(sc => sc.Region)
                 .WithMany(r => r.ServiceCenters);
+
+            builder
+                .HasMany(sc => sc.Routes)
+                .WithOne(r => r.ServiceCenter)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

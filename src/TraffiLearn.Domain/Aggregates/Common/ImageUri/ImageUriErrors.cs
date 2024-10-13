@@ -1,6 +1,6 @@
 ﻿using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Domain.Aggregates.Questions.Errors
+namespace TraffiLearn.Domain.Aggregates.Common.ImageUri
 {
     public static class ImageUriErrors
     {

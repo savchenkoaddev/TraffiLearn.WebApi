@@ -12,6 +12,8 @@ using TraffiLearn.Application.Questions.Mappers;
 using TraffiLearn.Application.Regions.Commands.Create;
 using TraffiLearn.Application.Regions.DTO;
 using TraffiLearn.Application.Regions.Mappers;
+using TraffiLearn.Application.Routes.DTO;
+using TraffiLearn.Application.Routes.Mappers;
 using TraffiLearn.Application.ServiceCenters.Commands.Create;
 using TraffiLearn.Application.ServiceCenters.Commands.Update;
 using TraffiLearn.Application.ServiceCenters.DTO;
@@ -29,6 +31,7 @@ using TraffiLearn.Application.Users.Mappers;
 using TraffiLearn.Domain.Aggregates.Comments;
 using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Regions;
+using TraffiLearn.Domain.Aggregates.Routes;
 using TraffiLearn.Domain.Aggregates.ServiceCenters;
 using TraffiLearn.Domain.Aggregates.Tickets;
 using TraffiLearn.Domain.Aggregates.Topics;
@@ -67,6 +70,7 @@ namespace TraffiLearn.Application.Extensions.DI
             services.AddMapper<ServiceCenter, ServiceCenterResponse, ServiceCenterToResponseDtoMapper>();
             services.AddMapper<CreateServiceCenterCommand, Result<ServiceCenter>, CreateServiceCenterCommandToEntityMapper>();
             services.AddMapper<UpdateServiceCenterCommand, Result<ServiceCenter>, UpdateServiceCenterCommandToEntityMapper>();
+            services.AddMapper<Route, RouteResponse, RouteToRouteResponseMapper>();
 
             return services;
         }

@@ -2,6 +2,7 @@
 using TraffiLearn.Domain.Aggregates.Comments;
 using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Regions;
+using TraffiLearn.Domain.Aggregates.Routes;
 using TraffiLearn.Domain.Aggregates.ServiceCenters;
 using TraffiLearn.Domain.Aggregates.Tickets;
 using TraffiLearn.Domain.Aggregates.Topics;
@@ -21,6 +22,7 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<IRegionRepository, RegionRepository>();
             services.AddScoped<IServiceCenterRepository, ServiceCenterRepository>();
+            services.AddScoped<IRouteRepository, RouteRepository>();
 
             return services;
         }

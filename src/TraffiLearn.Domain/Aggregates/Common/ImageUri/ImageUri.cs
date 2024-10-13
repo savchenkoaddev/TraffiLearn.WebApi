@@ -1,8 +1,7 @@
-﻿using TraffiLearn.Domain.Aggregates.Questions.Errors;
-using TraffiLearn.Domain.Primitives;
+﻿using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Domain.Aggregates.Questions.ValueObjects
+namespace TraffiLearn.Domain.Aggregates.Common.ImageUri
 {
     public sealed class ImageUri : ValueObject
     {

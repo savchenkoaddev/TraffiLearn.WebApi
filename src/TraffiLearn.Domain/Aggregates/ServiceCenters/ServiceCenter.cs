@@ -1,4 +1,5 @@
 ﻿using TraffiLearn.Domain.Aggregates.Regions;
+using TraffiLearn.Domain.Aggregates.Routes;
 using TraffiLearn.Domain.Aggregates.ServiceCenters.ValueObjects;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
@@ -7,6 +8,7 @@ namespace TraffiLearn.Domain.Aggregates.ServiceCenters
 {
     public sealed class ServiceCenter : AggregateRoot<ServiceCenterId>
     {
+        private readonly HashSet<Route> _routes = [];
         private Address _address;
         private ServiceCenterNumber _number;
         private Region _region;
@@ -54,6 +56,8 @@ namespace TraffiLearn.Domain.Aggregates.ServiceCenters
         }
 
         public Region? Region { get; private set; } = default;
+
+        public IReadOnlyCollection<Route> Routes => _routes;
 
         public Result SetRegion(Region region)
         {
