@@ -11,16 +11,16 @@ namespace TraffiLearn.Application.Questions.Commands.Delete
     internal sealed class DeleteQuestionCommandHandler : IRequestHandler<DeleteQuestionCommand, Result>
     {
         private readonly IQuestionRepository _questionRepository;
-        private readonly IBlobService _blobService;
+        private readonly IImageService _imageService;
         private readonly IUnitOfWork _unitOfWork;
 
         public DeleteQuestionCommandHandler(
             IQuestionRepository questionRepository,
-            IBlobService blobService,
+            IImageService imageService,
             IUnitOfWork unitOfWork)
         {
             _questionRepository = questionRepository;
-            _blobService = blobService;
+            _imageService = imageService;
             _unitOfWork = unitOfWork;
         }
 
@@ -39,10 +39,8 @@ namespace TraffiLearn.Application.Questions.Commands.Delete
 
             if (question.ImageUri is not null)
             {
-                var blobUri = question.ImageUri.Value;
-
-                await _blobService.DeleteAsync(
-                    blobUri,
+                await _imageService.DeleteAsync(
+                    imageUri: question.ImageUri,
                     cancellationToken);
             }
 
