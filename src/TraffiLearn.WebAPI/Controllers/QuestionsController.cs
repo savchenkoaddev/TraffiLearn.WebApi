@@ -30,6 +30,7 @@ using TraffiLearn.WebAPI.CommandWrappers.CreateQuestion;
 using TraffiLearn.WebAPI.CommandWrappers.UpdateQuestion;
 using TraffiLearn.WebAPI.Extensions;
 using TraffiLearn.WebAPI.Swagger;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
@@ -383,7 +384,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
         [HasPermission(Permission.ModifyData)]
         [HttpPost]
-        [Consumes(MediaTypeNames.Multipart.FormData)]
+        [Consumes(Multipart.FormData)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
@@ -438,7 +439,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
         [HasPermission(Permission.ModifyData)]
         [HttpPut]
-        [Consumes(MediaTypeNames.Multipart.FormData)]
+        [Consumes(Multipart.FormData)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]

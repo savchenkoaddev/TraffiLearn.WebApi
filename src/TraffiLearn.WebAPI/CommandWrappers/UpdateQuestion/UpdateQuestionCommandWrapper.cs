@@ -8,7 +8,7 @@ namespace TraffiLearn.WebAPI.CommandWrappers.UpdateQuestion
         public IFormFile? Image { get; init; }
 
         [FromJson]
-        public UpdateQuestionRequest Request { get; init; }
+        public required UpdateQuestionRequest Request { get; init; }
 
         public UpdateQuestionCommand ToCommand()
         {
