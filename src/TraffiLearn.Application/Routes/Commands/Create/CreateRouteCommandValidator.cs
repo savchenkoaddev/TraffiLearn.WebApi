@@ -2,7 +2,7 @@
 using TraffiLearn.Application.Validators;
 using TraffiLearn.Domain.Aggregates.Routes.ValueObjects;
 
-namespace TraffiLearn.Application.Routes.Commands
+namespace TraffiLearn.Application.Routes.Commands.Create
 {
     internal sealed class CreateRouteCommandValidator
         : AbstractValidator<CreateRouteCommand>
