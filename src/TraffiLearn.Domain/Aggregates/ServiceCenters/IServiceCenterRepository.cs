@@ -16,6 +16,10 @@ namespace TraffiLearn.Domain.Aggregates.ServiceCenters
             ServiceCenterId serviceCenterId,
             CancellationToken cancellationToken = default);
 
+        Task<bool> ExistsAsync(
+            ServiceCenterId serviceCenterId,
+            CancellationToken cancellationToken = default);
+
         Task InsertAsync(
             ServiceCenter serviceCenter,
             CancellationToken cancellationToken = default);

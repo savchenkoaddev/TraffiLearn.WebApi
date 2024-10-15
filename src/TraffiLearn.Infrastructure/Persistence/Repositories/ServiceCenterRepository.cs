@@ -73,5 +73,12 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
         {
             ArgumentNullException.ThrowIfNull(serviceCenter, nameof(serviceCenter));
         }
+
+        public async Task<bool> ExistsAsync(
+            ServiceCenterId serviceCenterId, 
+            CancellationToken cancellationToken = default)
+        {
+            return await GetByIdAsync(serviceCenterId, cancellationToken) is not null;
+        }
     }
 }
