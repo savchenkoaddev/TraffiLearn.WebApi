@@ -167,7 +167,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="204">Successfully deleted the region.</response>
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
-        /// <response code="404">***Not found.*** Region with the provided id is not found.</response>
+        /// <response code="404">***Not found.*** Region with the provided ID is not found.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
         [HasPermission(Permission.ModifyData)]
         [HttpDelete("{regionId:guid}")]

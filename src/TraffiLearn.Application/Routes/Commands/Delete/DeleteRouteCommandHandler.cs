@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Abstractions.Storage;
 using TraffiLearn.Domain.Aggregates.Routes;
 using TraffiLearn.Domain.Aggregates.Routes.Errors;
 using TraffiLearn.Domain.Aggregates.Routes.ValueObjects;
@@ -11,13 +12,16 @@ namespace TraffiLearn.Application.Routes.Commands.Delete
         : IRequestHandler<DeleteRouteCommand, Result>
     {
         private readonly IRouteRepository _routeRepository;
+        private readonly IImageService _imageService;
         private readonly IUnitOfWork _unitOfWork;
 
         public DeleteRouteCommandHandler(
             IRouteRepository routeRepository, 
+            IImageService imageService,
             IUnitOfWork unitOfWork)
         {
             _routeRepository = routeRepository;
+            _imageService = imageService;
             _unitOfWork = unitOfWork;
         }
 
@@ -36,6 +40,13 @@ namespace TraffiLearn.Application.Routes.Commands.Delete
 
             await _routeRepository.DeleteAsync(route);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            if (route.ImageUri is not null)
+            {
+                await _imageService.DeleteAsync(
+                    imageUri: route.ImageUri,
+                    cancellationToken);
+            }
             
             return Result.Success();
         }
