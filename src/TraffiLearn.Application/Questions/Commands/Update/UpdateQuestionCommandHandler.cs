@@ -13,7 +13,8 @@ using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Questions.Commands.Update
 {
-    internal sealed class UpdateQuestionCommandHandler : IRequestHandler<UpdateQuestionCommand, Result>
+    internal sealed class UpdateQuestionCommandHandler
+        : IRequestHandler<UpdateQuestionCommand, Result>
     {
         private readonly IQuestionRepository _questionRepository;
         private readonly ITopicRepository _topicRepository;
