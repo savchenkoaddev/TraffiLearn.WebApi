@@ -34,7 +34,7 @@ namespace TraffiLearn.Application.Routes.Queries.GetByServiceCenterId
             var serviceCenterId = new ServiceCenterId(request.ServiceCenterId.Value);
 
             var serviceCenterExists = await _serviceCenterRepository.ExistsAsync(
-                serviceCenterId, 
+                serviceCenterId,
                 cancellationToken);
 
             if (!serviceCenterExists)

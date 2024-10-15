@@ -4,6 +4,9 @@ using System.Net.Mime;
 using TraffiLearn.Application.Routes.Commands.Delete;
 using TraffiLearn.Application.Routes.DTO;
 using TraffiLearn.Application.Routes.Queries.GetById;
+using TraffiLearn.Application.Routes.Queries.GetByServiceCenterId;
+using TraffiLearn.Application.ServiceCenters.DTO;
+using TraffiLearn.Application.ServiceCenters.Queries.GetByRegionId;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.CommandWrappers.CreateRoute;
 using TraffiLearn.WebAPI.CommandWrappers.UpdateRoute;
@@ -52,6 +55,35 @@ namespace TraffiLearn.WebAPI.Controllers
             [FromRoute] Guid routeId)
         {
             var queryResult = await _sender.Send(new GetRouteByIdQuery(routeId));
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+
+        /// <summary>
+        /// Gets routes within a certain service center.
+        /// </summary>
+        /// <remarks>
+        /// **The request must include an ID of a service center.**<br /><br /><br />
+        /// ***Route parameters:***<br /><br />
+        /// `ServiceCenterId` : Must be a valid GUID representing ID of a service center used to find related routes. Must not be empty.<br /><br /><br />
+        /// **Authentication Required:**<br />
+        /// The user must be authenticated using a JWT token.<br /><br />
+        /// </remarks>
+        /// <param name="serviceCenterId">**The ID of a service center used to find related routes.**</param>
+        /// <response code="200">Successfully retrieved routes using the provided service center ID. Returns the found routes.</response>
+        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+        /// <response code="404">***Not found.*** No service center exists with the provided ID.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        [HttpGet("from-service-center/{serviceCenterId:guid}")]
+        [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
+        [ProducesResponseType(typeof(IEnumerable<RouteResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetRoutesByServiceCenterId(
+            [FromRoute] Guid serviceCenterId)
+        {
+            var queryResult = await _sender.Send(
+                new GetRoutesByServiceCenterIdQuery(serviceCenterId));
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
