@@ -17,8 +17,8 @@ namespace TraffiLearn.Application.Routes.Commands
                 .GreaterThanOrEqualTo(RouteNumber.MinValue);
 
             RuleFor(x => x.Description)
-                .NotEmpty()
-                .MaximumLength(RouteDescription.MaxLength);
+                .MaximumLength(RouteDescription.MaxLength)
+                .When(x => x.Description is not null);
 
             RuleFor(x => x.Image)
                 .NotEmpty();

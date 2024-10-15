@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Abstractions.Storage;
 using TraffiLearn.Domain.Aggregates.Routes;
 using TraffiLearn.Domain.Aggregates.ServiceCenters;
 using TraffiLearn.Domain.Aggregates.ServiceCenters.Errors;
@@ -13,17 +14,21 @@ namespace TraffiLearn.Application.Routes.Commands
     {
         private readonly IRouteRepository _routeRepository;
         private readonly IServiceCenterRepository _serviceCenterRepository;
+        private readonly IImageService _imageService;
         private readonly Mapper<CreateRouteCommand, Result<Route>> _requestMapper;
         private readonly IUnitOfWork _unitOfWork;
 
         public CreateRouteCommandHandler(
             IRouteRepository routeRepository,
             IServiceCenterRepository serviceCenterRepository,
+            IImageService imageService,
+            Mapper<CreateRouteCommand, Result<Route>> requestMapper,
             IUnitOfWork unitOfWork)
         {
             _routeRepository = routeRepository;
             _serviceCenterRepository = serviceCenterRepository;
-            _requestMapper = null;
+            _imageService = imageService;
+            _requestMapper = requestMapper;
             _unitOfWork = unitOfWork;
         }
 
@@ -51,19 +56,29 @@ namespace TraffiLearn.Application.Routes.Commands
 
             var route = mappingResult.Value;
 
-            /*
-             * add route to the service center.
-            */
+            var addResult = serviceCenter.AddRoute(route);
+            var setScResult = route.SetServiceCenter(serviceCenter);
 
+            if (addResult.IsFailure || setScResult.IsFailure)
+            {
+                throw new InvalidOperationException(
+                    "Failed to add route to service center or vice versa due to some internal issues. " +
+                    "This could be because of incorrect entity ID generation.");
+            }
 
+            await _serviceCenterRepository.UpdateAsync(serviceCenter);
 
-            await _routeRepository.InsertAsync(
-                route,
+            var routeImageUri = await _imageService.UploadImageAsync(
+                image: request.Image,
                 cancellationToken);
+
+            route.SetImageUri(routeImageUri);
+
+            await _routeRepository.InsertAsync(route, cancellationToken);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            throw new NotImplementedException();
+            return Result.Success(route.Id.Value);
         }
     }
 }
