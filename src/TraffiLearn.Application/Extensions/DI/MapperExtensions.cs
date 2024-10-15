@@ -13,6 +13,7 @@ using TraffiLearn.Application.Regions.Commands.Create;
 using TraffiLearn.Application.Regions.DTO;
 using TraffiLearn.Application.Regions.Mappers;
 using TraffiLearn.Application.Routes.Commands.Create;
+using TraffiLearn.Application.Routes.Commands.Update;
 using TraffiLearn.Application.Routes.DTO;
 using TraffiLearn.Application.Routes.Mappers;
 using TraffiLearn.Application.ServiceCenters.Commands.Create;
@@ -73,6 +74,7 @@ namespace TraffiLearn.Application.Extensions.DI
             services.AddMapper<UpdateServiceCenterCommand, Result<ServiceCenter>, UpdateServiceCenterCommandToEntityMapper>();
             services.AddMapper<Route, RouteResponse, RouteToRouteResponseMapper>();
             services.AddMapper<CreateRouteCommand, Result<Route>, CreateRouteCommandToEntityMapper>();
+            services.AddMapper<UpdateRouteCommand, Result<Route>, UpdateRouteCommandToEntityMapper>();
 
             return services;
         }

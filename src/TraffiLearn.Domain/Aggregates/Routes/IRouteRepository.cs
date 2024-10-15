@@ -16,6 +16,10 @@ namespace TraffiLearn.Domain.Aggregates.Routes
             RouteId routeId,
             CancellationToken cancellationToken = default);
 
+        Task<Route?> GetByIdWithServiceCenterAsync(
+            RouteId routeId,
+            CancellationToken cancellationToken = default);
+
         Task InsertAsync(
             Route route,
             CancellationToken cancellationToken = default);

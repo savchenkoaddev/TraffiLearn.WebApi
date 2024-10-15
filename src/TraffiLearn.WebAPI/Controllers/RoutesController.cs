@@ -6,6 +6,7 @@ using TraffiLearn.Application.Routes.DTO;
 using TraffiLearn.Application.Routes.Queries.GetById;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.CommandWrappers.CreateRoute;
+using TraffiLearn.WebAPI.CommandWrappers.UpdateRoute;
 using TraffiLearn.WebAPI.Extensions;
 using TraffiLearn.WebAPI.Swagger;
 using static System.Net.Mime.MediaTypeNames;
@@ -71,7 +72,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// `Image` : Must be a valid image (possible extensions: ".jpg", ".jpeg", ".png", ".gif", ".bmp"). The size must be less than 500 Kb. Required field.<br /><br />
         /// `Request` : Route represented as a JSON object.<br /><br /><br />
         /// **Request parameters:**<br /><br />
-        /// `ServiceCenterId`: Represents ID of the service center to be associated with this route. Must be a valid GUID.<br /><br />
+        /// `ServiceCenterId`: Represents ID of a service center to be associated with this route. Must be a valid GUID.<br /><br />
         /// `RouteNumber` : Represents number of the route. Must be an integer with the minimum value of 1.<br /><br />
         /// `Description` : Represents description of the route. Must be a string with the maximum length of 2000 characters. Not required field.<br /><br /><br />
         /// **Authentication Required:**<br />
@@ -106,6 +107,46 @@ namespace TraffiLearn.WebAPI.Controllers
             }
 
             return commandResult.ToProblemDetails();
+        }
+
+        /// <summary>
+        /// Updates an existing route.
+        /// </summary>
+        /// <remarks>
+        /// **If provided new image**, the old image gets deleted, the new image is inserted and the image url of the route is updated accordingly.<br /><br />
+        /// **If a new image is not provided**, the old image remains still.<br /><br /><br />
+        /// **If provided an ID of a service center, which is not associated with the route**, the route is updated with new service center. The service center is updated accordingly.<br /><br /><br />
+        /// ***Parameters:***<br /><br />
+        /// `Image` : Must be a valid image (possible extensions: ".jpg", ".jpeg", ".png", ".gif", ".bmp"). The size must be less than 500 Kb. Not required field.<br /><br />
+        /// `Request` : Route represented as a JSON object.<br /><br /><br />
+        /// **Request parameters:**<br /><br />
+        /// `RouteId`: Represents ID of a route to be updated. Must be a valid GUID.<br /><br />
+        /// `ServiceCenterId`: Represents ID of a service center to be associated with this route. Must be a valid GUID.<br /><br />
+        /// `RouteNumber` : Represents number of the route. Must be an integer with the minimum value of 1.<br /><br />
+        /// `Description` : Represents description of the route. Must be a string with the maximum length of 2000 characters. Not required field.<br /><br /><br />
+        /// **Authentication Required:**<br />
+        /// The user must be authenticated using a JWT token. Only users with the `Owner` or `Admin` role can perform this action.<br /><br />
+        /// </remarks>
+        /// <param name="command">**The update route command.**</param>  
+        /// <response code="204">Successfully updated an existing route.</response>
+        /// <response code="400">***Bad request.*** The provided data is invalid or missing.</response>
+        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+        /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
+        /// <response code="404">***Not found.*** Route or Service Center with the provided IDs are not found.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        [HasPermission(Permission.ModifyData)]
+        [HttpPut]
+        [Consumes(Multipart.FormData)]
+        [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateRoute(
+            [FromForm] UpdateRouteCommandWrapper command)
+        {
+            var commandResult = await _sender.Send(command.ToCommand());
+
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
         /// <summary>
