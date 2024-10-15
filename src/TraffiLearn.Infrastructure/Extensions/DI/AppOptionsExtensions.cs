@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using TraffiLearn.Application.Images.Options;
 using TraffiLearn.Application.Questions.Options;
 using TraffiLearn.Infrastructure.Authentication.Options;
 using TraffiLearn.Infrastructure.Extensions.DI.Shared;
@@ -22,6 +23,8 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
                 JwtSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<QuestionsSettings>(
                 QuestionsSettings.SectionName);
+            services.ConfigureValidatableOnStartOptions<ImageSettings>(
+                ImageSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<GroqApiSettings>(
                 GroqApiSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<SmtpClientSettings>(

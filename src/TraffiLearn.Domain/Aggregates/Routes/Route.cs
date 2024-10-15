@@ -19,7 +19,7 @@ namespace TraffiLearn.Domain.Aggregates.Routes
             RouteId id,
             RouteNumber routeNumber,
             RouteDescription? description,
-            ImageUri imageUri) : base(id)
+            ImageUri? imageUri) : base(id)
         {
             RouteNumber = routeNumber;
             Description = description;
@@ -40,19 +40,7 @@ namespace TraffiLearn.Domain.Aggregates.Routes
             }
         }
 
-        public ImageUri ImageUri
-        {
-            get
-            {
-                return _imageUri;
-            }
-            private set
-            {
-                ArgumentNullException.ThrowIfNull(value, "Image URI cannot be null.");
-
-                _imageUri = value;
-            }
-        }
+        public ImageUri? ImageUri { get; private set; }
 
         public RouteDescription? Description { get; private set; }
 
@@ -70,7 +58,7 @@ namespace TraffiLearn.Domain.Aggregates.Routes
         public Result Update(
             RouteNumber routeNumber,
             RouteDescription? routeDescription,
-            ImageUri imageUri)
+            ImageUri? imageUri)
         {
             RouteNumber = routeNumber;
             Description = routeDescription;
@@ -79,11 +67,16 @@ namespace TraffiLearn.Domain.Aggregates.Routes
             return Result.Success();
         }
 
+        public void SetImageUri(ImageUri? imageUri)
+        {
+            ImageUri = imageUri;
+        }
+
         public static Result<Route> Create(
             RouteId routeId,
             RouteNumber routeNumber,
             RouteDescription? routeDescription,
-            ImageUri imageUri)
+            ImageUri? imageUri)
         {
             return new Route(routeId, routeNumber, routeDescription, imageUri);
         }

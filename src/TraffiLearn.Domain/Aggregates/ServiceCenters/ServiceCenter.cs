@@ -1,5 +1,6 @@
 ﻿using TraffiLearn.Domain.Aggregates.Regions;
 using TraffiLearn.Domain.Aggregates.Routes;
+using TraffiLearn.Domain.Aggregates.ServiceCenters.Errors;
 using TraffiLearn.Domain.Aggregates.ServiceCenters.ValueObjects;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
@@ -64,6 +65,34 @@ namespace TraffiLearn.Domain.Aggregates.ServiceCenters
             ArgumentNullException.ThrowIfNull(region, nameof(region));
 
             Region = region;
+
+            return Result.Success();
+        }
+
+        public Result AddRoute(Route route)
+        {
+            ArgumentNullException.ThrowIfNull(route, nameof(route));
+
+            if (_routes.Contains(route))
+            {
+                return ServiceCenterErrors.RouteAlreadyAdded;
+            }
+
+            _routes.Add(route);
+
+            return Result.Success();
+        }
+
+        public Result RemoveRoute(Route route)
+        {
+            ArgumentNullException.ThrowIfNull(route, nameof(route));
+
+            if (!_routes.Contains(route))
+            {
+                return ServiceCenterErrors.RouteNotFound;
+            }
+
+            _routes.Remove(route);
 
             return Result.Success();
         }

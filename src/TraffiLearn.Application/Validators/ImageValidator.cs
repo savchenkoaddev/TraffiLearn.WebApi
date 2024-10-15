@@ -23,7 +23,7 @@ namespace TraffiLearn.Application.Validators
 
         private bool BeValidImage(IFormFile file)
         {
-            string[] validExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
+            HashSet<string> validExtensions = new() { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
 
             var extension = Path.GetExtension(file.FileName);
 
