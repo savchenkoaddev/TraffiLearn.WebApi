@@ -12,7 +12,7 @@ using TraffiLearn.Application.Questions.Mappers;
 using TraffiLearn.Application.Regions.Commands.Create;
 using TraffiLearn.Application.Regions.DTO;
 using TraffiLearn.Application.Regions.Mappers;
-using TraffiLearn.Application.Routes.Commands;
+using TraffiLearn.Application.Routes.Commands.Create;
 using TraffiLearn.Application.Routes.DTO;
 using TraffiLearn.Application.Routes.Mappers;
 using TraffiLearn.Application.ServiceCenters.Commands.Create;

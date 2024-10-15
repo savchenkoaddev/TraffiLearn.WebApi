@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Routes.Commands
+namespace TraffiLearn.Application.Routes.Commands.Create
 {
     public sealed record CreateRouteCommand(
         Guid? ServiceCenterId,

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
+using TraffiLearn.Application.Routes.Commands.Delete;
 using TraffiLearn.Application.Routes.DTO;
 using TraffiLearn.Application.Routes.Queries.GetById;
 using TraffiLearn.Infrastructure.Authentication;
@@ -105,6 +106,36 @@ namespace TraffiLearn.WebAPI.Controllers
             }
 
             return commandResult.ToProblemDetails();
+        }
+
+        /// <summary>
+        /// Deletes a route using its ID.
+        /// </summary>
+        /// <remarks>
+        /// **The request must include the ID of a route.**<br /><br />
+        /// **If succesfully removed a route**, its image URI is not valid anymore.<br /><br /><br />
+        /// ***Route parameters:***<br /><br />
+        /// `RouteId` : Must be a valid GUID representing ID of a route.<br /><br /><br />
+        /// **Authentication Required:**<br />
+        /// The user must be authenticated using a JWT token. Only users with the `Owner` or `Admin` role can perform this action.<br /><br />
+        /// </remarks>
+        /// <param name="routeId">**The ID of the route to be deleted.**</param>
+        /// <response code="204">Successfully deleted the route.</response>
+        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+        /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
+        /// <response code="404">***Not found.*** Route with the provided ID is not found.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        [HasPermission(Permission.ModifyData)]
+        [HttpDelete("{routeId:guid}")]
+        [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteRoute(
+            [FromRoute] Guid routeId)
+        {
+            var commandResult = await _sender.Send(new DeleteRouteCommand(routeId));
+
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
 

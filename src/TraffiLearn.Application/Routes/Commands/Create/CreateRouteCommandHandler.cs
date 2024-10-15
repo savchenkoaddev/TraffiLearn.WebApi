@@ -7,7 +7,7 @@ using TraffiLearn.Domain.Aggregates.ServiceCenters.Errors;
 using TraffiLearn.Domain.Aggregates.ServiceCenters.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Application.Routes.Commands
+namespace TraffiLearn.Application.Routes.Commands.Create
 {
     internal sealed class CreateRouteCommandHandler
         : IRequestHandler<CreateRouteCommand, Result<Guid>>
