@@ -46,9 +46,10 @@ namespace TraffiLearn.Infrastructure.Persistence.Configurations
             {
                 answersBuilder.ToJson();
 
-                answersBuilder
-                    .Property(a => a.Text)
-                    .HasMaxLength(Answer.MaxTextLength);
+                answersBuilder.Property(a => a.Text)
+                              .HasMaxLength(Answer.MaxTextLength);
+
+                answersBuilder.Property(a => a.IsCorrect);
             });
 
             builder
