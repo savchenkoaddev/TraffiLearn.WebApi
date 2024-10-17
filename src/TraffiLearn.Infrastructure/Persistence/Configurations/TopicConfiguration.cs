@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using TraffiLearn.Domain.Aggregates.Common.ImageUri;
 using TraffiLearn.Domain.Aggregates.Topics;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 
@@ -29,6 +30,13 @@ namespace TraffiLearn.Infrastructure.Persistence.Configurations
             builder
                 .HasMany(t => t.Questions)
                 .WithMany(t => t.Topics);
+
+            builder.Property(q => q.ImageUri)
+                .IsRequired(false)
+                .HasMaxLength(ImageUri.MaxLength)
+                .HasConversion(
+                    uri => uri.Value,
+                    value => ImageUri.Create(value).Value);
         }
     }
 }
