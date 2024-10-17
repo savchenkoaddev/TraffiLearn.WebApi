@@ -5,6 +5,8 @@ using TraffiLearn.Application.Auth.Commands.RegisterUser;
 using TraffiLearn.Application.Auth.Mappers;
 using TraffiLearn.Application.Comments.DTO;
 using TraffiLearn.Application.Comments.Mappers;
+using TraffiLearn.Application.Directories.DTO;
+using TraffiLearn.Application.Directories.Mappers;
 using TraffiLearn.Application.Questions.Commands.Create;
 using TraffiLearn.Application.Questions.Commands.Update;
 using TraffiLearn.Application.Questions.DTO;
@@ -39,6 +41,7 @@ using TraffiLearn.Domain.Aggregates.Tickets;
 using TraffiLearn.Domain.Aggregates.Topics;
 using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Shared;
+using Directory = TraffiLearn.Domain.Aggregates.Directories.Directory;
 
 namespace TraffiLearn.Application.Extensions.DI
 {
@@ -75,6 +78,7 @@ namespace TraffiLearn.Application.Extensions.DI
             services.AddMapper<Route, RouteResponse, RouteToRouteResponseMapper>();
             services.AddMapper<CreateRouteCommand, Result<Route>, CreateRouteCommandToEntityMapper>();
             services.AddMapper<UpdateRouteCommand, Result<Route>, UpdateRouteCommandToEntityMapper>();
+            services.AddMapper<Directory, DirectoryResponse, DirectoryToDirectoryResponseMapper>();
 
             return services;
         }
