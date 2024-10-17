@@ -1,4 +1,5 @@
-﻿using TraffiLearn.Application.Questions.DTO;
+﻿using System.Net.Http.Json;
+using TraffiLearn.Application.Questions.DTO;
 using TraffiLearn.Application.Topics.Commands.Create;
 using TraffiLearn.Application.Topics.Commands.Update;
 using TraffiLearn.Application.Topics.DTO;
@@ -25,18 +26,6 @@ namespace TraffiLearn.IntegrationTests.Topics
             _updateTopicCommandFactory = updateTopicCommandFactory;
         }
 
-        public Task<HttpResponseMessage> SendCreateTopicRequestAsync(
-            Role? sentFromRole = null)
-        {
-            var command = _createTopicCommandFactory.CreateValidCommand();
-
-            return _requestSender.SendJsonAsync(
-                method: HttpMethod.Post,
-                requestUri: TopicEndpointRoutes.CreateTopicRoute,
-                value: command,
-                sentFromRole: sentFromRole);
-        }
-
         public Task<Guid> CreateTopicAsync(
             Role? createdWithRole = null)
         {
@@ -61,23 +50,32 @@ namespace TraffiLearn.IntegrationTests.Topics
                 createdWithRole: Role.Owner);
         }
 
-        private Task<Guid> CreateTopicAndGetIdAsync(
+        private async Task<Guid> CreateTopicAndGetIdAsync(
            CreateTopicCommand command,
            Role? createdWithRole = null)
         {
-            return _requestSender
-                .SendAndGetJsonAsync<CreateTopicCommand, Guid>(
-                    method: HttpMethod.Post,
-                    requestUri: TopicEndpointRoutes.CreateTopicRoute,
-                    value: command,
-                    sentFromRole: createdWithRole);
+            var response = await SendCreateTopicRequestAsync(
+                command,
+                sentFromRole: createdWithRole);
+
+            return await response.Content.ReadFromJsonAsync<Guid>();
+        }
+
+        public Task<HttpResponseMessage> SendCreateTopicRequestAsync(
+            Role? sentFromRole = null)
+        {
+            var command = _createTopicCommandFactory.CreateValidCommand();
+
+            return SendCreateTopicRequestAsync(
+                command,
+                sentFromRole: sentFromRole);
         }
 
         private Task<HttpResponseMessage> SendCreateTopicRequestAsync(
             CreateTopicCommand command,
             Role? sentFromRole = null)
         {
-            return _requestSender.SendJsonAsync(
+            return _requestSender.SendMultipartFormDataWithJsonAndFileRequest(
                 method: HttpMethod.Post,
                 requestUri: TopicEndpointRoutes.CreateTopicRoute,
                 command,
@@ -214,10 +212,11 @@ namespace TraffiLearn.IntegrationTests.Topics
             UpdateTopicCommand command,
             Role? updatedWithRole = null)
         {
-            return _requestSender.PutAsJsonAsync(
+            return _requestSender.SendMultipartFormDataWithJsonAndFileRequest(
+                method: HttpMethod.Put,
                 requestUri: TopicEndpointRoutes.UpdateTopicRoute,
-                request: command,
-                putWithRole: updatedWithRole);
+                value: command,
+                sentFromRole: updatedWithRole);
         }
     }
 }

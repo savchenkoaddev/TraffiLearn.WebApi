@@ -22,7 +22,7 @@ namespace TraffiLearn.IntegrationTests.Questions.Commands.UpdateQuestion
                 Answers: ConvertAnswers(QuestionFixtureFactory.CreateAnswers()),
                 TopicIds: topicIds,
                 Image: image,
-                removeOldImageIfNewImageMissing);
+                removeOldImageIfNewImageMissing.Value);
         }
 
         public List<UpdateQuestionCommand> CreateInvalidCommands(

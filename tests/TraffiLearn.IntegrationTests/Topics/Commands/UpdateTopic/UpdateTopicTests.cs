@@ -93,11 +93,16 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
         {
             var invalidCommands = _commandFactory.CreateInvalidCommandsWithRandomIds();
 
-            await RequestSender.EnsureEachSentJsonRequestReturnsBadRequestAsync(
-                method: HttpMethod.Put,
-                requestUri: TopicEndpointRoutes.UpdateTopicRoute,
-                requests: invalidCommands,
-                sentFromRole: eligibleRole);
+            foreach (var command in invalidCommands)
+            {
+                var response = await RequestSender.SendMultipartFormDataWithJsonAndFileRequest(
+                    method: HttpMethod.Put,
+                    requestUri: TopicEndpointRoutes.UpdateTopicRoute,
+                    value: command,
+                    sentFromRole: eligibleRole);
+
+                response.AssertBadRequestStatusCode();
+            }
         }
 
         [Theory]
