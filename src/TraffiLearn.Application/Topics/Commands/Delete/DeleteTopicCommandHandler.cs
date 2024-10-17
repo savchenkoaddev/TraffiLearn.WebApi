@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
+using TraffiLearn.Application.Abstractions.Storage;
 using TraffiLearn.Domain.Aggregates.Topics;
 using TraffiLearn.Domain.Aggregates.Topics.Errors;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
@@ -10,13 +11,16 @@ namespace TraffiLearn.Application.Topics.Commands.Delete
     internal sealed class DeleteTopicCommandHandler : IRequestHandler<DeleteTopicCommand, Result>
     {
         private readonly ITopicRepository _topicRepository;
+        private readonly IImageService _imageService;
         private readonly IUnitOfWork _unitOfWork;
 
         public DeleteTopicCommandHandler(
             ITopicRepository topicRepository,
+            IImageService imageService,
             IUnitOfWork unitOfWork)
         {
             _topicRepository = topicRepository;
+            _imageService = imageService;
             _unitOfWork = unitOfWork;
         }
 
@@ -35,6 +39,12 @@ namespace TraffiLearn.Application.Topics.Commands.Delete
 
             await _topicRepository.DeleteAsync(found);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            if (found.ImageUri is not null)
+            {
+                await _imageService.DeleteAsync(
+                    found.ImageUri, cancellationToken);
+            }
 
             return Result.Success();
         }
