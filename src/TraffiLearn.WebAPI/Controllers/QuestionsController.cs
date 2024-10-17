@@ -360,8 +360,8 @@ namespace TraffiLearn.WebAPI.Controllers
         /// </summary>
         /// <remarks>
         /// **If created a new question**, all the provided topics are going to contain the question (ID). The newly created question is going to contain the mentioned topic IDs as well.<br /><br />
-        /// **If provided an image**, the question will be assigned an **image url**. You are able to view the image using the image url.<br /><br />
-        /// **If an image is not provided**, the image url will be null.<br /><br />
+        /// **If provided an image**, the question will be assigned an **image uri**. You are able to view the image using the image uri.<br /><br />
+        /// **If an image is not provided**, the image uri will be null.<br /><br />
         /// If succesfully created a new question, this endpoint returns ID of the newly created question.<br /><br />
         /// ***Parameters:***<br /><br />
         /// `Image` : Must be a valid image (possible extensions: ".jpg", ".jpeg", ".png", ".gif", ".bmp"). The size must be less than 500 Kb. Not required field.<br /><br />
@@ -410,9 +410,9 @@ namespace TraffiLearn.WebAPI.Controllers
         /// Updates an existing question.
         /// </summary>
         /// <remarks>
-        /// **If provided new image**, the old image gets deleted, the provided image is inserted and the image url of the question is updated accordingly.<br /><br />
-        /// **If a new image is not provided and `RemoveOldImageIfNewImageMissing` is *true***, the old image gets deleted and the image url of the question is updated to **null**.<br /><br />
-        /// **If a new image is not provided and `RemoveOldImageIfNewImageMissing` is *false***, the old image does not get deleted and the image url of the question remains **same**.<br /><br /><br />
+        /// **If provided new image**, the old image gets deleted, the provided image is inserted and the image uri of the question is updated accordingly.<br /><br />
+        /// **If a new image is not provided and `RemoveOldImageIfNewMissing` is *true***, the old image gets deleted and the image uri of the question is updated to **null**.<br /><br />
+        /// **If a new image is not provided and `RemoveOldImageIfNewMissing` is *false***, the old image does not get deleted and the image uri of the question remains **same**.<br /><br /><br />
         /// **If the list of the new topic IDs contains a topic ID which is *not present* within the question**, the topic ID will be added to the question's topic IDs.<br /><br />
         /// **If the list of the new topic IDs contains a topic ID which is *already* present within the question**, the topic ID won't be added to the question's topic IDs as it's already there.<br /><br />
         /// **If the list of the new topic IDs does not contain a topic ID which is *already* present within the question**, the question's topic ID gets deleted from the question.<br /><br /><br />
@@ -426,7 +426,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// `QuestionNumber` : Number of the question. Must be greater than 0.<br /><br />
         /// `TopicIds` : Topics which are going to be used to update the question's topic IDs. Must not be empty. Must represent a list of valid GUIDs.<br /><br />
         /// `Answers` : Represents a list of answers to the question. Must not be empty. Must contain at least one correct answer. Maximum answer content length: 300.<br /><br />
-        /// `RemoveOldImageIfNewImageMissing` : Boolean value indicating whether to delete an existing image from a question if the new image is not provided. If you intend to update a question without changing its image, set this field to **false**. Not required field (the default value: **true**).<br /><br /><br />
+        /// `RemoveOldImageIfNewMissing` : Boolean value indicating whether to delete an existing image from a question if the new image is not provided. If you intend to update a question without changing its image, set this field to **false**. Not required field (the default value: **true**).<br /><br /><br />
         /// **Authentication Required:**<br />
         /// The user must be authenticated using a JWT token. Only users with the `Owner` or `Admin` role can perform this action.<br /><br />
         /// </remarks>

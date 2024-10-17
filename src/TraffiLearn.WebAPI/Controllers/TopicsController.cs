@@ -13,6 +13,8 @@ using TraffiLearn.Application.Topics.Queries.GetById;
 using TraffiLearn.Application.Topics.Queries.GetRandomTopicWithQuestions;
 using TraffiLearn.Application.Topics.Queries.GetTopicQuestions;
 using TraffiLearn.Infrastructure.Authentication;
+using TraffiLearn.WebAPI.CommandWrappers.CreateTopic;
+using TraffiLearn.WebAPI.CommandWrappers.UpdateTopic;
 using TraffiLearn.WebAPI.Extensions;
 using TraffiLearn.WebAPI.Swagger;
 
@@ -140,9 +142,14 @@ namespace TraffiLearn.WebAPI.Controllers
         /// Creates a new topic.
         /// </summary>
         /// <remarks>
-        /// ***Body Parameters:***<br /><br />
+        /// **If provided an image**, the topic will be assigned an **image uri**. You are able to view the image using the image uri.<br /><br />
+        /// **If an image is not provided**, the image uri will be null.<br /><br />
+        /// ***Parameters:***<br /><br />
+        /// `Image` : Must be a valid image (possible extensions: ".jpg", ".jpeg", ".png", ".gif", ".bmp"). The size must be less than 500 Kb. Not required field.<br /><br />
+        /// `Request` : Question represented as a JSON object.<br /><br /><br />
+        /// ***Request Parameters:***<br /><br />
         /// `TopicNumber` : Number of the topic. Must be greater than 0.<br /><br />
-        /// `Title` : Title of the topic. Must be less than 300 characters long.<br /><br />
+        /// `Title` : Title of the topic. Must be less than 300 characters long.<br /><br /><br />
         /// **Authentication Required:**<br />
         /// The user must be authenticated using a JWT token. Only users with the `Owner` or `Admin` role can perform this action.<br /><br />
         /// </remarks>
@@ -154,14 +161,15 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
         [HasPermission(Permission.ModifyData)]
         [HttpPost]
-        [Consumes(MediaTypeNames.Application.Json)]
+        [Consumes(MediaTypeNames.Multipart.FormData)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateTopic(CreateTopicCommand command)
+        public async Task<IActionResult> CreateTopic(
+            [FromForm] CreateTopicCommandWrapper command)
         {
-            var commandResult = await _sender.Send(command);
+            var commandResult = await _sender.Send(command.ToCommand());
 
             if (commandResult.IsSuccess)
             {
@@ -178,10 +186,17 @@ namespace TraffiLearn.WebAPI.Controllers
         /// Updates an existing topic.
         /// </summary>
         /// <remarks>
-        /// ***Body Parameters:***<br /><br />
+        /// **If provided new image**, the old image gets deleted, the provided image is inserted and the image uri of the topic is updated accordingly.<br /><br />
+        /// **If a new image is not provided and `RemoveOldImageIfNewMissing` is *true***, the old image gets deleted and the image uri of the topic is updated to **null**.<br /><br />
+        /// **If a new image is not provided and `RemoveOldImageIfNewMissing` is *false***, the old image does not get deleted and the image uri of the topic remains **same**.<br /><br /><br />
+        /// ***Parameters:***<br /><br />
+        /// `Image` : Must be a valid image (possible extensions: ".jpg", ".jpeg", ".png", ".gif", ".bmp"). The size must be less than 500 Kb. Not required field.<br /><br />
+        /// `Request` : Topic represented as a JSON object.<br /><br /><br />
+        /// ***Request Parameters:***<br /><br />
         /// `TopicId` : ID of the topic to be updated. Must be a valid GUID.<br /><br />
         /// `TopicNumber` : Number of the topic. Must be greater than 0.<br /><br />
         /// `Title` : Title of the topic. Must be less than 300 characters long.<br /><br />
+        /// `RemoveOldImageIfNewMissing` : Boolean value indicating whether to delete an existing image from a topic if the new image is not provided. If you intend to update a topic without changing its image, set this field to **false**. Not required field (the default value: **true**).<br /><br /><br />
         /// **Authentication Required:**<br />
         /// The user must be authenticated using a JWT token. Only users with the `Owner` or `Admin` role can perform this action.<br /><br />
         /// </remarks>
@@ -194,14 +209,15 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
         [HasPermission(Permission.ModifyData)]
         [HttpPut]
-        [Consumes(MediaTypeNames.Application.Json)]
+        [Consumes(MediaTypeNames.Multipart.FormData)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateTopic(UpdateTopicCommand command)
+        public async Task<IActionResult> UpdateTopic(
+            [FromForm] UpdateTopicCommandWrapper command)
         {
-            var commandResult = await _sender.Send(command);
+            var commandResult = await _sender.Send(command.ToCommand());
 
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }

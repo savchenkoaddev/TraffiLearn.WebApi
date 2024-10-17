@@ -86,7 +86,7 @@ namespace TraffiLearn.Application.Questions.Commands.Update
             await _questionRepository.UpdateAsync(question);
 
             var removeOldImageIfNewImageMissing =
-                request.RemoveOldImageIfNewImageMissing!.Value;
+                request.RemoveOldImageIfNewMissing;
 
             var imageUpdateResult = await HandleImageAsync(
                 image: request.Image,

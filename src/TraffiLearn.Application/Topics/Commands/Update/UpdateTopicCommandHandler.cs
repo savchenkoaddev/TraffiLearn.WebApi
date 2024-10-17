@@ -82,7 +82,7 @@ namespace TraffiLearn.Application.Topics.Commands.Update
 
                 topic.SetImageUri(imageUri);
             }
-            else if (request.RemoveOldImageIfNewNotProvided && topic.ImageUri is not null)
+            else if (request.RemoveOldImageIfNewMissing && topic.ImageUri is not null)
             {
                 await _imageService.DeleteAsync(
                     topic.ImageUri, cancellationToken);

@@ -9,5 +9,5 @@ namespace TraffiLearn.Application.Topics.Commands.Update
         int? TopicNumber,
         string? Title,
         IFormFile? Image = null,
-        bool RemoveOldImageIfNewNotProvided = true) : IRequest<Result>;
+        bool RemoveOldImageIfNewMissing = true) : IRequest<Result>;
 }
