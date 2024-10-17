@@ -1,14 +1,15 @@
 ﻿using TraffiLearn.Domain.Aggregates.Directories.Errors.Paragraphs;
+using TraffiLearn.Domain.Aggregates.Directories.ValueObjects.Paragraphs;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Domain.Aggregates.Directories.ValueObjects.Paragraphs
+namespace TraffiLearn.Domain.Aggregates.Directories.ValueObjects.Sections
 {
-    public sealed class ParagraphContent : ValueObject
+    public sealed class SectionName : ValueObject
     {
-        public const int MaxLength = 2000;
+        public const int MaxLength = 200;
 
-        private ParagraphContent(string value)
+        private SectionName(string value)
         {
             Value = value;
         }

@@ -1,6 +1,4 @@
-﻿using TraffiLearn.Domain.Aggregates.Directories.Errors.Sections;
-using TraffiLearn.Domain.Aggregates.Directories.ValueObjects.Paragraphs;
-using TraffiLearn.Domain.Primitives;
+﻿using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Domain.Aggregates.Directories.ValueObjects.Sections
@@ -8,29 +6,31 @@ namespace TraffiLearn.Domain.Aggregates.Directories.ValueObjects.Sections
     public sealed class DirectorySection : ValueObject
     {
         private DirectorySection(
-            List<SectionParagraph> paragraphs)
+            SectionName name,
+            SectionContent content)
         {
-            Paragraphs = paragraphs;
+            Name = name;
+            Content = content;
         }
 
-        public List<SectionParagraph> Paragraphs { get; }
+        public SectionName Name { get; }
+
+        public SectionContent Content { get; }
 
         public static Result<DirectorySection> Create(
-            List<SectionParagraph> paragraphs)
+            SectionName name,
+            SectionContent content)
         {
-            ArgumentNullException.ThrowIfNull(paragraphs);
+            ArgumentNullException.ThrowIfNull(name);
+            ArgumentNullException.ThrowIfNull(content);
 
-            if (paragraphs.Count == 0)
-            {
-                return Result.Failure<DirectorySection>(DirectorySectionErrors.EmptyParagraphs);
-            }
-
-            return new DirectorySection(paragraphs);
+            return new DirectorySection(name, content);
         }
 
         public override IEnumerable<object> GetAtomicValues()
         {
-            yield return Paragraphs;
+            yield return Name;
+            yield return Content;
         }
     }
 }
