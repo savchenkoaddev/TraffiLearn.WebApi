@@ -20,7 +20,7 @@ namespace TraffiLearn.WebAPI.CommandWrappers.UpdateQuestion
                 TopicIds: Request.TopicIds,
                 Answers: Request.Answers,
                 Image: Image,
-                RemoveOldImageIfNewImageMissing: Request.RemoveOldImageIfNewImageMissing);
+                RemoveOldImageIfNewMissing: Request.RemoveOldImageIfNewMissing ?? true);
         }
     }
 }

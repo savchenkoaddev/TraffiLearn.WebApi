@@ -1,4 +1,5 @@
-﻿using TraffiLearn.Domain.Aggregates.Questions;
+﻿using TraffiLearn.Domain.Aggregates.Common.ImageUri;
+using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Topics.Errors;
 using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 using TraffiLearn.Domain.Primitives;
@@ -19,10 +20,12 @@ namespace TraffiLearn.Domain.Aggregates.Topics
         private Topic(
             TopicId topicId,
             TopicNumber number,
-            TopicTitle title) : base(topicId)
+            TopicTitle title,
+            ImageUri? imageUri) : base(topicId)
         {
             Number = number;
             Title = title;
+            ImageUri = imageUri;
         }
 
         public TopicNumber Number
@@ -53,7 +56,14 @@ namespace TraffiLearn.Domain.Aggregates.Topics
             }
         }
 
+        public ImageUri? ImageUri { get; private set; }
+
         public IReadOnlyCollection<Question> Questions => _questions;
+
+        public void SetImageUri(ImageUri? imageUri)
+        {
+            ImageUri = imageUri;
+        }
 
         public Result AddQuestion(Question question)
         {
@@ -96,12 +106,14 @@ namespace TraffiLearn.Domain.Aggregates.Topics
         public static Result<Topic> Create(
             TopicId topicId,
             TopicNumber number,
-            TopicTitle title)
+            TopicTitle title,
+            ImageUri? imageUri = null)
         {
             return new Topic(
                 topicId: topicId,
                 number: number,
-                title: title);
+                title: title,
+                imageUri);
         }
     }
 }

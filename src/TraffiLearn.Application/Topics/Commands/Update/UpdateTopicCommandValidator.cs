@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using TraffiLearn.Application.Validators;
 
 namespace TraffiLearn.Application.Topics.Commands.Update
 {
@@ -16,6 +17,10 @@ namespace TraffiLearn.Application.Topics.Commands.Update
             RuleFor(x => x.Title)
                 .NotEmpty()
                 .MaximumLength(300);
+
+            RuleFor(x => x.Image)
+               .SetValidator(new ImageValidator())
+               .When(x => x.Image is not null);
         }
     }
 }

@@ -11,7 +11,8 @@ namespace TraffiLearn.Testing.Shared.Factories
             return Topic.Create(
                 new TopicId(Guid.NewGuid()),
                 CreateNumber(number),
-                CreateTitle(title)).Value;
+                CreateTitle(title),
+                null).Value;
         }
 
         public static TopicNumber CreateNumber(int number = TopicNumber.MinValue)

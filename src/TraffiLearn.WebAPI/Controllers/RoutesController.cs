@@ -5,8 +5,6 @@ using TraffiLearn.Application.Routes.Commands.Delete;
 using TraffiLearn.Application.Routes.DTO;
 using TraffiLearn.Application.Routes.Queries.GetById;
 using TraffiLearn.Application.Routes.Queries.GetByServiceCenterId;
-using TraffiLearn.Application.ServiceCenters.DTO;
-using TraffiLearn.Application.ServiceCenters.Queries.GetByRegionId;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.CommandWrappers.CreateRoute;
 using TraffiLearn.WebAPI.CommandWrappers.UpdateRoute;

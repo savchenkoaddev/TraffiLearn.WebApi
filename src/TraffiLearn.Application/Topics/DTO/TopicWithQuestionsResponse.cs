@@ -6,5 +6,6 @@ namespace TraffiLearn.Application.Topics.DTO
         Guid TopicId,
         int TopicNumber,
         string Title,
+        string? ImageUri,
         IEnumerable<QuestionResponse> Questions);
 }

@@ -9,5 +9,5 @@ namespace TraffiLearn.WebAPI.CommandWrappers.UpdateQuestion
         int? QuestionNumber,
         List<AnswerRequest>? Answers,
         List<Guid>? TopicIds,
-        bool? RemoveOldImageIfNewImageMissing = true);
+        bool? RemoveOldImageIfNewMissing);
 }
