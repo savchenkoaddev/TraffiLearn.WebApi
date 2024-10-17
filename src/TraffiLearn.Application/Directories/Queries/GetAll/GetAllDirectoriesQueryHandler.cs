@@ -7,7 +7,7 @@ using Directory = TraffiLearn.Domain.Aggregates.Directories.Directory;
 
 namespace TraffiLearn.Application.Directories.Queries.GetAll
 {
-    public sealed class GetAllDirectoriesQueryHandler
+    internal sealed class GetAllDirectoriesQueryHandler
         : IRequestHandler<GetAllDirectoriesQuery, Result<IEnumerable<DirectoryResponse>>>
     {
         private readonly IDirectoryRepository _directoryRepository;
