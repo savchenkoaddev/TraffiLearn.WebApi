@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using TraffiLearn.Domain.Aggregates.Comments;
+using TraffiLearn.Domain.Aggregates.Directories;
 using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Regions;
 using TraffiLearn.Domain.Aggregates.Routes;
@@ -23,6 +24,7 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
             services.AddScoped<IRegionRepository, RegionRepository>();
             services.AddScoped<IServiceCenterRepository, ServiceCenterRepository>();
             services.AddScoped<IRouteRepository, RouteRepository>();
+            services.AddScoped<IDirectoryRepository, DirectoryRepository>();
 
             return services;
         }

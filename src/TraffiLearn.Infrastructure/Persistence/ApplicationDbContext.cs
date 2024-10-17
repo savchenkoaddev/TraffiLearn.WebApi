@@ -11,6 +11,7 @@ using TraffiLearn.Domain.Aggregates.Tickets;
 using TraffiLearn.Domain.Aggregates.Topics;
 using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Primitives;
+using Directory = TraffiLearn.Domain.Aggregates.Directories.Directory;
 
 namespace TraffiLearn.Infrastructure.Persistence
 {
@@ -37,6 +38,8 @@ namespace TraffiLearn.Infrastructure.Persistence
         public DbSet<ServiceCenter> ServiceCenters { get; set; }
 
         public DbSet<Route> Routes { get; set; }
+
+        public DbSet<Directory> Directories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
