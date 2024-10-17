@@ -30,7 +30,8 @@ namespace TraffiLearn.Application.Topics.Mappers
             return Topic.Create(
                 topicId: topicId,
                 number: topicNumberResult.Value,
-                title: topicTitleResult.Value);
+                title: topicTitleResult.Value, 
+                imageUri: null);
         }
     }
 }

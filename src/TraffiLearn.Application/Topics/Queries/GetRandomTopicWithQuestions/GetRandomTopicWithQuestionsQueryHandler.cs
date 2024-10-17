@@ -44,12 +44,14 @@ namespace TraffiLearn.Application.Topics.Queries.GetRandomTopicWithQuestions
                 return Result.Failure<TopicWithQuestionsResponse>(Error.InternalFailure());
             }
 
-            var questions = await _questionRepository.GetManyByTopicIdAsync(randomTopic.Id);
+            var questions = await _questionRepository.GetManyByTopicIdAsync(
+                randomTopic.Id, cancellationToken);
 
             var response = new TopicWithQuestionsResponse(
                 TopicId: randomTopic.Id.Value,
                 TopicNumber: randomTopic.Number.Value,
                 Title: randomTopic.Title.Value,
+                ImageUri: randomTopic.ImageUri?.Value,
                 Questions: _questionMapper.Map(questions));
 
             return Result.Success(response);

@@ -8,6 +8,6 @@ namespace TraffiLearn.Application.Topics.Commands.Update
         Guid? TopicId,
         int? TopicNumber,
         string? Title,
-        IFormFile? Image,
+        IFormFile? Image = null,
         bool RemoveOldImageIfNewNotProvided = true) : IRequest<Result>;
 }

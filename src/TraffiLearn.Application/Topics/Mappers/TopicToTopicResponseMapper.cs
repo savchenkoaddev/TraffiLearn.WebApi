@@ -11,7 +11,8 @@ namespace TraffiLearn.Application.Topics.Mappers
             return new TopicResponse(
                 Id: source.Id.Value,
                 TopicNumber: source.Number.Value,
-                Title: source.Title.Value);
+                Title: source.Title.Value,
+                ImageUri: source.ImageUri?.Value);
         }
     }
 }

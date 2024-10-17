@@ -3,5 +3,6 @@
     public sealed record TopicResponse(
         Guid Id,
         int TopicNumber,
-        string Title);
+        string Title,
+        string? ImageUri);
 }

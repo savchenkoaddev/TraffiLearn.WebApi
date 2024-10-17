@@ -95,8 +95,7 @@ namespace TraffiLearn.Domain.Aggregates.Topics
 
         public Result Update(
             TopicNumber topicNumber,
-            TopicTitle topicTitle,
-            ImageUri? imageUri)
+            TopicTitle topicTitle)
         {
             Number = topicNumber;
             Title = topicTitle;
@@ -108,7 +107,7 @@ namespace TraffiLearn.Domain.Aggregates.Topics
             TopicId topicId,
             TopicNumber number,
             TopicTitle title,
-            ImageUri? imageUri)
+            ImageUri? imageUri = null)
         {
             return new Topic(
                 topicId: topicId,
