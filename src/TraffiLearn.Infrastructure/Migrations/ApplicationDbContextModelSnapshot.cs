@@ -744,7 +744,11 @@ namespace TraffiLearn.Infrastructure.Migrations
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("integer");
 
-                            b1.Property<string>("Paragraphs")
+                            b1.Property<string>("Content")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<string>("Name")
                                 .IsRequired()
                                 .HasColumnType("text");
 

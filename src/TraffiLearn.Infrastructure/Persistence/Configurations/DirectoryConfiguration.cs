@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Newtonsoft.Json;
 using TraffiLearn.Domain.Aggregates.Directories.ValueObjects.Directories;
-using TraffiLearn.Domain.Aggregates.Directories.ValueObjects.Paragraphs;
+using TraffiLearn.Domain.Aggregates.Directories.ValueObjects.Sections;
 using Directory = TraffiLearn.Domain.Aggregates.Directories.Directory;
 
 namespace TraffiLearn.Infrastructure.Persistence.Configurations
@@ -28,10 +27,15 @@ namespace TraffiLearn.Infrastructure.Persistence.Configurations
             {
                 sectionsBuilder.ToJson();
 
-                sectionsBuilder.Property(s => s.Paragraphs)
+                sectionsBuilder.Property(s => s.Name)
                     .HasConversion(
-                        p => JsonConvert.SerializeObject(p),
-                        value => JsonConvert.DeserializeObject<List<SectionParagraph>>(value));
+                        name => name.Value,
+                        value => SectionName.Create(value).Value);
+
+                sectionsBuilder.Property(s => s.Content)
+                    .HasConversion(
+                        content => content.Value,
+                        value => SectionContent.Create(value).Value);
             });
         }
     }

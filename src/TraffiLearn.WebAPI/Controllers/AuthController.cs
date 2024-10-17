@@ -8,6 +8,7 @@ using TraffiLearn.Application.Auth.Commands.RegisterAdmin;
 using TraffiLearn.Application.Auth.Commands.RegisterUser;
 using TraffiLearn.Application.Auth.Commands.RemoveAdminAccount;
 using TraffiLearn.Application.Auth.DTO;
+using TraffiLearn.Domain.Aggregates.Directories;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
 using TraffiLearn.WebAPI.Swagger;
@@ -18,14 +19,17 @@ namespace TraffiLearn.WebAPI.Controllers
     [ApiController]
     public sealed class AuthController : ControllerBase
     {
+        private readonly IDirectoryRepository _directoryRepository;
         private readonly ISender _sender;
 
-        public AuthController(ISender sender)
+        public AuthController(ISender sender, IDirectoryRepository directoryRepository)
         {
             _sender = sender;
+            _directoryRepository = directoryRepository;
         }
 
         #region Commands
+
 
         /// <summary>
         /// Authenticates a user using their email and password.

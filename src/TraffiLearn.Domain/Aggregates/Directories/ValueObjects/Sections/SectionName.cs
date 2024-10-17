@@ -1,5 +1,4 @@
-﻿using TraffiLearn.Domain.Aggregates.Directories.Errors.Paragraphs;
-using TraffiLearn.Domain.Aggregates.Directories.ValueObjects.Paragraphs;
+﻿using TraffiLearn.Domain.Aggregates.Directories.Errors.Sections;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 
@@ -16,21 +15,21 @@ namespace TraffiLearn.Domain.Aggregates.Directories.ValueObjects.Sections
 
         public string Value { get; }
 
-        public static Result<ParagraphContent> Create(string? value)
+        public static Result<SectionName> Create(string? value)
         {
             if (string.IsNullOrWhiteSpace(value))
             {
-                return Result.Failure<ParagraphContent>(
-                    ParagraphContentErrors.Empty);
+                return Result.Failure<SectionName>(
+                    SectionNameErrors.Empty);
             }
 
             if (value.Length > MaxLength)
             {
-                return Result.Failure<ParagraphContent>(
-                    ParagraphContentErrors.TooLong(allowedLength: MaxLength));
+                return Result.Failure<SectionName>(
+                    SectionNameErrors.TooLong(allowedLength: MaxLength));
             }
 
-            return new ParagraphContent(value);
+            return new SectionName(value);
         }
 
         public override IEnumerable<object> GetAtomicValues()
