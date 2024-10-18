@@ -62,5 +62,27 @@ namespace TraffiLearn.Domain.Aggregates.Directories
 
             return new Directory(id, name, sections);
         }
+
+        public Result Update(
+            DirectoryName name,
+            List<DirectorySection>? sections)
+        {
+            ArgumentNullException.ThrowIfNull(sections);
+
+            if (sections.Count == 0)
+            {
+                return Result.Failure(DirectoryErrors.EmptySections);
+            }
+
+            if (sections.Count > MaxSectionsCount)
+            {
+                return Result.Failure(DirectoryErrors.TooManySections(MaxSectionsCount));
+            }
+
+            _sections = sections.ToHashSet();
+            Name = name;
+
+            return Result.Success();
+        }
     }
 }
