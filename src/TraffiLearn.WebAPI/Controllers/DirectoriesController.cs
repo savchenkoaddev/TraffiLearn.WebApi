@@ -88,8 +88,6 @@ namespace TraffiLearn.WebAPI.Controllers
         /// </summary>
         /// <remarks>
         /// If succesfully created a new directory, this endpoint returns ID of the newly created directory.<br /><br />
-        /// Updates an existing directory.
-        /// </summary>
         /// <remarks>
         /// ***Parameters:***<br /><br />
         /// `Name`: Name of the directory to create. Must not be empty or whitespace. Maximum length: 200. <br /><br />
@@ -117,7 +115,10 @@ namespace TraffiLearn.WebAPI.Controllers
 
             if (commandResult.IsSuccess)
             {
-                return Ok(commandResult.Value);
+                return CreatedAtAction(
+                    actionName: nameof(GetDirectoryById),
+                    routeValues: new { directoryId = commandResult.Value },
+                    value: commandResult.Value);
             }
 
             return commandResult.ToProblemDetails();
