@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using System.Data;
+using System.Data.Common;
 using TraffiLearn.Application.Abstractions.Data;
 
 namespace TraffiLearn.Infrastructure.Persistence
@@ -11,6 +13,18 @@ namespace TraffiLearn.Infrastructure.Persistence
         public UnitOfWork(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
+        }
+
+        public async Task<DbTransaction> BeginTransactionAsync(
+            IsolationLevel isolationLevel = IsolationLevel.ReadCommitted,
+            CancellationToken cancellationToken = default)
+        {
+            var transaction = await _dbContext.Database
+                .BeginTransactionAsync(
+                    isolationLevel: isolationLevel,
+                    cancellationToken);
+
+            return transaction.GetDbTransaction();
         }
 
         public async Task ExecuteInTransactionAsync(

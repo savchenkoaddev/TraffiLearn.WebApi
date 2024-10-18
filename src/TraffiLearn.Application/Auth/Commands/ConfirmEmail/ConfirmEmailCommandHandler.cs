@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using System.Transactions;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Exceptions;
@@ -62,12 +61,15 @@ namespace TraffiLearn.Application.Auth.Commands.ConfirmEmail
                 throw new DataInconsistencyException();
             }
 
-            using (var transaction = new TransactionScope(
-                TransactionScopeAsyncFlowOption.Enabled))
+            await using var transaction = await _unitOfWork
+                .BeginTransactionAsync(
+                    cancellationToken: cancellationToken);
+
+            try
             {
                 var identityResult = await _identityService.ConfirmEmailAsync(
-                    identityUser,
-                    token: request.Token);
+                identityUser,
+                token: request.Token);
 
                 if (identityResult.IsFailure)
                 {
@@ -83,7 +85,13 @@ namespace TraffiLearn.Application.Auth.Commands.ConfirmEmail
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                transaction.Complete();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+
+                throw;
             }
 
             _logger.LogInformation("Succesfully confirmed the email: {email}", user.Email.Value);

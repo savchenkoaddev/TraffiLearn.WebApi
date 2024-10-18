@@ -62,7 +62,7 @@ namespace TraffiLearn.Application.Auth.Commands.RegisterUser
 
             var identityUser = _userMapper.Map(newUser);
 
-            Func<Task> transaction = async () =>
+            Func<Task> transactionAction = async () =>
             {
                 await _userRepository.InsertAsync(
                     newUser,
@@ -80,7 +80,7 @@ namespace TraffiLearn.Application.Auth.Commands.RegisterUser
             };
 
             await _unitOfWork.ExecuteInTransactionAsync(
-                transaction,
+                transactionAction,
                 cancellationToken: cancellationToken);
 
             _logger.LogInformation(
