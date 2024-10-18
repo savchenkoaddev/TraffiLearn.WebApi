@@ -55,6 +55,11 @@ namespace TraffiLearn.Domain.Aggregates.Directories
                 return Result.Failure<Directory>(DirectoryErrors.EmptySections);
             }
 
+            if (sections.Count > MaxSectionsCount)
+            {
+                return Result.Failure<Directory>(DirectoryErrors.TooManySections(MaxSectionsCount));
+            }
+
             return new Directory(id, name, sections);
         }
 

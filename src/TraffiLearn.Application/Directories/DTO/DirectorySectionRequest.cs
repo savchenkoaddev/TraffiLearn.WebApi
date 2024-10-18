@@ -1,4 +1,4 @@
-﻿namespace TraffiLearn.Application.Directories.DTO
+namespace TraffiLearn.Application.Directories.DTO
 {
     public sealed record DirectorySectionRequest(
         string? Name,

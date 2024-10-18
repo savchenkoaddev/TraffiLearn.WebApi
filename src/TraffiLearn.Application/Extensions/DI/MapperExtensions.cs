@@ -5,6 +5,7 @@ using TraffiLearn.Application.Auth.Commands.RegisterUser;
 using TraffiLearn.Application.Auth.Mappers;
 using TraffiLearn.Application.Comments.DTO;
 using TraffiLearn.Application.Comments.Mappers;
+using TraffiLearn.Application.Directories.Commands.Create;
 using TraffiLearn.Application.Directories.Commands.Update;
 using TraffiLearn.Application.Directories.DTO;
 using TraffiLearn.Application.Directories.Mappers;
@@ -80,6 +81,7 @@ namespace TraffiLearn.Application.Extensions.DI
             services.AddMapper<CreateRouteCommand, Result<Route>, CreateRouteCommandToEntityMapper>();
             services.AddMapper<UpdateRouteCommand, Result<Route>, UpdateRouteCommandToEntityMapper>();
             services.AddMapper<Directory, DirectoryResponse, DirectoryToDirectoryResponseMapper>();
+            services.AddMapper<CreateDirectoryCommand, Result<Directory>, CreateDirectoryCommandMapper>();
             services.AddMapper<UpdateDirectoryCommand, Result<Directory>, UpdateDirectoryCommandMapper>();
 
             return services;
