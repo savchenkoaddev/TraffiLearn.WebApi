@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using System.Transactions;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Exceptions;
@@ -75,17 +74,17 @@ namespace TraffiLearn.Application.Auth.Commands.RemoveAdminAccount
                 throw new DataInconsistencyException();
             }
 
-            using (var transaction = new TransactionScope(
-                TransactionScopeAsyncFlowOption.Enabled))
+            Func<Task> transactionAction = async () =>
             {
                 await _userRepository.DeleteAsync(admin);
-
-                await _identityService.DeleteAsync(identityAdmin);
-
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                transaction.Complete();
-            }
+                await _identityService.DeleteAsync(identityAdmin);
+            };
+
+            await _unitOfWork.ExecuteInTransactionAsync(
+                transactionAction,
+                cancellationToken: cancellationToken);
 
             _logger.LogInformation(
                 "Succesfully removed the admin account. Username: {username}",

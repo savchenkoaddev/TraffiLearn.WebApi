@@ -72,11 +72,20 @@ namespace TraffiLearn.Application.Routes.Commands.Create
                 image: request.Image,
                 cancellationToken);
 
-            route.SetImageUri(routeImageUri);
+            try
+            {
+                route.SetImageUri(routeImageUri);
 
-            await _routeRepository.InsertAsync(route, cancellationToken);
+                await _routeRepository.InsertAsync(route, cancellationToken);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+            }
+            catch (Exception)
+            {
+                await _imageService.DeleteAsync(
+                    imageUri: routeImageUri, cancellationToken);
 
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+                throw;
+            }
 
             return Result.Success(route.Id.Value);
         }

@@ -159,27 +159,37 @@ namespace TraffiLearn.Application.Questions.Commands.Update
             {
                 if (question.ImageUri is not null && removeOldImageIfNewImageMissing)
                 {
+                    question.SetImageUri(null);
+
                     await _imageService.DeleteAsync(
                         question.ImageUri,
                         cancellationToken);
-
-                    question.SetImageUri(null);
                 }
             }
             else
             {
-                if (question.ImageUri is not null)
-                {
-                    await _imageService.DeleteAsync(
-                        question.ImageUri,
-                        cancellationToken);
-                }
-
-                var imageUri = await _imageService.UploadImageAsync(
+                var newImageUri = await _imageService.UploadImageAsync(
                     image,
                     cancellationToken);
 
-                question.SetImageUri(imageUri);
+                if (question.ImageUri is not null)
+                {
+                    try
+                    {
+                        await _imageService.DeleteAsync(
+                            question.ImageUri,
+                            cancellationToken);
+                    }
+                    catch (Exception)
+                    {
+                        await _imageService.DeleteAsync(
+                            newImageUri, cancellationToken);
+
+                        throw;
+                    }
+                }
+
+                question.SetImageUri(newImageUri);
             }
 
             return Result.Success();

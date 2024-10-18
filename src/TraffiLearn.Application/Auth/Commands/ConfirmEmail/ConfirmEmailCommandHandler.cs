@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using System.Transactions;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Exceptions;
@@ -62,28 +61,37 @@ namespace TraffiLearn.Application.Auth.Commands.ConfirmEmail
                 throw new DataInconsistencyException();
             }
 
-            using (var transaction = new TransactionScope(
-                TransactionScopeAsyncFlowOption.Enabled))
+            await using var transaction = await _unitOfWork
+                .BeginTransactionAsync(
+                    cancellationToken: cancellationToken);
+
+            try
             {
+                var result = user.ConfirmEmail();
+
+                if (result.IsFailure)
+                {
+                    return result.Error;
+                }
+
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+
                 var identityResult = await _identityService.ConfirmEmailAsync(
                     identityUser,
                     token: request.Token);
 
                 if (identityResult.IsFailure)
                 {
-                    return identityResult.Error;
+                    throw new InvalidOperationException($"Failed to confirm email of an identity user, whereas succeeded to confirm domain user. Error: {result.Error.Description}");
                 }
 
-                var result = user.ConfirmEmail();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
 
-                if (result.IsFailure)
-                {
-                    throw new InvalidOperationException($"Failed to confirm email of a user. Error: {result.Error.Description}");
-                }
-
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-                transaction.Complete();
+                throw;
             }
 
             _logger.LogInformation("Succesfully confirmed the email: {email}", user.Email.Value);

@@ -74,8 +74,7 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
         private static IServiceCollection AddUnitOfWork(
             this IServiceCollection services)
         {
-            return services.AddScoped<IUnitOfWork>(
-                sp => sp.GetRequiredService<ApplicationDbContext>());
+            return services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 
         private static IdentityBuilder AddAppIdentity(

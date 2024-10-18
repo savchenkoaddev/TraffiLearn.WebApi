@@ -14,8 +14,6 @@ namespace TraffiLearn.Infrastructure.Services
 {
     internal sealed class IdentityService : IIdentityService<ApplicationUser>
     {
-        private const string EMAIL_CLAIM_TYPE = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress";
-
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly LoginSettings _loginSettings;
@@ -129,7 +127,8 @@ namespace TraffiLearn.Infrastructure.Services
             ApplicationUser identityUser,
             string token)
         {
-            var result = await _userManager.ConfirmEmailAsync(identityUser, token);
+            var result = await _userManager.ConfirmEmailAsync(
+                identityUser, token);
 
             if (!result.Succeeded)
             {

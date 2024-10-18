@@ -38,15 +38,22 @@ namespace TraffiLearn.Application.Routes.Commands.Delete
                 return RouteErrors.NotFound;
             }
 
-            await _routeRepository.DeleteAsync(route);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-            if (route.ImageUri is not null)
+            Func<Task> transactionAction = async () =>
             {
-                await _imageService.DeleteAsync(
-                    imageUri: route.ImageUri,
-                    cancellationToken);
-            }
+                await _routeRepository.DeleteAsync(route);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                if (route.ImageUri is not null)
+                {
+                    await _imageService.DeleteAsync(
+                        imageUri: route.ImageUri,
+                        cancellationToken);
+                }
+            };
+
+            await _unitOfWork.ExecuteInTransactionAsync(
+                transactionAction, 
+                cancellationToken: cancellationToken);
             
             return Result.Success();
         }
