@@ -88,7 +88,6 @@ namespace TraffiLearn.WebAPI.Controllers
         /// </summary>
         /// <remarks>
         /// If succesfully created a new directory, this endpoint returns ID of the newly created directory.<br /><br />
-        /// <remarks>
         /// ***Parameters:***<br /><br />
         /// `Name`: Name of the directory to create. Must not be empty or whitespace. Maximum length: 200. <br /><br />
         /// `Sections`: List of sections to create in the directory. Must not be empty. Must contain at least one section. Maximum count: 100. <br /><br />
