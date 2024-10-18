@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using System.Transactions;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Users.Identity;
@@ -40,7 +39,7 @@ namespace TraffiLearn.Application.Auth.Commands.RegisterUser
             RegisterUserCommand request,
             CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Handling RegisterAdminCommand");
+            _logger.LogInformation("Handling RegisterUserCommand");
 
             var mappingResult = _commandMapper.Map(request);
 
@@ -63,8 +62,7 @@ namespace TraffiLearn.Application.Auth.Commands.RegisterUser
 
             var identityUser = _userMapper.Map(newUser);
 
-            using (var transaction = new TransactionScope(
-                TransactionScopeAsyncFlowOption.Enabled))
+            Func<Task> transaction = async () =>
             {
                 await _userRepository.InsertAsync(
                     newUser,
@@ -79,9 +77,11 @@ namespace TraffiLearn.Application.Auth.Commands.RegisterUser
                     roleName: newUser.Role.ToString());
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
+            };
 
-                transaction.Complete();
-            }
+            await _unitOfWork.ExecuteInTransactionAsync(
+                transaction,
+                cancellationToken: cancellationToken);
 
             _logger.LogInformation(
                 "Succesfully registered a new user. Username: {username}",
