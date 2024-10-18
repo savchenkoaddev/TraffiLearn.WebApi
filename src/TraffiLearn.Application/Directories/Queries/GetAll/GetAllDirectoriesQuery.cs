@@ -4,6 +4,6 @@ using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Directories.Queries.GetAll
 {
-    public sealed record GetAllDirectoriesQuery()
+    public sealed record GetAllDirectoriesQuery
         : IRequest<Result<IEnumerable<DirectoryResponse>>>;
 }
