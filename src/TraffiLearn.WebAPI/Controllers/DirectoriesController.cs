@@ -61,8 +61,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="404">***Not found.*** No directory exists with the provided ID.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HttpGet]
-        [Route("{directoryId:guid}")]
+        [HttpGet("{directoryId:guid}")]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(DirectoryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
