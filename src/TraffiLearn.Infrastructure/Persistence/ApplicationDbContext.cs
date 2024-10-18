@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Users.Identity;
 using TraffiLearn.Domain.Aggregates.Comments;
 using TraffiLearn.Domain.Aggregates.Questions;
@@ -16,7 +15,7 @@ using Directory = TraffiLearn.Domain.Aggregates.Directories.Directory;
 namespace TraffiLearn.Infrastructure.Persistence
 {
     public sealed class ApplicationDbContext :
-        IdentityDbContext<ApplicationUser>, IUnitOfWork
+        IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(
             DbContextOptions<ApplicationDbContext> options)
