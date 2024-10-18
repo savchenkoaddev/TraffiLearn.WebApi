@@ -1,6 +1,8 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Storage;
+using TraffiLearn.Domain.Aggregates.Common.ImageUri;
 using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Topics;
 using TraffiLearn.Domain.Aggregates.Topics.Errors;
@@ -16,6 +18,7 @@ namespace TraffiLearn.Application.Questions.Commands.Create
         private readonly ITopicRepository _topicRepository;
         private readonly IImageService _imageService;
         private readonly Mapper<CreateQuestionCommand, Result<Question>> _questionMapper;
+        private readonly ILogger<CreateQuestionCommandHandler> _logger;
         private readonly IUnitOfWork _unitOfWork;
 
         public CreateQuestionCommandHandler(
@@ -23,12 +26,14 @@ namespace TraffiLearn.Application.Questions.Commands.Create
             ITopicRepository topicRepository,
             IImageService imageService,
             Mapper<CreateQuestionCommand, Result<Question>> questionMapper,
+            ILogger<CreateQuestionCommandHandler> logger,
             IUnitOfWork unitOfWork)
         {
             _questionRepository = questionRepository;
             _topicRepository = topicRepository;
             _imageService = imageService;
             _questionMapper = questionMapper;
+            _logger = logger;
             _unitOfWork = unitOfWork;
         }
 
@@ -55,20 +60,39 @@ namespace TraffiLearn.Application.Questions.Commands.Create
                 return Result.Failure<Guid>(addResult.Error);
             }
 
+            ImageUri? newImageUri = default;
+
             if (ImageIsProvidedIn(request))
             {
-                var imageUri = await _imageService.UploadImageAsync(
+                newImageUri = await _imageService.UploadImageAsync(
                     image: request.Image,
                     cancellationToken);
-
-                question.SetImageUri(imageUri);
+                
+                question.SetImageUri(newImageUri);
             }
 
-            await _questionRepository.InsertAsync(
-                question,
-                cancellationToken);
+            try
+            {
+                await _questionRepository.InsertAsync(
+                    question,
+                    cancellationToken);
 
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+            }
+            catch (Exception)
+            {
+                if (newImageUri is not null)
+                {
+                    await _imageService.DeleteAsync(
+                        imageUri: newImageUri,
+                        cancellationToken);
+
+                    _logger.LogInformation(
+                        "Succesfully deleted the uploaded image during the error. The image uri: {imageUri}", newImageUri.Value);
+                }
+
+                throw;
+            }
 
             return Result.Success(question.Id.Value);
         }

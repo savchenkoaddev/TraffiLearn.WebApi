@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using System.Transactions;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Exceptions;
@@ -78,8 +77,7 @@ namespace TraffiLearn.Application.Auth.Commands.RegisterAdmin
 
             var identityUser = _userMapper.Map(newUser);
 
-            using (var transaction = new TransactionScope(
-                TransactionScopeAsyncFlowOption.Enabled))
+            Func<Task> transactionAction = async () =>
             {
                 await _userRepository.InsertAsync(
                     newUser,
@@ -94,9 +92,11 @@ namespace TraffiLearn.Application.Auth.Commands.RegisterAdmin
                     roleName: newUser.Role.ToString());
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
+            };
 
-                transaction.Complete();
-            }
+            await _unitOfWork.ExecuteInTransactionAsync(
+                transactionAction,
+                cancellationToken: cancellationToken);
 
             _logger.LogInformation(
                 "Succesfully registered a new admin. Username: {username}",
