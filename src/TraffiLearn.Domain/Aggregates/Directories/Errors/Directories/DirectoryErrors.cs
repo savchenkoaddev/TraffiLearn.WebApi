@@ -1,4 +1,4 @@
-﻿﻿using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Domain.Aggregates.Directories.Errors.Directories
 {
@@ -8,6 +8,11 @@ namespace TraffiLearn.Domain.Aggregates.Directories.Errors.Directories
             Error.Validation(
                 code: "Directory.EmptySections",
                 description: "Sections cannot be empty.");
+
+        public static Error TooManySections(int allowedSectionCount) =>
+            Error.Validation(
+                code: "Directory.TooManySections",
+                description: $"Sections count cannot exceed {allowedSectionCount}.");
 
         public static readonly Error NotFound =
             Error.NotFound(
