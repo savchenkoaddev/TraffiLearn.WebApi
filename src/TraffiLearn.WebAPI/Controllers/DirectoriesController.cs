@@ -1,6 +1,7 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
+using TraffiLearn.Application.Directories.Commands.Delete;
 using TraffiLearn.Application.Directories.DTO;
 using TraffiLearn.Application.Directories.Queries.GetAll;
 using TraffiLearn.Application.Directories.Queries.GetById;
@@ -73,6 +74,42 @@ namespace TraffiLearn.WebAPI.Controllers
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
+
+
+        #endregion
+
+        #region Commands
+
+
+        /// <summary>
+        /// Deletes a directory using its ID.
+        /// </summary>
+        /// <remarks>
+        /// **The request must include the ID of the directory.**<br /><br /><br />
+        /// ***Route parameters:***<br /><br />
+        /// `DirectoryId` : Must be a valid GUID representing ID of the directory.<br /><br /><br />
+        /// **Authentication Required:**<br />
+        /// The user must be authenticated using a JWT token. Only users with the `Owner` or `Admin` role can perform this action.<br /><br />
+        /// </remarks>
+        /// <param name="directoryId">**The ID of the directory to be deleted.**</param>  
+        /// <response code="204">Successfully deleted the directory.</response>
+        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+        /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
+        /// <response code="404">***Not found.*** Directory with the provided id is not found.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        [HasPermission(Permission.ModifyData)]
+        [HttpDelete("{directoryId:guid}")]
+        [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteDirectory(
+            [FromRoute] Guid directoryId)
+        {
+            var commandResult = await _sender.Send(new DeleteDirectoryCommand(directoryId));
+
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+        }
+
 
         #endregion
     }

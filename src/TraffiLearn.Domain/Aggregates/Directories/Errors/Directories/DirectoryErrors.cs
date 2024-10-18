@@ -1,4 +1,4 @@
-﻿using TraffiLearn.Domain.Shared;
+﻿﻿using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Domain.Aggregates.Directories.Errors.Directories
 {
