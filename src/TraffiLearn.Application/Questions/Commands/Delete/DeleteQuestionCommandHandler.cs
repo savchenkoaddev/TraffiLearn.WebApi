@@ -37,15 +37,22 @@ namespace TraffiLearn.Application.Questions.Commands.Delete
                 return QuestionErrors.NotFound;
             }
 
-            await _questionRepository.DeleteAsync(question);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-            if (question.ImageUri is not null)
+            Func<Task> transactionAction = async () =>
             {
-                await _imageService.DeleteAsync(
-                    imageUri: question.ImageUri,
-                    cancellationToken);
-            }
+                await _questionRepository.DeleteAsync(question);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                if (question.ImageUri is not null)
+                {
+                    await _imageService.DeleteAsync(
+                        imageUri: question.ImageUri,
+                        cancellationToken);
+                }
+            };
+
+            await _unitOfWork.ExecuteInTransactionAsync(
+                transactionAction,
+                cancellationToken: cancellationToken);
 
             return Result.Success();
         }

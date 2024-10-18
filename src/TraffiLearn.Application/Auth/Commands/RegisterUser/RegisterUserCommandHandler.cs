@@ -68,6 +68,8 @@ namespace TraffiLearn.Application.Auth.Commands.RegisterUser
                     newUser,
                     cancellationToken);
 
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+
                 await _identityService.CreateAsync(
                     identityUser,
                     password: request.Password);
@@ -75,8 +77,6 @@ namespace TraffiLearn.Application.Auth.Commands.RegisterUser
                 await _identityService.AddToRoleAsync(
                     identityUser,
                     roleName: newUser.Role.ToString());
-
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
             };
 
             await _unitOfWork.ExecuteInTransactionAsync(

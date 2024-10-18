@@ -101,18 +101,29 @@ namespace TraffiLearn.Application.Routes.Commands.Update
             IFormFile image,
             CancellationToken cancellationToken)
         {
-            if (route.ImageUri is not null)
-            {
-                await _imageService.DeleteAsync(
-                    route.ImageUri,
-                    cancellationToken);
-            }
-
-            var imageUri = await _imageService.UploadImageAsync(
+            var newImageUri = await _imageService.UploadImageAsync(
                 image,
                 cancellationToken);
 
-            route.SetImageUri(imageUri);
+            if (route.ImageUri is not null)
+            {
+                try
+                {
+                    await _imageService.DeleteAsync(
+                        route.ImageUri,
+                        cancellationToken);
+                }
+                catch (Exception)
+                {
+                    await _imageService.DeleteAsync(
+                        newImageUri,
+                        cancellationToken);
+
+                    throw;
+                }
+            }
+
+            route.SetImageUri(newImageUri);
         }
 
         private async Task<Result> UpdateRouteServiceCenter(

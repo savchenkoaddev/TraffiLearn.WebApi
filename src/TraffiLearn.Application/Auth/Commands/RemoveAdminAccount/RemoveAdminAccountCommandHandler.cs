@@ -77,9 +77,9 @@ namespace TraffiLearn.Application.Auth.Commands.RemoveAdminAccount
             Func<Task> transactionAction = async () =>
             {
                 await _userRepository.DeleteAsync(admin);
-                await _identityService.DeleteAsync(identityAdmin);
-
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                await _identityService.DeleteAsync(identityAdmin);
             };
 
             await _unitOfWork.ExecuteInTransactionAsync(

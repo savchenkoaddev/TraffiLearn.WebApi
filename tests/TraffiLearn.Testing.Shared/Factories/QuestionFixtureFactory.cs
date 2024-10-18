@@ -7,14 +7,14 @@ namespace TraffiLearn.Testing.Shared.Factories
     public static class QuestionFixtureFactory
     {
         public static Question CreateQuestion(string content = "value",
-            string explanantion = "value",
+            string explanation = "value",
             int number = QuestionNumber.MinValue,
             string imageUri = "http://127.0.0.1:10000/devstoreaccount1")
         {
             return Question.Create(
                 new QuestionId(Guid.NewGuid()),
                 CreateContent(content),
-                CreateExplanation(explanantion),
+                CreateExplanation(explanation),
                 CreateNumber(number),
                 CreateAnswers(),
                 CreateImageUri(imageUri)).Value;

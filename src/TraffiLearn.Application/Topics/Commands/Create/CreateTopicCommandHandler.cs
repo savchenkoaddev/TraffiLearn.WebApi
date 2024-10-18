@@ -21,7 +21,7 @@ namespace TraffiLearn.Application.Topics.Commands.Create
             ITopicRepository topicRepository,
             IImageService imageService,
             Mapper<CreateTopicCommand, Result<Topic>> topicMapper,
-            ILogger<CreateTopicCommandHandler> logger
+            ILogger<CreateTopicCommandHandler> logger,
             IUnitOfWork unitOfWork)
         {
             _topicRepository = topicRepository;
@@ -44,18 +44,18 @@ namespace TraffiLearn.Application.Topics.Commands.Create
 
             var topic = mappingResult.Value;
 
-            ImageUri? newImageUri = default;
+            ImageUri? imageUri = null;
 
             if (request.Image is not null)
             {
-                newImageUri = await _imageService.UploadImageAsync(
+                imageUri = await _imageService.UploadImageAsync(
                     request.Image, cancellationToken);
-
-                topic.SetImageUri(newImageUri);
             }
 
             try
             {
+                topic.SetImageUri(imageUri);
+
                 await _topicRepository.InsertAsync(
                     topic,
                     cancellationToken);
@@ -64,15 +64,15 @@ namespace TraffiLearn.Application.Topics.Commands.Create
             }
             catch (Exception)
             {
-                if (newImageUri is not null)
+                if (imageUri is not null)
                 {
                     await _imageService.DeleteAsync(
-                        imageUri: newImageUri,
+                        imageUri: imageUri,
                         cancellationToken);
 
                     _logger.LogInformation(
                         "Succesfully deleted the uploaded image during the error. Image uri: {imageUri}",
-                        newImageUri.Value);
+                        imageUri.Value);
                 }
 
                 throw;

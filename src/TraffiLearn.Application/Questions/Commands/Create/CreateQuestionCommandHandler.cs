@@ -60,19 +60,19 @@ namespace TraffiLearn.Application.Questions.Commands.Create
                 return Result.Failure<Guid>(addResult.Error);
             }
 
-            ImageUri? newImageUri = default;
+            ImageUri? newImageUri = null;
 
             if (ImageIsProvidedIn(request))
             {
                 newImageUri = await _imageService.UploadImageAsync(
                     image: request.Image,
                     cancellationToken);
-                
-                question.SetImageUri(newImageUri);
             }
 
             try
             {
+                question.SetImageUri(newImageUri);
+
                 await _questionRepository.InsertAsync(
                     question,
                     cancellationToken);

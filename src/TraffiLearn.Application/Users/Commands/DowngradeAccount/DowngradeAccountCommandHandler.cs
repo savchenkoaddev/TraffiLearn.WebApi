@@ -98,7 +98,6 @@ namespace TraffiLearn.Application.Users.Commands.DowngradeAccount
                 await _identityService.AddToRoleAsync(
                     identityUser,
                     newRole);
-
             };
 
             await _unitOfWork.ExecuteInTransactionAsync(
