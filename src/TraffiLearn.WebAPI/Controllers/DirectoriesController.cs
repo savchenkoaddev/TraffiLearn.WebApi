@@ -128,7 +128,8 @@ namespace TraffiLearn.WebAPI.Controllers
         /// Updates an existing directory.
         /// </summary>
         /// <remarks>
-        /// ***Body Parameters:***<br /><br />
+        /// ***Body parameters:***<br /><br />
+        /// `DirectoryId`: ID of the directory to update. Must be a valid GUID. <br /><br />
         /// `Name`: Name of the directory to create. Must not be empty or whitespace. Maximum length: 200. <br /><br />
         /// `Sections`: List of sections to create in the directory. Must not be empty. Must contain at least one section. Maximum count: 100. <br /><br />
         /// **Authentication Required:**<br />
