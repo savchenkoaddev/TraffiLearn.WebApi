@@ -67,23 +67,23 @@ namespace TraffiLearn.Application.Auth.Commands.ConfirmEmail
 
             try
             {
-                var identityResult = await _identityService.ConfirmEmailAsync(
-                identityUser,
-                token: request.Token);
-
-                if (identityResult.IsFailure)
-                {
-                    return identityResult.Error;
-                }
-
                 var result = user.ConfirmEmail();
 
                 if (result.IsFailure)
                 {
-                    throw new InvalidOperationException($"Failed to confirm email of a user. Error: {result.Error.Description}");
+                    return result.Error;
                 }
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                var identityResult = await _identityService.ConfirmEmailAsync(
+                    identityUser,
+                    token: request.Token);
+
+                if (identityResult.IsFailure)
+                {
+                    throw new InvalidOperationException($"Failed to confirm email of an identity user, whereas succeeded to confirm domain user. Error: {result.Error.Description}");
+                }
 
                 await transaction.CommitAsync();
             }
