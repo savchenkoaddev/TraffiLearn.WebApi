@@ -92,12 +92,13 @@ namespace TraffiLearn.Application.Topics.Commands.Update
 
                 topic.SetImageUri(newImageUri);
             }
-            else if (request.RemoveOldImageIfNewMissing && topic.ImageUri is not null)
+            else if (request.RemoveOldImageIfNewMissing 
+                && topic.ImageUri is not null)
             {
-                topic.SetImageUri(null);
-
                 await _imageService.DeleteAsync(
                     topic.ImageUri, cancellationToken);
+
+                topic.SetImageUri(null);
             }
         }
     }

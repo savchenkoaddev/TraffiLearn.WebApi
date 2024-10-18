@@ -159,11 +159,11 @@ namespace TraffiLearn.Application.Questions.Commands.Update
             {
                 if (question.ImageUri is not null && removeOldImageIfNewImageMissing)
                 {
-                    question.SetImageUri(null);
-
                     await _imageService.DeleteAsync(
                         question.ImageUri,
                         cancellationToken);
+
+                    question.SetImageUri(null);
                 }
             }
             else

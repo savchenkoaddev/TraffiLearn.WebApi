@@ -943,8 +943,9 @@ namespace TraffiLearn.IntegrationTests.Questions.Commands.UpdateQuestion
                 .CreateValidQuestionWithTopicAsAuthorizedAsync(
                     image: ImageFixtureFactory.CreateImage());
 
-            var questionImageUriBefore = (await ApiQuestionClient.GetQuestionByIdAsAuthorizedAsync(
-                questionId)).ImageUri;
+            var questionImageUriBefore = (
+                await ApiQuestionClient.GetQuestionByIdAsAuthorizedAsync(
+                    questionId)).ImageUri;
 
             var topicId = await ApiTopicClient.CreateValidTopicAsAuthorizedAsync();
 
