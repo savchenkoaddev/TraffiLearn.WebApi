@@ -8,5 +8,10 @@ namespace TraffiLearn.Domain.Aggregates.Directories.Errors.Directories
             Error.Validation(
                 code: "Directory.EmptySections",
                 description: "Sections cannot be empty.");
+
+        public static readonly Error TooManySections(int allowedSectionCount) =>
+            Error.Validation(
+                code: "Directory.TooManySections",
+                description: $"Sections count cannot exceed {allowedSectionCount}.");
     }
 }

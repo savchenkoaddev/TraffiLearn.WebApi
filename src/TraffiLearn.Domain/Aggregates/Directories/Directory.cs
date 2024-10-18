@@ -8,6 +8,8 @@ namespace TraffiLearn.Domain.Aggregates.Directories
 {
     public sealed class Directory : AggregateRoot<DirectoryId>
     {
+        public const int MaxSectionsCount = 100;
+
         private HashSet<DirectorySection> _sections = [];
         private DirectoryName _name;
 
@@ -51,6 +53,11 @@ namespace TraffiLearn.Domain.Aggregates.Directories
             if (sections.Count == 0)
             {
                 return Result.Failure<Directory>(DirectoryErrors.EmptySections);
+            }
+
+            if (sections.Count > MaxSectionsCount)
+            {
+                return Result.Failure<Directory>(DirectoryErrors.TooManySections(MaxSectionsCount));
             }
 
             return new Directory(id, name, sections);
