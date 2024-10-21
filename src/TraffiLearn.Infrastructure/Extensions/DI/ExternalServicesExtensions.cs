@@ -2,10 +2,12 @@
 using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.DependencyInjection;
 using TraffiLearn.Application.Abstractions.AI;
+using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Abstractions.Storage;
 using TraffiLearn.Infrastructure.Extensions.DI.Shared;
 using TraffiLearn.Infrastructure.External.Blobs;
 using TraffiLearn.Infrastructure.External.Blobs.Options;
+using TraffiLearn.Infrastructure.External.GoogleAuth;
 using TraffiLearn.Infrastructure.External.GroqAI;
 
 namespace TraffiLearn.Infrastructure.Extensions.DI
@@ -18,8 +20,8 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
             services.AddBlobServiceClient();
 
             services.AddSingleton<IBlobService, AzureBlobService>();
-
             services.AddScoped<IAIService, GroqApiService>();
+            services.AddScoped<IGoogleAuthService, GoogleAuthService>();
 
             return services;
         }

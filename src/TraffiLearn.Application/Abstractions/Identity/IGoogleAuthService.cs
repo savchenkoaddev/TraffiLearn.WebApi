@@ -2,6 +2,6 @@
 {
     public interface IGoogleAuthService
     {
-        Task<bool> IsValidIdToken(string token);
+        Task<string> ValidateIdTokenAndGetEmailAsync(string token);
     }
 }
