@@ -7,6 +7,7 @@ using TraffiLearn.Infrastructure.External.Blobs.Options;
 using TraffiLearn.Infrastructure.External.GroqAI.Options;
 using TraffiLearn.Infrastructure.Persistence.Options;
 using TraffiLearn.Infrastructure.Services.Emails.Options;
+using TraffiLearn.Infrastructure.Services.GoogleAuth.Options;
 
 namespace TraffiLearn.Infrastructure.Extensions.DI
 {
@@ -31,6 +32,8 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
                 SmtpClientSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<EmailConfirmationLinkGeneratorSettings>(
                 EmailConfirmationLinkGeneratorSettings.SectionName);
+            services.ConfigureValidatableOnStartOptions<GoogleAuthSettings>(
+                GoogleAuthSettings.SectionName);
 
             return services;
         }

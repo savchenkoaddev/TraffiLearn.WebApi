@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Identity;
-using TraffiLearn.Application.Abstractions.Services;
+using TraffiLearn.Application.Abstractions.Security;
 using TraffiLearn.Application.Users.Identity;
 using TraffiLearn.Domain.Aggregates.Users.Errors;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;

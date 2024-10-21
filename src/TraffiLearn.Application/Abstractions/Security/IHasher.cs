@@ -1,4 +1,4 @@
-﻿namespace TraffiLearn.Application.Abstractions.Services
+﻿namespace TraffiLearn.Application.Abstractions.Security
 {
     public interface IHasher
     {
