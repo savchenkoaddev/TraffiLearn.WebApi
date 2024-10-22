@@ -1,7 +1,10 @@
-﻿namespace TraffiLearn.Application.Abstractions.Identity
+﻿using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
+using TraffiLearn.Domain.Shared;
+
+namespace TraffiLearn.Application.Abstractions.Identity
 {
     public interface IGoogleAuthService
     {
-        Task<string> ValidateIdTokenAndGetEmailAsync(string token);
+        Task<Result<Email>> ValidateIdTokenAsync(string token);
     }
 }

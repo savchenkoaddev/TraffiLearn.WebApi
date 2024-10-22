@@ -19,7 +19,7 @@ namespace TraffiLearn.Application.Abstractions.Identity
 
         Task<Result> LoginAsync(TIdentityUser identityUser, string password);
 
-        Task<Result> PopulateRefreshTokenAsync(TIdentityUser identityUser, string refreshToken);
+        Task PopulateRefreshTokenAsync(TIdentityUser identityUser, string refreshToken);
 
         Result ValidateRefreshToken(TIdentityUser user);
 

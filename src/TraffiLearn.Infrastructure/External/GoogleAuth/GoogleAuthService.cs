@@ -1,9 +1,13 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Google.Apis.Auth;
+using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Identity;
-using TraffiLearn.Infrastructure.Services.GoogleAuth.Options;
+using TraffiLearn.Domain.Aggregates.Users.Errors;
+using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
+using TraffiLearn.Domain.Shared;
+using TraffiLearn.Infrastructure.External.GoogleAuth.Options;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
 
-namespace TraffiLearn.Infrastructure.Services.GoogleAuth
+namespace TraffiLearn.Infrastructure.External.GoogleAuth
 {
     internal sealed class GoogleAuthService : IGoogleAuthService
     {
@@ -14,15 +18,29 @@ namespace TraffiLearn.Infrastructure.Services.GoogleAuth
             _settings = settings.Value;
         }
 
-        public async Task<string> ValidateIdTokenAndGetEmailAsync(string token)
+        public async Task<Result<Email>> ValidateIdTokenAsync(string token)
         {
             var validationSettings = GetValidationSettings();
 
-            var payload = await ValidateAsync(
-                jwt: token,
-                validationSettings);
+            try
+            {
+                var payload = await ValidateAsync(
+                    jwt: token,
+                    validationSettings);
 
-            return payload.Email;
+                var emailResult = Email.Create(payload.Email);
+
+                if (emailResult.IsFailure)
+                {
+                    throw new InvalidOperationException("Google API responded with an invalid email.");
+                }
+
+                return emailResult.Value;
+            }
+            catch (InvalidJwtException)
+            {
+                return Result.Failure<Email>(UserErrors.InvalidGoogleIdToken);
+            }
         }
 
         private ValidationSettings GetValidationSettings()

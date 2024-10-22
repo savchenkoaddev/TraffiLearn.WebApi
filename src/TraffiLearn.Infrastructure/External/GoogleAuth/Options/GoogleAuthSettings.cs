@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TraffiLearn.Infrastructure.Services.GoogleAuth.Options
+namespace TraffiLearn.Infrastructure.External.GoogleAuth.Options
 {
     public sealed class GoogleAuthSettings
     {

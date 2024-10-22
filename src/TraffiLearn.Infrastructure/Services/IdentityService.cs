@@ -140,7 +140,7 @@ namespace TraffiLearn.Infrastructure.Services
             return Result.Success();
         }
 
-        public async Task<Result> PopulateRefreshTokenAsync(ApplicationUser user, string refreshToken)
+        public async Task PopulateRefreshTokenAsync(ApplicationUser user, string refreshToken)
         {
             var refreshTokenHash = _hasher.Hash(refreshToken);
 
@@ -150,8 +150,6 @@ namespace TraffiLearn.Infrastructure.Services
                 _loginSettings.RefreshTokenExpiryInDays);
 
             await _userManager.UpdateAsync(user);
-
-            return Result.Success();
         }
 
         public Result ValidateRefreshToken(ApplicationUser user)

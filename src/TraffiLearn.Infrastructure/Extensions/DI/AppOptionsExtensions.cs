@@ -4,10 +4,10 @@ using TraffiLearn.Application.Questions.Options;
 using TraffiLearn.Infrastructure.Authentication.Options;
 using TraffiLearn.Infrastructure.Extensions.DI.Shared;
 using TraffiLearn.Infrastructure.External.Blobs.Options;
+using TraffiLearn.Infrastructure.External.GoogleAuth.Options;
 using TraffiLearn.Infrastructure.External.GroqAI.Options;
 using TraffiLearn.Infrastructure.Persistence.Options;
 using TraffiLearn.Infrastructure.Services.Emails.Options;
-using TraffiLearn.Infrastructure.Services.GoogleAuth.Options;
 
 namespace TraffiLearn.Infrastructure.Extensions.DI
 {
