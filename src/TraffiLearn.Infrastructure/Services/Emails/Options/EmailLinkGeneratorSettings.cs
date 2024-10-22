@@ -2,13 +2,17 @@
 
 namespace TraffiLearn.Infrastructure.Services.Emails.Options
 {
-    public sealed class EmailConfirmationLinkGeneratorSettings
+    public sealed class EmailLinkGeneratorSettings
     {
-        public const string SectionName = nameof(EmailConfirmationLinkGeneratorSettings);
+        public const string SectionName = nameof(EmailLinkGeneratorSettings);
 
         [Required]
         [StringLength(200)]
         public string? BaseConfirmationEndpointUri { get; set; }
+
+        [Required]
+        [StringLength(200)]
+        public string? BaseConfirmChangeEmailEndpointUri { get; set; }
 
         [Required]
         [StringLength(20)]

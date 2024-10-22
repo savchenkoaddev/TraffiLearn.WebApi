@@ -6,29 +6,30 @@ namespace TraffiLearn.Application.Services
     internal sealed class EmailService : IEmailService
     {
         private readonly IEmailSender _emailSender;
-        private readonly IConfirmationTokenGenerator _confirmationTokenGenerator;
-        private readonly IEmailConfirmationLinkGenerator _confirmationLinkGenerator;
+        private readonly IEmailTokenGenerator _emailTokenGenerator;
+        private readonly IEmailLinkGenerator _confirmationLinkGenerator;
 
         public EmailService(
             IEmailSender emailSender,
-            IConfirmationTokenGenerator confirmationTokenGenerator,
-            IEmailConfirmationLinkGenerator confirmationLinkGenerator)
+            IEmailTokenGenerator emailTokenGenerator,
+            IEmailLinkGenerator confirmationLinkGenerator)
         {
             _emailSender = emailSender;
-            _confirmationTokenGenerator = confirmationTokenGenerator;
+            _emailTokenGenerator = emailTokenGenerator;
             _confirmationLinkGenerator = confirmationLinkGenerator;
         }
 
-        public async Task SendConfirmationEmail(
+        public async Task SendConfirmationEmailAsync(
             string recipientEmail,
             string userId,
             ApplicationUser applicationUser)
         {
-            var token = await _confirmationTokenGenerator.Generate(applicationUser);
+            var token = await _emailTokenGenerator
+                .GenerateConfirmationTokenAsync(applicationUser);
 
             var escapedToken = Uri.EscapeDataString(token);
 
-            var link = _confirmationLinkGenerator.Generate(userId, escapedToken);
+            var link = _confirmationLinkGenerator.GenerateConfirmationLink(userId, escapedToken);
 
             string subject = CreateEmailConfirmationSubject();
             string htmlBody = CreateEmailConfirmationBody(link);
@@ -37,6 +38,18 @@ namespace TraffiLearn.Application.Services
                 recipientEmail,
                 subject,
                 htmlBody);
+        }
+
+        public async Task SendChangeEmailMessageAsync(
+            string newEmail, 
+            ApplicationUser identityUser)
+        {
+            var token = await _emailTokenGenerator
+                .GenerateConfirmationTokenAsync(identityUser);
+
+            var escapedToken = Uri.EscapeDataString(token);
+
+
         }
 
         private static string CreateEmailConfirmationSubject() =>

@@ -30,8 +30,8 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
                 GroqApiSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<SmtpClientSettings>(
                 SmtpClientSettings.SectionName);
-            services.ConfigureValidatableOnStartOptions<EmailConfirmationLinkGeneratorSettings>(
-                EmailConfirmationLinkGeneratorSettings.SectionName);
+            services.ConfigureValidatableOnStartOptions<EmailLinkGeneratorSettings>(
+                EmailLinkGeneratorSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<GoogleAuthSettings>(
                 GoogleAuthSettings.SectionName);
 

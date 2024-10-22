@@ -4,9 +4,13 @@ namespace TraffiLearn.Application.Abstractions.Emails
 {
     public interface IEmailService
     {
-        Task SendConfirmationEmail(
+        Task SendConfirmationEmailAsync(
             string recipientEmail,
             string userId,
-            ApplicationUser applicationUser);
+            ApplicationUser identityUser);
+
+        Task SendChangeEmailMessageAsync(
+            string newEmail,
+            ApplicationUser identityUser);
     }
 }
