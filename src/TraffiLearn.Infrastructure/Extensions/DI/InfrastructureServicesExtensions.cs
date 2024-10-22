@@ -4,7 +4,7 @@ using System.Net;
 using System.Net.Mail;
 using TraffiLearn.Application.Abstractions.Emails;
 using TraffiLearn.Application.Abstractions.Identity;
-using TraffiLearn.Application.Abstractions.Services;
+using TraffiLearn.Application.Abstractions.Security;
 using TraffiLearn.Application.Users.Identity;
 using TraffiLearn.Infrastructure.Extensions.DI.Shared;
 using TraffiLearn.Infrastructure.Services;

@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using TraffiLearn.Application.Abstractions.Services;
+using TraffiLearn.Application.Abstractions.Security;
 
 namespace TraffiLearn.Infrastructure.Services
 {

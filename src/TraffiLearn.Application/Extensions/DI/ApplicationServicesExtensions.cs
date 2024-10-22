@@ -14,6 +14,7 @@ namespace TraffiLearn.Application.Extensions.DI
             services.AddScoped<IAuthenticatedUserService, AuthenticatedUserService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IImageService, ImageService>();
+            services.AddScoped<IUsernameGenerator, UsernameGenerator>();
 
             return services;
         }

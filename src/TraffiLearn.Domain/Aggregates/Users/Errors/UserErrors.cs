@@ -158,5 +158,15 @@ namespace TraffiLearn.Domain.Aggregates.Users.Errors
             Error.Validation(
                 code: "User.EmailConfirmationFailure",
                 description: "Failed to confirm the email. The reason may be the token is invalid or expired.");
+
+        public static readonly Error InvalidGoogleIdToken =
+            Error.Validation(
+                code: "User.InvalidGoogleIdToken",
+                description: "The provided ID token is invalid.");
+
+        public static readonly Error FirstTimeUserSignInPasswordEmpty =
+            Error.Validation(
+                code: "User.FirstTimeUserSignInPasswordEmpty",
+                description: "The first time sign in password of the new user is not provided.");
     }
 }

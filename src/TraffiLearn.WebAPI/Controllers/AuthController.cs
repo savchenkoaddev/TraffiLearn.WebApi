@@ -7,6 +7,7 @@ using TraffiLearn.Application.Auth.Commands.RefreshToken;
 using TraffiLearn.Application.Auth.Commands.RegisterAdmin;
 using TraffiLearn.Application.Auth.Commands.RegisterUser;
 using TraffiLearn.Application.Auth.Commands.RemoveAdminAccount;
+using TraffiLearn.Application.Auth.Commands.SignInWithGoogle;
 using TraffiLearn.Application.Auth.DTO;
 using TraffiLearn.Domain.Aggregates.Directories;
 using TraffiLearn.Infrastructure.Authentication;
@@ -69,11 +70,50 @@ namespace TraffiLearn.WebAPI.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Login(
             [FromBody] LoginCommand command)
+        {
+            var commandResult = await _sender.Send(command);
+
+            return commandResult.IsSuccess ? Ok(commandResult.Value) : commandResult.ToProblemDetails();
+        }
+
+        /// <summary>
+        /// Authenticates a user through Google Auth.
+        /// </summary>
+        /// <remarks>
+        /// **The request must include a Google ID token and a first time sign in password if the user haven't been registered yet.**<br /><br /><br />
+        /// ***Body parameters:***<br /><br />
+        /// `GoogleIdToken` : Must be a valid Google ID token. This token is received, when a user authenticates through the Google page.<br /><br />
+        /// `FirstTimeSignInPassword` : Must be between 8 and 30 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character. If the user haven't been registered yet, this is is required, otherwise you get 400 Bad Request error.<br /><br /><br />
+        /// The request body must be in **JSON** format.<br /><br />
+        /// **Example response (200 OK)**:
+        /// ```json
+        /// {
+        ///     "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+        ///     "refreshToken": "s1x/m6Xc3H+bWdBVYViBKvNverG2DMtNgt7Ac0nl/fEeTcEfwT5uzCIzaME6H4cy2/r66+Lm7E5Wcyig+Tv8xA=="
+        /// }
+        /// ```
+        /// 
+        /// **Access token** is used to authenticate the user for a specific period of time. **Access token** expires in a short time. For example in **20 minutes**. <br /><br />
+        /// **Refresh token** is used to obtain a new access token when the current one expires. **Refresh token** expires in a long time. For example in **7 days**. <br /><br />
+        /// Every time the user logs in, **refresh token expiration time** is extended (e.g. for 7 days) from current time. <br /><br />
+        /// </remarks>
+        /// <param name="command">**The sign in with google command containing email and password.**</param>
+        /// <response code="200">Successfully authenticated. Returns an access and refresh token.</response>
+        /// <response code="400">***Bad request.*** Either the user is not registered and the first time login password is not provided, or the password is in an incorrect format.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        [HttpPost("login/with-google")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
+        [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> SignInWithGoogle(
+            [FromBody] SignInWithGoogleCommand command)
         {
             var commandResult = await _sender.Send(command);
 

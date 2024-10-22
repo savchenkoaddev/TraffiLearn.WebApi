@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Identity;
-using TraffiLearn.Application.Abstractions.Services;
+using TraffiLearn.Application.Abstractions.Security;
 using TraffiLearn.Application.Users.Identity;
 using TraffiLearn.Domain.Aggregates.Users.Errors;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
@@ -140,7 +140,7 @@ namespace TraffiLearn.Infrastructure.Services
             return Result.Success();
         }
 
-        public async Task<Result> PopulateRefreshTokenAsync(ApplicationUser user, string refreshToken)
+        public async Task PopulateRefreshTokenAsync(ApplicationUser user, string refreshToken)
         {
             var refreshTokenHash = _hasher.Hash(refreshToken);
 
@@ -150,8 +150,6 @@ namespace TraffiLearn.Infrastructure.Services
                 _loginSettings.RefreshTokenExpiryInDays);
 
             await _userManager.UpdateAsync(user);
-
-            return Result.Success();
         }
 
         public Result ValidateRefreshToken(ApplicationUser user)
