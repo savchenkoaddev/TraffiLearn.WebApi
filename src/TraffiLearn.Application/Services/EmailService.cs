@@ -8,15 +8,18 @@ namespace TraffiLearn.Application.Services
         private readonly IEmailSender _emailSender;
         private readonly IEmailTokenGenerator _emailTokenGenerator;
         private readonly IEmailLinkGenerator _emailLinkGenerator;
+        private readonly IEmailLetterCreator _emailLetterCreator;
 
         public EmailService(
             IEmailSender emailSender,
             IEmailTokenGenerator emailTokenGenerator,
-            IEmailLinkGenerator emailLinkGenerator)
+            IEmailLinkGenerator emailLinkGenerator,
+            IEmailLetterCreator emailLetterCreator)
         {
             _emailSender = emailSender;
             _emailTokenGenerator = emailTokenGenerator;
             _emailLinkGenerator = emailLinkGenerator;
+            _emailLetterCreator = emailLetterCreator;
         }
 
         public async Task SendConfirmationEmailAsync(
@@ -31,17 +34,18 @@ namespace TraffiLearn.Application.Services
 
             var link = _emailLinkGenerator.GenerateConfirmationLink(userId, escapedToken);
 
-            string subject = CreateEmailConfirmationSubject();
-            string htmlBody = CreateEmailConfirmationBody(link);
+            Letter letter = _emailLetterCreator
+                .CreateEmailConfirmationLetter(link);
 
             await _emailSender.SendEmailAsync(
                 recipientEmail,
-                subject,
-                htmlBody);
+                letter.Subject,
+                letter.HtmlBody);
         }
 
         public async Task SendChangeEmailMessageAsync(
             string newEmail, 
+            string userId,
             ApplicationUser identityUser)
         {
             var token = await _emailTokenGenerator
@@ -49,24 +53,17 @@ namespace TraffiLearn.Application.Services
 
             var escapedToken = Uri.EscapeDataString(token);
 
+            var link = _emailLinkGenerator
+                .GenerateConfirmChangeEmailLink(
+                    userId, newEmail, token);
 
-        }
+            Letter letter = _emailLetterCreator
+                .CreateChangeEmailLetter(link);
 
-        private static string CreateEmailConfirmationSubject() =>
-            "Welcome to TraffiLearn! Please Confirm Your Email Address";
-
-        private static string CreateEmailConfirmationBody(string confirmationLink)
-        {
-            return $@"
-                <html>
-                <body style='font-family: Arial, sans-serif; line-height: 1.5;'>
-                    <h1 style='color: #4CAF50;'>Welcome to TraffiLearn!</h1>
-                    <p>Thank you for registering with us! To activate your account and start using our services, please confirm your email address by clicking the link below:</p>
-                    <a href=""{confirmationLink}"" style='background-color: #4CAF50; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;'>Confirm Your Registration</a>
-                    <p>If you did not create an account, please ignore this email.</p>
-                    <p>Best regards,<br>The TraffiLearn Team</p>
-                </body>
-                </html>";
+            await _emailSender.SendEmailAsync(
+                recipientEmail: newEmail,
+                subject: letter.Subject,
+                htmlBody: letter.HtmlBody);
         }
     }
 }
