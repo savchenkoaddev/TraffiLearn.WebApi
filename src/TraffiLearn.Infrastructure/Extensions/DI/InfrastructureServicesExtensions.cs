@@ -26,6 +26,7 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
             services.AddScoped<IEmailSender, EmailSender>();
             services.AddScoped<IEmailLinkGenerator, EmailLinkGenerator>();
             services.AddScoped<IEmailTokenGenerator, EmailTokenGenerator>();
+            services.AddScoped<IEmailLetterCreator, EmailLetterCreator>();
 
             services.AddFluentEmailSender();
 

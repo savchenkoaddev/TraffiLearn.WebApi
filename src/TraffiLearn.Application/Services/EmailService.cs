@@ -7,16 +7,16 @@ namespace TraffiLearn.Application.Services
     {
         private readonly IEmailSender _emailSender;
         private readonly IEmailTokenGenerator _emailTokenGenerator;
-        private readonly IEmailLinkGenerator _confirmationLinkGenerator;
+        private readonly IEmailLinkGenerator _emailLinkGenerator;
 
         public EmailService(
             IEmailSender emailSender,
             IEmailTokenGenerator emailTokenGenerator,
-            IEmailLinkGenerator confirmationLinkGenerator)
+            IEmailLinkGenerator emailLinkGenerator)
         {
             _emailSender = emailSender;
             _emailTokenGenerator = emailTokenGenerator;
-            _confirmationLinkGenerator = confirmationLinkGenerator;
+            _emailLinkGenerator = emailLinkGenerator;
         }
 
         public async Task SendConfirmationEmailAsync(
@@ -29,7 +29,7 @@ namespace TraffiLearn.Application.Services
 
             var escapedToken = Uri.EscapeDataString(token);
 
-            var link = _confirmationLinkGenerator.GenerateConfirmationLink(userId, escapedToken);
+            var link = _emailLinkGenerator.GenerateConfirmationLink(userId, escapedToken);
 
             string subject = CreateEmailConfirmationSubject();
             string htmlBody = CreateEmailConfirmationBody(link);

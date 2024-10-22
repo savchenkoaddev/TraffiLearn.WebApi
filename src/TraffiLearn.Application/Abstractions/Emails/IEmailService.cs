@@ -11,6 +11,7 @@ namespace TraffiLearn.Application.Abstractions.Emails
 
         Task SendChangeEmailMessageAsync(
             string newEmail,
+            string userId,
             ApplicationUser identityUser);
     }
 }
