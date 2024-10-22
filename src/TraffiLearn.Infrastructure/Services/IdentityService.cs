@@ -176,5 +176,23 @@ namespace TraffiLearn.Infrastructure.Services
 
             return Result.Success(user);
         }
+
+        public async Task<Result> ChangeEmailAsync(
+            ApplicationUser identityUser, 
+            string newEmail, 
+            string token)
+        {
+            var identityResult = await _userManager.ChangeEmailAsync(
+                user: identityUser,
+                newEmail,
+                token);
+
+            if (!identityResult.Succeeded)
+            {
+                return UserErrors.InvalidChangeEmailToken;
+            }
+
+            return Result.Success();
+        }
     }
 }

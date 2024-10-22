@@ -159,6 +159,11 @@ namespace TraffiLearn.Domain.Aggregates.Users.Errors
                 code: "User.EmailConfirmationFailure",
                 description: "Failed to confirm the email. The reason may be the token is invalid or expired.");
 
+        public static readonly Error InvalidChangeEmailToken =
+           Error.Validation(
+               code: "User.InvalidChangeEmailToken",
+               description: "Failed to change the email, because the token is invalid.");
+
         public static readonly Error InvalidGoogleIdToken =
             Error.Validation(
                 code: "User.InvalidGoogleIdToken",
