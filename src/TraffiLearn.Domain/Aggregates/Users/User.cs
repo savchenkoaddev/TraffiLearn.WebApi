@@ -283,6 +283,15 @@ namespace TraffiLearn.Domain.Aggregates.Users
             return Result.Success();
         }
 
+        public Result ChangeEmail(Email email)
+        {
+            ArgumentNullException.ThrowIfNull(email);
+
+            Email = email;
+
+            return Result.Success();
+        }
+
         public static Result<User> Create(
             UserId userId,
             Email email,
