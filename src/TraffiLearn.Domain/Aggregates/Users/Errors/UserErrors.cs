@@ -14,6 +14,11 @@ namespace TraffiLearn.Domain.Aggregates.Users.Errors
                 code: "User.AlreadyRegistered",
                 description: "The same user has already been registered. Use different email or username.");
 
+        public static readonly Error EmailAlreadyTaken =
+            Error.Validation(
+                code: "User.EmailAlreadyTaken",
+                description: "The same email has already been taken. Please, use a different one.");
+
         public static readonly Error NotAllowedToPerformAction =
             Error.Unauthorized(
                code: "User.NotAllowedToPerformAction",

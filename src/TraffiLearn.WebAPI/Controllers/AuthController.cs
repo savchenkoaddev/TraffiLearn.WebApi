@@ -7,6 +7,7 @@ using TraffiLearn.Application.Auth.Commands.RefreshToken;
 using TraffiLearn.Application.Auth.Commands.RegisterAdmin;
 using TraffiLearn.Application.Auth.Commands.RegisterUser;
 using TraffiLearn.Application.Auth.Commands.RemoveAdminAccount;
+using TraffiLearn.Application.Auth.Commands.SendChangeEmailMessage;
 using TraffiLearn.Application.Auth.Commands.SignInWithGoogle;
 using TraffiLearn.Application.Auth.DTO;
 using TraffiLearn.Domain.Aggregates.Directories;
@@ -184,6 +185,34 @@ namespace TraffiLearn.WebAPI.Controllers
             var commandResult = await _sender.Send(new ConfirmEmailCommand(
                 UserId: userId,
                 Token: token));
+
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+        }
+
+        /// <summary>
+        /// Sends a change email message to a user's emailbox
+        /// </summary>
+        /// <remarks>
+        /// **The request must include a new valid email.**<br /><br /><br />
+        /// ***Body parameters:***<br /><br />
+        /// `NewEmail` : Must be in a valid email format (e.g., example@example.com). Must be unique.<br /><br /><br />
+        /// **Authentication Required.**<br /><br />
+        /// The user must be authenticated using a JWT token. 
+        /// </remarks>
+        /// <param name="command">**The sent change email message command.**</param>
+        /// <response code="204">Successfully sent the change email message.</response>
+        /// <response code="400">***Bad request.*** The provided email is invalid, missing or already taken.</response>
+        /// <response code="401">***Unauthorized***. The user is not authenticated.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        [HasPermission(Permission.AccessData)]
+        [HttpPost("change-email")]
+        [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> SendChangeEmailMessage(
+            [FromBody] SendChangeEmailMessageCommand command)
+        {
+            var commandResult = await _sender.Send(command);
 
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }

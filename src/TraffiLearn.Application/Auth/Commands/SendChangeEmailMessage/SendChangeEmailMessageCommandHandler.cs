@@ -4,6 +4,7 @@ using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Exceptions;
 using TraffiLearn.Application.Users.Identity;
 using TraffiLearn.Domain.Aggregates.Users;
+using TraffiLearn.Domain.Aggregates.Users.Errors;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
@@ -36,6 +37,21 @@ namespace TraffiLearn.Application.Auth.Commands.SendChangeEmailMessage
             var callerUserId = _userContextService.GetAuthenticatedUserId();
 
             var userId = new UserId(callerUserId);
+
+            var newEmailResult = Email.Create(request.NewEmail);
+
+            if (newEmailResult.IsFailure)
+            {
+                return newEmailResult.Error;
+            }
+
+            var newEmailIsTaken = await _userRepository.GetByEmailAsync(
+                newEmailResult.Value, cancellationToken) is not null;
+
+            if (newEmailIsTaken)
+            {
+                return UserErrors.EmailAlreadyTaken;
+            }
 
             var user = await _userRepository.GetByIdAsync(
                 userId, cancellationToken);

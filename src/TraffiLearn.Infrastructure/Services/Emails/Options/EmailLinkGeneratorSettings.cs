@@ -21,5 +21,9 @@ namespace TraffiLearn.Infrastructure.Services.Emails.Options
         [Required]
         [StringLength(20)]
         public string? TokenParameterName { get; set; }
+
+        [Required]
+        [StringLength(20)]
+        public string? NewEmailParameterName { get; set; }
     }
 }
