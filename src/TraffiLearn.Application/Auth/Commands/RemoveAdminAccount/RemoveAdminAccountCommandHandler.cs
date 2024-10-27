@@ -74,17 +74,11 @@ namespace TraffiLearn.Application.Auth.Commands.RemoveAdminAccount
                 throw new DataInconsistencyException();
             }
 
-            Func<Task> transactionAction = async () =>
-            {
-                await _userRepository.DeleteAsync(admin);
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _userRepository.DeleteAsync(admin);
 
-                await _identityService.DeleteAsync(identityAdmin);
-            };
+            await _identityService.DeleteAsync(identityAdmin);
 
-            await _unitOfWork.ExecuteInTransactionAsync(
-                transactionAction,
-                cancellationToken: cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation(
                 "Succesfully removed the admin account. Username: {username}",

@@ -62,26 +62,28 @@ namespace TraffiLearn.Application.Auth.Commands.RegisterUser
 
             var identityUser = _userMapper.Map(newUser);
 
-            Func<Task> transactionAction = async () =>
+            await _userRepository.InsertAsync(
+                newUser,
+                cancellationToken);
+
+            await _identityService.CreateAsync(
+                identityUser,
+                password: request.Password);
+
+            try
             {
-                await _userRepository.InsertAsync(
-                    newUser,
-                    cancellationToken);
-
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-                await _identityService.CreateAsync(
-                    identityUser,
-                    password: request.Password);
-
                 await _identityService.AddToRoleAsync(
                     identityUser,
                     roleName: newUser.Role.ToString());
-            };
 
-            await _unitOfWork.ExecuteInTransactionAsync(
-                transactionAction,
-                cancellationToken: cancellationToken);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+            }
+            catch (Exception)
+            {
+                await _identityService.DeleteAsync(identityUser);
+
+                throw;
+            }
 
             _logger.LogInformation(
                 "Succesfully registered a new user. Username: {username}",

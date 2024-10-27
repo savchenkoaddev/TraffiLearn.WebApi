@@ -49,13 +49,14 @@ namespace TraffiLearn.Application.Services
             ApplicationUser identityUser)
         {
             var token = await _emailTokenGenerator
-                .GenerateConfirmationTokenAsync(identityUser);
+                .GenerateChangeEmailTokenAsync(
+                    identityUser, newEmail);
 
             var escapedToken = Uri.EscapeDataString(token);
 
             var link = _emailLinkGenerator
                 .GenerateConfirmChangeEmailLink(
-                    userId, newEmail, token);
+                    userId, newEmail, escapedToken);
 
             Letter letter = _emailLetterCreator
                 .CreateChangeEmailLetter(link);
