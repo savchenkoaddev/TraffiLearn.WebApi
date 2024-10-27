@@ -9,7 +9,7 @@
             string newEmail, 
             string token);
 
-        string GenerateResetPasswordLink(
+        string GenerateRecoverPasswordLink(
             string userId,
             string token);
     }

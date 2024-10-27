@@ -10,7 +10,7 @@ using TraffiLearn.Application.Auth.Commands.RefreshToken;
 using TraffiLearn.Application.Auth.Commands.RegisterAdmin;
 using TraffiLearn.Application.Auth.Commands.RegisterUser;
 using TraffiLearn.Application.Auth.Commands.RemoveAdminAccount;
-using TraffiLearn.Application.Auth.Commands.ResetPassword;
+using TraffiLearn.Application.Auth.Commands.RecoverPassword;
 using TraffiLearn.Application.Auth.Commands.SendChangeEmailMessage;
 using TraffiLearn.Application.Auth.Commands.SignInWithGoogle;
 using TraffiLearn.Application.Auth.DTO;
@@ -18,6 +18,7 @@ using TraffiLearn.Domain.Aggregates.Directories;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
 using TraffiLearn.WebAPI.Swagger;
+using TraffiLearn.Application.Auth.Commands.SendRecoverPasswordMessage;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
@@ -278,8 +279,8 @@ namespace TraffiLearn.WebAPI.Controllers
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> RecoverPassword(
-            [FromBody] RecoverPasswordCommand command)
+        public async Task<IActionResult> SendRecoverPasswordMessage(
+            [FromBody] SendRecoverPasswordMessageCommand command)
         {
             var commandResult = await _sender.Send(command);
 
@@ -301,14 +302,14 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="400">***Bad request***. The provided data is invalid or missing, or the token is invalid or expired.</response>
         /// <response code="404">***Not found***. The user with the provided ID is not found.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HttpPost("reset-password")]
+        [HttpPost("confirm-password-recovery")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ResetPassword(
-            [FromBody] ResetPasswordCommand command)
+        public async Task<IActionResult> RecoverPassword(
+            [FromBody] RecoverPasswordCommand command)
         {
             var commandResult = await _sender.Send(command);
 

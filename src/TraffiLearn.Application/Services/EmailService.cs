@@ -78,7 +78,7 @@ namespace TraffiLearn.Application.Services
             var escapedToken = Uri.EscapeDataString(token);
 
             var link = _emailLinkGenerator
-                .GenerateResetPasswordLink(userId, escapedToken);
+                .GenerateRecoverPasswordLink(userId, escapedToken);
 
             Letter letter = _emailLetterCreator
                 .CreateRecoverPasswordLetter(link);

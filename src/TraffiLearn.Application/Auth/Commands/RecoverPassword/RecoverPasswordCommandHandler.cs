@@ -1,7 +1,9 @@
 ﻿using MediatR;
-using TraffiLearn.Application.Abstractions.Emails;
+using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Identity;
+using TraffiLearn.Application.Exceptions;
 using TraffiLearn.Application.Users.Identity;
+using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Aggregates.Users.Errors;
 using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Shared;
@@ -11,38 +13,52 @@ namespace TraffiLearn.Application.Auth.Commands.RecoverPassword
     internal sealed class RecoverPasswordCommandHandler
         : IRequestHandler<RecoverPasswordCommand, Result>
     {
+        private readonly IUserRepository _userRepository;
         private readonly IIdentityService<ApplicationUser> _identityService;
-        private readonly IEmailService _emailService;
+        private readonly ILogger<RecoverPasswordCommandHandler> _logger;
 
         public RecoverPasswordCommandHandler(
+            IUserRepository userRepository,
             IIdentityService<ApplicationUser> identityService,
-            IEmailService emailService)
+            ILogger<RecoverPasswordCommandHandler> logger)
         {
+            _userRepository = userRepository;
             _identityService = identityService;
-            _emailService = emailService;
+            _logger = logger;
         }
 
         public async Task<Result> Handle(
             RecoverPasswordCommand request,
             CancellationToken cancellationToken)
         {
-            var identityUser = await _identityService.GetByEmailAsync(
-                Email.Create(request.Email).Value);
+            var user = await _userRepository.GetByIdAsync(
+                new UserId(request.UserId.Value),
+                cancellationToken);
 
-            if (identityUser is null)
+            if (user is null)
             {
                 return UserErrors.NotFound;
             }
 
-            if (!identityUser.EmailConfirmed)
+            var identityUser = await _identityService.GetByEmailAsync(
+                user.Email);
+
+            if (identityUser is null)
             {
-                return UserErrors.EmailNotConfirmed;
+                _logger.LogCritical("User is found in the repository, but not found in identity storage. Possible data consistency failure.");
+
+                throw new DataInconsistencyException();
             }
 
-            await _emailService.SendRecoverPasswordEmail(
-                recipientEmail: request.Email,
-                userId: identityUser.Id,
-                identityUser: identityUser);
+            var result = await _identityService.ResetPasswordAsync(
+                identityUser,
+                newPassword: request.NewPassword,
+                token: request.Token);
+
+            if (result.IsFailure)
+            {
+                return result.Error;
+            }
 
             return Result.Success();
         }

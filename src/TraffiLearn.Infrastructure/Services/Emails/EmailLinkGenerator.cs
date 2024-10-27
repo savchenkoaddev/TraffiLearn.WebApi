@@ -40,7 +40,7 @@ namespace TraffiLearn.Infrastructure.Services.Emails
             return builder.ToString();
         }
 
-        public string GenerateResetPasswordLink(string userId, string token)
+        public string GenerateRecoverPasswordLink(string userId, string token)
         {
             StringBuilder builder = new();
 

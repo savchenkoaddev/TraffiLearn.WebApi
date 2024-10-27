@@ -200,11 +200,9 @@ namespace TraffiLearn.Infrastructure.Services
             string newPassword,
             string token)
         {
-            string unescapedToken = Uri.UnescapeDataString(token);
-
             var identityResult = await _userManager.ResetPasswordAsync(
                 identityUser,
-                unescapedToken,
+                token,
                 newPassword);
 
             if (!identityResult.Succeeded)
