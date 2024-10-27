@@ -8,5 +8,9 @@
             string userId, 
             string newEmail, 
             string token);
+
+        string GenerateResetPasswordLink(
+            string userId,
+            string token);
     }
 }

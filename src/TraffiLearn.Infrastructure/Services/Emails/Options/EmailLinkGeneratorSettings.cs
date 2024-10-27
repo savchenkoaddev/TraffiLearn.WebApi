@@ -15,6 +15,10 @@ namespace TraffiLearn.Infrastructure.Services.Emails.Options
         public string? BaseConfirmChangeEmailEndpointUri { get; set; }
 
         [Required]
+        [StringLength(200)]
+        public string? BaseResetPasswordEndpointUri { get; set; }
+
+        [Required]
         [StringLength(20)]
         public string? UserIdParameterName { get; set; }
 

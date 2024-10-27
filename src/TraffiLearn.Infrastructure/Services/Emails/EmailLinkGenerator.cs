@@ -39,5 +39,16 @@ namespace TraffiLearn.Infrastructure.Services.Emails
 
             return builder.ToString();
         }
+
+        public string GenerateResetPasswordLink(string userId, string token)
+        {
+            StringBuilder builder = new();
+
+            builder.Append($"{_settings.BaseResetPasswordEndpointUri}?");
+            builder.Append($"{_settings.UserIdParameterName}={userId}&");
+            builder.Append($"{_settings.TokenParameterName}={token}");
+
+            return builder.ToString();
+        }
     }
 }

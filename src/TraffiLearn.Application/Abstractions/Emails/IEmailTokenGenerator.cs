@@ -9,5 +9,8 @@ namespace TraffiLearn.Application.Abstractions.Emails
         Task<string> GenerateChangeEmailTokenAsync(
             ApplicationUser identityUser,
             string newEmail);
+
+        Task<string> GenerateRecoverPasswordTokenAsync(
+            ApplicationUser identityUser);
     }
 }

@@ -194,5 +194,25 @@ namespace TraffiLearn.Infrastructure.Services
 
             return Result.Success();
         }
+
+        public async Task<Result> ResetPasswordAsync(
+            ApplicationUser identityUser,
+            string newPassword,
+            string token)
+        {
+            string unescapedToken = Uri.UnescapeDataString(token);
+
+            var identityResult = await _userManager.ResetPasswordAsync(
+                identityUser,
+                unescapedToken,
+                newPassword);
+
+            if (!identityResult.Succeeded)
+            {
+                return UserErrors.InvalidResetPasswordToken;
+            }
+
+            return Result.Success();
+        }
     }
 }

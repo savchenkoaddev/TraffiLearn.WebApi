@@ -26,5 +26,10 @@ namespace TraffiLearn.Infrastructure.Services.Emails
         {
             return _userManager.GenerateEmailConfirmationTokenAsync(identityUser);
         }
+
+        public Task<string> GenerateRecoverPasswordTokenAsync(ApplicationUser identityUser)
+        {
+            return _userManager.GeneratePasswordResetTokenAsync(identityUser);
+        }
     }
 }
