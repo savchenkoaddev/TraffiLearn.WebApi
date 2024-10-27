@@ -24,8 +24,9 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
             services.AddScoped<IIdentityService<ApplicationUser>, IdentityService>();
             services.AddScoped<IHasher, Sha256Hasher>();
             services.AddScoped<IEmailSender, EmailSender>();
-            services.AddScoped<IConfirmationTokenGenerator, ConfirmationTokenGenerator>();
-            services.AddScoped<IEmailConfirmationLinkGenerator, EmailConfirmationLinkGenerator>();
+            services.AddScoped<IEmailLinkGenerator, EmailLinkGenerator>();
+            services.AddScoped<IEmailTokenGenerator, EmailTokenGenerator>();
+            services.AddScoped<IEmailLetterCreator, EmailLetterCreator>();
 
             services.AddFluentEmailSender();
 

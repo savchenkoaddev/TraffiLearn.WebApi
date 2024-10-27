@@ -14,6 +14,11 @@ namespace TraffiLearn.Domain.Aggregates.Users.Errors
                 code: "User.AlreadyRegistered",
                 description: "The same user has already been registered. Use different email or username.");
 
+        public static readonly Error EmailAlreadyTaken =
+            Error.Validation(
+                code: "User.EmailAlreadyTaken",
+                description: "The same email has already been taken. Please, use a different one.");
+
         public static readonly Error NotAllowedToPerformAction =
             Error.Unauthorized(
                code: "User.NotAllowedToPerformAction",
@@ -158,6 +163,11 @@ namespace TraffiLearn.Domain.Aggregates.Users.Errors
             Error.Validation(
                 code: "User.EmailConfirmationFailure",
                 description: "Failed to confirm the email. The reason may be the token is invalid or expired.");
+
+        public static readonly Error InvalidChangeEmailToken =
+           Error.Validation(
+               code: "User.InvalidChangeEmailToken",
+               description: "Failed to change the email, because the token is invalid.");
 
         public static readonly Error InvalidGoogleIdToken =
             Error.Validation(

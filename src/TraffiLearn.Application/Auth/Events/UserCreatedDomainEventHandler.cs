@@ -49,10 +49,10 @@ namespace TraffiLearn.Application.Auth.Events
             string recipientEmail = notification.Email.Value;
             string userId = notification.UserId.Value.ToString();
 
-            await _emailService.SendConfirmationEmail(
+            await _emailService.SendConfirmationEmailAsync(
                 recipientEmail: recipientEmail,
                 userId: userId,
-                applicationUser: identityUser);
+                identityUser: identityUser);
         }
     }
 }
