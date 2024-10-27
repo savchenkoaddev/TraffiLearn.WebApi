@@ -86,23 +86,17 @@ namespace TraffiLearn.Application.Users.Commands.DowngradeAccount
                 throw new DataInconsistencyException();
             }
 
-            Func<Task> transactionAction = async () =>
-            {
-                await _userRepository.UpdateAsync(affectedUser);
-                await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _userRepository.UpdateAsync(affectedUser);
 
-                await _identityService.RemoveFromRoleAsync(
-                    identityUser,
-                    previousRole);
+            await _identityService.RemoveFromRoleAsync(
+                identityUser,
+                previousRole);
 
-                await _identityService.AddToRoleAsync(
-                    identityUser,
-                    newRole);
-            };
+            await _identityService.AddToRoleAsync(
+                identityUser,
+                newRole);
 
-            await _unitOfWork.ExecuteInTransactionAsync(
-                transactionAction,
-                cancellationToken: cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation(
                     "Successfully downgraded an account with email: {Email}. " +
