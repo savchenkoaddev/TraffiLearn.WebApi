@@ -18,8 +18,8 @@ namespace TraffiLearn.Application.Auth.Commands.ConfirmChangeEmail
         private readonly IUnitOfWork _unitOfWork;
 
         public ConfirmChangeEmailCommandHandler(
-            IUserRepository userRepository, 
-            IIdentityService<ApplicationUser> identityService, 
+            IUserRepository userRepository,
+            IIdentityService<ApplicationUser> identityService,
             IUnitOfWork unitOfWork)
         {
             _userRepository = userRepository;
@@ -28,7 +28,7 @@ namespace TraffiLearn.Application.Auth.Commands.ConfirmChangeEmail
         }
 
         public async Task<Result> Handle(
-            ConfirmChangeEmailCommand request, 
+            ConfirmChangeEmailCommand request,
             CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByIdAsync(

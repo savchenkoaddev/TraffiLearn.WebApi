@@ -1,6 +1,10 @@
-﻿namespace TraffiLearn.Application.Auth.Commands.ConfirmChangeEmail
+﻿using MediatR;
+using TraffiLearn.Domain.Shared;
+
+namespace TraffiLearn.Application.Auth.Commands.ConfirmChangeEmail
 {
-    internal sealed class ConfirmChangeEmailCommand
-    {
-    }
+    public sealed record ConfirmChangeEmailCommand(
+        Guid? UserId,
+        string? Token,
+        string? NewEmail) : IRequest<Result>;
 }
