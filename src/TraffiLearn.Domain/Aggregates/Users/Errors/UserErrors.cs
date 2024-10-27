@@ -178,5 +178,10 @@ namespace TraffiLearn.Domain.Aggregates.Users.Errors
             Error.Validation(
                 code: "User.FirstTimeUserSignInPasswordEmpty",
                 description: "The first time sign in password of the new user is not provided.");
+
+        public static readonly Error InvalidResetPasswordToken =
+            Error.Validation(
+                code: "User.InvalidResetPasswordToken",
+                description: "Failed to reset the password, because the token is invalid.");
     }
 }

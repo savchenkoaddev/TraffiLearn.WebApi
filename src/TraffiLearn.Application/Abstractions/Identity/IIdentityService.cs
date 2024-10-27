@@ -29,5 +29,10 @@ namespace TraffiLearn.Application.Abstractions.Identity
         Result ValidateRefreshToken(TIdentityUser user);
 
         Task<Result<TIdentityUser>> GetByRefreshTokenAsync(string refreshToken);
+
+        Task<Result> ResetPasswordAsync(
+            TIdentityUser identityUser,
+            string newPassword,
+            string token);
     }
 }

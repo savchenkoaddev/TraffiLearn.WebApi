@@ -5,5 +5,7 @@
         Letter CreateEmailConfirmationLetter(string confirmationLink);
 
         Letter CreateChangeEmailLetter(string confirmChangeEmailLink);
+
+        Letter CreateRecoverPasswordLetter(string recoverPasswordLink);
     }
 }

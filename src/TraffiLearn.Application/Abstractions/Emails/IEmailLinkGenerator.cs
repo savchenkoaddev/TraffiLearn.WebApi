@@ -8,5 +8,9 @@
             string userId, 
             string newEmail, 
             string token);
+
+        string GenerateRecoverPasswordLink(
+            string userId,
+            string token);
     }
 }

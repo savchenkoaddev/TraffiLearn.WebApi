@@ -66,5 +66,27 @@ namespace TraffiLearn.Application.Services
                 subject: letter.Subject,
                 htmlBody: letter.HtmlBody);
         }
+
+        public async Task SendRecoverPasswordEmail(
+            string recipientEmail,
+            string userId,
+            ApplicationUser identityUser)
+        {
+            var token = await _emailTokenGenerator
+                .GenerateRecoverPasswordTokenAsync(identityUser);
+
+            var escapedToken = Uri.EscapeDataString(token);
+
+            var link = _emailLinkGenerator
+                .GenerateRecoverPasswordLink(userId, escapedToken);
+
+            Letter letter = _emailLetterCreator
+                .CreateRecoverPasswordLetter(link);
+
+            await _emailSender.SendEmailAsync(
+                recipientEmail,
+                letter.Subject,
+                letter.HtmlBody);
+        }
     }
 }

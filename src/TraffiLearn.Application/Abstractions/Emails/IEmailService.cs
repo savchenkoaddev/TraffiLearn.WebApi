@@ -13,5 +13,10 @@ namespace TraffiLearn.Application.Abstractions.Emails
             string newEmail,
             string userId,
             ApplicationUser identityUser);
+
+        Task SendRecoverPasswordEmail(
+            string recipientEmail,
+            string userId,
+            ApplicationUser identityUser);
     }
 }
