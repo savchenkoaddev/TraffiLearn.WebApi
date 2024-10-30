@@ -1,6 +1,6 @@
 ﻿using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Domain.Aggregates.SubscriptionPlans.Errors
+namespace TraffiLearn.Domain.Aggregates.SubscriptionPlans.PlanDescriptions
 {
     public static class PlanDescriptionErrors
     {
