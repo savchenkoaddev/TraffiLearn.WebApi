@@ -5,6 +5,7 @@ using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Regions;
 using TraffiLearn.Domain.Aggregates.Routes;
 using TraffiLearn.Domain.Aggregates.ServiceCenters;
+using TraffiLearn.Domain.Aggregates.SubscriptionPlans;
 using TraffiLearn.Domain.Aggregates.Tickets;
 using TraffiLearn.Domain.Aggregates.Topics;
 using TraffiLearn.Domain.Aggregates.Users;
@@ -25,6 +26,7 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
             services.AddScoped<IServiceCenterRepository, ServiceCenterRepository>();
             services.AddScoped<IRouteRepository, RouteRepository>();
             services.AddScoped<IDirectoryRepository, DirectoryRepository>();
+            services.AddScoped<ISubscriptionPlanRepository, SubscriptionPlanRepository>();
 
             return services;
         }
