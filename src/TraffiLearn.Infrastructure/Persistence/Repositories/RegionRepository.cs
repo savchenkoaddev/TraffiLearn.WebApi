@@ -68,7 +68,7 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
 
         private static void EnsurePassedRegionIsNotNull(Region region)
         {
-            ArgumentNullException.ThrowIfNull(region, "Region cannot be null");
+            ArgumentNullException.ThrowIfNull(region);
         }
     }
 }

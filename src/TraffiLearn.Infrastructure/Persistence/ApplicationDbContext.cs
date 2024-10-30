@@ -6,6 +6,7 @@ using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Regions;
 using TraffiLearn.Domain.Aggregates.Routes;
 using TraffiLearn.Domain.Aggregates.ServiceCenters;
+using TraffiLearn.Domain.Aggregates.SubscriptionPlans;
 using TraffiLearn.Domain.Aggregates.Tickets;
 using TraffiLearn.Domain.Aggregates.Topics;
 using TraffiLearn.Domain.Aggregates.Users;
@@ -22,23 +23,25 @@ namespace TraffiLearn.Infrastructure.Persistence
             : base(options)
         { }
 
-        public DbSet<Question> Questions { get; set; }
+        public DbSet<Question> Questions { get; init; }
 
-        public DbSet<Topic> Topics { get; set; }
+        public DbSet<Topic> Topics { get; init; }
 
-        public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<Ticket> Tickets { get; init; }
 
-        public DbSet<Comment> Comments { get; set; }
+        public DbSet<Comment> Comments { get; init; }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<User> Users { get; init; }
 
-        public DbSet<Region> Regions { get; set; }
+        public DbSet<Region> Regions { get; init; }
 
-        public DbSet<ServiceCenter> ServiceCenters { get; set; }
+        public DbSet<ServiceCenter> ServiceCenters { get; init; }
 
-        public DbSet<Route> Routes { get; set; }
+        public DbSet<Route> Routes { get; init; }
 
-        public DbSet<Directory> Directories { get; set; }
+        public DbSet<Directory> Directories { get; init; }
+
+        public DbSet<SubscriptionPlan> SubscriptionPlans { get; init; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
