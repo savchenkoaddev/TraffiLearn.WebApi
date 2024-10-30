@@ -5,7 +5,7 @@ namespace TraffiLearn.Domain.Aggregates.SubscriptionPlans.PlanFeatures
 {
     public sealed class PlanFeature : ValueObject
     {
-        public const int MaxLength = 200;
+        public const int MaxTextLength = 200;
 
         private PlanFeature(string value)
         {
@@ -22,10 +22,10 @@ namespace TraffiLearn.Domain.Aggregates.SubscriptionPlans.PlanFeatures
                     PlanFeatureErrors.Empty);
             }
 
-            if (value.Length > MaxLength)
+            if (value.Length > MaxTextLength)
             {
                 return Result.Failure<PlanFeature>(
-                    PlanFeatureErrors.TooLong(MaxLength));
+                    PlanFeatureErrors.TooLong(MaxTextLength));
             }
 
             return new PlanFeature(value);

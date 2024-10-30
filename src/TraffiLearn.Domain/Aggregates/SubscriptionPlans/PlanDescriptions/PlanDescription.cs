@@ -1,8 +1,7 @@
-﻿using TraffiLearn.Domain.Aggregates.SubscriptionPlans.PlanDescriptions;
-using TraffiLearn.Domain.Primitives;
+﻿using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 
-namespace TraffiLearn.Domain.Aggregates.SubscriptionPlans.ValueObjects
+namespace TraffiLearn.Domain.Aggregates.SubscriptionPlans.PlanDescriptions
 {
     public sealed class PlanDescription : ValueObject
     {

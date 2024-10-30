@@ -1,4 +1,4 @@
-﻿namespace TraffiLearn.Domain.Aggregates.SubscriptionPlans.Enums
+﻿namespace TraffiLearn.Domain.Aggregates.SubscriptionPlans.RenewalPeriods
 {
     public enum RenewalPeriodType
     {
