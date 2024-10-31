@@ -34,6 +34,8 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
                 EmailLinkGeneratorSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<GoogleAuthSettings>(
                 GoogleAuthSettings.SectionName);
+            services.ConfigureValidatableOnStartOptions<OutboxSettings>(
+                OutboxSettings.SectionName);
 
             return services;
         }
