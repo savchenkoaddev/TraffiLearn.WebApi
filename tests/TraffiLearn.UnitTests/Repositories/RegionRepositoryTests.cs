@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using TraffiLearn.Domain.Aggregates.Regions;
+using TraffiLearn.Domain.Regions;
 using TraffiLearn.Infrastructure.Persistence.Repositories;
 using TraffiLearn.Testing.Shared.Factories;
 using TraffiLearn.UnitTests.Abstractions;

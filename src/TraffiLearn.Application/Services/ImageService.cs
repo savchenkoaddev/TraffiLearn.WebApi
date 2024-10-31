@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Storage;
 using TraffiLearn.Application.Images.Options;
-using TraffiLearn.Domain.Common.ImageUris;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.SharedKernel.Shared;
+using TraffiLearn.SharedKernel.ValueObjects.ImageUris;
 
 namespace TraffiLearn.Application.Services
 {

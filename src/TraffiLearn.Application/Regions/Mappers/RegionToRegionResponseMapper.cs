@@ -1,6 +1,6 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Regions.DTO;
-using TraffiLearn.Domain.Aggregates.Regions;
+using TraffiLearn.Domain.Regions;
 
 namespace TraffiLearn.Application.Regions.Mappers
 {

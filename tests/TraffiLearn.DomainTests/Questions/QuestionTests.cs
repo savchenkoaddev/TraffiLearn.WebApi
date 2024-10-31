@@ -1,11 +1,11 @@
 ﻿using FluentAssertions;
-using TraffiLearn.Domain.Aggregates.Questions;
-using TraffiLearn.Domain.Aggregates.Questions.Answers;
-using TraffiLearn.Domain.Aggregates.Questions.QuestionContents;
-using TraffiLearn.Domain.Aggregates.Questions.QuestionExplanations;
-using TraffiLearn.Domain.Aggregates.Questions.QuestionNumbers;
-using TraffiLearn.Domain.Primitives;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.Questions;
+using TraffiLearn.Domain.Questions.Answers;
+using TraffiLearn.Domain.Questions.QuestionContents;
+using TraffiLearn.Domain.Questions.QuestionExplanations;
+using TraffiLearn.Domain.Questions.QuestionNumbers;
+using TraffiLearn.SharedKernel.Primitives;
+using TraffiLearn.SharedKernel.Shared;
 using TraffiLearn.Testing.Shared.Factories;
 
 namespace TraffiLearn.DomainTests.Questions

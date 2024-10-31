@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Domain.Aggregates.ServiceCenters;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ServiceCenters;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.ServiceCenters.Commands.Delete
 {

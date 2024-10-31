@@ -1,5 +1,5 @@
-﻿using TraffiLearn.Domain.Aggregates.Users;
-using TraffiLearn.Domain.Shared;
+﻿using TraffiLearn.Domain.Users;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.Abstractions.Identity
 {

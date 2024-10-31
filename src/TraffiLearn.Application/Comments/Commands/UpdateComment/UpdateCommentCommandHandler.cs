@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Domain.Aggregates.Comments;
-using TraffiLearn.Domain.Aggregates.Comments.CommentContents;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.Comments;
+using TraffiLearn.Domain.Comments.CommentContents;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.Comments.Commands.UpdateComment
 {

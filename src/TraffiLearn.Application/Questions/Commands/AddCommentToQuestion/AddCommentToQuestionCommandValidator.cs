@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using TraffiLearn.Domain.Aggregates.Comments.CommentContents;
+using TraffiLearn.Domain.Comments.CommentContents;
 
 namespace TraffiLearn.Application.Questions.Commands.AddCommentToQuestion
 {

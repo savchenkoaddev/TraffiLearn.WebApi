@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Routes.DTO;
-using TraffiLearn.Domain.Aggregates.Routes;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.Routes;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.Routes.Queries.GetById
 {

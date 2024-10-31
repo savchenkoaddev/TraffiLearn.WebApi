@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using TraffiLearn.Application.AI.DTO;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.Questions.Queries.GetAIQuestionExplanation
 {

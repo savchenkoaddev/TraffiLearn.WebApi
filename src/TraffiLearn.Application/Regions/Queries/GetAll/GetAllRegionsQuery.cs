@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Regions.DTO;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.Regions.Queries.GetAll
 {

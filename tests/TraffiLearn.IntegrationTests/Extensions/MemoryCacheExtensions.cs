@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
-using TraffiLearn.Domain.Aggregates.Users.Roles;
+using TraffiLearn.Domain.Users.Roles;
 
 namespace TraffiLearn.IntegrationTests.Extensions
 {

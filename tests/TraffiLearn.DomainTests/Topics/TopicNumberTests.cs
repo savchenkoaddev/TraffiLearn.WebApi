@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
 using System.Reflection;
-using TraffiLearn.Domain.Aggregates.Topics.TopicNumbers;
-using TraffiLearn.Domain.Primitives;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.Topics.TopicNumbers;
+using TraffiLearn.SharedKernel.Primitives;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.DomainTests.Topics
 {

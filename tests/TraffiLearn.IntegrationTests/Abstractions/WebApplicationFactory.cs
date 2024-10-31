@@ -16,7 +16,7 @@ using Testcontainers.PostgreSql;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Users.Identity;
-using TraffiLearn.Domain.Aggregates.Users;
+using TraffiLearn.Domain.Users;
 using TraffiLearn.Infrastructure.External.Blobs.Options;
 using TraffiLearn.Infrastructure.Persistence;
 using TraffiLearn.IntegrationTests.Helpers;

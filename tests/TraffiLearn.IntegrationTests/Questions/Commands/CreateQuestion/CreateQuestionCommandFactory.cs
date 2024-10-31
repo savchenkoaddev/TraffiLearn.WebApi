@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using TraffiLearn.Application.Questions.Commands.Create;
 using TraffiLearn.Application.Questions.DTO;
-using TraffiLearn.Domain.Aggregates.Questions.Answers;
-using TraffiLearn.Domain.Aggregates.Questions.QuestionContents;
-using TraffiLearn.Domain.Aggregates.Questions.QuestionExplanations;
+using TraffiLearn.Domain.Questions.Answers;
+using TraffiLearn.Domain.Questions.QuestionContents;
+using TraffiLearn.Domain.Questions.QuestionExplanations;
 using TraffiLearn.IntegrationTests.Topics;
 using TraffiLearn.Testing.Shared.Factories;
 

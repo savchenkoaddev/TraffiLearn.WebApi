@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.AI;
 using TraffiLearn.Application.AI.DTO;
-using TraffiLearn.Domain.Aggregates.Questions;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.Questions;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.Questions.Queries.GetAIQuestionExplanation
 {

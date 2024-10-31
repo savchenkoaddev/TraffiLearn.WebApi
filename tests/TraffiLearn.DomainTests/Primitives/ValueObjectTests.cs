@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using TraffiLearn.Domain.Primitives;
+using TraffiLearn.SharedKernel.Primitives;
 
 namespace TraffiLearn.DomainTests.Primitives
 {

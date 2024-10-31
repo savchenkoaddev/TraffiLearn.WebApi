@@ -27,6 +27,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TraffiLearn.UnitTests", "..
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{C3048BB6-2AB4-4B0B-A4B8-D627DEC5FDF0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TraffiLearn.SharedKernel", "TraffiLearn.SharedKernel\TraffiLearn.SharedKernel.csproj", "{277D7F95-E20C-401F-B31D-AB1D9BF93D67}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{C3048BB6-2AB4-4B0B-A4B8-D627DEC5FDF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3048BB6-2AB4-4B0B-A4B8-D627DEC5FDF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3048BB6-2AB4-4B0B-A4B8-D627DEC5FDF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{277D7F95-E20C-401F-B31D-AB1D9BF93D67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{277D7F95-E20C-401F-B31D-AB1D9BF93D67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{277D7F95-E20C-401F-B31D-AB1D9BF93D67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{277D7F95-E20C-401F-B31D-AB1D9BF93D67}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -87,6 +93,7 @@ Global
 		{FF5D0300-CCEC-41B5-9AF6-34BE3D1F187C} = {341A283C-4308-45F5-AFD1-65D0E9F1FA95}
 		{4B3CAE4D-E76C-4DFB-BEC3-5DE0CE91D221} = {341A283C-4308-45F5-AFD1-65D0E9F1FA95}
 		{C0FB023E-BBFC-41ED-8AF4-E831CD743BA8} = {341A283C-4308-45F5-AFD1-65D0E9F1FA95}
+		{277D7F95-E20C-401F-B31D-AB1D9BF93D67} = {153C3EC4-AE72-41AB-AAA1-FCF6375D4CDD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F8404DBE-3C98-4ADC-81FF-D1AE134AAFDF}

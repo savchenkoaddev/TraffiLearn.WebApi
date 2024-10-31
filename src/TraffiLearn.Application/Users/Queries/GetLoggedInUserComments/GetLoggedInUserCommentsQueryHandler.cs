@@ -3,9 +3,9 @@ using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Comments.DTO;
-using TraffiLearn.Domain.Aggregates.Comments;
-using TraffiLearn.Domain.Aggregates.Users;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.Comments;
+using TraffiLearn.Domain.Users;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.Users.Queries.GetLoggedInUserComments
 {

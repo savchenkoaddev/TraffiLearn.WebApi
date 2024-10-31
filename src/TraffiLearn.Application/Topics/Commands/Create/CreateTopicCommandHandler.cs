@@ -2,9 +2,9 @@
 using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Storage;
-using TraffiLearn.Domain.Aggregates.Topics;
-using TraffiLearn.Domain.Common.ImageUris;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.Topics;
+using TraffiLearn.SharedKernel.Shared;
+using TraffiLearn.SharedKernel.ValueObjects.ImageUris;
 
 namespace TraffiLearn.Application.Topics.Commands.Create
 {

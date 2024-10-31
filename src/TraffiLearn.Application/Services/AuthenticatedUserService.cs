@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Identity;
-using TraffiLearn.Domain.Aggregates.Users;
+using TraffiLearn.Domain.Users;
 
 namespace TraffiLearn.Application.Services
 {

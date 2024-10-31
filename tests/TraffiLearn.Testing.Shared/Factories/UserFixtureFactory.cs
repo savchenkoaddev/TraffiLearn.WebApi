@@ -1,7 +1,7 @@
-﻿using TraffiLearn.Domain.Aggregates.Users;
-using TraffiLearn.Domain.Aggregates.Users.Emails;
-using TraffiLearn.Domain.Aggregates.Users.Roles;
-using TraffiLearn.Domain.Aggregates.Users.Usernames;
+﻿using TraffiLearn.Domain.Users;
+using TraffiLearn.Domain.Users.Emails;
+using TraffiLearn.Domain.Users.Roles;
+using TraffiLearn.Domain.Users.Usernames;
 
 namespace TraffiLearn.Testing.Shared.Factories
 {

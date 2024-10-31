@@ -3,9 +3,9 @@ using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Questions.DTO;
 using TraffiLearn.Application.Topics.DTO;
-using TraffiLearn.Domain.Aggregates.Questions;
-using TraffiLearn.Domain.Aggregates.Topics;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.Questions;
+using TraffiLearn.Domain.Topics;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.Topics.Queries.GetRandomTopicWithQuestions
 {

@@ -1,13 +1,13 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Directories.Commands.Create;
 using TraffiLearn.Application.Directories.DTO;
-using TraffiLearn.Domain.Aggregates.Directories;
-using TraffiLearn.Domain.Aggregates.Directories.DirectoryNames;
-using TraffiLearn.Domain.Aggregates.Directories.DirectorySections;
-using TraffiLearn.Domain.Aggregates.Directories.DirectorySections.SectionContents;
-using TraffiLearn.Domain.Aggregates.Directories.DirectorySections.SectionNames;
-using TraffiLearn.Domain.Shared;
-using Directory = TraffiLearn.Domain.Aggregates.Directories.Directory;
+using TraffiLearn.Domain.Directories;
+using TraffiLearn.Domain.Directories.DirectoryNames;
+using TraffiLearn.Domain.Directories.DirectorySections;
+using TraffiLearn.Domain.Directories.DirectorySections.SectionContents;
+using TraffiLearn.Domain.Directories.DirectorySections.SectionNames;
+using TraffiLearn.SharedKernel.Shared;
+using Directory = TraffiLearn.Domain.Directories.Directory;
 
 namespace TraffiLearn.Application.Directories.Mappers
 {

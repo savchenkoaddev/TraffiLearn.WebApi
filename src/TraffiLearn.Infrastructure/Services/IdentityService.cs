@@ -5,10 +5,10 @@ using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Abstractions.Security;
 using TraffiLearn.Application.Users.Identity;
-using TraffiLearn.Domain.Aggregates.Users;
-using TraffiLearn.Domain.Aggregates.Users.Emails;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.Users;
+using TraffiLearn.Domain.Users.Emails;
 using TraffiLearn.Infrastructure.Authentication.Options;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Infrastructure.Services
 {

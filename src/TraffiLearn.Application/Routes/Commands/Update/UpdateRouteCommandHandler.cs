@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Http;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Storage;
-using TraffiLearn.Domain.Aggregates.Routes;
-using TraffiLearn.Domain.Aggregates.ServiceCenters;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.Routes;
+using TraffiLearn.Domain.ServiceCenters;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.Routes.Commands.Update
 {

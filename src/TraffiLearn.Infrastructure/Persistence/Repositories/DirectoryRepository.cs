@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TraffiLearn.Domain.Aggregates.Directories;
-using Directory = TraffiLearn.Domain.Aggregates.Directories.Directory;
+using TraffiLearn.Domain.Directories;
+using Directory = TraffiLearn.Domain.Directories.Directory;
 
 namespace TraffiLearn.Infrastructure.Persistence.Repositories
 {

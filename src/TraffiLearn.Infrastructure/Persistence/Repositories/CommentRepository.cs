@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TraffiLearn.Domain.Aggregates.Comments;
-using TraffiLearn.Domain.Aggregates.Questions;
-using TraffiLearn.Domain.Aggregates.Users;
+using TraffiLearn.Domain.Comments;
+using TraffiLearn.Domain.Questions;
+using TraffiLearn.Domain.Users;
 
 namespace TraffiLearn.Infrastructure.Persistence.Repositories
 {

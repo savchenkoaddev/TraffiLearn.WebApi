@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using TraffiLearn.Domain.Aggregates.Regions.RegionNames;
+using TraffiLearn.Domain.Regions.RegionNames;
 
 namespace TraffiLearn.Application.Regions.Commands.Create
 {

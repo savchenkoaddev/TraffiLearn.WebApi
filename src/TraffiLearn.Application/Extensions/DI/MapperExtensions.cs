@@ -34,16 +34,16 @@ using TraffiLearn.Application.Topics.Mappers;
 using TraffiLearn.Application.Users.DTO;
 using TraffiLearn.Application.Users.Identity;
 using TraffiLearn.Application.Users.Mappers;
-using TraffiLearn.Domain.Aggregates.Comments;
-using TraffiLearn.Domain.Aggregates.Questions;
-using TraffiLearn.Domain.Aggregates.Regions;
-using TraffiLearn.Domain.Aggregates.Routes;
-using TraffiLearn.Domain.Aggregates.ServiceCenters;
-using TraffiLearn.Domain.Aggregates.Tickets;
-using TraffiLearn.Domain.Aggregates.Topics;
-using TraffiLearn.Domain.Aggregates.Users;
-using TraffiLearn.Domain.Shared;
-using Directory = TraffiLearn.Domain.Aggregates.Directories.Directory;
+using TraffiLearn.Domain.Comments;
+using TraffiLearn.Domain.Questions;
+using TraffiLearn.Domain.Regions;
+using TraffiLearn.Domain.Routes;
+using TraffiLearn.Domain.ServiceCenters;
+using TraffiLearn.Domain.Tickets;
+using TraffiLearn.Domain.Topics;
+using TraffiLearn.Domain.Users;
+using TraffiLearn.SharedKernel.Shared;
+using Directory = TraffiLearn.Domain.Directories.Directory;
 
 namespace TraffiLearn.Application.Extensions.DI
 {

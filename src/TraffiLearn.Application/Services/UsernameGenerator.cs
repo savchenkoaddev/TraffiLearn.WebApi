@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using TraffiLearn.Application.Abstractions.Identity;
-using TraffiLearn.Domain.Aggregates.Users.Usernames;
+using TraffiLearn.Domain.Users.Usernames;
 
 namespace TraffiLearn.Application.Services
 {

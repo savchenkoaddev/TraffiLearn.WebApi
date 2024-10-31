@@ -1,5 +1,5 @@
-﻿using TraffiLearn.Domain.Aggregates.Tickets;
-using TraffiLearn.Domain.Aggregates.Tickets.TicketNumbers;
+﻿using TraffiLearn.Domain.Tickets;
+using TraffiLearn.Domain.Tickets.TicketNumbers;
 
 namespace TraffiLearn.Testing.Shared.Factories
 {

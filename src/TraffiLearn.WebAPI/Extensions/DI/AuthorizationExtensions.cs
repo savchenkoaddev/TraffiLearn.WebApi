@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using TraffiLearn.Domain.Aggregates.Users.Roles;
+using TraffiLearn.Domain.Users.Roles;
 using TraffiLearn.Infrastructure.Authentication;
 
 namespace TraffiLearn.WebAPI.Extensions.DI

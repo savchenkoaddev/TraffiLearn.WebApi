@@ -1,8 +1,8 @@
 ﻿using TraffiLearn.Application.Questions.Commands.Create;
-using TraffiLearn.Domain.Aggregates.Users.Roles;
-using TraffiLearn.Domain.Common.ImageUris;
+using TraffiLearn.Domain.Users.Roles;
 using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;
+using TraffiLearn.SharedKernel.ValueObjects.ImageUris;
 using TraffiLearn.Testing.Shared.Factories;
 
 namespace TraffiLearn.IntegrationTests.Questions.Commands.CreateQuestion

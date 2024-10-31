@@ -13,7 +13,7 @@ using TraffiLearn.Application.Auth.Commands.SendChangeEmailMessage;
 using TraffiLearn.Application.Auth.Commands.SendRecoverPasswordMessage;
 using TraffiLearn.Application.Auth.Commands.SignInWithGoogle;
 using TraffiLearn.Application.Auth.DTO;
-using TraffiLearn.Domain.Aggregates.Directories;
+using TraffiLearn.Domain.Directories;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
 using TraffiLearn.WebAPI.Swagger;

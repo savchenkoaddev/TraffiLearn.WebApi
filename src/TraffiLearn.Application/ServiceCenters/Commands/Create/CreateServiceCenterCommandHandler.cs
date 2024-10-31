@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Domain.Aggregates.Regions;
-using TraffiLearn.Domain.Aggregates.ServiceCenters;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.Regions;
+using TraffiLearn.Domain.ServiceCenters;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.ServiceCenters.Commands.Create
 {

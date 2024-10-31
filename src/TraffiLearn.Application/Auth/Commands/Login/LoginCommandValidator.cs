@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using TraffiLearn.Domain.Aggregates.Users.Emails;
+using TraffiLearn.Domain.Users.Emails;
 
 namespace TraffiLearn.Application.Auth.Commands.Login
 {

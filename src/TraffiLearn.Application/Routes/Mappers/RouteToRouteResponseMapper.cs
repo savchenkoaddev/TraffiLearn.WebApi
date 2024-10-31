@@ -1,6 +1,6 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Routes.DTO;
-using TraffiLearn.Domain.Aggregates.Routes;
+using TraffiLearn.Domain.Routes;
 
 namespace TraffiLearn.Application.Routes.Mappers
 {

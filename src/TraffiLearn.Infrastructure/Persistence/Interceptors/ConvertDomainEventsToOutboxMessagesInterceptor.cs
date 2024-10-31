@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Newtonsoft.Json;
-using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Infrastructure.Persistence.Outbox;
+using TraffiLearn.SharedKernel.Primitives;
 
 namespace TraffiLearn.Infrastructure.Persistence.Interceptors
 {

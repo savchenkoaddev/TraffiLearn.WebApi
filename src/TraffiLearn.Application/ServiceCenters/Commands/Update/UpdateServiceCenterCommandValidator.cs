@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
-using TraffiLearn.Domain.Aggregates.ServiceCenters.BuildingNumbers;
-using TraffiLearn.Domain.Aggregates.ServiceCenters.LocationNames;
-using TraffiLearn.Domain.Aggregates.ServiceCenters.RoadNames;
-using TraffiLearn.Domain.Aggregates.ServiceCenters.ServiceCenterNumbers;
+using TraffiLearn.Domain.ServiceCenters.BuildingNumbers;
+using TraffiLearn.Domain.ServiceCenters.LocationNames;
+using TraffiLearn.Domain.ServiceCenters.RoadNames;
+using TraffiLearn.Domain.ServiceCenters.ServiceCenterNumbers;
 
 namespace TraffiLearn.Application.ServiceCenters.Commands.Update
 {

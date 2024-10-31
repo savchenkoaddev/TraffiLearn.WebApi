@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TraffiLearn.Domain.Aggregates.Regions;
-using TraffiLearn.Domain.Aggregates.ServiceCenters;
+using TraffiLearn.Domain.Regions;
+using TraffiLearn.Domain.ServiceCenters;
 
 namespace TraffiLearn.Infrastructure.Persistence.Repositories
 {

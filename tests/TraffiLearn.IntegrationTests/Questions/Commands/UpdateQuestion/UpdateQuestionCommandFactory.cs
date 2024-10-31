@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using TraffiLearn.Application.Questions.Commands.Update;
 using TraffiLearn.Application.Questions.DTO;
-using TraffiLearn.Domain.Aggregates.Questions.Answers;
+using TraffiLearn.Domain.Questions.Answers;
 using TraffiLearn.Testing.Shared.Factories;
 
 namespace TraffiLearn.IntegrationTests.Questions.Commands.UpdateQuestion

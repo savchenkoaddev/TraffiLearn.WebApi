@@ -2,10 +2,10 @@
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Users.Identity;
-using TraffiLearn.Domain.Aggregates.Users;
-using TraffiLearn.Domain.Aggregates.Users.Emails;
-using TraffiLearn.Domain.Aggregates.Users.Roles;
-using TraffiLearn.Domain.Aggregates.Users.Usernames;
+using TraffiLearn.Domain.Users;
+using TraffiLearn.Domain.Users.Emails;
+using TraffiLearn.Domain.Users.Roles;
+using TraffiLearn.Domain.Users.Usernames;
 using TraffiLearn.WebAPI.Options;
 
 namespace TraffiLearn.WebAPI.Extensions

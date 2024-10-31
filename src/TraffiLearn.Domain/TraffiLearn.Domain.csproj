@@ -11,4 +11,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TraffiLearn.SharedKernel\TraffiLearn.SharedKernel.csproj" />
+  </ItemGroup>
+
 </Project>

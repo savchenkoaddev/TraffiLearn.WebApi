@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Storage;
-using TraffiLearn.Domain.Aggregates.Topics;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.Topics;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.Topics.Commands.Update
 {

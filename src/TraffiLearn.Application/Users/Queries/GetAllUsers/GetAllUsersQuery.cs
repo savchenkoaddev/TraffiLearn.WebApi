@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Users.DTO;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.Users.Queries.GetAllUsers
 {

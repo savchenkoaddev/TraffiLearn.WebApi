@@ -1,6 +1,6 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Users.Identity;
-using TraffiLearn.Domain.Aggregates.Users;
+using TraffiLearn.Domain.Users;
 
 namespace TraffiLearn.Application.Auth.Mappers
 {

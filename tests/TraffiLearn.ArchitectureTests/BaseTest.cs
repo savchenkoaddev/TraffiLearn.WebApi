@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
-using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Infrastructure.Persistence;
+using TraffiLearn.SharedKernel.Primitives;
 
 namespace TraffiLearn.ArchitectureTests
 {

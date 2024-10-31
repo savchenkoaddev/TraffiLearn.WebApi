@@ -1,6 +1,6 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Directories.DTO;
-using Directory = TraffiLearn.Domain.Aggregates.Directories.Directory;
+using Directory = TraffiLearn.Domain.Directories.Directory;
 
 namespace TraffiLearn.Application.Directories.Mappers
 {

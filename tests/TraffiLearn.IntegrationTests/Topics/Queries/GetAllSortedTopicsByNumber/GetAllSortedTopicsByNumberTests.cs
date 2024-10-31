@@ -1,5 +1,5 @@
 ﻿using TraffiLearn.Application.Topics.Commands.Create;
-using TraffiLearn.Domain.Aggregates.Users.Roles;
+using TraffiLearn.Domain.Users.Roles;
 using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;
 

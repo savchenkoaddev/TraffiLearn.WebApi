@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TraffiLearn.Domain.Aggregates.Routes;
-using TraffiLearn.Domain.Aggregates.Routes.RouteDescriptions;
-using TraffiLearn.Domain.Aggregates.Routes.RouteNumbers;
-using TraffiLearn.Domain.Common.ImageUris;
+using TraffiLearn.Domain.Routes;
+using TraffiLearn.Domain.Routes.RouteDescriptions;
+using TraffiLearn.Domain.Routes.RouteNumbers;
+using TraffiLearn.SharedKernel.ValueObjects.ImageUris;
 
 namespace TraffiLearn.Infrastructure.Persistence.Configurations
 {

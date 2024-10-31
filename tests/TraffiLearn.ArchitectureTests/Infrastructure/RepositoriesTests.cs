@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using NetArchTest.Rules;
 using System.Reflection;
-using TraffiLearn.Domain.Primitives;
+using TraffiLearn.SharedKernel.Primitives;
 
 namespace TraffiLearn.ArchitectureTests.Infrastructure
 {
