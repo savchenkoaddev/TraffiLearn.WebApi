@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Npgsql;
+using Quartz.Spi;
+using Quartz;
 using Respawn;
 using System.Data.Common;
 using Testcontainers.Azurite;
@@ -21,6 +23,7 @@ using TraffiLearn.Infrastructure.External.Blobs.Options;
 using TraffiLearn.Infrastructure.Persistence;
 using TraffiLearn.IntegrationTests.Helpers;
 using TraffiLearn.WebAPI;
+using TraffiLearn.Infrastructure.BackgroundJobs;
 
 namespace TraffiLearn.IntegrationTests.Abstractions
 {
@@ -58,6 +61,8 @@ namespace TraffiLearn.IntegrationTests.Abstractions
                 RegisterTestingMemoryCache(services);
 
                 services.RemoveAll(typeof(BlobServiceClient));
+
+                services.RemoveAll(typeof(ProcessOutboxMessagesJob));
 
                 services.AddSingleton((serviceProvider) =>
                 {
