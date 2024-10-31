@@ -39,4 +39,8 @@
 	  </AssemblyAttribute>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="BackgroundJobs\" />
+  </ItemGroup>
+
 </Project>
