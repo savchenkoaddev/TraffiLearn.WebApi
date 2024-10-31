@@ -6,6 +6,7 @@ using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Users.Identity;
 using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Aggregates.Users.DomainEvents;
+using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 
 namespace TraffiLearn.Application.Auth.Events
 {
@@ -35,19 +36,19 @@ namespace TraffiLearn.Application.Auth.Events
             CancellationToken cancellationToken)
         {
             var identityUser = await _identityService.GetByEmailAsync(
-                notification.Email);
+                Email.Create(notification.Email).Value);
 
             if (identityUser is null)
             {
                 _logger.LogError(
                     "Identity user with the {email} is not found.",
-                    notification.Email.Value);
+                    notification.Email);
 
                 return;
             }
 
-            string recipientEmail = notification.Email.Value;
-            string userId = notification.UserId.Value.ToString();
+            string recipientEmail = notification.Email;
+            string userId = notification.UserId.ToString();
 
             await _emailService.SendConfirmationEmailAsync(
                 recipientEmail: recipientEmail,

@@ -26,6 +26,8 @@ namespace TraffiLearn.Infrastructure.Persistence.Interceptors
 
             var domainEvents = SelectDomainEvents(entitiesWithDomainEvents);
 
+            ClearDomainEvents(entitiesWithDomainEvents);
+
             var outboxMessages = ConvertDomainEventsToOutboxMessages(domainEvents);
 
             await dbContext.Set<OutboxMessage>().AddRangeAsync(outboxMessages);
@@ -48,6 +50,15 @@ namespace TraffiLearn.Infrastructure.Persistence.Interceptors
             return entitiesWithDomainEvents
                 .SelectMany(entry => entry.DomainEvents)
                 .ToList();
+        }
+
+        private static void ClearDomainEvents(
+            List<IHasDomainEvents> entitiesWithDomainEvents)
+        {
+            foreach (var entity in entitiesWithDomainEvents)
+            {
+                entity.ClearDomainEvents();
+            }
         }
 
         private static List<OutboxMessage> ConvertDomainEventsToOutboxMessages(

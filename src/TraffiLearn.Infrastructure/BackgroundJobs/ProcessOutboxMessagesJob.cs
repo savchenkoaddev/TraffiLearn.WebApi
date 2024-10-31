@@ -37,11 +37,13 @@ namespace TraffiLearn.Infrastructure.BackgroundJobs
             {
                 var messages = await GetOutboxMessagesAsync(
                     context.CancellationToken);
+                _logger.LogInformation("Retrieved {MessageCount} outbox messages to process.", messages.Count);
 
                 await ProcessOutboxMessages(
                     messages, context.CancellationToken);
 
                 await _dbContext.SaveChangesAsync();
+                _logger.LogInformation("Successfully saved changes to the database.");
             }
             catch (DbUpdateException dbEx)
             {
@@ -59,27 +61,77 @@ namespace TraffiLearn.Infrastructure.BackgroundJobs
             List<OutboxMessage> messages,
             CancellationToken cancellationToken)
         {
+            if (messages.Count == 0)
+            {
+                _logger.LogInformation("No messages to process.");
+
+                return;
+            }
+
+            var publishTasks = new List<Task>();
+
             foreach (var message in messages)
             {
-                DomainEvent? domainEvent = JsonConvert
-                    .DeserializeObject<DomainEvent>(message.Content);
+                DomainEvent? domainEvent = DeserializeDomainEvent(message.Content);
 
                 if (domainEvent is null)
                 {
+                    _logger.LogError("Deserialization failed for message ID {MessageId}.", message.Id);
+
                     continue;
                 }
 
-                await _publisher.Publish(
-                    domainEvent,
-                    cancellationToken);
+                _logger.LogInformation("Publishing message ID {MessageId} of type {EventType}.", message.Id, domainEvent.GetType().Name);
 
-                message.ProcessedOnUtc = DateTime.UtcNow;
+                var publishTask = PublishDomainEvent(
+                    message, domainEvent, cancellationToken);
+
+                publishTasks.Add(publishTask);
             }
+
+            await Task.WhenAll(publishTasks);
+            _logger.LogInformation("Completed processing of {MessageCount} outbox messages.", messages.Count);
+        }
+
+        private Task PublishDomainEvent(
+            OutboxMessage message, 
+            DomainEvent domainEvent, 
+            CancellationToken cancellationToken)
+        {
+            return _publisher.Publish(
+                domainEvent,
+                cancellationToken)
+                .ContinueWith(task =>
+                {
+                    if (task.IsCompletedSuccessfully)
+                    {
+                        message.ProcessedOnUtc = DateTime.UtcNow;
+
+                        _logger.LogInformation("Message ID {MessageId} successfully processed.", message.Id);
+                    }
+                    else if (task.IsFaulted)
+                    {
+                        _logger.LogError(task.Exception, "Error processing message ID {MessageId}.", message.Id);
+                    }
+                }, cancellationToken);
+        }
+
+        private static DomainEvent? DeserializeDomainEvent(string content)
+        {
+            return JsonConvert
+                .DeserializeObject<DomainEvent>(
+                    content,
+                    new JsonSerializerSettings()
+                    {
+                        TypeNameHandling = TypeNameHandling.All,
+                    });
         }
 
         private Task<List<OutboxMessage>> GetOutboxMessagesAsync(
             CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Fetching outbox messages with a batch size of {BatchSize}.", _outboxSettings.BatchSize);
+
             return _dbContext.OutboxMessages
                 .Where(m => m.ProcessedOnUtc == null)
                 .Take(_outboxSettings.BatchSize)
