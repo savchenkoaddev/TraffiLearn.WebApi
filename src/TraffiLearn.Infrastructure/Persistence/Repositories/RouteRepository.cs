@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TraffiLearn.Domain.Aggregates.Routes;
-using TraffiLearn.Domain.Aggregates.Routes.ValueObjects;
-using TraffiLearn.Domain.Aggregates.ServiceCenters.ValueObjects;
+using TraffiLearn.Domain.Aggregates.ServiceCenters;
 
 namespace TraffiLearn.Infrastructure.Persistence.Repositories
 {
@@ -75,7 +74,7 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
         }
 
         public async Task<Route?> GetByIdWithServiceCenterAsync(
-            RouteId routeId, 
+            RouteId routeId,
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Routes

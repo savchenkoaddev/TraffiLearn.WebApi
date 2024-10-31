@@ -1,7 +1,7 @@
-﻿using TraffiLearn.Domain.Aggregates.Common.ImageUri;
-using TraffiLearn.Domain.Aggregates.Questions;
-using TraffiLearn.Domain.Aggregates.Topics.Errors;
-using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
+﻿using TraffiLearn.Domain.Aggregates.Questions;
+using TraffiLearn.Domain.Aggregates.Topics.TopicNumbers;
+using TraffiLearn.Domain.Aggregates.Topics.TopicTitles;
+using TraffiLearn.Domain.Common.ImageUris;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 

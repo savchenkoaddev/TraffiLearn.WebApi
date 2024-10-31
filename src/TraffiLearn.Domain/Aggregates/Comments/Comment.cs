@@ -1,5 +1,4 @@
-﻿using TraffiLearn.Domain.Aggregates.Comments.Errors;
-using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
+﻿using TraffiLearn.Domain.Aggregates.Comments.CommentContents;
 using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Primitives;

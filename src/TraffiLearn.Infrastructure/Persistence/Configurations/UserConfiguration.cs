@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TraffiLearn.Domain.Aggregates.Users;
-using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Users.Emails;
+using TraffiLearn.Domain.Aggregates.Users.Usernames;
 
 namespace TraffiLearn.Infrastructure.Persistence.Configurations
 {

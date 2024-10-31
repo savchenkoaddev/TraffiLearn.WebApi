@@ -1,8 +1,9 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Auth.Commands.RegisterUser;
 using TraffiLearn.Domain.Aggregates.Users;
-using TraffiLearn.Domain.Aggregates.Users.Enums;
-using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Users.Emails;
+using TraffiLearn.Domain.Aggregates.Users.Roles;
+using TraffiLearn.Domain.Aggregates.Users.Usernames;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Auth.Mappers

@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using TraffiLearn.Application.Validators;
-using TraffiLearn.Domain.Aggregates.Routes.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Routes.RouteDescriptions;
+using TraffiLearn.Domain.Aggregates.Routes.RouteNumbers;
 
 namespace TraffiLearn.Application.Routes.Commands.Update
 {

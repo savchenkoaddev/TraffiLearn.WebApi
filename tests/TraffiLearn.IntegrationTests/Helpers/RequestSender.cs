@@ -4,7 +4,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
-using TraffiLearn.Domain.Aggregates.Users.Enums;
+using TraffiLearn.Domain.Aggregates.Users.Roles;
 using TraffiLearn.IntegrationTests.Auth;
 using TraffiLearn.IntegrationTests.Builders;
 using TraffiLearn.IntegrationTests.Extensions;

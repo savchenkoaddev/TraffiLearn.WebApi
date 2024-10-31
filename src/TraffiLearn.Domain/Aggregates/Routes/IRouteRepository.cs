@@ -1,5 +1,4 @@
-﻿using TraffiLearn.Domain.Aggregates.Routes.ValueObjects;
-using TraffiLearn.Domain.Aggregates.ServiceCenters.ValueObjects;
+﻿using TraffiLearn.Domain.Aggregates.ServiceCenters;
 
 namespace TraffiLearn.Domain.Aggregates.Routes
 {

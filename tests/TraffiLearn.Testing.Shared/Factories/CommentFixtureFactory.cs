@@ -1,5 +1,5 @@
 ﻿using TraffiLearn.Domain.Aggregates.Comments;
-using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Comments.CommentContents;
 
 namespace TraffiLearn.Testing.Shared.Factories
 {

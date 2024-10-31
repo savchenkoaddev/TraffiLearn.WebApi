@@ -33,7 +33,7 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
             return services.RegisterInterceptor
                 <ConvertDomainEventsToOutboxMessagesInterceptor>();
         }
-         
+
         private static IServiceCollection RegisterInterceptor<TInterceptor>(
             this IServiceCollection services)
             where TInterceptor : class, IInterceptor

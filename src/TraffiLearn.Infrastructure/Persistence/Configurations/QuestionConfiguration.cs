@@ -1,8 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TraffiLearn.Domain.Aggregates.Common.ImageUri;
 using TraffiLearn.Domain.Aggregates.Questions;
-using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Questions.Answers;
+using TraffiLearn.Domain.Aggregates.Questions.QuestionContents;
+using TraffiLearn.Domain.Aggregates.Questions.QuestionExplanations;
+using TraffiLearn.Domain.Aggregates.Questions.QuestionNumbers;
+using TraffiLearn.Domain.Common.ImageUris;
 
 namespace TraffiLearn.Infrastructure.Persistence.Configurations
 {

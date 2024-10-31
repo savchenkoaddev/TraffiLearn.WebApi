@@ -1,6 +1,4 @@
-﻿using TraffiLearn.Domain.Aggregates.Directories.ValueObjects.Directories;
-
-namespace TraffiLearn.Domain.Aggregates.Directories
+﻿namespace TraffiLearn.Domain.Aggregates.Directories
 {
     public interface IDirectoryRepository
     {

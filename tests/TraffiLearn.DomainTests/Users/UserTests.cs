@@ -1,8 +1,7 @@
 ﻿using FluentAssertions;
 using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Aggregates.Users.DomainEvents;
-using TraffiLearn.Domain.Aggregates.Users.Enums;
-using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Users.Roles;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Testing.Shared.Factories;

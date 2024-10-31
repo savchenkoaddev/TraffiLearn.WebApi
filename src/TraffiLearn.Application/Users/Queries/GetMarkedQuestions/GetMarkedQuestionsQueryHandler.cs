@@ -5,7 +5,6 @@ using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Questions.DTO;
 using TraffiLearn.Domain.Aggregates.Questions;
 using TraffiLearn.Domain.Aggregates.Users;
-using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Users.Queries.GetMarkedQuestions

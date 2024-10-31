@@ -1,8 +1,11 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Directories.Commands.Update;
 using TraffiLearn.Application.Directories.DTO;
-using TraffiLearn.Domain.Aggregates.Directories.ValueObjects.Directories;
-using TraffiLearn.Domain.Aggregates.Directories.ValueObjects.Sections;
+using TraffiLearn.Domain.Aggregates.Directories;
+using TraffiLearn.Domain.Aggregates.Directories.DirectoryNames;
+using TraffiLearn.Domain.Aggregates.Directories.DirectorySections;
+using TraffiLearn.Domain.Aggregates.Directories.DirectorySections.SectionContents;
+using TraffiLearn.Domain.Aggregates.Directories.DirectorySections.SectionNames;
 using TraffiLearn.Domain.Shared;
 using Directory = TraffiLearn.Domain.Aggregates.Directories.Directory;
 

@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TraffiLearn.Domain.Aggregates.Regions.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Regions;
 using TraffiLearn.Domain.Aggregates.ServiceCenters;
-using TraffiLearn.Domain.Aggregates.ServiceCenters.ValueObjects;
 
 namespace TraffiLearn.Infrastructure.Persistence.Repositories
 {
@@ -75,7 +74,7 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
         }
 
         public async Task<bool> ExistsAsync(
-            ServiceCenterId serviceCenterId, 
+            ServiceCenterId serviceCenterId,
             CancellationToken cancellationToken = default)
         {
             return await GetByIdAsync(serviceCenterId, cancellationToken) is not null;

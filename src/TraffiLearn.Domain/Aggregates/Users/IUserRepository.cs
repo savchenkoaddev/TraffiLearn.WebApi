@@ -1,4 +1,5 @@
-﻿using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
+﻿using TraffiLearn.Domain.Aggregates.Users.Emails;
+using TraffiLearn.Domain.Aggregates.Users.Usernames;
 using TraffiLearn.Domain.Primitives;
 
 namespace TraffiLearn.Domain.Aggregates.Users

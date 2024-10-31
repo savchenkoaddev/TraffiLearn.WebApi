@@ -6,7 +6,7 @@ using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Users.Identity;
 using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Aggregates.Users.DomainEvents;
-using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Users.Emails;
 
 namespace TraffiLearn.Application.Auth.Events
 {

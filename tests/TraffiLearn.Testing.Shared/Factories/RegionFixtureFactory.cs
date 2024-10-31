@@ -1,5 +1,5 @@
 ﻿using TraffiLearn.Domain.Aggregates.Regions;
-using TraffiLearn.Domain.Aggregates.Regions.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Regions.RegionNames;
 
 namespace TraffiLearn.Testing.Shared.Factories
 {

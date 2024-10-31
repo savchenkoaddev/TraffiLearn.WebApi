@@ -1,6 +1,5 @@
 ﻿using TraffiLearn.Domain.Aggregates.Questions;
-using TraffiLearn.Domain.Aggregates.Tickets.Errors;
-using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Tickets.TicketNumbers;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 

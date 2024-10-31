@@ -3,8 +3,9 @@ using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Users.Identity;
 using TraffiLearn.Domain.Aggregates.Users;
-using TraffiLearn.Domain.Aggregates.Users.Enums;
-using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Users.Emails;
+using TraffiLearn.Domain.Aggregates.Users.Roles;
+using TraffiLearn.Domain.Aggregates.Users.Usernames;
 using TraffiLearn.WebAPI.Options;
 
 namespace TraffiLearn.WebAPI.Extensions

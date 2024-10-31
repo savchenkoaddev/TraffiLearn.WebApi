@@ -1,11 +1,7 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Domain.Aggregates.Regions;
-using TraffiLearn.Domain.Aggregates.Regions.Errors;
-using TraffiLearn.Domain.Aggregates.Regions.ValueObjects;
 using TraffiLearn.Domain.Aggregates.ServiceCenters;
-using TraffiLearn.Domain.Aggregates.ServiceCenters.Errors;
-using TraffiLearn.Domain.Aggregates.ServiceCenters.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.ServiceCenters.Commands.Update
@@ -19,7 +15,7 @@ namespace TraffiLearn.Application.ServiceCenters.Commands.Update
         private readonly IUnitOfWork _unitOfWork;
 
         public UpdateServiceCenterCommandHandler(
-            IServiceCenterRepository serviceCenterRepository, 
+            IServiceCenterRepository serviceCenterRepository,
             IRegionRepository regionRepository,
             Mapper<UpdateServiceCenterCommand, Result<ServiceCenter>> requestMapper,
             IUnitOfWork unitOfWork)
@@ -31,7 +27,7 @@ namespace TraffiLearn.Application.ServiceCenters.Commands.Update
         }
 
         public async Task<Result> Handle(
-            UpdateServiceCenterCommand request, 
+            UpdateServiceCenterCommand request,
             CancellationToken cancellationToken)
         {
             var mappingResult = _requestMapper.Map(request);

@@ -3,11 +3,7 @@ using Microsoft.AspNetCore.Http;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Storage;
 using TraffiLearn.Domain.Aggregates.Routes;
-using TraffiLearn.Domain.Aggregates.Routes.Errors;
-using TraffiLearn.Domain.Aggregates.Routes.ValueObjects;
 using TraffiLearn.Domain.Aggregates.ServiceCenters;
-using TraffiLearn.Domain.Aggregates.ServiceCenters.Errors;
-using TraffiLearn.Domain.Aggregates.ServiceCenters.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Routes.Commands.Update
@@ -22,10 +18,10 @@ namespace TraffiLearn.Application.Routes.Commands.Update
         private readonly IUnitOfWork _unitOfWork;
 
         public UpdateRouteCommandHandler(
-            IRouteRepository routeRepository, 
-            IServiceCenterRepository serviceCenterRepository, 
-            IImageService imageService, 
-            Mapper<UpdateRouteCommand, Result<Route>> requestMapper, 
+            IRouteRepository routeRepository,
+            IServiceCenterRepository serviceCenterRepository,
+            IImageService imageService,
+            Mapper<UpdateRouteCommand, Result<Route>> requestMapper,
             IUnitOfWork unitOfWork)
         {
             _routeRepository = routeRepository;
@@ -36,7 +32,7 @@ namespace TraffiLearn.Application.Routes.Commands.Update
         }
 
         public async Task<Result> Handle(
-            UpdateRouteCommand request, 
+            UpdateRouteCommand request,
             CancellationToken cancellationToken)
         {
             var mappingResult = _requestMapper.Map(request);
@@ -69,7 +65,7 @@ namespace TraffiLearn.Application.Routes.Commands.Update
             var newRoute = mappingResult.Value;
 
             var updateResult = UpdateExistingRoute(
-                route: route, 
+                route: route,
                 newRoute: newRoute);
 
             if (updateResult.IsFailure)
@@ -97,7 +93,7 @@ namespace TraffiLearn.Application.Routes.Commands.Update
         }
 
         private async Task UpdateRouteImage(
-            Route route, 
+            Route route,
             IFormFile image,
             CancellationToken cancellationToken)
         {
@@ -127,7 +123,7 @@ namespace TraffiLearn.Application.Routes.Commands.Update
         }
 
         private async Task<Result> UpdateRouteServiceCenter(
-            Route route, 
+            Route route,
             ServiceCenter serviceCenter)
         {
             var setResult = route.SetServiceCenter(serviceCenter);

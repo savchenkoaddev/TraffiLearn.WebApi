@@ -1,8 +1,6 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Domain.Aggregates.Directories;
-using TraffiLearn.Domain.Aggregates.Directories.Errors.Directories;
-using TraffiLearn.Domain.Aggregates.Directories.ValueObjects.Directories;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Directories.Commands.Delete

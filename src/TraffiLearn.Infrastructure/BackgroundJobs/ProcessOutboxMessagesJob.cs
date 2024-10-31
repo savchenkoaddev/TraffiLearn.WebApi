@@ -94,8 +94,8 @@ namespace TraffiLearn.Infrastructure.BackgroundJobs
         }
 
         private Task PublishDomainEvent(
-            OutboxMessage message, 
-            DomainEvent domainEvent, 
+            OutboxMessage message,
+            DomainEvent domainEvent,
             CancellationToken cancellationToken)
         {
             return _publisher.Publish(

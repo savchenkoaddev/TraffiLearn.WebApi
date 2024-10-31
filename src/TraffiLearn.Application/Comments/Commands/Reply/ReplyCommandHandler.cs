@@ -3,8 +3,7 @@ using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Domain.Aggregates.Comments;
-using TraffiLearn.Domain.Aggregates.Comments.Errors;
-using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Comments.CommentContents;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Comments.Commands.Reply

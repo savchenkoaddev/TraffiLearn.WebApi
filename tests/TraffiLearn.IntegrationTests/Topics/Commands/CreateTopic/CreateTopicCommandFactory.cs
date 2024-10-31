@@ -1,5 +1,5 @@
 ﻿using TraffiLearn.Application.Topics.Commands.Create;
-using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Topics.TopicTitles;
 
 namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
 {

@@ -1,6 +1,9 @@
 ﻿using FluentAssertions;
 using TraffiLearn.Domain.Aggregates.Questions;
-using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Questions.Answers;
+using TraffiLearn.Domain.Aggregates.Questions.QuestionContents;
+using TraffiLearn.Domain.Aggregates.Questions.QuestionExplanations;
+using TraffiLearn.Domain.Aggregates.Questions.QuestionNumbers;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Testing.Shared.Factories;
@@ -204,11 +207,11 @@ namespace TraffiLearn.DomainTests.Questions
             var question = QuestionFixtureFactory.CreateQuestion();
 
             var result = question.Update(
-                        QuestionFixtureFactory.CreateContent(),
-                        QuestionFixtureFactory.CreateExplanation(),
-                        QuestionFixtureFactory.CreateNumber(),
-                        QuestionFixtureFactory.CreateAnswers(),
-                        null);
+                QuestionFixtureFactory.CreateContent(),
+                QuestionFixtureFactory.CreateExplanation(),
+                QuestionFixtureFactory.CreateNumber(),
+                QuestionFixtureFactory.CreateAnswers(),
+                null);
 
             result.IsSuccess.Should().BeTrue();
             question.ImageUri.Should().BeNull();

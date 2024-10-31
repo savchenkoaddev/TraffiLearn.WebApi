@@ -2,8 +2,6 @@
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Tickets.DTO;
 using TraffiLearn.Domain.Aggregates.Questions;
-using TraffiLearn.Domain.Aggregates.Questions.Errors;
-using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
 using TraffiLearn.Domain.Aggregates.Tickets;
 using TraffiLearn.Domain.Shared;
 

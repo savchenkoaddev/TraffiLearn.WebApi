@@ -1,7 +1,8 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Topics.Commands.Update;
 using TraffiLearn.Domain.Aggregates.Topics;
-using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Topics.TopicNumbers;
+using TraffiLearn.Domain.Aggregates.Topics.TopicTitles;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Topics.Mappers
@@ -30,7 +31,7 @@ namespace TraffiLearn.Application.Topics.Mappers
             return Topic.Create(
                 topicId: topicId,
                 number: topicNumberResult.Value,
-                title: topicTitleResult.Value, 
+                title: topicTitleResult.Value,
                 imageUri: null);
         }
     }

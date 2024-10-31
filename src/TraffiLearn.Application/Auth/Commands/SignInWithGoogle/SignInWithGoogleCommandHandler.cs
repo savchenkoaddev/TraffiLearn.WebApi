@@ -5,9 +5,7 @@ using TraffiLearn.Application.Auth.DTO;
 using TraffiLearn.Application.Exceptions;
 using TraffiLearn.Application.Users.Identity;
 using TraffiLearn.Domain.Aggregates.Users;
-using TraffiLearn.Domain.Aggregates.Users.Enums;
-using TraffiLearn.Domain.Aggregates.Users.Errors;
-using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Users.Roles;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Auth.Commands.SignInWithGoogle
@@ -110,12 +108,12 @@ namespace TraffiLearn.Application.Auth.Commands.SignInWithGoogle
             var accessToken = _tokenService.GenerateAccessToken(user);
 
             await _identityService.PopulateRefreshTokenAsync(
-                identityUser, 
+                identityUser,
                 refreshToken: refreshToken);
 
             return new LoginResponse(
-                AccessToken: accessToken, 
-                RefreshToken: refreshToken); 
+                AccessToken: accessToken,
+                RefreshToken: refreshToken);
         }
     }
 }

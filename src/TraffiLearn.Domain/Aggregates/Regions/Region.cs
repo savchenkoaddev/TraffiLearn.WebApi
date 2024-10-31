@@ -1,4 +1,4 @@
-﻿using TraffiLearn.Domain.Aggregates.Regions.ValueObjects;
+﻿using TraffiLearn.Domain.Aggregates.Regions.RegionNames;
 using TraffiLearn.Domain.Aggregates.ServiceCenters;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;

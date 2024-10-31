@@ -14,7 +14,7 @@ namespace TraffiLearn.Infrastructure.Services.Emails
         }
 
         public Task<string> GenerateChangeEmailTokenAsync(
-            ApplicationUser identityUser, 
+            ApplicationUser identityUser,
             string newEmail)
         {
             return _userManager.GenerateChangeEmailTokenAsync(

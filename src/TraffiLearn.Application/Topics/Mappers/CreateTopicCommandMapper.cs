@@ -1,7 +1,8 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Topics.Commands.Create;
 using TraffiLearn.Domain.Aggregates.Topics;
-using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Topics.TopicNumbers;
+using TraffiLearn.Domain.Aggregates.Topics.TopicTitles;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Topics.Mappers

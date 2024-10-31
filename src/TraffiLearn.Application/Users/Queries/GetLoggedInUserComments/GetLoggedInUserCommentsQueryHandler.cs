@@ -5,7 +5,6 @@ using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Comments.DTO;
 using TraffiLearn.Domain.Aggregates.Comments;
 using TraffiLearn.Domain.Aggregates.Users;
-using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Users.Queries.GetLoggedInUserComments

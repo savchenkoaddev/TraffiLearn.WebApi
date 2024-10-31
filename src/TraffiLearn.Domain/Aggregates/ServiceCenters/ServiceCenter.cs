@@ -1,7 +1,7 @@
 ﻿using TraffiLearn.Domain.Aggregates.Regions;
 using TraffiLearn.Domain.Aggregates.Routes;
-using TraffiLearn.Domain.Aggregates.ServiceCenters.Errors;
-using TraffiLearn.Domain.Aggregates.ServiceCenters.ValueObjects;
+using TraffiLearn.Domain.Aggregates.ServiceCenters.Addresses;
+using TraffiLearn.Domain.Aggregates.ServiceCenters.ServiceCenterNumbers;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 
@@ -98,7 +98,7 @@ namespace TraffiLearn.Domain.Aggregates.ServiceCenters
         }
 
         public Result Update(
-            Address address, 
+            Address address,
             ServiceCenterNumber number)
         {
             Address = address;

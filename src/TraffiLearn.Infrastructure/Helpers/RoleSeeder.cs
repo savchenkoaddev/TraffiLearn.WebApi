@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using TraffiLearn.Application.Abstractions.Identity;
-using TraffiLearn.Domain.Aggregates.Users.Enums;
+using TraffiLearn.Domain.Aggregates.Users.Roles;
 
 namespace TraffiLearn.Infrastructure.Helpers
 {

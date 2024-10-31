@@ -1,7 +1,7 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Regions.Commands.Create;
 using TraffiLearn.Domain.Aggregates.Regions;
-using TraffiLearn.Domain.Aggregates.Regions.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Regions.RegionNames;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Regions.Mappers

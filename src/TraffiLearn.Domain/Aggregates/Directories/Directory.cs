@@ -1,6 +1,5 @@
-﻿using TraffiLearn.Domain.Aggregates.Directories.Errors.Directories;
-using TraffiLearn.Domain.Aggregates.Directories.ValueObjects.Directories;
-using TraffiLearn.Domain.Aggregates.Directories.ValueObjects.Sections;
+﻿using TraffiLearn.Domain.Aggregates.Directories.DirectoryNames;
+using TraffiLearn.Domain.Aggregates.Directories.DirectorySections;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 

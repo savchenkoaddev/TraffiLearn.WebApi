@@ -1,4 +1,4 @@
-﻿using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
+﻿using TraffiLearn.Domain.Aggregates.Users.Usernames;
 
 namespace TraffiLearn.Application.Abstractions.Identity
 {

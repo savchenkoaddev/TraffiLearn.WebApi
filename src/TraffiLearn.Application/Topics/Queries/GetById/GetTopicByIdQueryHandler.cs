@@ -2,8 +2,6 @@
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Topics.DTO;
 using TraffiLearn.Domain.Aggregates.Topics;
-using TraffiLearn.Domain.Aggregates.Topics.Errors;
-using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Topics.Queries.GetById

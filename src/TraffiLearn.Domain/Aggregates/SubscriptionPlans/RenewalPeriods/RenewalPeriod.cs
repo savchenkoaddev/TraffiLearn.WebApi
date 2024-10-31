@@ -37,8 +37,8 @@ namespace TraffiLearn.Domain.Aggregates.SubscriptionPlans.RenewalPeriods
             {
                 RenewalPeriodType.Days => Interval,
                 RenewalPeriodType.Weeks => Interval * 7,
-                RenewalPeriodType.Months => Interval * 30, 
-                RenewalPeriodType.Years => Interval * 365, 
+                RenewalPeriodType.Months => Interval * 30,
+                RenewalPeriodType.Years => Interval * 365,
                 _ => throw new InvalidOperationException(
                     "Unsupported RenewalPeriodType.")
             };

@@ -2,7 +2,6 @@
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Directories.DTO;
 using TraffiLearn.Domain.Aggregates.Directories;
-using TraffiLearn.Domain.Aggregates.Directories.Errors.Directories;
 using TraffiLearn.Domain.Shared;
 using Directory = TraffiLearn.Domain.Aggregates.Directories.Directory;
 

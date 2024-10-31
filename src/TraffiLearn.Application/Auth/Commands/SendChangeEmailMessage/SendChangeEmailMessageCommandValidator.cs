@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Users.Emails;
 
 namespace TraffiLearn.Application.Auth.Commands.SendChangeEmailMessage
 {

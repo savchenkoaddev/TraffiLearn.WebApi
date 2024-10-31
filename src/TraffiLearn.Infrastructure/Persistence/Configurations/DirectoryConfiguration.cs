@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TraffiLearn.Domain.Aggregates.Directories.ValueObjects.Directories;
-using TraffiLearn.Domain.Aggregates.Directories.ValueObjects.Sections;
+using TraffiLearn.Domain.Aggregates.Directories;
+using TraffiLearn.Domain.Aggregates.Directories.DirectoryNames;
+using TraffiLearn.Domain.Aggregates.Directories.DirectorySections.SectionContents;
+using TraffiLearn.Domain.Aggregates.Directories.DirectorySections.SectionNames;
 using Directory = TraffiLearn.Domain.Aggregates.Directories.Directory;
 
 namespace TraffiLearn.Infrastructure.Persistence.Configurations

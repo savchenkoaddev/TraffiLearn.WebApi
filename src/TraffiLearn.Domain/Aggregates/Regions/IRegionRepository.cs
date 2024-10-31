@@ -1,6 +1,4 @@
-﻿using TraffiLearn.Domain.Aggregates.Regions.ValueObjects;
-
-namespace TraffiLearn.Domain.Aggregates.Regions
+﻿namespace TraffiLearn.Domain.Aggregates.Regions
 {
     public interface IRegionRepository
     {

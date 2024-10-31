@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
 using TraffiLearn.Application.Validators;
-using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Questions.Answers;
+using TraffiLearn.Domain.Aggregates.Questions.QuestionContents;
+using TraffiLearn.Domain.Aggregates.Questions.QuestionExplanations;
 
 namespace TraffiLearn.Application.Questions.Commands.Create
 {

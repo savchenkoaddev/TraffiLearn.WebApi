@@ -1,8 +1,6 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Domain.Aggregates.ServiceCenters;
-using TraffiLearn.Domain.Aggregates.ServiceCenters.Errors;
-using TraffiLearn.Domain.Aggregates.ServiceCenters.ValueObjects;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.ServiceCenters.Commands.Delete
@@ -14,7 +12,7 @@ namespace TraffiLearn.Application.ServiceCenters.Commands.Delete
         private readonly IUnitOfWork _unitOfWork;
 
         public DeleteServiceCenterCommandHandler(
-            IServiceCenterRepository serviceCenterRepository, 
+            IServiceCenterRepository serviceCenterRepository,
             IUnitOfWork unitOfWork)
         {
             _serviceCenterRepository = serviceCenterRepository;
@@ -22,7 +20,7 @@ namespace TraffiLearn.Application.ServiceCenters.Commands.Delete
         }
 
         public async Task<Result> Handle(
-            DeleteServiceCenterCommand request, 
+            DeleteServiceCenterCommand request,
             CancellationToken cancellationToken)
         {
             var serviceCenterId = new ServiceCenterId(request.ServiceCenterId.Value);

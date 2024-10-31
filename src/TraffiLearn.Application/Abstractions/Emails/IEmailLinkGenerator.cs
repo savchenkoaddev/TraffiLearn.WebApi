@@ -5,8 +5,8 @@
         string GenerateConfirmationLink(string userId, string token);
 
         string GenerateConfirmChangeEmailLink(
-            string userId, 
-            string newEmail, 
+            string userId,
+            string newEmail,
             string token);
 
         string GenerateRecoverPasswordLink(

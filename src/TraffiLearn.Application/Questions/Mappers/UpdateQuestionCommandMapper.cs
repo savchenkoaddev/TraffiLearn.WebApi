@@ -2,7 +2,10 @@
 using TraffiLearn.Application.Questions.Commands.Update;
 using TraffiLearn.Application.Questions.DTO;
 using TraffiLearn.Domain.Aggregates.Questions;
-using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Questions.Answers;
+using TraffiLearn.Domain.Aggregates.Questions.QuestionContents;
+using TraffiLearn.Domain.Aggregates.Questions.QuestionExplanations;
+using TraffiLearn.Domain.Aggregates.Questions.QuestionNumbers;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Questions.Mappers

@@ -1,6 +1,7 @@
 using FluentAssertions;
 using TraffiLearn.Domain.Aggregates.Topics;
-using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Topics.TopicNumbers;
+using TraffiLearn.Domain.Aggregates.Topics.TopicTitles;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 using TraffiLearn.Testing.Shared.Factories;

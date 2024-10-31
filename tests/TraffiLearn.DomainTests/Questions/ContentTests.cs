@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using System.Reflection;
-using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Questions.QuestionContents;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 

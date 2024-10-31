@@ -1,8 +1,8 @@
-﻿using TraffiLearn.Domain.Aggregates.Common.Price;
-using TraffiLearn.Domain.Aggregates.SubscriptionPlans.PlanDescriptions;
+﻿using TraffiLearn.Domain.Aggregates.SubscriptionPlans.PlanDescriptions;
 using TraffiLearn.Domain.Aggregates.SubscriptionPlans.PlanFeatures;
 using TraffiLearn.Domain.Aggregates.SubscriptionPlans.PlanTiers;
 using TraffiLearn.Domain.Aggregates.SubscriptionPlans.RenewalPeriods;
+using TraffiLearn.Domain.Common.Prices;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 
@@ -115,8 +115,8 @@ namespace TraffiLearn.Domain.Aggregates.SubscriptionPlans
 
             return new SubscriptionPlan(
                 id,
-                tier, 
-                description, 
+                tier,
+                description,
                 price,
                 renewalPeriod,
                 features);

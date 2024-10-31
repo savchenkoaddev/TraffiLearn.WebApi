@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using System.Reflection;
-using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Comments.CommentContents;
 using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Domain.Shared;
 

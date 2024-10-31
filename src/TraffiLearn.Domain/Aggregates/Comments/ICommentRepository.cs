@@ -1,6 +1,5 @@
-﻿using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
-using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
-using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
+﻿using TraffiLearn.Domain.Aggregates.Questions;
+using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Primitives;
 
 namespace TraffiLearn.Domain.Aggregates.Comments

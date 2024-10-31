@@ -1,5 +1,6 @@
 ﻿using TraffiLearn.Domain.Aggregates.Topics;
-using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Topics.TopicNumbers;
+using TraffiLearn.Domain.Aggregates.Topics.TopicTitles;
 
 namespace TraffiLearn.Testing.Shared.Factories
 {

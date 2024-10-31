@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
-using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Users.Emails;
+using TraffiLearn.Domain.Aggregates.Users.Usernames;
 
 namespace TraffiLearn.Application.Auth.Commands.RegisterUser
 {

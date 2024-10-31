@@ -5,9 +5,7 @@ using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Exceptions;
 using TraffiLearn.Application.Users.Identity;
 using TraffiLearn.Domain.Aggregates.Users;
-using TraffiLearn.Domain.Aggregates.Users.Enums;
-using TraffiLearn.Domain.Aggregates.Users.Errors;
-using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Users.Roles;
 using TraffiLearn.Domain.Shared;
 
 namespace TraffiLearn.Application.Auth.Commands.RemoveAdminAccount

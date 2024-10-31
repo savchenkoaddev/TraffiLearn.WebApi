@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TraffiLearn.Domain.Aggregates.Users;
-using TraffiLearn.Domain.Aggregates.Users.Enums;
-using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
+using TraffiLearn.Domain.Aggregates.Users.Emails;
+using TraffiLearn.Domain.Aggregates.Users.Roles;
+using TraffiLearn.Domain.Aggregates.Users.Usernames;
 
 namespace TraffiLearn.Infrastructure.Persistence.Repositories
 {
