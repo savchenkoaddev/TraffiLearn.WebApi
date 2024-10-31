@@ -11,6 +11,7 @@ using TraffiLearn.Domain.Aggregates.Tickets;
 using TraffiLearn.Domain.Aggregates.Topics;
 using TraffiLearn.Domain.Aggregates.Users;
 using TraffiLearn.Domain.Primitives;
+using TraffiLearn.Infrastructure.Persistence.Outbox;
 using Directory = TraffiLearn.Domain.Aggregates.Directories.Directory;
 
 namespace TraffiLearn.Infrastructure.Persistence
@@ -22,6 +23,8 @@ namespace TraffiLearn.Infrastructure.Persistence
             DbContextOptions<ApplicationDbContext> options)
             : base(options)
         { }
+
+        public DbSet<OutboxMessage> OutboxMessages { get; init; }
 
         public DbSet<Question> Questions { get; init; }
 
