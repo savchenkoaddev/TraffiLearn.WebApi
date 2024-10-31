@@ -26,6 +26,8 @@
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="8.0.10" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.10" />
+    <PackageReference Include="Quartz" Version="3.13.0" />
+    <PackageReference Include="Quartz.Extensions.Hosting" Version="3.13.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,10 +39,6 @@
 	  <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
 		  <_Parameter1>TraffiLearn.UnitTests</_Parameter1>
 	  </AssemblyAttribute>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="BackgroundJobs\" />
   </ItemGroup>
 
 </Project>

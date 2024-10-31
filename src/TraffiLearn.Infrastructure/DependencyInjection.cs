@@ -14,6 +14,8 @@ namespace TraffiLearn.Infrastructure
 
             services.AddInfrastructureServices();
 
+            services.AddBackgroundJobs();
+
             services.AddPersistence();
 
             services.AddRepositories();

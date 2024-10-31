@@ -67,7 +67,7 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
             IServiceProvider serviceProvider)
         {
             var publishDomainEventsInterceptor = serviceProvider
-                .GetRequiredService<PublishDomainEventsInterceptor>();
+                .GetRequiredService<ConvertDomainEventsToOutboxMessagesInterceptor>();
 
             return options.AddInterceptors(publishDomainEventsInterceptor);
         }
