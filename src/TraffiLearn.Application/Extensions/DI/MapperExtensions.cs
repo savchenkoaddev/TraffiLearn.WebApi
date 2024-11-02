@@ -24,6 +24,8 @@ using TraffiLearn.Application.ServiceCenters.Commands.Create;
 using TraffiLearn.Application.ServiceCenters.Commands.Update;
 using TraffiLearn.Application.ServiceCenters.DTO;
 using TraffiLearn.Application.ServiceCenters.Mappers;
+using TraffiLearn.Application.SubscriptionPlans.DTO;
+using TraffiLearn.Application.SubscriptionPlans.Mappers;
 using TraffiLearn.Application.Tickets.Commands.Create;
 using TraffiLearn.Application.Tickets.DTO;
 using TraffiLearn.Application.Tickets.Mappers;
@@ -39,6 +41,7 @@ using TraffiLearn.Domain.Questions;
 using TraffiLearn.Domain.Regions;
 using TraffiLearn.Domain.Routes;
 using TraffiLearn.Domain.ServiceCenters;
+using TraffiLearn.Domain.SubscriptionPlans;
 using TraffiLearn.Domain.Tickets;
 using TraffiLearn.Domain.Topics;
 using TraffiLearn.Domain.Users;
@@ -83,6 +86,7 @@ namespace TraffiLearn.Application.Extensions.DI
             services.AddMapper<Directory, DirectoryResponse, DirectoryToDirectoryResponseMapper>();
             services.AddMapper<CreateDirectoryCommand, Result<Directory>, CreateDirectoryCommandMapper>();
             services.AddMapper<UpdateDirectoryCommand, Result<Directory>, UpdateDirectoryCommandMapper>();
+            services.AddMapper<SubscriptionPlan, SubscriptionPlanResponse, SubscriptionPlanEntityToResponseMapper>();
 
             return services;
         }
