@@ -10,7 +10,7 @@ namespace TraffiLearn.Domain.SubscriptionPlans
                 description: "Subscription plan should have at least one feature.");
 
         public static readonly Error NotFound =
-            Error.Validation(
+            Error.NotFound(
                 code: "SubscriptionPlan.NotFound",
                 description: "A subscription plan with the provided id has not been found.");
 
