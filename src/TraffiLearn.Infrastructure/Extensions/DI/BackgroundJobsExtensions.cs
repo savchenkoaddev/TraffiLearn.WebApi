@@ -13,24 +13,36 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
         {
             var outboxSettings = services.BuildServiceProvider().GetOptions<OutboxSettings>();
 
-            services.AddQuartz(configure =>
+            services.AddQuartz(configurator =>
             {
-                var jobKey = new JobKey(nameof(ProcessOutboxMessagesJob));
+                var scheduler = Guid.NewGuid();
 
-                configure
-                    .AddJob<ProcessOutboxMessagesJob>(jobKey)
-                    .AddTrigger(
-                        trigger => trigger.ForJob(jobKey)
-                            .WithSimpleSchedule(
-                                schedule => schedule
-                                    .WithIntervalInSeconds(
-                                        outboxSettings.ProcessIntervalInSeconds)
-                                    .RepeatForever()));
+                configurator.SchedulerId = $"default-id-{scheduler}";
+                configurator.SchedulerName = $"default-name-{scheduler}";
+
+                ConfigureProcessOutboxMessagesJob(configurator, outboxSettings);
             });
 
             services.AddQuartzHostedService();
 
             return services;
+        }
+
+        private static void ConfigureProcessOutboxMessagesJob(
+            IServiceCollectionQuartzConfigurator configurator, 
+            OutboxSettings outboxSettings)
+        {
+            var jobKey = new JobKey(nameof(ProcessOutboxMessagesJob));
+
+            configurator
+                .AddJob<ProcessOutboxMessagesJob>(jobKey)
+                .AddTrigger(
+                    trigger => trigger.ForJob(jobKey)
+                        .WithSimpleSchedule(
+                            schedule => schedule
+                                .WithIntervalInSeconds(
+                                    outboxSettings.ProcessIntervalInSeconds)
+                                .RepeatForever()));
         }
     }
 }

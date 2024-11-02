@@ -24,6 +24,8 @@ using TraffiLearn.Infrastructure.Persistence;
 using TraffiLearn.IntegrationTests.Helpers;
 using TraffiLearn.WebAPI;
 using TraffiLearn.Infrastructure.BackgroundJobs;
+using Quartz.Impl;
+using Microsoft.Extensions.Hosting;
 
 namespace TraffiLearn.IntegrationTests.Abstractions
 {
@@ -62,7 +64,8 @@ namespace TraffiLearn.IntegrationTests.Abstractions
 
                 services.RemoveAll(typeof(BlobServiceClient));
 
-                services.RemoveAll(typeof(ProcessOutboxMessagesJob));
+                services.RemoveAll<QuartzHostedService>();
+                services.RemoveAll<IHostedService>();
 
                 services.AddSingleton((serviceProvider) =>
                 {
