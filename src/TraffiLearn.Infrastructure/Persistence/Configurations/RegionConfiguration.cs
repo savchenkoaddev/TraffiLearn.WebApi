@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TraffiLearn.Domain.Aggregates.Regions;
-using TraffiLearn.Domain.Aggregates.Regions.ValueObjects;
+using TraffiLearn.Domain.Regions;
+using TraffiLearn.Domain.Regions.RegionNames;
 
 namespace TraffiLearn.Infrastructure.Persistence.Configurations
 {

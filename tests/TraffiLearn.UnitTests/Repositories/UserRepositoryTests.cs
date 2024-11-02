@@ -1,9 +1,10 @@
 ﻿using FluentAssertions;
-using TraffiLearn.Domain.Aggregates.Comments;
-using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
-using TraffiLearn.Domain.Aggregates.Users;
-using TraffiLearn.Domain.Aggregates.Users.Enums;
-using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
+using TraffiLearn.Domain.Comments;
+using TraffiLearn.Domain.Comments.CommentContents;
+using TraffiLearn.Domain.Users;
+using TraffiLearn.Domain.Users.Emails;
+using TraffiLearn.Domain.Users.Roles;
+using TraffiLearn.Domain.Users.Usernames;
 using TraffiLearn.Infrastructure.Persistence.Repositories;
 using TraffiLearn.Testing.Shared.Factories;
 using TraffiLearn.UnitTests.Abstractions;

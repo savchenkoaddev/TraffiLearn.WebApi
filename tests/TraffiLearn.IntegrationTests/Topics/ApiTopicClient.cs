@@ -3,7 +3,7 @@ using TraffiLearn.Application.Questions.DTO;
 using TraffiLearn.Application.Topics.Commands.Create;
 using TraffiLearn.Application.Topics.Commands.Update;
 using TraffiLearn.Application.Topics.DTO;
-using TraffiLearn.Domain.Aggregates.Users.Enums;
+using TraffiLearn.Domain.Users.Roles;
 using TraffiLearn.IntegrationTests.Helpers;
 using TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic;
 using TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic;

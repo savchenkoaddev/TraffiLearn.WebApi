@@ -2,12 +2,10 @@
 using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
-using TraffiLearn.Domain.Aggregates.Comments;
-using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
-using TraffiLearn.Domain.Aggregates.Questions;
-using TraffiLearn.Domain.Aggregates.Questions.Errors;
-using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.Comments;
+using TraffiLearn.Domain.Comments.CommentContents;
+using TraffiLearn.Domain.Questions;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.Questions.Commands.AddCommentToQuestion
 {

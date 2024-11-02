@@ -5,10 +5,9 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using TraffiLearn.Application.Abstractions.Identity;
-using TraffiLearn.Domain.Aggregates.Users;
-using TraffiLearn.Domain.Aggregates.Users.Errors;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.Users;
 using TraffiLearn.Infrastructure.Authentication.Options;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Infrastructure.Services
 {

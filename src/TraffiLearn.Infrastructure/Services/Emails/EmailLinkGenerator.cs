@@ -15,8 +15,8 @@ namespace TraffiLearn.Infrastructure.Services.Emails
         }
 
         public string GenerateConfirmChangeEmailLink(
-            string userId, 
-            string newEmail, 
+            string userId,
+            string newEmail,
             string token)
         {
             StringBuilder builder = new();

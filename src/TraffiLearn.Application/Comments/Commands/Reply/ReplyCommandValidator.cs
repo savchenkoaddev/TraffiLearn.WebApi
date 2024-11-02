@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
+using TraffiLearn.Domain.Comments.CommentContents;
 
 namespace TraffiLearn.Application.Comments.Commands.Reply
 {

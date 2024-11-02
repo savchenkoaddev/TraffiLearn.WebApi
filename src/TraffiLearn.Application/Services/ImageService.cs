@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Storage;
 using TraffiLearn.Application.Images.Options;
-using TraffiLearn.Domain.Aggregates.Common.ImageUri;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.SharedKernel.Shared;
+using TraffiLearn.SharedKernel.ValueObjects.ImageUris;
 
 namespace TraffiLearn.Application.Services
 {
@@ -21,7 +21,7 @@ namespace TraffiLearn.Application.Services
         }
 
         public Task DeleteAsync(
-            ImageUri imageUri, 
+            ImageUri imageUri,
             CancellationToken cancellationToken = default)
         {
             ArgumentNullException.ThrowIfNull(imageUri, nameof(imageUri));

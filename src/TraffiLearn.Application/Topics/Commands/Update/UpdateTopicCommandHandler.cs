@@ -1,10 +1,8 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Storage;
-using TraffiLearn.Domain.Aggregates.Topics;
-using TraffiLearn.Domain.Aggregates.Topics.Errors;
-using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.Topics;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.Topics.Commands.Update
 {
@@ -92,7 +90,7 @@ namespace TraffiLearn.Application.Topics.Commands.Update
 
                 topic.SetImageUri(newImageUri);
             }
-            else if (request.RemoveOldImageIfNewMissing 
+            else if (request.RemoveOldImageIfNewMissing
                 && topic.ImageUri is not null)
             {
                 await _imageService.DeleteAsync(

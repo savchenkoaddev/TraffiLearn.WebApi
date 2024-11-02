@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.WebAPI.Extensions
 {

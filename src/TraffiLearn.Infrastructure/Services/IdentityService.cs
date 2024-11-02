@@ -5,10 +5,10 @@ using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Abstractions.Security;
 using TraffiLearn.Application.Users.Identity;
-using TraffiLearn.Domain.Aggregates.Users.Errors;
-using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.Users;
+using TraffiLearn.Domain.Users.Emails;
 using TraffiLearn.Infrastructure.Authentication.Options;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Infrastructure.Services
 {
@@ -178,8 +178,8 @@ namespace TraffiLearn.Infrastructure.Services
         }
 
         public async Task<Result> ChangeEmailAsync(
-            ApplicationUser identityUser, 
-            string newEmail, 
+            ApplicationUser identityUser,
+            string newEmail,
             string token)
         {
             var identityResult = await _userManager.ChangeEmailAsync(

@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Comments.DTO;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.Users.Queries.GetUserComments
 {

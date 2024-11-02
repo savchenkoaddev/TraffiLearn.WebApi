@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Topics.DTO;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.Topics.Queries.GetRandomTopicWithQuestions
 {

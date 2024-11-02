@@ -3,10 +3,9 @@ using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Questions.DTO;
-using TraffiLearn.Domain.Aggregates.Questions;
-using TraffiLearn.Domain.Aggregates.Users;
-using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.Questions;
+using TraffiLearn.Domain.Users;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.Users.Queries.GetMarkedQuestions
 {

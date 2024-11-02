@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TraffiLearn.Domain.Aggregates.SubscriptionPlans;
-using TraffiLearn.Domain.Aggregates.SubscriptionPlans.PlanDescriptions;
-using TraffiLearn.Domain.Aggregates.SubscriptionPlans.PlanFeatures;
-using TraffiLearn.Domain.Aggregates.SubscriptionPlans.PlanTiers;
+using TraffiLearn.Domain.SubscriptionPlans;
+using TraffiLearn.Domain.SubscriptionPlans.PlanDescriptions;
+using TraffiLearn.Domain.SubscriptionPlans.PlanFeatures;
+using TraffiLearn.Domain.SubscriptionPlans.PlanTiers;
 
 namespace TraffiLearn.Infrastructure.Persistence.Configurations
 {

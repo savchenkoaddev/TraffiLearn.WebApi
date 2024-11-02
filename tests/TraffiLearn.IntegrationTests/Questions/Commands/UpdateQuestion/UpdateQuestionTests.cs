@@ -1,4 +1,4 @@
-﻿using TraffiLearn.Domain.Aggregates.Users.Enums;
+﻿using TraffiLearn.Domain.Users.Roles;
 using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;
 using TraffiLearn.Testing.Shared.Factories;

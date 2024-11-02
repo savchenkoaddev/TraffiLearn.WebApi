@@ -1,7 +1,8 @@
 ﻿using FluentAssertions;
-using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
-using TraffiLearn.Domain.Aggregates.Topics;
-using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
+using TraffiLearn.Domain.Questions;
+using TraffiLearn.Domain.Topics;
+using TraffiLearn.Domain.Topics.TopicNumbers;
+using TraffiLearn.Domain.Topics.TopicTitles;
 using TraffiLearn.Infrastructure.Persistence.Repositories;
 using TraffiLearn.Testing.Shared.Factories;
 using TraffiLearn.UnitTests.Abstractions;

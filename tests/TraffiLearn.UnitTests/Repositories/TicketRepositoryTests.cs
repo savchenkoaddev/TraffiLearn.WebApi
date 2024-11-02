@@ -1,8 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
-using TraffiLearn.Domain.Aggregates.Tickets;
-using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
+using TraffiLearn.Domain.Questions;
+using TraffiLearn.Domain.Tickets;
 using TraffiLearn.Infrastructure.Persistence.Repositories;
 using TraffiLearn.Testing.Shared.Factories;
 using TraffiLearn.UnitTests.Abstractions;

@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.Users.Commands.UnmarkQuestion
 {

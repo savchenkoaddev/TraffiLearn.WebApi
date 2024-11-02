@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Questions.DTO;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.Tickets.Queries.GetTicketQuestions
 {

@@ -1,9 +1,8 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Domain.Aggregates.Regions;
-using TraffiLearn.Domain.Aggregates.Regions.Errors;
-using TraffiLearn.Domain.Aggregates.Regions.ValueObjects;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.Regions;
+using TraffiLearn.Domain.Regions.RegionNames;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.Regions.Commands.Update
 {

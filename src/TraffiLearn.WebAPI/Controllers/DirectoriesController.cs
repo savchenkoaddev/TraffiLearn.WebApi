@@ -2,8 +2,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using TraffiLearn.Application.Directories.Commands.Create;
-using TraffiLearn.Application.Directories.Commands.Update;
 using TraffiLearn.Application.Directories.Commands.Delete;
+using TraffiLearn.Application.Directories.Commands.Update;
 using TraffiLearn.Application.Directories.DTO;
 using TraffiLearn.Application.Directories.Queries.GetAll;
 using TraffiLearn.Application.Directories.Queries.GetById;
@@ -76,8 +76,8 @@ namespace TraffiLearn.WebAPI.Controllers
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
-        
-        
+
+
         #endregion
 
         #region Commands
@@ -122,7 +122,7 @@ namespace TraffiLearn.WebAPI.Controllers
 
             return commandResult.ToProblemDetails();
         }
-        
+
         /// <summary>
         /// Updates an existing directory.
         /// </summary>
@@ -154,7 +154,7 @@ namespace TraffiLearn.WebAPI.Controllers
 
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
-        
+
         /// <summary>
         /// Deletes a directory using its ID.
         /// </summary>

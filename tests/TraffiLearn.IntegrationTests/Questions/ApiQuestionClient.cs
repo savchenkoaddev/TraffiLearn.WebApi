@@ -5,7 +5,7 @@ using TraffiLearn.Application.Questions.Commands.Update;
 using TraffiLearn.Application.Questions.DTO;
 using TraffiLearn.Application.Tickets.DTO;
 using TraffiLearn.Application.Topics.DTO;
-using TraffiLearn.Domain.Aggregates.Users.Enums;
+using TraffiLearn.Domain.Users.Roles;
 using TraffiLearn.IntegrationTests.Helpers;
 using TraffiLearn.IntegrationTests.Questions.Commands.CreateQuestion;
 using TraffiLearn.IntegrationTests.Questions.Commands.UpdateQuestion;

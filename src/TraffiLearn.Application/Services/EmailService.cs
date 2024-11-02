@@ -44,7 +44,7 @@ namespace TraffiLearn.Application.Services
         }
 
         public async Task SendChangeEmailMessageAsync(
-            string newEmail, 
+            string newEmail,
             string userId,
             ApplicationUser identityUser)
         {

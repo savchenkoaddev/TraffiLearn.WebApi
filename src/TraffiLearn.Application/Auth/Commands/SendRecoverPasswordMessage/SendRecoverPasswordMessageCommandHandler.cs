@@ -2,9 +2,9 @@
 using TraffiLearn.Application.Abstractions.Emails;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Users.Identity;
-using TraffiLearn.Domain.Aggregates.Users.Errors;
-using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.Users;
+using TraffiLearn.Domain.Users.Emails;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.Auth.Commands.SendRecoverPasswordMessage
 {

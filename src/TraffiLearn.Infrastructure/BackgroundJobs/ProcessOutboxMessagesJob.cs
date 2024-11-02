@@ -4,10 +4,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Quartz;
-using TraffiLearn.Domain.Primitives;
 using TraffiLearn.Infrastructure.Persistence;
 using TraffiLearn.Infrastructure.Persistence.Options;
 using TraffiLearn.Infrastructure.Persistence.Outbox;
+using TraffiLearn.SharedKernel.Primitives;
 
 namespace TraffiLearn.Infrastructure.BackgroundJobs
 {
@@ -94,8 +94,8 @@ namespace TraffiLearn.Infrastructure.BackgroundJobs
         }
 
         private Task PublishDomainEvent(
-            OutboxMessage message, 
-            DomainEvent domainEvent, 
+            OutboxMessage message,
+            DomainEvent domainEvent,
             CancellationToken cancellationToken)
         {
             return _publisher.Publish(

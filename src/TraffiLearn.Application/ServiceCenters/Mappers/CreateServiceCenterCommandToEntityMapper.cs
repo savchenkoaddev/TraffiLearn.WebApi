@@ -1,8 +1,12 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.ServiceCenters.Commands.Create;
-using TraffiLearn.Domain.Aggregates.ServiceCenters;
-using TraffiLearn.Domain.Aggregates.ServiceCenters.ValueObjects;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ServiceCenters;
+using TraffiLearn.Domain.ServiceCenters.Addresses;
+using TraffiLearn.Domain.ServiceCenters.BuildingNumbers;
+using TraffiLearn.Domain.ServiceCenters.LocationNames;
+using TraffiLearn.Domain.ServiceCenters.RoadNames;
+using TraffiLearn.Domain.ServiceCenters.ServiceCenterNumbers;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.ServiceCenters.Mappers
 {

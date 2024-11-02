@@ -1,10 +1,8 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.ServiceCenters.DTO;
-using TraffiLearn.Domain.Aggregates.ServiceCenters;
-using TraffiLearn.Domain.Aggregates.ServiceCenters.Errors;
-using TraffiLearn.Domain.Aggregates.ServiceCenters.ValueObjects;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.ServiceCenters;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.ServiceCenters.Queries.GetById
 {

@@ -1,9 +1,12 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Questions.Commands.Create;
 using TraffiLearn.Application.Questions.DTO;
-using TraffiLearn.Domain.Aggregates.Questions;
-using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.Questions;
+using TraffiLearn.Domain.Questions.Answers;
+using TraffiLearn.Domain.Questions.QuestionContents;
+using TraffiLearn.Domain.Questions.QuestionExplanations;
+using TraffiLearn.Domain.Questions.QuestionNumbers;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.Questions.Mappers
 {

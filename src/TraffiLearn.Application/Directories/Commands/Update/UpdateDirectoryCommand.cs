@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using TraffiLearn.Application.Directories.DTO;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.Directories.Commands.Update
 {

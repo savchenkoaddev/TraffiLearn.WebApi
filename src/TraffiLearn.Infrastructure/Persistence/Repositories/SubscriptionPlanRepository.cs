@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TraffiLearn.Domain.Aggregates.SubscriptionPlans;
+using TraffiLearn.Domain.SubscriptionPlans;
 
 namespace TraffiLearn.Infrastructure.Persistence.Repositories
 {

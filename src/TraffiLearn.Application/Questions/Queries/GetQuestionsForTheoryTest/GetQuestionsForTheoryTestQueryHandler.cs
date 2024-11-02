@@ -5,8 +5,8 @@ using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Exceptions;
 using TraffiLearn.Application.Questions.DTO;
 using TraffiLearn.Application.Questions.Options;
-using TraffiLearn.Domain.Aggregates.Questions;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.Questions;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.Questions.Queries.GetQuestionsForTheoryTest
 {

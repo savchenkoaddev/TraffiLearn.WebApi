@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TraffiLearn.Domain.Aggregates.Questions;
-using TraffiLearn.Domain.Aggregates.Questions.ValueObjects;
-using TraffiLearn.Domain.Aggregates.Tickets.ValueObjects;
-using TraffiLearn.Domain.Aggregates.Topics.ValueObjects;
-using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
+using TraffiLearn.Domain.Questions;
+using TraffiLearn.Domain.Tickets;
+using TraffiLearn.Domain.Topics;
+using TraffiLearn.Domain.Users;
 
 namespace TraffiLearn.Infrastructure.Persistence.Repositories
 {

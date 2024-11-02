@@ -58,7 +58,7 @@ namespace TraffiLearn.Infrastructure.Services.Emails
                 Subject: CreateRecoverPasswordLetterSubject(),
                 HtmlBody: CreateRecoverPasswordLetterBody(resetPasswordLink));
         }
-        
+
         private static string CreateRecoverPasswordLetterSubject() =>
             "Reset Your TraffiLearn Password";
 

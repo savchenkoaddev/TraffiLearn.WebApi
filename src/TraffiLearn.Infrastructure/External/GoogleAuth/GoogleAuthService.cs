@@ -1,10 +1,10 @@
 ﻿using Google.Apis.Auth;
 using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Identity;
-using TraffiLearn.Domain.Aggregates.Users.Errors;
-using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.Users;
+using TraffiLearn.Domain.Users.Emails;
 using TraffiLearn.Infrastructure.External.GoogleAuth.Options;
+using TraffiLearn.SharedKernel.Shared;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace TraffiLearn.Infrastructure.External.GoogleAuth

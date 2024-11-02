@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
-using TraffiLearn.Domain.Aggregates.Directories.ValueObjects.Directories;
-using TraffiLearn.Domain.Aggregates.Directories.ValueObjects.Sections;
+using TraffiLearn.Domain.Directories.DirectoryNames;
+using TraffiLearn.Domain.Directories.DirectorySections.SectionContents;
+using TraffiLearn.Domain.Directories.DirectorySections.SectionNames;
 
 namespace TraffiLearn.Application.Directories.Commands.Create
 {

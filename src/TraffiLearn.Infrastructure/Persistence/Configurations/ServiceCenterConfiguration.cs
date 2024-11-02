@@ -1,7 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TraffiLearn.Domain.Aggregates.ServiceCenters;
-using TraffiLearn.Domain.Aggregates.ServiceCenters.ValueObjects;
+using TraffiLearn.Domain.ServiceCenters;
+using TraffiLearn.Domain.ServiceCenters.BuildingNumbers;
+using TraffiLearn.Domain.ServiceCenters.LocationNames;
+using TraffiLearn.Domain.ServiceCenters.RoadNames;
+using TraffiLearn.Domain.ServiceCenters.ServiceCenterNumbers;
 
 namespace TraffiLearn.Infrastructure.Persistence.Configurations
 {

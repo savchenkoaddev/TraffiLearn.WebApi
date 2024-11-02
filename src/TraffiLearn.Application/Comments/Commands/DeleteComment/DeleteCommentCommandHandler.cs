@@ -1,10 +1,8 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Domain.Aggregates.Comments;
-using TraffiLearn.Domain.Aggregates.Comments.Errors;
-using TraffiLearn.Domain.Aggregates.Comments.ValueObjects;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.Comments;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.Comments.Commands.DeleteComment
 {

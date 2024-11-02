@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
 using System.Reflection;
-using TraffiLearn.Domain.Aggregates.Common.ImageUri;
-using TraffiLearn.Domain.Primitives;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.SharedKernel.Primitives;
+using TraffiLearn.SharedKernel.Shared;
+using TraffiLearn.SharedKernel.ValueObjects.ImageUris;
 using TraffiLearn.Testing.Shared.Factories;
 
 namespace TraffiLearn.DomainTests.Questions

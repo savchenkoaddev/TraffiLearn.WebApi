@@ -1,9 +1,10 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Users.Identity;
-using TraffiLearn.Domain.Aggregates.Users;
-using TraffiLearn.Domain.Aggregates.Users.Enums;
-using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
+using TraffiLearn.Domain.Users;
+using TraffiLearn.Domain.Users.Emails;
+using TraffiLearn.Domain.Users.Roles;
+using TraffiLearn.Domain.Users.Usernames;
 using TraffiLearn.IntegrationTests.Auth;
 
 namespace TraffiLearn.IntegrationTests.Helpers

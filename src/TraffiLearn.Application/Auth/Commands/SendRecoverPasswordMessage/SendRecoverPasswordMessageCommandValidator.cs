@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using TraffiLearn.Domain.Aggregates.Users.ValueObjects;
+using TraffiLearn.Domain.Users.Emails;
 
 namespace TraffiLearn.Application.Auth.Commands.SendRecoverPasswordMessage
 {

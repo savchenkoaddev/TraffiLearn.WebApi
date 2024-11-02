@@ -1,14 +1,14 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using TraffiLearn.Domain.Aggregates.Comments;
-using TraffiLearn.Domain.Aggregates.Directories;
-using TraffiLearn.Domain.Aggregates.Questions;
-using TraffiLearn.Domain.Aggregates.Regions;
-using TraffiLearn.Domain.Aggregates.Routes;
-using TraffiLearn.Domain.Aggregates.ServiceCenters;
-using TraffiLearn.Domain.Aggregates.SubscriptionPlans;
-using TraffiLearn.Domain.Aggregates.Tickets;
-using TraffiLearn.Domain.Aggregates.Topics;
-using TraffiLearn.Domain.Aggregates.Users;
+using TraffiLearn.Domain.Comments;
+using TraffiLearn.Domain.Directories;
+using TraffiLearn.Domain.Questions;
+using TraffiLearn.Domain.Regions;
+using TraffiLearn.Domain.Routes;
+using TraffiLearn.Domain.ServiceCenters;
+using TraffiLearn.Domain.SubscriptionPlans;
+using TraffiLearn.Domain.Tickets;
+using TraffiLearn.Domain.Topics;
+using TraffiLearn.Domain.Users;
 using TraffiLearn.Infrastructure.Persistence.Repositories;
 
 namespace TraffiLearn.Infrastructure.Extensions.DI

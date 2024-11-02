@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using TraffiLearn.Domain.Aggregates.Common.ImageUri;
+using TraffiLearn.SharedKernel.ValueObjects.ImageUris;
 
 namespace TraffiLearn.Application.Abstractions.Storage
 {

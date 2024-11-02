@@ -1,8 +1,9 @@
 ﻿using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Routes.Commands.Create;
-using TraffiLearn.Domain.Aggregates.Routes;
-using TraffiLearn.Domain.Aggregates.Routes.ValueObjects;
-using TraffiLearn.Domain.Shared;
+using TraffiLearn.Domain.Routes;
+using TraffiLearn.Domain.Routes.RouteDescriptions;
+using TraffiLearn.Domain.Routes.RouteNumbers;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.Routes.Mappers
 {
