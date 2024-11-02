@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using TraffiLearn.Application.Common.DTO;
 
 namespace TraffiLearn.Application.SubscriptionPlans.DTO
 {
-    internal class SubscriptionPlanResponse
-    {
-    }
+    public sealed record SubscriptionPlanResponse(
+        Guid Id,
+        string Tier,
+        string Description,
+        PriceResponse Price,
+        RenewalPeriodResponse RenewalPeriod,
+        List<string> Features);
 }
