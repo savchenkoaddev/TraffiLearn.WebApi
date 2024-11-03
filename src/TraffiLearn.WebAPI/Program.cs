@@ -1,5 +1,6 @@
 using Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Extensions;
 using Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Integrations;
+using System.Text.Json.Serialization;
 using TraffiLearn.Application;
 using TraffiLearn.Infrastructure;
 using TraffiLearn.Infrastructure.Extensions;
@@ -15,7 +16,10 @@ namespace TraffiLearn.WebAPI
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddJsonOptions(x =>
+            {
+                x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
 
             builder.Services.AddJsonMultipartFormDataSupport(JsonSerializerChoice.Newtonsoft);
 

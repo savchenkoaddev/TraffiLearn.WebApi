@@ -9,6 +9,7 @@
         RegisterAdmins,
         RemoveAdmins,
         ModifyData,
-        ModifyNonSensitiveData
+        ModifyNonSensitiveData,
+        ModifySubscriptionPlans,
     }
 }
