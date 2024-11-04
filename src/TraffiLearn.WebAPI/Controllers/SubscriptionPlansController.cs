@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using TraffiLearn.Application.SubscriptionPlans.Commands.Create;
 using TraffiLearn.Application.SubscriptionPlans.DTO;
+using TraffiLearn.Application.SubscriptionPlans.Queries.GetAll;
 using TraffiLearn.Application.SubscriptionPlans.Queries.GetById;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
@@ -21,8 +22,7 @@ namespace TraffiLearn.WebAPI.Controllers
             _sender = sender;
         }
 
-
-
+        #region Queries
 
 
         /// <summary>
@@ -52,25 +52,25 @@ namespace TraffiLearn.WebAPI.Controllers
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
+        
+        /// <summary>
+        /// Gets all subscription plans from the storage.
+        /// </summary>
+        /// <response code="200">Successfully retrieved all subscription plans. Returns a list of subscription plans.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        [HttpGet]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(IEnumerable<SubscriptionPlanResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAllSubscriptionPlans()
+        {
+            var queryResult = await _sender.Send(new GetAllSubscriptionPlansQuery());
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+        
+        
+        #endregion
 
         #region Commands
 
