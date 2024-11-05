@@ -1,9 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
+using TraffiLearn.Application.SubscriptionPlans.Commands.Create;
 using TraffiLearn.Application.SubscriptionPlans.DTO;
 using TraffiLearn.Application.SubscriptionPlans.Queries.GetAll;
 using TraffiLearn.Application.SubscriptionPlans.Queries.GetById;
+using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
 using TraffiLearn.WebAPI.Swagger;
 
@@ -50,8 +52,7 @@ namespace TraffiLearn.WebAPI.Controllers
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
-
-
+        
         /// <summary>
         /// Gets all subscription plans from the storage.
         /// </summary>
@@ -67,6 +68,61 @@ namespace TraffiLearn.WebAPI.Controllers
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
+        
+        
+        #endregion
+
+        #region Commands
+
+
+        /// <summary>
+        /// Creates a new subscription plan.
+        /// </summary>
+        /// <remarks>
+        /// ***Body Parameters:***<br /><br />
+        /// `Tier`: The tier of the subscription plan.  Must not be empty or whitespace. Maximum length: 50.<br /><br />
+        /// `Description`: The description of the subscription plan. Must not be empty or whitespace. Maximum length: 500.<br /><br />
+        /// `Price`: The price of the subscription plan. Consists of two properties: <br />
+        /// - `Amount`: The amount of the price. Must be a decimal number greater than 0.<br />
+        /// - `Currency`: The currency of the price. Must be a valid currency code. Available currencies: <br />
+        /// *USD*, *EUR*, *GBP*, *CAD*, *AUD*, *JPY*, *CNY*, *INR*, *CHF*, *SEK*, *NZD*, *ZAR*, *SGD*, *HKD*, *NOK*, *MXN*, *BRL*, *KRW*, *TRY* <br /><br />
+        /// `RenewalPeriod`: The renewal period of the subscription plan. Must be a valid renewal period. Consists of two properties: <br />
+        /// - `Interval`: The interval of the renewal period. Must be a valid int greater than 0. <br />
+        /// - `Type`: The type of the renewal period. Must be a valid renewal period type. Available renewal period types: <br />
+        /// *Days*, *Weeks*, *Months*, *Years* <br /><br />
+        /// `Features`: List of features of the subscription plan. Must not be empty. Maximum number of features: 20. Each feature must be unique. <br /><br />
+        /// **Authentication Required:**<br />
+        /// The user must be authenticated using a JWT token. Only users with the `Owner` role can perform this action.<br /><br />
+        /// </remarks>
+        /// <param name="command">**The create subscription plan command.**</param>
+        /// <response code="201">Successfully created a new subscription plan. Returns ID of a newly created subscription plan.</response>
+        /// <response code="400">***Bad request.*** The provided data is invalid or missing.</response>
+        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+        /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        [HttpPost]
+        [HasPermission(Permission.ModifySubscriptionPlans)]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> CreateSubscriptionPlan(
+            [FromBody] CreateSubscriptionPlanCommand command)
+        {
+            var commandResult = await _sender.Send(command);
+
+            if (commandResult.IsSuccess)
+            {
+                return CreatedAtAction(
+                    actionName: nameof(GetSubscriptionPlanById),
+                    routeValues: new { planId = commandResult.Value },
+                    value: commandResult.Value);
+            }
+
+            return commandResult.ToProblemDetails();
+        }
+
 
         #endregion
     }

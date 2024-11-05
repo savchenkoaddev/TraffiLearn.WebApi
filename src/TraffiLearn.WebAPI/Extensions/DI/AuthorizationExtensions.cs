@@ -55,6 +55,10 @@ namespace TraffiLearn.WebAPI.Extensions.DI
                 options.ConfigurePolicy(
                     name: Permission.AccessSpecificAdminData.ToString(),
                     roles: Role.Owner.ToString());
+
+                options.ConfigurePolicy(
+                    name: Permission.ModifySubscriptionPlans.ToString(),
+                    roles: Role.Owner.ToString());
             });
 
             return services;
