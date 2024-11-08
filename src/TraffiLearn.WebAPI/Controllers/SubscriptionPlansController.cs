@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using TraffiLearn.Application.SubscriptionPlans.Commands.Create;
+using TraffiLearn.Application.SubscriptionPlans.Commands.Delete;
 using TraffiLearn.Application.SubscriptionPlans.DTO;
 using TraffiLearn.Application.SubscriptionPlans.Queries.GetAll;
 using TraffiLearn.Application.SubscriptionPlans.Queries.GetById;
@@ -121,6 +122,36 @@ namespace TraffiLearn.WebAPI.Controllers
             }
 
             return commandResult.ToProblemDetails();
+        }
+
+        /// <summary>
+        /// Deletes a subscription plan using its ID.
+        /// </summary>
+        /// <remarks>
+        /// **The request must include the ID of a subscription plan.**<br /><br /><br />
+        /// ***Route parameters:***<br /><br />
+        /// `SubscriptionPlanId` : Must be a valid GUID representing ID of a subscription plan.<br /><br /><br />
+        /// **Authentication Required:**<br />
+        /// The user must be authenticated using a JWT token. Only users with the `Owner` role can perform this action.<br /><br />
+        /// </remarks>
+        /// <param name="planId">**The ID of the subscription plan to be deleted.**</param>
+        /// <response code="204">Successfully deleted the subscription plan.</response>
+        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+        /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
+        /// <response code="404">***Not found.*** Subscription plan with the provided id is not found.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        [HasPermission(Permission.ModifySubscriptionPlans)]
+        [HttpDelete("{planId:guid}")]
+        [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteSubscriptionPlan(
+            [FromRoute] Guid planId)
+        {
+            var commandResult = await _sender.Send(new DeleteSubscriptionPlanCommand(planId));
+
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
 
