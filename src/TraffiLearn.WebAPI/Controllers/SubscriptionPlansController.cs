@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
+using System.Numerics;
 using TraffiLearn.Application.SubscriptionPlans.Commands.Create;
 using TraffiLearn.Application.SubscriptionPlans.Commands.Delete;
+using TraffiLearn.Application.SubscriptionPlans.Commands.Update;
 using TraffiLearn.Application.SubscriptionPlans.DTO;
 using TraffiLearn.Application.SubscriptionPlans.Queries.GetAll;
 using TraffiLearn.Application.SubscriptionPlans.Queries.GetById;
@@ -81,7 +83,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// </summary>
         /// <remarks>
         /// ***Body Parameters:***<br /><br />
-        /// `Tier`: The tier of the subscription plan.  Must not be empty or whitespace. Maximum length: 50.<br /><br />
+        /// `Tier`: The tier of the subscription plan. Must not be empty or whitespace. Maximum length: 50.<br /><br />
         /// `Description`: The description of the subscription plan. Must not be empty or whitespace. Maximum length: 500.<br /><br />
         /// `Price`: The price of the subscription plan. Consists of two properties: <br />
         /// - `Amount`: The amount of the price. Must be a decimal number greater than 0.<br />
@@ -150,6 +152,47 @@ namespace TraffiLearn.WebAPI.Controllers
             [FromRoute] Guid planId)
         {
             var commandResult = await _sender.Send(new DeleteSubscriptionPlanCommand(planId));
+
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+        }
+
+        /// <summary>
+        /// Updates an existing subscription plan.
+        /// </summary>
+        /// <remarks>
+        /// ***Body parameters:***<br /><br />
+        /// `SubscriptionPlanId`: ID of the subscription plan to update. Must be a valid GUID. <br /><br />
+        /// `Tier`: The tier of the subscription plan. Must not be empty or whitespace.Maximum length: 50.<br /><br />
+        /// `Description`: The description of the subscription plan. Must not be empty or whitespace. Maximum length: 500.<br /><br />
+        /// `Price`: The price of the subscription plan. Consists of two properties: <br />
+        /// - `Amount`: The amount of the price. Must be a decimal number greater than 0.<br />
+        /// - `Currency`: The currency of the price. Must be a valid currency code. Available currencies: <br />
+        /// *USD*, *EUR*, *GBP*, *CAD*, *AUD*, *JPY*, *CNY*, *INR*, *CHF*, *SEK*, *NZD*, *ZAR*, *SGD*, *HKD*, *NOK*, *MXN*, *BRL*, *KRW*, *TRY* <br /><br />
+        /// `RenewalPeriod`: The renewal period of the subscription plan. Must be a valid renewal period. Consists of two properties: <br />
+        /// - `Interval`: The interval of the renewal period. Must be a valid int greater than 0. <br />
+        /// - `Type`: The type of the renewal period. Must be a valid renewal period type. Available renewal period types: <br />
+        /// *Days*, *Weeks*, *Months*, *Years* <br /><br />
+        /// `Features`: List of features of the subscription plan. Must not be empty. Maximum number of features: 20. Each feature must be unique. <br /><br />
+        /// **Authentication Required:**<br />
+        /// The user must be authenticated using a JWT token. Only users with the `Owner` role can perform this action.<br /><br />
+        /// </remarks>
+        /// <param name="command">The update subscription plan command.</param>
+        /// <response code="204">Successfully updated an existing subscription plan.</response>
+        /// <response code="400">***Bad request.*** The provided data is invalid or missing.</response>
+        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+        /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
+        /// <response code="404">***Not found.*** Subscription plan with the ID is not found.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        [HasPermission(Permission.ModifySubscriptionPlans)]
+        [HttpPut]
+        [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateSubscriptionPlan(
+            [FromBody] UpdateSubscriptionPlanCommand command)
+        {
+            var commandResult = await _sender.Send(command);
 
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
