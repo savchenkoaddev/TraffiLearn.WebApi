@@ -12,11 +12,11 @@ namespace TraffiLearn.Domain.SubscriptionPlans
     {
         public const int MaxFeaturesCount = 20;
 
-        private readonly HashSet<PlanFeature> _features = [];
         private PlanTier _tier;
         private PlanDescription _description;
         private Price _price;
         private RenewalPeriod _renewalPeriod;
+        private HashSet<PlanFeature> _features = [];
 
         private SubscriptionPlan()
             : base(new(Guid.Empty))
@@ -94,6 +94,32 @@ namespace TraffiLearn.Domain.SubscriptionPlans
         }
 
         public IReadOnlyCollection<PlanFeature> Features => _features;
+
+        public Result Update(
+            PlanTier tier,
+            PlanDescription description,
+            Price price,
+            RenewalPeriod renewalPeriod,
+            List<PlanFeature> features)
+        {
+            ArgumentNullException.ThrowIfNull(features);
+
+            var featuresValidationResult = ValidateFeatures(features);
+
+            if (featuresValidationResult.IsFailure)
+            {
+                return Result.Failure(
+                    featuresValidationResult.Error);
+            }
+
+            Tier = tier;
+            Description = description;
+            Price = price;
+            RenewalPeriod = renewalPeriod;
+            _features = features.ToHashSet();
+
+            return Result.Success();
+        }
 
         public static Result<SubscriptionPlan> Create(
             SubscriptionPlanId id,
