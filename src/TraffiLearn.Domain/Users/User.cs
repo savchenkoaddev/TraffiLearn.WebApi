@@ -1,5 +1,6 @@
 ﻿using TraffiLearn.Domain.Comments;
 using TraffiLearn.Domain.Questions;
+using TraffiLearn.Domain.SubscriptionPlans;
 using TraffiLearn.Domain.Users.DomainEvents;
 using TraffiLearn.Domain.Users.Emails;
 using TraffiLearn.Domain.Users.Roles;
@@ -63,6 +64,10 @@ namespace TraffiLearn.Domain.Users
             }
         }
 
+        public SubscriptionPlan? SubscriptionPlan { get; private set; } = default;
+
+        public DateTime? PlanExpiresOn { get; private set; } = default;
+
         public Role Role { get; private set; }
 
         public bool IsEmailConfirmed { get; private set; } = false;
@@ -78,6 +83,18 @@ namespace TraffiLearn.Domain.Users
         public IReadOnlyCollection<Comment> LikedComments => _likedComments;
 
         public IReadOnlyCollection<Comment> DislikedComments => _dislikedComments;
+
+        public Result ChangeSubscriptionPlan(SubscriptionPlan plan)
+        {
+            ArgumentNullException.ThrowIfNull(plan, nameof(plan));
+
+            SubscriptionPlan = plan;
+
+            var expiresInDays = plan.RenewalPeriod.GetDaysEquivalent();
+            PlanExpiresOn = DateTime.UtcNow.AddDays(expiresInDays);
+
+            return Result.Success();
+        }
 
         public Result DowngradeRole()
         {
