@@ -42,6 +42,16 @@ namespace TraffiLearn.Infrastructure.Persistence.Configurations
                 .WithOne(c => c.Creator);
 
             builder
+                .HasOne(user => user.SubscriptionPlan)
+                .WithMany()
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            builder
+                .Property(user => user.PlanExpiresOn)
+                .IsRequired(false);
+
+            builder
                 .HasMany(user => user.MarkedQuestions)
                 .WithMany(question => question.MarkedByUsers)
                 .UsingEntity(join => join.ToTable("QuestionsMarkedByUsers"));

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using TraffiLearn.Application.Comments.DTO;
 using TraffiLearn.Application.Questions.DTO;
+using TraffiLearn.Application.Users.Commands.ChangeSubscriptionPlan;
 using TraffiLearn.Application.Users.Commands.DowngradeAccount;
 using TraffiLearn.Application.Users.DTO;
 using TraffiLearn.Application.Users.Queries.GetAllAdmins;
@@ -222,6 +223,37 @@ namespace TraffiLearn.WebAPI.Controllers
             [FromRoute] Guid userId)
         {
             var commandResult = await _sender.Send(new DowngradeAccountCommand(userId));
+
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+        }
+
+        /// <summary>
+        /// Changes a subscription plan of an authenticated user.
+        /// </summary>
+        /// <remarks>
+        /// **If a user has the same subscription plan**, an error will be returned.<br /><br /><br />
+        /// ***Route parameters:***<br /><br />
+        /// `PlanId` : Must be a valid GUID representing ID of a subscription plan.<br /><br /><br />
+        /// **Authentication Required:**<br />
+        /// The user must be authenticated using a JWT token.<br /><br />
+        /// </remarks>
+        /// <param name="planId">**The ID of a subscription plan.**</param>
+        /// <response code="204">Successfully changed a subscription plan.</response>
+        /// <response code="400">***Bad request.*** The user has the same subscription plan.</response>
+        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+        /// <response code="404">***Not found.*** No subscription plan exists with the provided ID.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        [HasPermission(Permission.AccessData)]
+        [HttpPut("change-subscription/{planId:guid}")]
+        [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ChangeSubscriptionPlan(
+            [FromRoute] Guid planId)
+        {
+            var commandResult = await _sender.Send(
+                new ChangeSubscriptionPlanCommand(planId));
 
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }

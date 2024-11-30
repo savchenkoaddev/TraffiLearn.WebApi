@@ -183,5 +183,10 @@ namespace TraffiLearn.Domain.Users
             Error.Validation(
                 code: "User.InvalidResetPasswordToken",
                 description: "Failed to reset the password, because the token is invalid.");
+
+        public static readonly Error CantChangeToSamePlan =
+            Error.Validation(
+                code: "User.CantChangeToSamePlan",
+                description: "Failed to change the plan, because the user already has the same plan.");
     }
 }
