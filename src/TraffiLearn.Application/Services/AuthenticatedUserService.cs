@@ -33,7 +33,7 @@ namespace TraffiLearn.Application.Services
 
             if (user is null)
             {
-                throw new InvalidOperationException("User authenticated succesfully, but is not found in the storage. ");
+                throw new InvalidOperationException("User authenticated succesfully, but is not found in the storage.");
             }
 
             return user;
