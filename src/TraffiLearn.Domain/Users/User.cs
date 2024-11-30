@@ -88,6 +88,11 @@ namespace TraffiLearn.Domain.Users
         {
             ArgumentNullException.ThrowIfNull(plan, nameof(plan));
 
+            if (SubscriptionPlan is not null && plan == SubscriptionPlan)
+            {
+                return UserErrors.CantChangeToSamePlan;
+            }
+
             SubscriptionPlan = plan;
 
             var expiresInDays = plan.RenewalPeriod.GetDaysEquivalent();
