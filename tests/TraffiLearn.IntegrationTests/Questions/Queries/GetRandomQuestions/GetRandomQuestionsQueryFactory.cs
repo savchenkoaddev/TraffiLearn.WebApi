@@ -1,4 +1,4 @@
-﻿using TraffiLearn.Application.Questions.Queries.GetRandomQuestions;
+﻿using TraffiLearn.Application.UseCases.Questions.Queries.GetRandomQuestions;
 
 namespace TraffiLearn.IntegrationTests.Questions.Queries.GetRandomQuestions
 {

@@ -1,4 +1,4 @@
-﻿using TraffiLearn.Application.Questions.DTO;
+﻿using TraffiLearn.Application.UseCases.Questions.DTO;
 
 namespace TraffiLearn.WebAPI.CommandWrappers.UpdateQuestion
 {

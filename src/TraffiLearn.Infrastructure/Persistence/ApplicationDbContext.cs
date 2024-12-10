@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using TraffiLearn.Application.Users.Identity;
+using TraffiLearn.Application.UseCases.Users.Identity;
 using TraffiLearn.Domain.Comments;
 using TraffiLearn.Domain.Questions;
 using TraffiLearn.Domain.Regions;

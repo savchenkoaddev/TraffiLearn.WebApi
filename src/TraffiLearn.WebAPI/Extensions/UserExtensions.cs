@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
-using TraffiLearn.Application.Users.Identity;
+using TraffiLearn.Application.UseCases.Users.Identity;
 using TraffiLearn.Domain.Users;
 using TraffiLearn.Domain.Users.Emails;
 using TraffiLearn.Domain.Users.Roles;

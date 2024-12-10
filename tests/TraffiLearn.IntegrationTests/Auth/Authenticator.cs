@@ -1,6 +1,6 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
-using TraffiLearn.Application.Auth.DTO;
+using TraffiLearn.Application.UseCases.Auth.DTO;
 
 namespace TraffiLearn.IntegrationTests.Auth
 {

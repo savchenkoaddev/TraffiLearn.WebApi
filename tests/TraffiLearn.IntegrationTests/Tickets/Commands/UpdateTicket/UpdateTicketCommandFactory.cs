@@ -1,4 +1,4 @@
-﻿using TraffiLearn.Application.Tickets.Commands.Update;
+﻿using TraffiLearn.Application.UseCases.Tickets.Commands.Update;
 using TraffiLearn.IntegrationTests.Questions;
 using TraffiLearn.Testing.Shared.Factories;
 

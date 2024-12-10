@@ -1,5 +1,5 @@
 ﻿using TraffiLearn.Application.Abstractions.Emails;
-using TraffiLearn.Application.Users.Identity;
+using TraffiLearn.Application.UseCases.Users.Identity;
 
 namespace TraffiLearn.Application.Services
 {

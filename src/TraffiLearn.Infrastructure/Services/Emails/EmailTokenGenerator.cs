@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using TraffiLearn.Application.Abstractions.Emails;
-using TraffiLearn.Application.Users.Identity;
+using TraffiLearn.Application.UseCases.Users.Identity;
 
 namespace TraffiLearn.Infrastructure.Services.Emails
 {

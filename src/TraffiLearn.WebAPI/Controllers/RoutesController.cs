@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
-using TraffiLearn.Application.Routes.Commands.Delete;
-using TraffiLearn.Application.Routes.DTO;
-using TraffiLearn.Application.Routes.Queries.GetById;
-using TraffiLearn.Application.Routes.Queries.GetByServiceCenterId;
+using TraffiLearn.Application.UseCases.Routes.Commands.Delete;
+using TraffiLearn.Application.UseCases.Routes.DTO;
+using TraffiLearn.Application.UseCases.Routes.Queries.GetById;
+using TraffiLearn.Application.UseCases.Routes.Queries.GetByServiceCenterId;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.CommandWrappers.CreateRoute;
 using TraffiLearn.WebAPI.CommandWrappers.UpdateRoute;
