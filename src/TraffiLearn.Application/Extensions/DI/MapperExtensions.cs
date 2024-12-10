@@ -91,6 +91,7 @@ namespace TraffiLearn.Application.Extensions.DI
             services.AddMapper<SubscriptionPlan, SubscriptionPlanResponse, SubscriptionPlanEntityToResponseMapper>();
             services.AddMapper<CreateSubscriptionPlanCommand, Result<SubscriptionPlan>, CreateSubscriptionPlanCommandMapper>();
             services.AddMapper<UpdateSubscriptionPlanCommand, Result<SubscriptionPlan>, UpdateSubscriptionPlanCommandMapper>();
+            services.AddMapper<User, CurrentUserResponse, UserToCurrentUserResponseMapper>();
 
             return services;
         }

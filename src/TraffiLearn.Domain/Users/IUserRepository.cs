@@ -10,6 +10,10 @@ namespace TraffiLearn.Domain.Users
             UserId userId,
             CancellationToken cancellationToken = default);
 
+        Task<User?> GetByIdWithPlanAsync(
+            UserId userId,
+            CancellationToken cancellationToken = default);
+
         Task<IEnumerable<User>> GetAllAsync(
             CancellationToken cancellationToken = default);
 
