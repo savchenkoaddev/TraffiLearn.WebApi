@@ -10,14 +10,17 @@ namespace TraffiLearn.Application.Users.Queries.GetCurrentUserInfo
     internal sealed class GetCurrentUserInfoQueryHandler
         : IRequestHandler<GetCurrentUserInfoQuery, Result<CurrentUserResponse>>
     {
-        private readonly IAuthenticatedUserService _authenticatedUserService;
+        private readonly IUserContextService<Guid> _userContextService;
+        private readonly IUserRepository _userRepository;
         private readonly Mapper<User, CurrentUserResponse> _userMapper;
 
         public GetCurrentUserInfoQueryHandler(
-            IAuthenticatedUserService authenticatedUserService,
+            IUserContextService<Guid> userContextService,
+            IUserRepository userRepository,
             Mapper<User, CurrentUserResponse> userMapper)
         {
-            _authenticatedUserService = authenticatedUserService;
+            _userContextService = userContextService;
+            _userRepository = userRepository;
             _userMapper = userMapper;
         }
 
@@ -25,8 +28,16 @@ namespace TraffiLearn.Application.Users.Queries.GetCurrentUserInfo
             GetCurrentUserInfoQuery request,
             CancellationToken cancellationToken)
         {
-            var user = await _authenticatedUserService
-                .GetAuthenticatedUserAsync(cancellationToken);
+            var userId = new UserId(_userContextService
+                .GetAuthenticatedUserId());
+
+            var user = await _userRepository.GetByIdWithPlanAsync(
+                userId, cancellationToken);
+
+            if (user is null)
+            {
+                throw new InvalidOperationException("Authenticated user is not found.");
+            }
 
             return _userMapper.Map(user);
         }

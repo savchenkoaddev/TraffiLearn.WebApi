@@ -34,7 +34,7 @@ namespace TraffiLearn.WebAPI.Controllers
 
 
         /// <summary>
-        /// Gets info of the current (logged in) in user.
+        /// Gets information about the authenticated user.
         /// </summary>
         /// <remarks>
         /// **Authentication Required:**<br />

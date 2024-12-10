@@ -140,5 +140,15 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
 
             return Task.CompletedTask;
         }
+
+        public Task<User?> GetByIdWithPlanAsync(
+            UserId userId, 
+            CancellationToken cancellationToken = default)
+        {
+            return _dbContext.Users
+                .Where(user => user.Id == userId)
+                .Include(user => user.SubscriptionPlan)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
     }
 }
