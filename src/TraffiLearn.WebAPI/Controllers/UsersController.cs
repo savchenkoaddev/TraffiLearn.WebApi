@@ -8,6 +8,7 @@ using TraffiLearn.Application.Users.Commands.DowngradeAccount;
 using TraffiLearn.Application.Users.DTO;
 using TraffiLearn.Application.Users.Queries.GetAllAdmins;
 using TraffiLearn.Application.Users.Queries.GetAllUsers;
+using TraffiLearn.Application.Users.Queries.GetCurrentUserInfo;
 using TraffiLearn.Application.Users.Queries.GetLoggedInUserComments;
 using TraffiLearn.Application.Users.Queries.GetUserComments;
 using TraffiLearn.Application.Users.Queries.GetUserDislikedQuestions;
@@ -31,6 +32,28 @@ namespace TraffiLearn.WebAPI.Controllers
 
         #region Queries
 
+
+        /// <summary>
+        /// Gets info of the current (logged in) in user.
+        /// </summary>
+        /// <remarks>
+        /// **Authentication Required:**<br />
+        /// The user must be authenticated using a JWT token.
+        /// </remarks>
+        /// <response code="200">Successfully retrieved logged in user comments. Returns logged in user comments.</response>
+        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        [HasPermission(Permission.AccessData)]
+        [HttpGet("current")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(CurrentUserResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetCurrentUserInfo()
+        {
+            var queryResult = await _sender.Send(new GetCurrentUserInfoQuery());
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
 
         /// <summary>
         /// Gets all users from the storage.
