@@ -1,7 +1,7 @@
-﻿using TraffiLearn.Application.Questions.DTO;
-using TraffiLearn.Application.Tickets.Commands.Create;
-using TraffiLearn.Application.Tickets.Commands.Update;
-using TraffiLearn.Application.Tickets.DTO;
+﻿using TraffiLearn.Application.UseCases.Questions.DTO;
+using TraffiLearn.Application.UseCases.Tickets.Commands.Create;
+using TraffiLearn.Application.UseCases.Tickets.Commands.Update;
+using TraffiLearn.Application.UseCases.Tickets.DTO;
 using TraffiLearn.Domain.Users.Roles;
 using TraffiLearn.IntegrationTests.Helpers;
 using TraffiLearn.IntegrationTests.Questions;

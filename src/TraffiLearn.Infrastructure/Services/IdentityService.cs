@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Abstractions.Security;
-using TraffiLearn.Application.Users.Identity;
+using TraffiLearn.Application.UseCases.Users.Identity;
 using TraffiLearn.Domain.Users;
 using TraffiLearn.Domain.Users.Emails;
 using TraffiLearn.Infrastructure.Authentication.Options;

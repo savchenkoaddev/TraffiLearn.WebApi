@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using TraffiLearn.Application.Abstractions.Data;
-using TraffiLearn.Application.Users.Identity;
+using TraffiLearn.Application.UseCases.Users.Identity;
 using TraffiLearn.Infrastructure.Extensions.DI.Shared;
 using TraffiLearn.Infrastructure.Persistence;
 using TraffiLearn.Infrastructure.Persistence.Interceptors;

@@ -17,7 +17,6 @@ using Testcontainers.Azurite;
 using Testcontainers.PostgreSql;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
-using TraffiLearn.Application.Users.Identity;
 using TraffiLearn.Domain.Users;
 using TraffiLearn.Infrastructure.External.Blobs.Options;
 using TraffiLearn.Infrastructure.Persistence;
@@ -26,6 +25,7 @@ using TraffiLearn.WebAPI;
 using TraffiLearn.Infrastructure.BackgroundJobs;
 using Quartz.Impl;
 using Microsoft.Extensions.Hosting;
+using TraffiLearn.Application.UseCases.Users.Identity;
 
 namespace TraffiLearn.IntegrationTests.Abstractions
 {

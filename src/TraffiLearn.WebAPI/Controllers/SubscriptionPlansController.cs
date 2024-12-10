@@ -1,13 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
-using System.Numerics;
-using TraffiLearn.Application.SubscriptionPlans.Commands.Create;
-using TraffiLearn.Application.SubscriptionPlans.Commands.Delete;
-using TraffiLearn.Application.SubscriptionPlans.Commands.Update;
-using TraffiLearn.Application.SubscriptionPlans.DTO;
-using TraffiLearn.Application.SubscriptionPlans.Queries.GetAll;
-using TraffiLearn.Application.SubscriptionPlans.Queries.GetById;
+using TraffiLearn.Application.UseCases.SubscriptionPlans.Commands.Create;
+using TraffiLearn.Application.UseCases.SubscriptionPlans.Commands.Delete;
+using TraffiLearn.Application.UseCases.SubscriptionPlans.Commands.Update;
+using TraffiLearn.Application.UseCases.SubscriptionPlans.DTO;
+using TraffiLearn.Application.UseCases.SubscriptionPlans.Queries.GetAll;
+using TraffiLearn.Application.UseCases.SubscriptionPlans.Queries.GetById;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
 using TraffiLearn.WebAPI.Swagger;
@@ -55,7 +54,7 @@ namespace TraffiLearn.WebAPI.Controllers
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
-        
+
         /// <summary>
         /// Gets all subscription plans from the storage.
         /// </summary>
@@ -71,8 +70,8 @@ namespace TraffiLearn.WebAPI.Controllers
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
-        
-        
+
+
         #endregion
 
         #region Commands

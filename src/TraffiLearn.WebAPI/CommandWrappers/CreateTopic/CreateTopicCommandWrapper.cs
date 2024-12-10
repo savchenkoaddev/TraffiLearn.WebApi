@@ -1,5 +1,5 @@
 ﻿using Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Attributes;
-using TraffiLearn.Application.Topics.Commands.Create;
+using TraffiLearn.Application.UseCases.Topics.Commands.Create;
 
 namespace TraffiLearn.WebAPI.CommandWrappers.CreateTopic
 {

@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Net.Http.Json;
-using TraffiLearn.Application.Questions.Commands.Create;
-using TraffiLearn.Application.Questions.Commands.Update;
-using TraffiLearn.Application.Questions.DTO;
-using TraffiLearn.Application.Tickets.DTO;
-using TraffiLearn.Application.Topics.DTO;
+using TraffiLearn.Application.UseCases.Questions.Commands.Create;
+using TraffiLearn.Application.UseCases.Questions.Commands.Update;
+using TraffiLearn.Application.UseCases.Questions.DTO;
+using TraffiLearn.Application.UseCases.Tickets.DTO;
+using TraffiLearn.Application.UseCases.Topics.DTO;
 using TraffiLearn.Domain.Users.Roles;
 using TraffiLearn.IntegrationTests.Helpers;
 using TraffiLearn.IntegrationTests.Questions.Commands.CreateQuestion;

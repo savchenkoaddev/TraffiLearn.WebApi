@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using TraffiLearn.Application.Images.Options;
-using TraffiLearn.Application.Questions.Options;
+using TraffiLearn.Application.UseCases.Questions.Options;
 using TraffiLearn.Infrastructure.Authentication.Options;
 using TraffiLearn.Infrastructure.Extensions.DI.Shared;
 using TraffiLearn.Infrastructure.External.Blobs.Options;

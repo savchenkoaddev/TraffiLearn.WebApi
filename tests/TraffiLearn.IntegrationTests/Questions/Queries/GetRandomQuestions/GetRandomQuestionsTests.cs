@@ -1,4 +1,4 @@
-﻿using TraffiLearn.Application.Questions.DTO;
+﻿using TraffiLearn.Application.UseCases.Questions.DTO;
 using TraffiLearn.Domain.Users.Roles;
 using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;

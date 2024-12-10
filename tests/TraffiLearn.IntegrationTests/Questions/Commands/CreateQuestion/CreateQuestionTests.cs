@@ -1,4 +1,4 @@
-﻿using TraffiLearn.Application.Questions.Commands.Create;
+﻿using TraffiLearn.Application.UseCases.Questions.Commands.Create;
 using TraffiLearn.Domain.Users.Roles;
 using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;

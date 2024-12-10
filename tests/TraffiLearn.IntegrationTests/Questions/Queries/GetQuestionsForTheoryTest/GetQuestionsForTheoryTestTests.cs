@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using TraffiLearn.Application.Questions.Options;
+using TraffiLearn.Application.UseCases.Questions.Options;
 using TraffiLearn.Domain.Users.Roles;
 using TraffiLearn.IntegrationTests.Abstractions;
 using TraffiLearn.IntegrationTests.Extensions;
