@@ -5,6 +5,7 @@ using TraffiLearn.Application.UseCases.Comments.DTO;
 using TraffiLearn.Application.UseCases.Questions.DTO;
 using TraffiLearn.Application.UseCases.Users.Commands.ChangeSubscriptionPlan;
 using TraffiLearn.Application.UseCases.Users.Commands.DowngradeAccount;
+using TraffiLearn.Application.UseCases.Users.Commands.RenewSubscriptionPlan;
 using TraffiLearn.Application.UseCases.Users.DTO;
 using TraffiLearn.Application.UseCases.Users.Queries.GetAllAdmins;
 using TraffiLearn.Application.UseCases.Users.Queries.GetAllUsers;
@@ -279,6 +280,35 @@ namespace TraffiLearn.WebAPI.Controllers
                 new ChangeSubscriptionPlanCommand(planId));
 
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+        }
+
+        /// <summary>
+        /// Renews a subscription plan of an authenticated user.
+        /// </summary>
+        /// <remarks>
+        /// **If a user does not have any subscription plan**, an error will be returned.<br /><br />
+        /// **If a user already has a subscription plan, which has not expired yet**, the new renewal extends from the current expiry date.<br /><br /><br />
+        /// **Authentication Required:**<br />
+        /// The user must be authenticated using a JWT token.<br /><br />
+        /// </remarks>
+        /// <response code="200">***OK.*** Successfully renewed a subscription plan. Returns the new expiration date.</response>
+        /// <response code="400">***Bad request.*** Violation of some business rules.</response>
+        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        [HasPermission(Permission.AccessData)]
+        [HttpPut("renew-plan")]
+        [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
+        [ProducesResponseType(typeof(DateTime), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> RenewSubscriptionPlan()
+        {
+            var commandResult = await _sender.Send(
+                new RenewSubscriptionPlanCommand());
+
+            return commandResult.IsSuccess 
+                ? Ok(new { ExpirationDate = commandResult.Value }) 
+                : commandResult.ToProblemDetails();
         }
 
 
