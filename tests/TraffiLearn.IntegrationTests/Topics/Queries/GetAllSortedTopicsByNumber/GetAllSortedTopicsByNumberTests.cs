@@ -75,7 +75,7 @@ namespace TraffiLearn.IntegrationTests.Topics.Queries.GetAllSortedTopicsByNumber
             var secondTopicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync(new CreateTopicCommand(
                 TopicNumber: 5,
                 Title: "title-5"));
-
+            
             var firstTopicId = await ApiTopicClient.CreateTopicAsAuthorizedAsync(new CreateTopicCommand(
                 TopicNumber: 3,
                 Title: "title-3"));
