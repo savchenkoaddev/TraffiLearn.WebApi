@@ -107,14 +107,29 @@ namespace TraffiLearn.Domain.Users
                 return UserErrors.NoSubscription;
             }
 
-            PlanExpiresOn = CalculateNextPlanExpiry(SubscriptionPlan);
+            if (PlanExpiresOn > DateTime.UtcNow)
+            {
+                PlanExpiresOn = CalculateNextPlanExpiry(
+                    SubscriptionPlan, PlanExpiresOn);
+            }
+            else
+            {
+                PlanExpiresOn = CalculateNextPlanExpiry(SubscriptionPlan);
+            }
 
             return Result.Success();
         }
 
-        private DateTime CalculateNextPlanExpiry(SubscriptionPlan plan)
+        private DateTime CalculateNextPlanExpiry(
+            SubscriptionPlan plan,
+            DateTime? from = default)
         {
             var expiresInDays = plan.RenewalPeriod.GetDaysEquivalent();
+
+            if (from is not null)
+            {
+                return from.Value.AddDays(expiresInDays);
+            }
 
             return DateTime.UtcNow.AddDays(expiresInDays);
         }
