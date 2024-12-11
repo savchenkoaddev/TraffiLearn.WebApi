@@ -95,10 +95,28 @@ namespace TraffiLearn.Domain.Users
 
             SubscriptionPlan = plan;
 
-            var expiresInDays = plan.RenewalPeriod.GetDaysEquivalent();
-            PlanExpiresOn = DateTime.UtcNow.AddDays(expiresInDays);
+            PlanExpiresOn = CalculateNextPlanExpiry(plan);
 
             return Result.Success();
+        }
+
+        public Result RenewPlan()
+        {
+            if (SubscriptionPlan is null)
+            {
+                return UserErrors.NoSubscription;
+            }
+
+            PlanExpiresOn = CalculateNextPlanExpiry(SubscriptionPlan);
+
+            return Result.Success();
+        }
+
+        private DateTime CalculateNextPlanExpiry(SubscriptionPlan plan)
+        {
+            var expiresInDays = plan.RenewalPeriod.GetDaysEquivalent();
+
+            return DateTime.UtcNow.AddDays(expiresInDays);
         }
 
         public Result DowngradeRole()

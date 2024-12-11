@@ -188,5 +188,10 @@ namespace TraffiLearn.Domain.Users
             Error.Validation(
                 code: "User.CantChangeToSamePlan",
                 description: "Failed to change the plan, because the user already has the same plan.");
+
+        public static readonly Error NoSubscription =
+            Error.Validation(
+                code: "User.NoSubscription",
+                description: "Failed to perform the operation, because the user has no subscription.");
     }
 }
