@@ -43,10 +43,12 @@ using TraffiLearn.Domain.Questions;
 using TraffiLearn.Domain.Regions;
 using TraffiLearn.Domain.Routes;
 using TraffiLearn.Domain.ServiceCenters;
+using TraffiLearn.Domain.Shared.CanceledSubscriptions;
 using TraffiLearn.Domain.SubscriptionPlans;
 using TraffiLearn.Domain.Tickets;
 using TraffiLearn.Domain.Topics;
 using TraffiLearn.Domain.Users;
+using TraffiLearn.Domain.Users.DomainEvents;
 using TraffiLearn.SharedKernel.Shared;
 using Directory = TraffiLearn.Domain.Directories.Directory;
 
@@ -92,6 +94,7 @@ namespace TraffiLearn.Application.Extensions.DI
             services.AddMapper<CreateSubscriptionPlanCommand, Result<SubscriptionPlan>, CreateSubscriptionPlanCommandMapper>();
             services.AddMapper<UpdateSubscriptionPlanCommand, Result<SubscriptionPlan>, UpdateSubscriptionPlanCommandMapper>();
             services.AddMapper<User, CurrentUserResponse, UserToCurrentUserResponseMapper>();
+            services.AddMapper<SubscriptionCanceledDomainEvent, Result<CanceledSubscription>, SubscriptionCanceledDomainEventToEntityMapper>();
 
             return services;
         }
