@@ -1,6 +1,7 @@
 ﻿using TraffiLearn.Domain.Comments;
 using TraffiLearn.Domain.Questions;
 using TraffiLearn.Domain.SubscriptionPlans;
+using TraffiLearn.Domain.Users.CancelationReasons;
 using TraffiLearn.Domain.Users.DomainEvents;
 using TraffiLearn.Domain.Users.Emails;
 using TraffiLearn.Domain.Users.Roles;
@@ -132,6 +133,28 @@ namespace TraffiLearn.Domain.Users
             }
 
             return DateTime.UtcNow.AddDays(expiresInDays);
+        }
+
+        public Result CancelSubscription(
+            CancelationReason reason)
+        {
+            if (SubscriptionPlan is null)
+            {
+                return UserErrors.NoSubscription;
+            }
+
+            var subscriptionPlanId = SubscriptionPlan.Id.Value;
+
+            SubscriptionPlan = null;
+            PlanExpiresOn = null;
+
+            RaiseDomainEvent(new SubscriptionCanceledDomainEvent(
+                UserId: Id.Value,
+                SubscriptionId: subscriptionPlanId,
+                CanceledAt: DateTime.UtcNow,
+                Reason: reason.Value));
+
+            return Result.Success();
         }
 
         public Result DowngradeRole()
