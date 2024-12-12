@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using TraffiLearn.Application.UseCases.Comments.DTO;
 using TraffiLearn.Application.UseCases.Questions.DTO;
+using TraffiLearn.Application.UseCases.Users.Commands.CancelSubscription;
 using TraffiLearn.Application.UseCases.Users.Commands.ChangeSubscriptionPlan;
 using TraffiLearn.Application.UseCases.Users.Commands.DowngradeAccount;
 using TraffiLearn.Application.UseCases.Users.Commands.RenewSubscriptionPlan;
@@ -283,7 +284,7 @@ namespace TraffiLearn.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Renews a subscription plan of an authenticated user.
+        /// Renews a subscription of an authenticated user.
         /// </summary>
         /// <remarks>
         /// **If a user does not have any subscription plan**, an error will be returned.<br /><br />
@@ -291,17 +292,17 @@ namespace TraffiLearn.WebAPI.Controllers
         /// **Authentication Required:**<br />
         /// The user must be authenticated using a JWT token.<br /><br />
         /// </remarks>
-        /// <response code="200">***OK.*** Successfully renewed a subscription plan. Returns the new expiration date.</response>
+        /// <response code="200">***OK.*** Successfully renewed a subscription. Returns the new expiration date.</response>
         /// <response code="400">***Bad request.*** Violation of some business rules.</response>
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
         [HasPermission(Permission.AccessData)]
-        [HttpPut("renew-plan")]
+        [HttpPut("renew-subscription")]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(DateTime), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> RenewSubscriptionPlan()
+        public async Task<IActionResult> RenewSubscription()
         {
             var commandResult = await _sender.Send(
                 new RenewSubscriptionPlanCommand());
@@ -309,6 +310,32 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess 
                 ? Ok(new { ExpirationDate = commandResult.Value }) 
                 : commandResult.ToProblemDetails();
+        }
+
+        /// <summary>
+        /// Cancels a subscription of an authenticated user.
+        /// </summary>
+        /// <remarks>
+        /// **If a user does not have any subscription plan**, an error will be returned.<br /><br /><br />
+        /// **Authentication Required:**<br />
+        /// The user must be authenticated using a JWT token.<br /><br />
+        /// </remarks>
+        /// <param name="command">**The cancel subscription command.**</param>
+        /// <response code="204">***No Content.*** Successfully canceled a subscription.</response>
+        /// <response code="400">***Bad request.*** Violation of some business rules.</response>
+        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        [HasPermission(Permission.AccessData)]
+        [HttpPut("cancel-subscription")]
+        [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> CancelSubscription(
+            [FromBody] CancelSubscriptionCommand command)
+        {
+            var commandResult = await _sender.Send(command);
+
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
 
