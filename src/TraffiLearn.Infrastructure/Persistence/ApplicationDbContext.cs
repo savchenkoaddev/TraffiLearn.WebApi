@@ -6,6 +6,7 @@ using TraffiLearn.Domain.Questions;
 using TraffiLearn.Domain.Regions;
 using TraffiLearn.Domain.Routes;
 using TraffiLearn.Domain.ServiceCenters;
+using TraffiLearn.Domain.Shared.CanceledSubscriptions;
 using TraffiLearn.Domain.SubscriptionPlans;
 using TraffiLearn.Domain.Tickets;
 using TraffiLearn.Domain.Topics;
@@ -45,6 +46,8 @@ namespace TraffiLearn.Infrastructure.Persistence
         public DbSet<Directory> Directories { get; init; }
 
         public DbSet<SubscriptionPlan> SubscriptionPlans { get; init; }
+
+        public DbSet<CanceledSubscription> CanceledSubscriptions { get; init; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
