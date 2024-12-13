@@ -39,9 +39,10 @@ jobs:
           echo "JwtSettings__Issuer=${{ secrets.JWT_ISSUER }}" >> $GITHUB_ENV
           echo "JwtSettings__Audience=${{ secrets.JWT_AUDIENCE }}" >> $GITHUB_ENV
           echo "GroqApiSettings__ApiKey=${{ secrets.GROQ_API_KEY }}" >> $GITHUB_ENV
-
-      - name: Clean Solution
-        run: dotnet clean ./src/TraffiLearn.sln
+          echo "StripeSettings__PublishableKey=${{ secrets.STRIPE_PUBLISHABLE_KEY }}" >> $GITHUB_ENV
+          echo "StripeSettings__SecretKey=${{ secrets.STRIPE_SECRET_KEY }}" >> $GITHUB_ENV
+          echo "StripeSettings__SuccessUrl=${{ secrets.STRIPE_SUCCESS_URL }}" >> $GITHUB_ENV
+          echo "StripeSettings__CancelUrl=${{ secrets.STRIPE_CANCEL_URL }}" >> $GITHUB_ENV
 
       - name: Restore
         run: dotnet restore ./src/TraffiLearn.sln

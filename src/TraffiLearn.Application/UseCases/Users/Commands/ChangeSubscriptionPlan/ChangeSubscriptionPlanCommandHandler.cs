@@ -9,7 +9,7 @@ using TraffiLearn.SharedKernel.Shared;
 namespace TraffiLearn.Application.UseCases.Users.Commands.ChangeSubscriptionPlan
 {
     internal sealed class ChangeSubscriptionPlanCommandHandler
-        : IRequestHandler<ChangeSubscriptionPlanCommand, Result>
+        : IRequestHandler<ChangeSubscriptionPlanCommand, Result<Uri>>
     {
         private readonly IAuthenticatedUserService _authenticatedUserService;
         private readonly ISubscriptionPlanRepository _subscriptionPlanRepository;
@@ -28,7 +28,7 @@ namespace TraffiLearn.Application.UseCases.Users.Commands.ChangeSubscriptionPlan
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result> Handle(
+        public async Task<Result<Uri>> Handle(
             ChangeSubscriptionPlanCommand request,
             CancellationToken cancellationToken)
         {
@@ -42,14 +42,14 @@ namespace TraffiLearn.Application.UseCases.Users.Commands.ChangeSubscriptionPlan
 
             if (plan is null)
             {
-                return SubscriptionPlanErrors.NotFound;
+                return Result.Failure<Uri>(SubscriptionPlanErrors.NotFound);
             }
 
             var result = user.ChangeSubscriptionPlan(plan);
 
             if (result.IsFailure)
             {
-                return result.Error;
+                return Result.Failure<Uri>(result.Error);
             }
 
             var createCheckoutSessionRequest = GetCreateCheckoutSessionRequest(plan);
@@ -70,7 +70,7 @@ namespace TraffiLearn.Application.UseCases.Users.Commands.ChangeSubscriptionPlan
                 Amount: plan.Price.Amount,
                 Currency: plan.Price.Currency.ToString(),
                 Quantity: 1,
-                PaymentMode: "subscription");
+                PaymentMode: "payment");
         }
     }
 }
