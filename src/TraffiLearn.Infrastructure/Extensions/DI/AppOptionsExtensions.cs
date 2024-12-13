@@ -8,6 +8,7 @@ using TraffiLearn.Infrastructure.External.GoogleAuth.Options;
 using TraffiLearn.Infrastructure.External.GroqAI.Options;
 using TraffiLearn.Infrastructure.Persistence.Options;
 using TraffiLearn.Infrastructure.Services.Emails.Options;
+using TraffiLearn.Infrastructure.Services.Payments.Options;
 
 namespace TraffiLearn.Infrastructure.Extensions.DI
 {
@@ -36,6 +37,8 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
                 GoogleAuthSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<OutboxSettings>(
                 OutboxSettings.SectionName);
+            services.ConfigureValidatableOnStartOptions<StripeSettings>(
+               StripeSettings.SectionName);
 
             return services;
         }
