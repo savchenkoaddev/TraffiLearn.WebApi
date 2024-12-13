@@ -280,7 +280,9 @@ namespace TraffiLearn.WebAPI.Controllers
             var commandResult = await _sender.Send(
                 new ChangeSubscriptionPlanCommand(planId));
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess 
+                ? Ok(commandResult.Value.ToString()) 
+                : commandResult.ToProblemDetails();
         }
 
         /// <summary>
