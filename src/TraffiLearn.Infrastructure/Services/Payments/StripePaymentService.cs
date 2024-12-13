@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Options;
-using Stripe;
 using Stripe.Checkout;
 using TraffiLearn.Application.Abstractions.Payments;
 using TraffiLearn.Infrastructure.Services.Payments.Options;
@@ -31,7 +30,7 @@ namespace TraffiLearn.Infrastructure.Services.Payments
             {
                 PaymentMethodTypes = new List<string> { "card" },
                 LineItems = BuildLineItems(request),
-                Mode = "payment",
+                Mode = request.PaymentMode,
                 SuccessUrl = _settings.SuccessUrl,
                 CancelUrl = _settings.CancelUrl
             };
@@ -45,14 +44,14 @@ namespace TraffiLearn.Infrastructure.Services.Payments
                 {
                     PriceData = new SessionLineItemPriceDataOptions
                     {
-                        UnitAmount = request.Amount,
-                        Currency = request.Currency,
+                        UnitAmountDecimal = request.Amount * 100,
+                        Currency = request.Currency.ToLower(),
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
                             Name = request.ProductName
                         }
                     },
-                    Quantity = 1
+                    Quantity = request.Quantity
                 }
             };
         }

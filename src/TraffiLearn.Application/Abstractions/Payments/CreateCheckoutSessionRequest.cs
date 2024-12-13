@@ -2,6 +2,8 @@
 {
     public sealed record CreateCheckoutSessionRequest(
         string ProductName,
-        long Amount,
-        string Currency);
+        decimal Amount,
+        string Currency,
+        int Quantity,
+        string PaymentMode);
 }
