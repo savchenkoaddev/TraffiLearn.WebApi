@@ -28,6 +28,7 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
             services.AddSingleton<IBlobService, AzureBlobService>();
             services.AddScoped<IAIService, GroqApiService>();
             services.AddScoped<IGoogleAuthService, GoogleAuthService>();
+            services.AddScoped<IStripeWebhookService, StripeWebhookService>();
 
             return services;
         }
