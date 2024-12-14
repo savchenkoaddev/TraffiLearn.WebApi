@@ -12,6 +12,9 @@ namespace TraffiLearn.Infrastructure.Services.Payments.Options
         [Required]
         public required string SecretKey { get; init; }
 
+        [Required]
+        public required string WebhookSecret { get; init; }
+
         [Url]
         [Required]
         public required string SuccessUrl { get; init; }

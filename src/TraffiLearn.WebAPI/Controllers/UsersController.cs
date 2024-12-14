@@ -4,7 +4,7 @@ using System.Net.Mime;
 using TraffiLearn.Application.UseCases.Comments.DTO;
 using TraffiLearn.Application.UseCases.Questions.DTO;
 using TraffiLearn.Application.UseCases.Users.Commands.CancelSubscription;
-using TraffiLearn.Application.UseCases.Users.Commands.ChangeSubscriptionPlan;
+using TraffiLearn.Application.UseCases.Users.Commands.RequestChangeSubscriptionPlan;
 using TraffiLearn.Application.UseCases.Users.Commands.DowngradeAccount;
 using TraffiLearn.Application.UseCases.Users.Commands.RenewSubscriptionPlan;
 using TraffiLearn.Application.UseCases.Users.DTO;
@@ -253,7 +253,7 @@ namespace TraffiLearn.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Changes a subscription plan of an authenticated user.
+        /// Requests a change for a subscription plan of an authenticated user.
         /// </summary>
         /// <remarks>
         /// **If a user has the same subscription plan**, an error will be returned.<br /><br /><br />
@@ -269,16 +269,16 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="404">***Not found.*** No subscription plan exists with the provided ID.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
         [HasPermission(Permission.AccessData)]
-        [HttpPut("change-subscription/{planId:guid}")]
+        [HttpPut("request-change-subscription/{planId:guid}")]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ChangeSubscriptionPlan(
+        public async Task<IActionResult> RequestChangeSubscriptionPlan(
             [FromRoute] Guid planId)
         {
             var commandResult = await _sender.Send(
-                new ChangeSubscriptionPlanCommand(planId));
+                new RequestChangeSubscriptionPlanCommand(planId));
 
             return commandResult.IsSuccess 
                 ? Ok(commandResult.Value.ToString()) 
