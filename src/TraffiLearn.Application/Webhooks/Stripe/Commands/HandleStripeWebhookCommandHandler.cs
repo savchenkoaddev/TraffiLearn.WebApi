@@ -13,16 +13,16 @@ namespace TraffiLearn.Application.Webhooks.Stripe.Commands
         : IRequestHandler<HandleStripeWebhookCommand, Result>
     {
         private readonly IStripeWebhookService _stripeWebhookService;
-        private readonly ISender _sender;
+        private readonly IPublisher _publisher;
         private readonly ILogger<HandleStripeWebhookCommandHandler> _logger;
 
         public HandleStripeWebhookCommandHandler(
             IStripeWebhookService stripeWebhookService,
-            ISender sender,
+            IPublisher publisher,
             ILogger<HandleStripeWebhookCommandHandler> logger)
         {
             _stripeWebhookService = stripeWebhookService;
-            _sender = sender;
+            _publisher = publisher;
             _logger = logger;
         }
 
@@ -36,15 +36,15 @@ namespace TraffiLearn.Application.Webhooks.Stripe.Commands
 
             var eventType = stripeEvent.GetStripeEventType();
 
-            if (eventType == StripeEventType.PaymentIntentSucceeded)
+            if (eventType == StripeEventType.CheckoutSessionCompleted)
             {
                 (Guid SubscriptionPlanId, Guid UserId) ids = ExtractMetadata(stripeEvent);
 
-                var paymentIntentSucceededEvent = new PaymentIntentSucceededEvent(
+                var checkoutSessionCompletedEvent = new CheckoutSessionCompletedEvent(
                     SubscriptionPlanId: ids.SubscriptionPlanId,
                     UserId: ids.UserId);
 
-                await _sender.Send(paymentIntentSucceededEvent, cancellationToken);
+                await _publisher.Publish(checkoutSessionCompletedEvent, cancellationToken);
             }
 
             return Result.Success();

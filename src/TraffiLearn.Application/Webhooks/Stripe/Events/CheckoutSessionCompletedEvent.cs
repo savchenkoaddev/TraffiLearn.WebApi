@@ -2,7 +2,7 @@
 
 namespace TraffiLearn.Application.Webhooks.Stripe.Events
 {
-    internal sealed record PaymentIntentSucceededEvent(
+    internal sealed record CheckoutSessionCompletedEvent(
         Guid SubscriptionPlanId,
         Guid UserId) : INotification;
 }

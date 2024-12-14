@@ -4,7 +4,7 @@ using TraffiLearn.Application.Webhooks.Stripe.Commands;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
-    [Route("api/webhook")]
+    [Route("api/webhooks")]
     [ApiController]
     public class WebhookController : ControllerBase
     {

@@ -6,19 +6,19 @@ using TraffiLearn.Domain.Users;
 
 namespace TraffiLearn.Application.Webhooks.Stripe.Events
 {
-    internal sealed class PaymentIntentSucceededEventHandler
-        : INotificationHandler<PaymentIntentSucceededEvent>
+    internal sealed class CheckoutSessionCompletedEventHandler
+        : INotificationHandler<CheckoutSessionCompletedEvent>
     {
         private readonly ISubscriptionPlanRepository _subscriptionPlanRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<PaymentIntentSucceededEventHandler> _logger;
+        private readonly ILogger<CheckoutSessionCompletedEventHandler> _logger;
 
-        public PaymentIntentSucceededEventHandler(
+        public CheckoutSessionCompletedEventHandler(
             ISubscriptionPlanRepository subscriptionPlanRepository,
             IUserRepository userRepository,
             IUnitOfWork unitOfWork,
-            ILogger<PaymentIntentSucceededEventHandler> logger)
+            ILogger<CheckoutSessionCompletedEventHandler> logger)
         {
             _subscriptionPlanRepository = subscriptionPlanRepository;
             _userRepository = userRepository;
@@ -27,7 +27,7 @@ namespace TraffiLearn.Application.Webhooks.Stripe.Events
         }
 
         public async Task Handle(
-            PaymentIntentSucceededEvent notification,
+            CheckoutSessionCompletedEvent notification,
             CancellationToken cancellationToken)
         {
             var subscriptionPlanId = new SubscriptionPlanId(
