@@ -1,22 +1,21 @@
 ﻿using MediatR;
-using System.Numerics;
 using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Abstractions.Payments;
 using TraffiLearn.Domain.SubscriptionPlans;
 using TraffiLearn.SharedKernel.Shared;
 
-namespace TraffiLearn.Application.UseCases.Users.Commands.ChangeSubscriptionPlan
+namespace TraffiLearn.Application.UseCases.Users.Commands.RequestChangeSubscriptionPlan
 {
-    internal sealed class ChangeSubscriptionPlanCommandHandler
-        : IRequestHandler<ChangeSubscriptionPlanCommand, Result<Uri>>
+    internal sealed class RequestChangeSubscriptionPlanCommandHandler
+        : IRequestHandler<RequestChangeSubscriptionPlanCommand, Result<Uri>>
     {
         private readonly IAuthenticatedUserService _authenticatedUserService;
         private readonly ISubscriptionPlanRepository _subscriptionPlanRepository;
         private readonly IPaymentService _paymentService;
         private readonly IUnitOfWork _unitOfWork;
 
-        public ChangeSubscriptionPlanCommandHandler(
+        public RequestChangeSubscriptionPlanCommandHandler(
             IAuthenticatedUserService authenticatedUserService,
             ISubscriptionPlanRepository subscriptionPlanRepository,
             IPaymentService paymentService,
@@ -29,12 +28,12 @@ namespace TraffiLearn.Application.UseCases.Users.Commands.ChangeSubscriptionPlan
         }
 
         public async Task<Result<Uri>> Handle(
-            ChangeSubscriptionPlanCommand request,
+            RequestChangeSubscriptionPlanCommand request,
             CancellationToken cancellationToken)
         {
             var user = await _authenticatedUserService
                 .GetAuthenticatedUserAsync(cancellationToken);
-            
+
             var planId = new SubscriptionPlanId(request.SubscriptionPlanId.Value);
 
             var plan = await _subscriptionPlanRepository
@@ -56,8 +55,6 @@ namespace TraffiLearn.Application.UseCases.Users.Commands.ChangeSubscriptionPlan
 
             var sessionUri = await _paymentService.CreateCheckoutSessionAsync(
                 createCheckoutSessionRequest);
-
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success(sessionUri);
         }
