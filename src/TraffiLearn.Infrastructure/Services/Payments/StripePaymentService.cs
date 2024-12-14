@@ -15,16 +15,19 @@ namespace TraffiLearn.Infrastructure.Services.Payments
         }
 
         public async Task<Uri> CreateCheckoutSessionAsync(
-            CreateCheckoutSessionRequest request)
+            CreateCheckoutSessionRequest request,
+            Dictionary<string, string>? metadata = default)
         {
-            var sessionOptions = BuildSessionOptions(request);
+            var sessionOptions = BuildSessionOptions(request, metadata);
 
             var session = await CreateSessionAsync(sessionOptions);
 
             return new Uri(session.Url);
         }
 
-        private SessionCreateOptions BuildSessionOptions(CreateCheckoutSessionRequest request)
+        private SessionCreateOptions BuildSessionOptions(
+            CreateCheckoutSessionRequest request,
+            Dictionary<string, string>? metadata)
         {
             return new SessionCreateOptions
             {
@@ -32,7 +35,8 @@ namespace TraffiLearn.Infrastructure.Services.Payments
                 LineItems = BuildLineItems(request),
                 Mode = request.PaymentMode,
                 SuccessUrl = _settings.SuccessUrl,
-                CancelUrl = _settings.CancelUrl
+                CancelUrl = _settings.CancelUrl,
+                Metadata = metadata
             };
         }
 

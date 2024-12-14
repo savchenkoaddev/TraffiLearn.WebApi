@@ -3,6 +3,7 @@
     public interface IPaymentService
     {
         Task<Uri> CreateCheckoutSessionAsync(
-            CreateCheckoutSessionRequest request);
+            CreateCheckoutSessionRequest request,
+            Dictionary<string, string>? metadata = default);
     }
 }

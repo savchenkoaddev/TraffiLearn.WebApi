@@ -3,6 +3,7 @@ using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Abstractions.Payments;
 using TraffiLearn.Domain.SubscriptionPlans;
+using TraffiLearn.Domain.Users;
 using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.UseCases.Users.Commands.RequestChangeSubscriptionPlan
@@ -53,13 +54,26 @@ namespace TraffiLearn.Application.UseCases.Users.Commands.RequestChangeSubscript
 
             var createCheckoutSessionRequest = GetCreateCheckoutSessionRequest(plan);
 
+            var metadata = GetMetadataForRequest(planId, user.Id);
+
             var sessionUri = await _paymentService.CreateCheckoutSessionAsync(
-                createCheckoutSessionRequest);
+                createCheckoutSessionRequest, metadata);
 
             return Result.Success(sessionUri);
         }
 
-        private CreateCheckoutSessionRequest GetCreateCheckoutSessionRequest(
+        private static Dictionary<string, string> GetMetadataForRequest(
+            SubscriptionPlanId planId,
+            UserId userId)
+        {
+            return new Dictionary<string, string>
+            {
+                { "subscriptionPlanId", planId.Value.ToString() },
+                { "userId", userId.Value.ToString() },
+            };
+        }
+
+        private static CreateCheckoutSessionRequest GetCreateCheckoutSessionRequest(
             SubscriptionPlan plan)
         {
             return new CreateCheckoutSessionRequest(
