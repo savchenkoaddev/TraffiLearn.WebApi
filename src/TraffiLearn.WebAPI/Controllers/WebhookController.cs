@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using TraffiLearn.Application.Webhooks.Stripe.Commands;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
@@ -15,13 +16,14 @@ namespace TraffiLearn.WebAPI.Controllers
         }
 
         [HttpPost("stripe")]
-        public async Task<IActionResult> HandleStripeWebhook()
+        public async Task<IActionResult> HandleStripeWebhook(
+            [FromHeader(Name = "Stripe-Signature")] string signatureHeader)
         {
             var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
 
-            var signatureHeader = Request.Headers["Stripe-Signature"];
+            var command = new HandleStripeWebhookCommand(json, signatureHeader);
 
-            var result = await _sender.Send(new HandleStripeEventCommand(json, signatureHeader));
+            var result = await _sender.Send(command);
 
             return result.IsSuccess ? Ok() : BadRequest(result.Error);
         }

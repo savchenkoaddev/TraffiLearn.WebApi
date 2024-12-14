@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using TraffiLearn.SharedKernel.Shared;
 
-namespace TraffiLearn.Application.Webhooks.Stripe
+namespace TraffiLearn.Application.Webhooks.Stripe.Commands
 {
-    public sealed record HandleStripeWebhookCommand : IRequest<Result>;
+    public sealed record HandleStripeWebhookCommand(
+        string Payload,
+        string Signature) : IRequest<Result>;
 }
