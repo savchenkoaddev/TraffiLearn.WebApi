@@ -40,6 +40,19 @@ services:
     environment:
       - MH_STORAGE=maildir
 
+  traffilearn-rabbitmq:
+    image: rabbitmq:4.0.4-management
+    container_name: traffilearn.rabbitmq
+    hostname: traffilearn-queue
+    volumes:
+        - traffilearn_rabbitmq_data:/var/lib/rabbitmq
+        - traffilearn_rabbitmq_logs:/var/log/rabbitmq
+    environment:
+        RABBITMQ_DEFAULT_USER: guest
+        RABBITMQ_DEFAULT_PASSWORD: guest
+
 volumes:
   traffilearn_postgresdb_data:
   traffilearn_blob_data:
+  traffilearn_rabbitmq_data:
+  traffilearn_rabbitmq_logs:  
