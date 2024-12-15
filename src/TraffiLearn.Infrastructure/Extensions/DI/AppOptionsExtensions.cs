@@ -6,6 +6,7 @@ using TraffiLearn.Infrastructure.Extensions.DI.Shared;
 using TraffiLearn.Infrastructure.External.Blobs.Options;
 using TraffiLearn.Infrastructure.External.GoogleAuth.Options;
 using TraffiLearn.Infrastructure.External.GroqAI.Options;
+using TraffiLearn.Infrastructure.MessageBroker;
 using TraffiLearn.Infrastructure.Persistence.Options;
 using TraffiLearn.Infrastructure.Services.Emails.Options;
 using TraffiLearn.Infrastructure.Services.Payments.Options;
@@ -39,6 +40,8 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
                 OutboxSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<StripeSettings>(
                StripeSettings.SectionName);
+            services.ConfigureValidatableOnStartOptions<MessageBrokerSettings>(
+               MessageBrokerSettings.SectionName);
 
             return services;
         }
