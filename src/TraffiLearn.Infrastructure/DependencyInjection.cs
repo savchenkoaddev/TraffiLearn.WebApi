@@ -10,6 +10,8 @@ namespace TraffiLearn.Infrastructure
         {
             services.AddAppOptions();
 
+            services.AddMessageBroker();
+
             services.AddExternalServices();
 
             services.AddInfrastructureServices();
