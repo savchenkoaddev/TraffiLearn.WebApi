@@ -39,9 +39,9 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
             services.ConfigureValidatableOnStartOptions<OutboxSettings>(
                 OutboxSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<StripeSettings>(
-               StripeSettings.SectionName);
+                StripeSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<MessageBrokerSettings>(
-               MessageBrokerSettings.SectionName);
+                MessageBrokerSettings.SectionName);
 
             return services;
         }

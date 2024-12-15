@@ -14,5 +14,13 @@ namespace TraffiLearn.Infrastructure.MessageBroker
 
         [Required]
         public required string Password { get; init; }
+
+        [Range(1, 100)]
+        [Required]
+        public int RetryCount { get; init; }
+
+        [Range(100, 60000)]
+        [Required]
+        public int RetryIntervalMilliseconds { get; init; }
     }
 }
