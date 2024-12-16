@@ -77,5 +77,32 @@ namespace TraffiLearn.Infrastructure.Services.Emails
                 </body>
                 </html>";
         }
+
+        public Letter CreatePlanExpiryReminderLetter(
+            int days,
+            DateTime planExpiresOn)
+        {
+            return new Letter(
+                Subject: CreateSubscriptionPlanExpiringLetterSubject(),
+                HtmlBody: CreateSubscriptionPlanExpiringLetterBody(days, planExpiresOn));
+        }
+
+        private static string CreateSubscriptionPlanExpiringLetterSubject() =>
+            "Your Subscription Plan is about to expire";
+
+        private static string CreateSubscriptionPlanExpiringLetterBody(
+            int days,
+            DateTime planExpiresOn)
+        {
+            return $@"
+                <html>
+                <body style='font-family: Arial, sans-serif; line-height: 1.5;'>
+                    <h1 style='color: #4CAF50;'>Your Subscription Plan will expire in {days} days.</h1>
+                    <p>Subscription is available until <strong>{planExpiresOn.ToShortDateString().Replace('/', '.')} {planExpiresOn.ToShortTimeString()}</strong></p>
+                    <p>If you want to continue using <strong>TraffiLearn</strong> with this Subscription Plan, visit our web-site and renew it.</p>
+                    <i>Best regards,<br>The TraffiLearn Team</i>
+                </body>
+                </html>";
+        }
     }
 }

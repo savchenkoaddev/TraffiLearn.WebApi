@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using TraffiLearn.Infrastructure.BackgroundJobs;
+using TraffiLearn.Infrastructure.BackgroundJobs.Options;
 using TraffiLearn.Infrastructure.Extensions.DI.Shared;
 using TraffiLearn.Infrastructure.Persistence.Options;
 
@@ -12,6 +13,7 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
             this IServiceCollection services)
         {
             var outboxSettings = services.BuildServiceProvider().GetOptions<OutboxSettings>();
+            var userSubscriptionPlanExpiringNotificationSettings = services.BuildServiceProvider().GetOptions<PlanExpiryNotificationSettings>();
 
             services.AddQuartz(configurator =>
             {
@@ -21,6 +23,7 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
                 configurator.SchedulerName = $"default-name-{scheduler}";
 
                 ConfigureProcessOutboxMessagesJob(configurator, outboxSettings);
+                ConfigureNotifyUsersWithExpiringSubscriptionJob(configurator, userSubscriptionPlanExpiringNotificationSettings);
             });
 
             services.AddQuartzHostedService();
@@ -43,6 +46,22 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
                                 .WithIntervalInSeconds(
                                     outboxSettings.ProcessIntervalInSeconds)
                                 .RepeatForever()));
+        }
+
+        private static void ConfigureNotifyUsersWithExpiringSubscriptionJob(
+            IServiceCollectionQuartzConfigurator configurator,
+            PlanExpiryNotificationSettings settings)
+        {
+            var jobKey = new JobKey(nameof(NotifyUsersWithExpiringSubscriptionJob));
+
+            var cronExpression = $"0 {settings.Minutes} {settings.Hours} * * ?";
+
+            configurator
+                .AddJob<NotifyUsersWithExpiringSubscriptionJob>(jobKey)
+                .AddTrigger(
+                    trigger => trigger.ForJob(jobKey)
+                        .WithCronSchedule(cronExpression, builder => 
+                            builder.InTimeZone(TimeZoneInfo.Utc)));
         }
     }
 }

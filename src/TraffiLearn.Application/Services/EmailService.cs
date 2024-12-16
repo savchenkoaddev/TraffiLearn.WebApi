@@ -1,5 +1,6 @@
 ﻿using TraffiLearn.Application.Abstractions.Emails;
 using TraffiLearn.Application.UseCases.Users.Identity;
+using TraffiLearn.Domain.SubscriptionPlans;
 
 namespace TraffiLearn.Application.Services
 {
@@ -82,6 +83,20 @@ namespace TraffiLearn.Application.Services
 
             Letter letter = _emailLetterCreator
                 .CreateRecoverPasswordLetter(link);
+
+            await _emailPublisher.PublishEmailMessageAsync(
+                recipientEmail,
+                letter.Subject,
+                letter.HtmlBody);
+        }
+
+        public async Task PublishPlanExpiryReminderEmailAsync(
+            string recipientEmail,
+            DateTime planExpiresOn,
+            int days)
+        {
+            Letter letter = _emailLetterCreator
+                .CreatePlanExpiryReminderLetter(days, planExpiresOn);
 
             await _emailPublisher.PublishEmailMessageAsync(
                 recipientEmail,

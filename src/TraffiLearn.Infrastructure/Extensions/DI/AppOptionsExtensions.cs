@@ -2,6 +2,7 @@
 using TraffiLearn.Application.Images.Options;
 using TraffiLearn.Application.UseCases.Questions.Options;
 using TraffiLearn.Infrastructure.Authentication.Options;
+using TraffiLearn.Infrastructure.BackgroundJobs.Options;
 using TraffiLearn.Infrastructure.Extensions.DI.Shared;
 using TraffiLearn.Infrastructure.External.Blobs.Options;
 using TraffiLearn.Infrastructure.External.GoogleAuth.Options;
@@ -42,6 +43,8 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
                 StripeSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<MessageBrokerSettings>(
                 MessageBrokerSettings.SectionName);
+            services.ConfigureValidatableOnStartOptions<PlanExpiryNotificationSettings>(
+                PlanExpiryNotificationSettings.SectionName);
 
             return services;
         }

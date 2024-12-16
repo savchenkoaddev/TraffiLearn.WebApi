@@ -150,5 +150,15 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
                 .Include(user => user.SubscriptionPlan)
                 .FirstOrDefaultAsync(cancellationToken);
         }
+
+        public async Task<IEnumerable<User>> GetWithExpiringSubscriptionPlanAsync(
+            int days,
+            CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Users
+                .Where(user => user.PlanExpiresOn != null
+                    && (user.PlanExpiresOn - DateTime.UtcNow).Value.Days == days)
+                .ToListAsync(cancellationToken);
+        }
     }
 }
