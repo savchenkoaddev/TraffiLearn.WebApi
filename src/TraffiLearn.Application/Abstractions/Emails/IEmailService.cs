@@ -4,17 +4,17 @@ namespace TraffiLearn.Application.Abstractions.Emails
 {
     public interface IEmailService
     {
-        Task SendConfirmationEmailAsync(
+        Task PublishConfirmationEmailAsync(
             string recipientEmail,
             string userId,
             ApplicationUser identityUser);
 
-        Task SendChangeEmailMessageAsync(
+        Task PublishChangeEmailMessageAsync(
             string newEmail,
             string userId,
             ApplicationUser identityUser);
 
-        Task SendRecoverPasswordEmail(
+        Task PublishRecoverPasswordEmail(
             string recipientEmail,
             string userId,
             ApplicationUser identityUser);

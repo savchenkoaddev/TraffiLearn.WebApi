@@ -50,7 +50,7 @@ namespace TraffiLearn.Application.UseCases.Auth.Events
             string recipientEmail = notification.Email;
             string userId = notification.UserId.ToString();
 
-            await _emailService.SendConfirmationEmailAsync(
+            await _emailService.PublishConfirmationEmailAsync(
                 recipientEmail: recipientEmail,
                 userId: userId,
                 identityUser: identityUser);

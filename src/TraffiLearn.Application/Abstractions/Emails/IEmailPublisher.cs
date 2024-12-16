@@ -1,8 +1,8 @@
 ﻿namespace TraffiLearn.Application.Abstractions.Emails
 {
-    public interface IEmailSender
+    public interface IEmailPublisher
     {
-        Task SendEmailAsync(
+        Task PublishEmailMessageAsync(
             string recipientEmail,
             string subject,
             string htmlBody);

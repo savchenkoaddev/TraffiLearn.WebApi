@@ -39,7 +39,7 @@ namespace TraffiLearn.Application.UseCases.Auth.Commands.SendRecoverPasswordMess
                 return UserErrors.EmailNotConfirmed;
             }
 
-            await _emailService.SendRecoverPasswordEmail(
+            await _emailService.PublishRecoverPasswordEmail(
                 recipientEmail: request.Email,
                 userId: identityUser.Id,
                 identityUser: identityUser);

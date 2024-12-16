@@ -68,7 +68,7 @@ namespace TraffiLearn.Application.UseCases.Auth.Commands.SendChangeEmailMessage
                 throw new DataInconsistencyException();
             }
 
-            await _emailService.SendChangeEmailMessageAsync(
+            await _emailService.PublishChangeEmailMessageAsync(
                 newEmail: request.NewEmail,
                 userId: callerUserId.ToString(),
                 identityUser: identityUser);

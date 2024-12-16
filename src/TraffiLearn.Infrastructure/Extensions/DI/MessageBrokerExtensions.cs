@@ -1,6 +1,7 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using TraffiLearn.Application.Abstractions.Emails;
 using TraffiLearn.Application.Abstractions.EventBus;
 using TraffiLearn.Infrastructure.MessageBroker;
 
@@ -38,6 +39,14 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
 
                     configurator.UseMessageRetry(r => r.Interval(
                         settings.RetryCount, settings.RetryIntervalMilliseconds));
+
+                    configurator.ReceiveEndpoint("traffilearn-queue", endpoint => 
+                    {
+                        endpoint.Bind("traffilearn-exchange");
+                    });
+
+                    configurator.Message<SendEmailRequestMessage>(
+                        cfg => cfg.SetEntityName("traffilearn-exchange"));
                 });
             });
 
