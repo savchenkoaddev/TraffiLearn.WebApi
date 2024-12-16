@@ -40,6 +40,10 @@ namespace TraffiLearn.Domain.Users
             Username username,
             CancellationToken cancellationToken = default);
 
+        Task<IEnumerable<User>> GetWithExpiringSubscriptionPlanAsync(
+            int days,
+            CancellationToken cancellationToken = default);
+
         Task InsertAsync(
             User user,
             CancellationToken cancellationToken = default);

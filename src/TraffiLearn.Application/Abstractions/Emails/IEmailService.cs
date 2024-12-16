@@ -18,5 +18,10 @@ namespace TraffiLearn.Application.Abstractions.Emails
             string recipientEmail,
             string userId,
             ApplicationUser identityUser);
+
+        Task PublishPlanExpiryReminderEmailAsync(
+            string recipientEmail,
+            DateTime planExpiresOn,
+            int days);
     }
 }
