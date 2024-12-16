@@ -1,42 +1,33 @@
-﻿using FluentEmail.Core;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Emails;
-using TraffiLearn.Infrastructure.Exceptions;
+using TraffiLearn.Application.Abstractions.EventBus;
 
 namespace TraffiLearn.Infrastructure.Services.Emails
 {
-    internal sealed class EmailSender : IEmailSender
+    internal sealed class EmailSender : IEmailPublisher
     {
-        private readonly IFluentEmailFactory _emailFactory;
+        private readonly IEventBus _eventBus;
         private readonly ILogger<EmailSender> _logger;
 
         public EmailSender(
-            IFluentEmailFactory emailFactory,
+            IEventBus eventBus,
             ILogger<EmailSender> logger)
         {
-            _emailFactory = emailFactory;
+            _eventBus = eventBus;
             _logger = logger;
         }
 
-        public async Task SendEmailAsync(
+        public async Task PublishEmailMessageAsync(
             string recipientEmail,
             string subject,
             string htmlBody)
         {
-            var emailMessage = _emailFactory
-                .Create()
-                .To(recipientEmail)
-                .Subject(subject)
-                .Body(htmlBody, isHtml: true);
+            var publishMessage = new SendEmailRequestMessage(
+                RecipientEmail: recipientEmail,
+                Subject: subject,
+                HtmlBody: htmlBody);
 
-            var result = await emailMessage.SendAsync();
-
-            if (!result.Successful)
-            {
-                _logger.LogError($"Email sending failed: {string.Join(", ", result.ErrorMessages)}");
-
-                throw new EmailSendingFailedException();
-            }
+            await _eventBus.PublishAsync(publishMessage);
         }
     }
 }

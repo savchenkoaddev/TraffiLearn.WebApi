@@ -5,24 +5,24 @@ namespace TraffiLearn.Application.Services
 {
     internal sealed class EmailService : IEmailService
     {
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailPublisher _emailPublisher;
         private readonly IEmailTokenGenerator _emailTokenGenerator;
         private readonly IEmailLinkGenerator _emailLinkGenerator;
         private readonly IEmailLetterCreator _emailLetterCreator;
 
         public EmailService(
-            IEmailSender emailSender,
+            IEmailPublisher emailSender,
             IEmailTokenGenerator emailTokenGenerator,
             IEmailLinkGenerator emailLinkGenerator,
             IEmailLetterCreator emailLetterCreator)
         {
-            _emailSender = emailSender;
+            _emailPublisher = emailSender;
             _emailTokenGenerator = emailTokenGenerator;
             _emailLinkGenerator = emailLinkGenerator;
             _emailLetterCreator = emailLetterCreator;
         }
 
-        public async Task SendConfirmationEmailAsync(
+        public async Task PublishConfirmationEmailAsync(
             string recipientEmail,
             string userId,
             ApplicationUser applicationUser)
@@ -37,13 +37,13 @@ namespace TraffiLearn.Application.Services
             Letter letter = _emailLetterCreator
                 .CreateEmailConfirmationLetter(link);
 
-            await _emailSender.SendEmailAsync(
+            await _emailPublisher.PublishEmailMessageAsync(
                 recipientEmail,
                 letter.Subject,
                 letter.HtmlBody);
         }
 
-        public async Task SendChangeEmailMessageAsync(
+        public async Task PublishChangeEmailMessageAsync(
             string newEmail,
             string userId,
             ApplicationUser identityUser)
@@ -61,13 +61,13 @@ namespace TraffiLearn.Application.Services
             Letter letter = _emailLetterCreator
                 .CreateChangeEmailLetter(link);
 
-            await _emailSender.SendEmailAsync(
+            await _emailPublisher.PublishEmailMessageAsync(
                 recipientEmail: newEmail,
                 subject: letter.Subject,
                 htmlBody: letter.HtmlBody);
         }
 
-        public async Task SendRecoverPasswordEmail(
+        public async Task PublishRecoverPasswordEmail(
             string recipientEmail,
             string userId,
             ApplicationUser identityUser)
@@ -83,7 +83,7 @@ namespace TraffiLearn.Application.Services
             Letter letter = _emailLetterCreator
                 .CreateRecoverPasswordLetter(link);
 
-            await _emailSender.SendEmailAsync(
+            await _emailPublisher.PublishEmailMessageAsync(
                 recipientEmail,
                 letter.Subject,
                 letter.HtmlBody);

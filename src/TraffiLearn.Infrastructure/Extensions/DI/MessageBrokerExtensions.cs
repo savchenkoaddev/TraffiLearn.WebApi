@@ -1,6 +1,9 @@
 ﻿using MassTransit;
+using MassTransit.Transports.Fabric;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using System.Net.Mail;
+using TraffiLearn.Application.Abstractions.Emails;
 using TraffiLearn.Application.Abstractions.EventBus;
 using TraffiLearn.Infrastructure.MessageBroker;
 
@@ -38,6 +41,11 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
 
                     configurator.UseMessageRetry(r => r.Interval(
                         settings.RetryCount, settings.RetryIntervalMilliseconds));
+
+                    configurator.Message<SendEmailRequestMessage>(m =>
+                    {
+                        m.SetEntityName(settings.EmailExchangeName);
+                    });
                 });
             });
 

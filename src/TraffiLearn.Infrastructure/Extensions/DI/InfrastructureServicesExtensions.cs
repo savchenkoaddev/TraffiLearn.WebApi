@@ -23,7 +23,7 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
             services.AddScoped<ITokenService, JwtTokenService>();
             services.AddScoped<IIdentityService<ApplicationUser>, IdentityService>();
             services.AddScoped<IHasher, Sha256Hasher>();
-            services.AddScoped<IEmailSender, EmailSender>();
+            services.AddScoped<IEmailPublisher, EmailSender>();
             services.AddScoped<IEmailLinkGenerator, EmailLinkGenerator>();
             services.AddScoped<IEmailTokenGenerator, EmailTokenGenerator>();
             services.AddScoped<IEmailLetterCreator, EmailLetterCreator>();

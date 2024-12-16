@@ -36,6 +36,7 @@ services:
     image: mailhog/mailhog
     container_name: mailhog
     ports:
+      - "1025:1025"
       - "8025:8025"
     environment:
       - MH_STORAGE=maildir
@@ -44,6 +45,9 @@ services:
     image: rabbitmq:4.0.4-management
     container_name: traffilearn.rabbitmq
     hostname: traffilearn-queue
+    ports:
+        - "5672:5672"
+        - "15672:15672"
     volumes:
         - traffilearn_rabbitmq_data:/var/lib/rabbitmq
         - traffilearn_rabbitmq_logs:/var/log/rabbitmq
