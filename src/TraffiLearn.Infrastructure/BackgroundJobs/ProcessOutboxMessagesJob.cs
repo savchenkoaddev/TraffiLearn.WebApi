@@ -37,13 +37,13 @@ namespace TraffiLearn.Infrastructure.BackgroundJobs
             {
                 var messages = await GetOutboxMessagesAsync(
                     context.CancellationToken);
-                _logger.LogInformation("Retrieved {MessageCount} outbox messages to process.", messages.Count);
+                _logger.LogDebug("Retrieved {MessageCount} outbox messages to process.", messages.Count);
 
                 await ProcessOutboxMessages(
                     messages, context.CancellationToken);
 
                 await _dbContext.SaveChangesAsync();
-                _logger.LogInformation("Successfully saved changes to the database.");
+                _logger.LogDebug("Successfully saved changes to the database.");
             }
             catch (DbUpdateException dbEx)
             {
@@ -63,7 +63,7 @@ namespace TraffiLearn.Infrastructure.BackgroundJobs
         {
             if (messages.Count == 0)
             {
-                _logger.LogInformation("No messages to process.");
+                _logger.LogDebug("No messages to process.");
 
                 return;
             }
@@ -90,7 +90,7 @@ namespace TraffiLearn.Infrastructure.BackgroundJobs
             }
 
             await Task.WhenAll(publishTasks);
-            _logger.LogInformation("Completed processing of {MessageCount} outbox messages.", messages.Count);
+            _logger.LogDebug("Completed processing of {MessageCount} outbox messages.", messages.Count);
         }
 
         private Task PublishDomainEvent(
@@ -130,7 +130,7 @@ namespace TraffiLearn.Infrastructure.BackgroundJobs
         private Task<List<OutboxMessage>> GetOutboxMessagesAsync(
             CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Fetching outbox messages with a batch size of {BatchSize}.", _outboxSettings.BatchSize);
+            _logger.LogDebug("Fetching outbox messages with a batch size of {BatchSize}.", _outboxSettings.BatchSize);
 
             return _dbContext.OutboxMessages
                 .Where(m => m.ProcessedOnUtc == null)
