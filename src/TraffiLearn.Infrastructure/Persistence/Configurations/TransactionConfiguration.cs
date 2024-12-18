@@ -21,12 +21,6 @@ namespace TraffiLearn.Infrastructure.Persistence.Configurations
                 .HasOne(t => t.SubscriptionPlan)
                 .WithMany();
 
-            builder.OwnsOne(p => p.Price, priceBuilder =>
-            {
-                priceBuilder.Property(price => price.Amount);
-                priceBuilder.Property(price => price.Currency);
-            });
-
             builder.Property(p => p.Metadata)
                 .IsRequired(false)
                 .HasMaxLength(Metadata.MaxLength)
