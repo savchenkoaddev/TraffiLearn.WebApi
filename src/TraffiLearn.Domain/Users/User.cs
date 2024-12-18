@@ -122,6 +122,10 @@ namespace TraffiLearn.Domain.Users
                 PlanExpiresOn = CalculateNextPlanExpiry(SubscriptionPlan);
             }
 
+            RaiseDomainEvent(new SubscriptionRenewedDomainEvent(
+                UserId: Id.Value,
+                PlanExpiresOn: PlanExpiresOn.Value));
+
             return Result.Success();
         }
 

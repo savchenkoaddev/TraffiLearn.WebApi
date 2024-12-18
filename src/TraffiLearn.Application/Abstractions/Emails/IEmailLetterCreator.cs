@@ -12,6 +12,8 @@
             int days,
             DateTime planExpiresOn);
 
+        Letter CreatePlanRenewedLetter(DateTime planExpiresOn);
+      
         Letter CreatePlanCancelationLetter();
     }
 }

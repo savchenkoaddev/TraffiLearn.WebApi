@@ -24,6 +24,10 @@ namespace TraffiLearn.Application.Abstractions.Emails
             DateTime planExpiresOn,
             int days);
 
+        Task PublishPlanRenewedEmailAsync(
+            string recipientEmail,
+            DateTime planExpiresOn);
+      
         Task PublishPlanCancelationEmailAsync(
             string recipientEmail);
     }
