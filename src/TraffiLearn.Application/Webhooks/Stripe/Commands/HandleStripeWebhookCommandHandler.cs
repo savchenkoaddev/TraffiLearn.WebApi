@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Stripe;
 using Stripe.Checkout;
 using TraffiLearn.Application.Abstractions.Payments;
@@ -38,11 +39,22 @@ namespace TraffiLearn.Application.Webhooks.Stripe.Commands
 
             if (eventType == StripeEventType.CheckoutSessionCompleted)
             {
-                (Guid SubscriptionPlanId, Guid UserId) ids = ExtractMetadata(stripeEvent);
+                var session = stripeEvent.Data.Object as Session;
+
+                if (session is null)
+                {
+                    throw new InvalidOperationException(
+                        "Session is null in Stripe webhook event");
+                }
+
+                (Guid SubscriptionPlanId, Guid UserId) = ExtractIds(session);
+
+                var metadata = JsonConvert.SerializeObject(session.Metadata);
 
                 var checkoutSessionCompletedEvent = new CheckoutSessionCompletedEvent(
-                    SubscriptionPlanId: ids.SubscriptionPlanId,
-                    UserId: ids.UserId);
+                    SubscriptionPlanId: SubscriptionPlanId,
+                    UserId: UserId,
+                    Metadata: metadata);
 
                 await _publisher.Publish(checkoutSessionCompletedEvent, cancellationToken);
             }
@@ -50,17 +62,9 @@ namespace TraffiLearn.Application.Webhooks.Stripe.Commands
             return Result.Success();
         }
 
-        private static (Guid SubscriptionPlanId, Guid UserId) ExtractMetadata(
-            Event stripeEvent)
+        private static (Guid SubscriptionPlanId, Guid UserId) ExtractIds(
+            Session session)
         {
-            var session = stripeEvent.Data.Object as Session;
-
-            if (session is null)
-            {
-                throw new InvalidOperationException(
-                    "Session is null in Stripe webhook event");
-            }
-
             var subscriptionPlanIdString = session.Metadata["subscriptionPlanId"];
             var userIdString = session.Metadata["userId"];
 
