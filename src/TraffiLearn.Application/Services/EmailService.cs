@@ -110,6 +110,17 @@ namespace TraffiLearn.Application.Services
         {
             Letter letter = _emailLetterCreator
                 .CreatePlanRenewedLetter(planExpiresOn);
+                
+            await _emailPublisher.PublishEmailMessageAsync(
+                recipientEmail,
+                letter.Subject,
+                letter.HtmlBody);
+        }
+        
+        public async Task PublishPlanCancelationEmailAsync(string recipientEmail)
+        {
+            Letter letter = _emailLetterCreator
+                .CreatePlanCancelationLetter();
 
             await _emailPublisher.PublishEmailMessageAsync(
                 recipientEmail,
