@@ -11,5 +11,7 @@
         Letter CreatePlanExpiryReminderLetter(
             int days,
             DateTime planExpiresOn);
+
+        Letter CreatePlanRenewedLetter(DateTime planExpiresOn);
     }
 }

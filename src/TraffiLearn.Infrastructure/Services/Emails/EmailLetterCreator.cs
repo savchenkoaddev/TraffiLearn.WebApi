@@ -104,5 +104,27 @@ namespace TraffiLearn.Infrastructure.Services.Emails
                 </body>
                 </html>";
         }
+
+        public Letter CreatePlanRenewedLetter(DateTime planExpiresOn)
+        {
+            return new Letter(
+                Subject: CreatePlanRenewedLetterSubject(),
+                HtmlBody: CreatePlanRenewedLetterBody(planExpiresOn));
+        }
+
+        private static string CreatePlanRenewedLetterSubject() =>
+            "Subscription Plan renewed";
+
+        private static string CreatePlanRenewedLetterBody(DateTime planExpiresOn)
+        {
+            return $@"
+                <html>
+                <body style='font-family: Arial, sans-serif; line-height: 1.5;'>
+                    <h1 style='color: #4CAF50;'>Your Subscription Plan has been renewed.</h1>
+                    <p>Subscription is available until <strong>{planExpiresOn.ToShortDateString().Replace('/', '.')} {planExpiresOn.ToShortTimeString()}</strong></p>
+                    <i>Best regards,<br>The TraffiLearn Team</i>
+                </body>
+                </html>";
+        }
     }
 }

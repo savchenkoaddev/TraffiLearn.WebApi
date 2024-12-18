@@ -103,5 +103,18 @@ namespace TraffiLearn.Application.Services
                 letter.Subject,
                 letter.HtmlBody);
         }
+
+        public async Task PublishPlanRenewedEmailAsync(
+            string recipientEmail,
+            DateTime planExpiresOn)
+        {
+            Letter letter = _emailLetterCreator
+                .CreatePlanRenewedLetter(planExpiresOn);
+
+            await _emailPublisher.PublishEmailMessageAsync(
+                recipientEmail,
+                letter.Subject,
+                letter.HtmlBody);
+        }
     }
 }
