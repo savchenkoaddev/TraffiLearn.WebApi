@@ -75,6 +75,10 @@ namespace TraffiLearn.Infrastructure.Persistence.Configurations
                 .HasMany(user => user.DislikedComments)
                 .WithMany(comment => comment.DislikedByUsers)
                 .UsingEntity(join => join.ToTable("CommentsDislikedByUsers"));
+
+            builder
+                .HasMany(user => user.Transactions)
+                .WithOne(t => t.User);
         }
     }
 }

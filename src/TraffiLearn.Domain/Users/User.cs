@@ -1,6 +1,7 @@
 ﻿using TraffiLearn.Domain.Comments;
 using TraffiLearn.Domain.Questions;
 using TraffiLearn.Domain.SubscriptionPlans;
+using TraffiLearn.Domain.Transactions;
 using TraffiLearn.Domain.Users.CancelationReasons;
 using TraffiLearn.Domain.Users.DomainEvents;
 using TraffiLearn.Domain.Users.Emails;
@@ -19,6 +20,7 @@ namespace TraffiLearn.Domain.Users
         private readonly HashSet<Question> _dislikedQuestions = [];
         private readonly HashSet<Comment> _likedComments = [];
         private readonly HashSet<Comment> _dislikedComments = [];
+        private readonly HashSet<Transaction> _transactions = [];
         private Email _email;
         private Username _username;
 
@@ -84,6 +86,8 @@ namespace TraffiLearn.Domain.Users
         public IReadOnlyCollection<Comment> LikedComments => _likedComments;
 
         public IReadOnlyCollection<Comment> DislikedComments => _dislikedComments;
+
+        public IReadOnlyCollection<Transaction> Transactions => _transactions;
 
         public Result ChangeSubscriptionPlan(SubscriptionPlan plan)
         {
