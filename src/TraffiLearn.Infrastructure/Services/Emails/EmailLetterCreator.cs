@@ -104,5 +104,27 @@ namespace TraffiLearn.Infrastructure.Services.Emails
                 </body>
                 </html>";
         }
+
+        public Letter CreatePlanCancelationLetter()
+        {
+            return new Letter(
+                Subject: CreatePlanCancelationLetterSubject(),
+                HtmlBody: CreatePlanCancelationLetterBody());
+        }
+
+        private static string CreatePlanCancelationLetterSubject() =>
+            "Subscription Plan canceled";
+
+        private static string CreatePlanCancelationLetterBody()
+        {
+            return $@"
+                <html>
+                <body style='font-family: Arial, sans-serif; line-height: 1.5;'>
+                    <h1 style='color: #4CAF50;'>You have successfully canceled your Subscription Plan</h1>
+                    <p>We hope your experience with <strong>TraffiLearn</strong> was marvellous.</p>
+                    <i>Best regards,<br>The TraffiLearn Team</i>
+                </body>
+                </html>";
+        }
     }
 }
