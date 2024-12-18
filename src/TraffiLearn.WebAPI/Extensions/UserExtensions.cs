@@ -55,6 +55,8 @@ namespace TraffiLearn.WebAPI.Extensions
 
             var identityUser = userMapper.Map(superUser);
 
+            identityUser.EmailConfirmed = true;
+
             await identityService.CreateAsync(
                 identityUser,
                 password: superUserSettings.Password);

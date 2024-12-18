@@ -9,6 +9,7 @@ using TraffiLearn.Domain.Shared.CanceledSubscriptions;
 using TraffiLearn.Domain.SubscriptionPlans;
 using TraffiLearn.Domain.Tickets;
 using TraffiLearn.Domain.Topics;
+using TraffiLearn.Domain.Transactions;
 using TraffiLearn.Domain.Users;
 using TraffiLearn.Infrastructure.Persistence.Repositories;
 
@@ -29,6 +30,7 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
             services.AddScoped<IDirectoryRepository, DirectoryRepository>();
             services.AddScoped<ISubscriptionPlanRepository, SubscriptionPlanRepository>();
             services.AddScoped<ICanceledSubscriptionRepository, CanceledSubscriptionRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
 
             return services;
         }

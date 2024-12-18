@@ -10,6 +10,8 @@ services:
     depends_on: 
       - traffilearn-database
       - traffilearn-blob-storage
+    networks:
+      - traffilearn-network
 
   traffilearn-database:
     container_name: traffilearn.database
@@ -22,6 +24,8 @@ services:
       - "5432:5432"
     volumes:
       - traffilearn_postgresdb_data:/var/lib/postgresql/data
+    networks:
+      - traffilearn-network
 
   traffilearn-blob-storage:
     image: mcr.microsoft.com/azure-storage/azurite:latest
@@ -31,6 +35,8 @@ services:
     command: "azurite-blob --blobHost 0.0.0.0 -l /data"
     volumes:
       - traffilearn_blob_data:/data
+    networks:
+      - traffilearn-network
         
   mailhog:
     image: mailhog/mailhog
@@ -40,6 +46,8 @@ services:
       - "8025:8025"
     environment:
       - MH_STORAGE=maildir
+    networks:
+      - traffilearn-network
 
   traffilearn-rabbitmq:
     image: rabbitmq:4.0.4-management
@@ -54,9 +62,16 @@ services:
     environment:
         RABBITMQ_DEFAULT_USER: guest
         RABBITMQ_DEFAULT_PASSWORD: guest
+    networks:
+      - traffilearn-network
 
 volumes:
   traffilearn_postgresdb_data:
   traffilearn_blob_data:
   traffilearn_rabbitmq_data:
-  traffilearn_rabbitmq_logs:  
+  traffilearn_rabbitmq_logs:
+ 
+networks:
+  traffilearn-network: 
+    name: traffilearn_network
+    driver: bridge

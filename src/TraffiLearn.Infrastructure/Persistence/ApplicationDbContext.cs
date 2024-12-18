@@ -10,6 +10,7 @@ using TraffiLearn.Domain.Shared.CanceledSubscriptions;
 using TraffiLearn.Domain.SubscriptionPlans;
 using TraffiLearn.Domain.Tickets;
 using TraffiLearn.Domain.Topics;
+using TraffiLearn.Domain.Transactions;
 using TraffiLearn.Domain.Users;
 using TraffiLearn.Infrastructure.Persistence.Outbox;
 using TraffiLearn.SharedKernel.Primitives;
@@ -48,6 +49,8 @@ namespace TraffiLearn.Infrastructure.Persistence
         public DbSet<SubscriptionPlan> SubscriptionPlans { get; init; }
 
         public DbSet<CanceledSubscription> CanceledSubscriptions { get; init; }
+
+        public DbSet<Transaction> Transactions { get; init; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
