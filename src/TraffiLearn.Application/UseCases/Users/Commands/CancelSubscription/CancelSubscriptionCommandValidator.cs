@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using TraffiLearn.Application.Validators;
 using TraffiLearn.Domain.Users.CancelationReasons;
 
 namespace TraffiLearn.Application.UseCases.Users.Commands.CancelSubscription

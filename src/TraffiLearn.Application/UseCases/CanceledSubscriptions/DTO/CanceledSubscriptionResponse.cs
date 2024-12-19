@@ -6,6 +6,6 @@ namespace TraffiLearn.Application.UseCases.CanceledSubscriptions.DTO
         Guid Id,
         Guid UserId,
         SubscriptionPlanResponse SubscriptionPlan,
-        string CancelationReason,
+        string? CancelationReason,
         DateTime CanceledAt);
 }

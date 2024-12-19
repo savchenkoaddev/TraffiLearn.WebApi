@@ -144,7 +144,7 @@ namespace TraffiLearn.Domain.Users
         }
 
         public Result CancelSubscription(
-            CancelationReason reason)
+            CancelationReason? reason)
         {
             if (SubscriptionPlan is null)
             {
@@ -160,7 +160,7 @@ namespace TraffiLearn.Domain.Users
                 UserId: Id.Value,
                 SubscriptionId: subscriptionPlanId,
                 CanceledAt: DateTime.UtcNow,
-                Reason: reason.Value));
+                Reason: reason?.Value));
 
             return Result.Success();
         }

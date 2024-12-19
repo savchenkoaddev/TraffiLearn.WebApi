@@ -14,12 +14,19 @@ namespace TraffiLearn.Application.UseCases.Users.Mappers
         public override Result<CanceledSubscription> Map(
             SubscriptionCanceledDomainEvent source)
         {
-            var cancelationReasonResult = CancelationReason.Create(source.Reason);
+            CancelationReason? cancelationReason = null;
 
-            if (cancelationReasonResult.IsFailure)
+            if (source.Reason is not null)
             {
-                return Result.Failure<CanceledSubscription>(
-                    cancelationReasonResult.Error);
+                var cancelationReasonResult = CancelationReason.Create(source.Reason);
+
+                if (cancelationReasonResult.IsFailure)
+                {
+                    return Result.Failure<CanceledSubscription>(
+                        cancelationReasonResult.Error);
+                }
+
+                cancelationReason = cancelationReasonResult.Value;
             }
 
             var canceledSubscriptionId = new CanceledSubscriptionId(Guid.NewGuid());
@@ -30,7 +37,7 @@ namespace TraffiLearn.Application.UseCases.Users.Mappers
                 canceledSubscriptionId: canceledSubscriptionId,
                 userId: userId,
                 subscriptionPlanId: subscriptionPlanId,
-                cancelationReason: cancelationReasonResult.Value,
+                cancelationReason: cancelationReason,
                 canceledAt: source.CanceledAt);
 
             if (canceledSubscriptionResult.IsFailure)
