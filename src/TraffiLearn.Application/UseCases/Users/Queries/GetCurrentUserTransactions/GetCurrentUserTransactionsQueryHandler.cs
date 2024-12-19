@@ -31,7 +31,7 @@ namespace TraffiLearn.Application.UseCases.Users.Queries.GetCurrentUserTransacti
         {
             var currentUserId = new UserId(_userContextService.GetAuthenticatedUserId());
 
-            var transactions = await _transactionRepository.GetAllByUserId(
+            var transactions = await _transactionRepository.GetAllByUserIdWithSubscriptionPlansAsync(
                 userId: currentUserId,
                 cancellationToken);
 

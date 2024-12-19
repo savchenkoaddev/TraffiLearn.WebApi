@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using TraffiLearn.Application.UseCases.Transactions.DTO;
+using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.UseCases.Users.Queries.GetCurrentUserTransactions
 {

@@ -8,11 +8,11 @@ namespace TraffiLearn.Domain.Transactions
             Transaction transaction,
             CancellationToken cancellationToken = default);
 
-        Task<Transaction?> GetById(
+        Task<Transaction?> GetByIdWithSubscriptionPlanAsync(
             TransactionId id,
             CancellationToken cancellationToken = default);
 
-        Task<IEnumerable<Transaction>> GetAllByUserId(
+        Task<IEnumerable<Transaction>> GetAllByUserIdWithSubscriptionPlansAsync(
             UserId userId,
             CancellationToken cancellationToken = default);
     } 
