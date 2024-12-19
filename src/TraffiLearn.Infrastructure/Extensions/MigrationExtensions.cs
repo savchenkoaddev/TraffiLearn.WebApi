@@ -10,7 +10,7 @@ namespace TraffiLearn.Infrastructure.Extensions
 {
     public static class MigrationExtensions
     {
-        public static void ApplyMigration(this IApplicationBuilder app)
+        public static void ApplyMigrations(this IApplicationBuilder app)
         {
             using IServiceScope scope = app.ApplicationServices.CreateScope();
 

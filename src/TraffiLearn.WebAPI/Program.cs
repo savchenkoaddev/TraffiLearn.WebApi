@@ -36,18 +36,25 @@ namespace TraffiLearn.WebAPI
 
             builder.Services.ConfigureAuthorization();
 
+            builder.Services.AddCorsPolicies();
+
             var app = builder.Build();
 
             app.UseExceptionHandlingMiddleware();
 
-            if (!app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseCors(CorsExtensions.DevelopmentPolicyName);
+            }
+            else
             {
                 app.UseHttpsRedirection();
+                app.UseHsts();
             }
 
             app.UseSwagger();
             app.UseSwaggerUI();
-            app.ApplyMigration();
+            app.ApplyMigrations();
 
             app.UseRouting();
 

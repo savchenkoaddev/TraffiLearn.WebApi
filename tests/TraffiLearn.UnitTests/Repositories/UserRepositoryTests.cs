@@ -365,7 +365,7 @@ namespace TraffiLearn.UnitTests.Repositories
             var updatedUser = User.Create(
                user.Id,
                Email.Create("example@gmail.com").Value,
-               Username.Create("new_username").Value,
+               Username.Create("newusername").Value,
                Role.Admin)
                .Value;
 
