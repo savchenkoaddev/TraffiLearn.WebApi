@@ -9,6 +9,11 @@ namespace TraffiLearn.Domain.Users.Usernames
                 code: "Username.Empty",
                 description: "Username cannot be empty.");
 
+        public static readonly Error InvalidFormat =
+            Error.Validation(
+                code: "Username.InvalidFormat",
+                description: "Username can only contain letters and digits.");
+
         public static Error TooLong(int maxLength) =>
             Error.Validation(
                 code: "Username.TooLong",
