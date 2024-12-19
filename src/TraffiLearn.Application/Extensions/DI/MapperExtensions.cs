@@ -3,6 +3,8 @@ using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.UseCases.Auth.Commands.RegisterAdmin;
 using TraffiLearn.Application.UseCases.Auth.Commands.RegisterUser;
 using TraffiLearn.Application.UseCases.Auth.Mappers;
+using TraffiLearn.Application.UseCases.CanceledSubscriptions.DTO;
+using TraffiLearn.Application.UseCases.CanceledSubscriptions.Mappers;
 using TraffiLearn.Application.UseCases.Comments.DTO;
 using TraffiLearn.Application.UseCases.Comments.Mappers;
 using TraffiLearn.Application.UseCases.Directories.Commands.Create;
@@ -99,6 +101,7 @@ namespace TraffiLearn.Application.Extensions.DI
             services.AddMapper<User, CurrentUserResponse, UserToCurrentUserResponseMapper>();
             services.AddMapper<SubscriptionCanceledDomainEvent, Result<CanceledSubscription>, SubscriptionCanceledDomainEventToEntityMapper>();
             services.AddMapper<Transaction, TransactionResponse, TransactionToTransactionResponseMapper>();
+            services.AddMapper<CanceledSubscription, CanceledSubscriptionResponse, CanceledSubscriptionToResponseMapper>();
 
             return services;
         }
