@@ -38,16 +38,21 @@ namespace TraffiLearn.Application.UseCases.Users.Commands.CancelSubscription
                 throw new InvalidOperationException("Authenticated user is not found.");
             }
 
-            var reasonResult = CancelationReason.Create(request.Reason);
+            CancelationReason? cancelationReason = null;
 
-            if (reasonResult.IsFailure)
+            if (request.Reason is not null)
             {
-                return reasonResult.Error;
+                var reasonResult = CancelationReason.Create(request.Reason);
+
+                if (reasonResult.IsFailure)
+                {
+                    return reasonResult.Error;
+                }
+
+                cancelationReason = reasonResult.Value;
             }
 
-            var reason = reasonResult.Value;
-
-            var cancelationResult = user.CancelSubscription(reason);
+            var cancelationResult = user.CancelSubscription(cancelationReason);
 
             if (cancelationResult.IsFailure)
             {

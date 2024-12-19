@@ -29,6 +29,8 @@ namespace TraffiLearn.Domain.Shared.CanceledSubscriptions
 
         public SubscriptionPlanId SubscriptionPlanId { get; private init; }
 
+        public SubscriptionPlan SubscriptionPlan { get; private init; }
+
         public CancelationReason? CancelationReason { get; private init; } = default;
 
         public DateTime CanceledAt { get; private init; }

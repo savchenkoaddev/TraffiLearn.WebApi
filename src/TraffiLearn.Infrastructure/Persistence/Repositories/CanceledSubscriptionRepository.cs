@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TraffiLearn.Domain.Shared.CanceledSubscriptions;
+using TraffiLearn.Domain.Users;
 
 namespace TraffiLearn.Infrastructure.Persistence.Repositories
 {
@@ -18,6 +19,16 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.CanceledSubscriptions
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<IEnumerable<CanceledSubscription>> GetAllByUserIdWithSubscriptionsAsync(
+            UserId userId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.CanceledSubscriptions
+                .Where(cs => cs.UserId == userId)
+                .Include(cs => cs.SubscriptionPlan)
                 .ToListAsync(cancellationToken);
         }
 

@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TraffiLearn.Domain.Questions;
 using TraffiLearn.Domain.Shared.CanceledSubscriptions;
 using TraffiLearn.Domain.SubscriptionPlans;
 using TraffiLearn.Domain.Users;
@@ -27,6 +26,12 @@ namespace TraffiLearn.Infrastructure.Persistence.Configurations
             builder.Property(cs => cs.SubscriptionPlanId).HasConversion(
                  id => id.Value,
                  value => new SubscriptionPlanId(value));
+
+            builder
+                .HasOne(cs => cs.SubscriptionPlan)
+                .WithMany()
+                .HasForeignKey(cs => cs.SubscriptionPlanId)
+                .IsRequired();
 
             builder.Property(cs => cs.CancelationReason)
                 .IsRequired(false)
