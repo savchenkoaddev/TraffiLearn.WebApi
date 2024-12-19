@@ -35,6 +35,8 @@ using TraffiLearn.Application.UseCases.Topics.Commands.Create;
 using TraffiLearn.Application.UseCases.Topics.Commands.Update;
 using TraffiLearn.Application.UseCases.Topics.DTO;
 using TraffiLearn.Application.UseCases.Topics.Mappers;
+using TraffiLearn.Application.UseCases.Transactions.DTO;
+using TraffiLearn.Application.UseCases.Transactions.Mappers;
 using TraffiLearn.Application.UseCases.Users.DTO;
 using TraffiLearn.Application.UseCases.Users.Identity;
 using TraffiLearn.Application.UseCases.Users.Mappers;
@@ -47,6 +49,7 @@ using TraffiLearn.Domain.Shared.CanceledSubscriptions;
 using TraffiLearn.Domain.SubscriptionPlans;
 using TraffiLearn.Domain.Tickets;
 using TraffiLearn.Domain.Topics;
+using TraffiLearn.Domain.Transactions;
 using TraffiLearn.Domain.Users;
 using TraffiLearn.Domain.Users.DomainEvents;
 using TraffiLearn.SharedKernel.Shared;
@@ -95,6 +98,7 @@ namespace TraffiLearn.Application.Extensions.DI
             services.AddMapper<UpdateSubscriptionPlanCommand, Result<SubscriptionPlan>, UpdateSubscriptionPlanCommandMapper>();
             services.AddMapper<User, CurrentUserResponse, UserToCurrentUserResponseMapper>();
             services.AddMapper<SubscriptionCanceledDomainEvent, Result<CanceledSubscription>, SubscriptionCanceledDomainEventToEntityMapper>();
+            services.AddMapper<Transaction, TransactionResponse, TransactionToTransactionResponseMapper>();
 
             return services;
         }

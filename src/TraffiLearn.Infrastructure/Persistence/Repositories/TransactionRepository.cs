@@ -13,23 +13,24 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<Transaction>> GetAllByUserId(
+        public async Task<IEnumerable<Transaction>> GetAllByUserIdWithSubscriptionPlansAsync(
             UserId userId, 
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Transactions
                 .Where(t => t.User.Id == userId)
+                .Include(t => t.SubscriptionPlan)
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<Transaction?> GetById(
+        public async Task<Transaction?> GetByIdWithSubscriptionPlanAsync(
             TransactionId id, 
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Transactions
-                .FindAsync(
-                    keyValues: [id],
-                    cancellationToken);
+                .Where(t => t.Id == id)
+                .Include(t => t.SubscriptionPlan)
+                .FirstOrDefaultAsync(cancellationToken);
         }
 
         public async Task InsertAsync(

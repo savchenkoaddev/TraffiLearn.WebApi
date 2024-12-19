@@ -5,7 +5,6 @@ using TraffiLearn.Domain.SubscriptionPlans;
 using TraffiLearn.Domain.Transactions;
 using TraffiLearn.Domain.Transactions.Metadatas;
 using TraffiLearn.Domain.Users;
-using TraffiLearn.SharedKernel.ValueObjects.Prices;
 
 namespace TraffiLearn.Application.Webhooks.Stripe.Events
 {

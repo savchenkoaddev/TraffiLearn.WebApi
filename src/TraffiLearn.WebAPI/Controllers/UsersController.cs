@@ -18,6 +18,8 @@ using TraffiLearn.Application.UseCases.Users.Queries.GetUserLikedQuestions;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
 using TraffiLearn.WebAPI.Swagger;
+using TraffiLearn.Application.UseCases.Users.Queries.GetCurrentUserTransactions;
+using TraffiLearn.Application.UseCases.Transactions.DTO;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
@@ -211,6 +213,28 @@ namespace TraffiLearn.WebAPI.Controllers
         public async Task<IActionResult> GetLoggedInUserComments()
         {
             var queryResult = await _sender.Send(new GetLoggedInUserCommentsQuery());
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+        }
+
+        /// <summary>
+        /// Gets all transactions of the authenticated user.
+        /// </summary>
+        /// <remarks>
+        /// **Authentication Required:**<br />
+        /// The user must be authenticated using a JWT token.
+        /// </remarks>
+        /// <response code="200">Successfully retrieved the current user's transactions. Returns list of transactions.</response>
+        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        [HasPermission(Permission.AccessData)]
+        [HttpGet("current/transactions")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(IEnumerable<TransactionResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetCurrentUserTransactions()
+        {
+            var queryResult = await _sender.Send(new GetCurrentUserTransactionsQuery());
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
