@@ -1,4 +1,5 @@
-﻿using TraffiLearn.SharedKernel.Primitives;
+﻿using System.Text.RegularExpressions;
+using TraffiLearn.SharedKernel.Primitives;
 using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Domain.Users.Usernames
@@ -27,7 +28,17 @@ namespace TraffiLearn.Domain.Users.Usernames
                     maxLength: MaxLength));
             }
 
+            if (!IsValidFormat(value))
+            {
+                return Result.Failure<Username>(UsernameErrors.InvalidFormat);
+            }
+
             return new Username(value);
+        }
+
+        private static bool IsValidFormat(string value)
+        {
+            return Regex.IsMatch(value, @"^[a-zA-Z0-9]+$");
         }
 
         public override IEnumerable<object> GetAtomicValues()

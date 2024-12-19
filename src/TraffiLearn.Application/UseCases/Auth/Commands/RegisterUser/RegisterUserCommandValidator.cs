@@ -25,6 +25,7 @@ namespace TraffiLearn.Application.UseCases.Auth.Commands.RegisterUser
 
             RuleFor(x => x.Username)
                 .MaximumLength(Username.MaxLength)
+                .Matches(@"^[a-zA-Z0-9]+$").WithMessage("Username can only contain letters and digits.")
                 .NotEmpty();
         }
     }
