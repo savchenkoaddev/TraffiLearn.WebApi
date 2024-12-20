@@ -98,7 +98,7 @@ namespace TraffiLearn.Infrastructure.Services.Emails
                 <html>
                 <body style='font-family: Arial, sans-serif; line-height: 1.5;'>
                     <h1 style='color: #4CAF50;'>Your Subscription Plan will expire in {days} days.</h1>
-                    <p>Subscription is available until <strong>{planExpiresOn.ToShortDateString().Replace('/', '.')} {planExpiresOn.ToShortTimeString()}</strong></p>
+                    <p>Subscription is available until <strong>{GetFormattedDateTime(planExpiresOn)}</strong></p>
                     <p>If you want to continue using <strong>TraffiLearn</strong> with this Subscription Plan, visit our web-site and renew it.</p>
                     <i>Best regards,<br>The TraffiLearn Team</i>
                 </body>
@@ -121,7 +121,7 @@ namespace TraffiLearn.Infrastructure.Services.Emails
                 <html>
                 <body style='font-family: Arial, sans-serif; line-height: 1.5;'>
                     <h1 style='color: #4CAF50;'>Your Subscription Plan has been renewed.</h1>
-                    <p>Subscription is available until <strong>{planExpiresOn.ToShortDateString().Replace('/', '.')} {planExpiresOn.ToShortTimeString()}</strong></p>
+                    <p>Subscription is available until <strong>{GetFormattedDateTime(planExpiresOn)}</strong></p>
                     <i>Best regards,<br>The TraffiLearn Team</i>
                 </body>
                 </html>";
@@ -148,5 +148,30 @@ namespace TraffiLearn.Infrastructure.Services.Emails
                 </body>
                 </html>";
         }
+
+        public Letter CreatePlanChangedLetter(DateTime newPlanExpiresOn)
+        {
+            return new Letter(
+                Subject: CreatePlanChangedLetterSubject(),
+                HtmlBody: CreatePlanChangedLetterBody(newPlanExpiresOn));
+        }
+
+        private static string CreatePlanChangedLetterSubject() =>
+            "Subscription Plan changed";
+
+        private static string CreatePlanChangedLetterBody(DateTime newPlanExpiresOn)
+        {
+            return $@"
+                <html>
+                <body style='font-family: Arial, sans-serif; line-height: 1.5;'>
+                    <h1 style='color: #4CAF50;'>You have successfully changed your Subscription Plan</h1>
+                    <p>New Subscription is available until <strong>{GetFormattedDateTime(newPlanExpiresOn)}</strong></p>
+                    <i>Best regards,<br>The TraffiLearn Team</i>
+                </body>
+                </html>";
+        }
+
+        private static string GetFormattedDateTime(DateTime dateTime) =>
+            $"{dateTime.ToShortDateString().Replace('/', '.')} {dateTime.ToShortTimeString()}";
     }
 }

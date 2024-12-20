@@ -15,5 +15,7 @@
         Letter CreatePlanRenewedLetter(DateTime planExpiresOn);
       
         Letter CreatePlanCancelationLetter();
+
+        Letter CreatePlanChangedLetter(DateTime newPlanExpiresOn);
     }
 }

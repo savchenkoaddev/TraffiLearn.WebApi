@@ -30,5 +30,9 @@ namespace TraffiLearn.Application.Abstractions.Emails
       
         Task PublishPlanCancelationEmailAsync(
             string recipientEmail);
+
+        Task PublishPlanChangedEmailAsync(
+            string recipientEmail,
+            DateTime newPlanExpiresOn);
     }
 }
