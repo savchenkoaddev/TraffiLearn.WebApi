@@ -91,6 +91,13 @@ namespace TraffiLearn.Domain.Users
 
         public Result ChangeSubscriptionPlan(SubscriptionPlan plan)
         {
+            var result = CanChangeSubscriptionPlan(plan);
+
+            if (result.IsFailure)
+            {
+                return result.Error;
+            }
+
             SubscriptionPlan = plan;
 
             PlanExpiresOn = CalculateNextPlanExpiry(plan);
