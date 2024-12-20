@@ -8,15 +8,15 @@ namespace TraffiLearn.Infrastructure.External.GroqAI.Options
 
         [Required]
         [Url]
-        public string? BaseUri { get; set; }
+        public required string BaseUri { get; set; }
 
         [Required]
-        public string? CreateChatCompletionUri { get; set; }
+        public required string CreateChatCompletionUri { get; set; }
 
         [Required]
-        public string? Model { get; set; }
+        public required string Model { get; set; }
 
         [Required]
-        public string? ApiKey { get; set; }
+        public required string ApiKey { get; set; }
     }
 }

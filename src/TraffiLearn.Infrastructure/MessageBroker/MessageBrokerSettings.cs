@@ -16,6 +16,9 @@ namespace TraffiLearn.Infrastructure.MessageBroker
         public required string Password { get; init; }
 
         [Required]
+        public required string ConnectionString { get; init; }
+
+        [Required]
         public required string EmailExchangeName { get; init; }
 
         [Range(1, 100)]

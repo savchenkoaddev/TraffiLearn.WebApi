@@ -15,27 +15,25 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
         public static IServiceCollection AddHttpClients(this IServiceCollection services)
         {
             services.AddHttpClient<IAIService, GroqApiService>(
-                ConfigureClientWithOptions(services));
+                ConfigureClientWithOptions);
 
             return services;
         }
 
-        private static Action<HttpClient> ConfigureClientWithOptions(IServiceCollection services)
+        private static void ConfigureClientWithOptions(
+            IServiceProvider sp, HttpClient client)
         {
-            var groqApiSettings = services.BuildServiceProvider().GetOptions<GroqApiSettings>();
+            var groqApiSettings = sp.GetOptions<GroqApiSettings>();
 
-            return options =>
-            {
-                options.DefaultRequestHeaders.Add(
-                    HeaderNames.Accept,
-                    MediaTypeNames.Application.Json);
+            client.DefaultRequestHeaders.Add(
+                HeaderNames.Accept,
+                MediaTypeNames.Application.Json);
 
-                options.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
-                    JwtBearerDefaults.AuthenticationScheme,
-                    groqApiSettings.ApiKey);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+                JwtBearerDefaults.AuthenticationScheme,
+                groqApiSettings.ApiKey);
 
-                options.BaseAddress = new Uri(groqApiSettings.BaseUri);
-            };
+            client.BaseAddress = new Uri(groqApiSettings.BaseUri);
         }
     }
 }
