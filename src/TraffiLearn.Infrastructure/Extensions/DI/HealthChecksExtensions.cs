@@ -17,9 +17,9 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
                 .AddDbContextCheck<ApplicationDbContext>()
                 .AddRabbitMQ((sp, options) =>
                 {
-                    var rabbitMqSettings = sp.GetOptions<MessageBrokerSettings>();
+                    var messageBrokerSettings = sp.GetOptions<MessageBrokerSettings>();
 
-                    options.ConnectionUri = new Uri(rabbitMqSettings.ConnectionString);
+                    options.ConnectionUri = new Uri(messageBrokerSettings.ConnectionString);
                 })
                 .AddAzureBlobStorage(sp =>
                 {
@@ -27,6 +27,7 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
 
                     return new BlobServiceClient(azureBlobStorageSettings.ConnectionString);
                 });
+
             return services;
         }
     }
