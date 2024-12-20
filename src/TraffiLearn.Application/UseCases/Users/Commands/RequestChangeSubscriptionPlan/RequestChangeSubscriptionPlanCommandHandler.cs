@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using TraffiLearn.Application.Abstractions.Data;
 using TraffiLearn.Application.Abstractions.Identity;
 using TraffiLearn.Application.Abstractions.Payments;
 using TraffiLearn.Domain.SubscriptionPlans;
@@ -14,18 +13,15 @@ namespace TraffiLearn.Application.UseCases.Users.Commands.RequestChangeSubscript
         private readonly IAuthenticatedUserService _authenticatedUserService;
         private readonly ISubscriptionPlanRepository _subscriptionPlanRepository;
         private readonly IPaymentService _paymentService;
-        private readonly IUnitOfWork _unitOfWork;
 
         public RequestChangeSubscriptionPlanCommandHandler(
             IAuthenticatedUserService authenticatedUserService,
             ISubscriptionPlanRepository subscriptionPlanRepository,
-            IPaymentService paymentService,
-            IUnitOfWork unitOfWork)
+            IPaymentService paymentService)
         {
             _authenticatedUserService = authenticatedUserService;
             _subscriptionPlanRepository = subscriptionPlanRepository;
             _paymentService = paymentService;
-            _unitOfWork = unitOfWork;
         }
 
         public async Task<Result<Uri>> Handle(
@@ -45,7 +41,7 @@ namespace TraffiLearn.Application.UseCases.Users.Commands.RequestChangeSubscript
                 return Result.Failure<Uri>(SubscriptionPlanErrors.NotFound);
             }
 
-            var result = user.ChangeSubscriptionPlan(plan);
+            var result = user.CanChangeSubscriptionPlan(plan);
 
             if (result.IsFailure)
             {
