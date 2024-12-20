@@ -152,7 +152,7 @@ namespace TraffiLearn.Domain.Users
         public static readonly Error EmailAlreadyConfirmed =
             Error.Validation(
                 code: "User.EmailAlreadyConfirmed",
-                description: "Unable to confirm email, because it's already confirmed.");
+                description: "Unable to perform the operation, because the email is already confirmed.");
 
         public static readonly Error EmailNotConfirmed =
             Error.Validation(

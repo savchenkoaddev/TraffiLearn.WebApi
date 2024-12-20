@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using TraffiLearn.Domain.Users.Emails;
 
 namespace TraffiLearn.Application.UseCases.Auth.Commands.ConfirmChangeEmail
 {
@@ -14,6 +15,8 @@ namespace TraffiLearn.Application.UseCases.Auth.Commands.ConfirmChangeEmail
                 .NotEmpty();
 
             RuleFor(x => x.NewEmail)
+                .Matches(@"^[^@\s]+@[^@\s]+\.[^@\s]+$").WithMessage("Email is not in the proper format.")
+                .MaximumLength(Email.MaxLength)
                 .NotEmpty();
         }
     }
