@@ -24,6 +24,8 @@ namespace TraffiLearn.Infrastructure
 
             services.AddHttpClients();
 
+            services.AddAppHealthChecks();
+
             return services;
         }
     }

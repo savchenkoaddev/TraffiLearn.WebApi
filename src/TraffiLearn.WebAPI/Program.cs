@@ -1,3 +1,5 @@
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Extensions;
 using Swashbuckle.AspNetCore.JsonMultipartFormDataSupport.Integrations;
 using System.Text.Json.Serialization;
@@ -62,6 +64,11 @@ namespace TraffiLearn.WebAPI
             app.UseAuthorization();
 
             app.MapControllers();
+
+            app.MapHealthChecks("health", new HealthCheckOptions
+            {
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            });
 
             app.SeedRoles().Wait();
             app.SeedSuperUserIfNotSeeded().Wait();
