@@ -91,16 +91,32 @@ namespace TraffiLearn.Domain.Users
 
         public Result ChangeSubscriptionPlan(SubscriptionPlan plan)
         {
+            var result = CanChangeSubscriptionPlan(plan);
+
+            if (result.IsFailure)
+            {
+                return result.Error;
+            }
+
+            SubscriptionPlan = plan;
+
+            PlanExpiresOn = CalculateNextPlanExpiry(plan);
+
+            RaiseDomainEvent(new SubscriptionChangedDomainEvent(
+                UserId: Id.Value,
+                PlanExpiresOn: PlanExpiresOn.Value));
+
+            return Result.Success();
+        }
+
+        public Result CanChangeSubscriptionPlan(SubscriptionPlan plan)
+        {
             ArgumentNullException.ThrowIfNull(plan, nameof(plan));
 
             if (SubscriptionPlan is not null && plan == SubscriptionPlan)
             {
                 return UserErrors.CantChangeToSamePlan;
             }
-
-            SubscriptionPlan = plan;
-
-            PlanExpiresOn = CalculateNextPlanExpiry(plan);
 
             return Result.Success();
         }

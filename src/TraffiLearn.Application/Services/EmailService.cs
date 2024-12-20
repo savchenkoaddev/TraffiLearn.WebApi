@@ -1,6 +1,5 @@
 ﻿using TraffiLearn.Application.Abstractions.Emails;
 using TraffiLearn.Application.UseCases.Users.Identity;
-using TraffiLearn.Domain.SubscriptionPlans;
 
 namespace TraffiLearn.Application.Services
 {
@@ -110,17 +109,30 @@ namespace TraffiLearn.Application.Services
         {
             Letter letter = _emailLetterCreator
                 .CreatePlanRenewedLetter(planExpiresOn);
-                
+
             await _emailPublisher.PublishEmailMessageAsync(
                 recipientEmail,
                 letter.Subject,
                 letter.HtmlBody);
         }
-        
+
         public async Task PublishPlanCancelationEmailAsync(string recipientEmail)
         {
             Letter letter = _emailLetterCreator
                 .CreatePlanCancelationLetter();
+
+            await _emailPublisher.PublishEmailMessageAsync(
+                recipientEmail,
+                letter.Subject,
+                letter.HtmlBody);
+        }
+
+        public async Task PublishPlanChangedEmailAsync(
+            string recipientEmail,
+            DateTime newPlanExpiresOn)
+        {
+            Letter letter = _emailLetterCreator
+                .CreatePlanChangedLetter(newPlanExpiresOn);
 
             await _emailPublisher.PublishEmailMessageAsync(
                 recipientEmail,
