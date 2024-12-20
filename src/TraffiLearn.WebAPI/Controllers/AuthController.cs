@@ -9,6 +9,7 @@ using TraffiLearn.Application.UseCases.Auth.Commands.RefreshToken;
 using TraffiLearn.Application.UseCases.Auth.Commands.RegisterAdmin;
 using TraffiLearn.Application.UseCases.Auth.Commands.RegisterUser;
 using TraffiLearn.Application.UseCases.Auth.Commands.RemoveAdminAccount;
+using TraffiLearn.Application.UseCases.Auth.Commands.ResendConfirmationEmail;
 using TraffiLearn.Application.UseCases.Auth.Commands.SendChangeEmailMessage;
 using TraffiLearn.Application.UseCases.Auth.Commands.SendRecoverPasswordMessage;
 using TraffiLearn.Application.UseCases.Auth.Commands.SignInWithGoogle;
@@ -182,6 +183,34 @@ namespace TraffiLearn.WebAPI.Controllers
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ConfirmEmail(
             [FromBody] ConfirmEmailCommand command)
+        {
+            var commandResult = await _sender.Send(command);
+
+            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+        }
+
+        /// <summary>
+        /// Resends a confirmation email for a registered user
+        /// </summary>
+        /// <remarks>
+        /// **If an email is already confirmed** - an error will be returned.<br /><br />
+        /// **The request must include a valid email.**<br /><br /><br />
+        /// ***Body parameters:***<br /><br />
+        /// `Email` : Must be in a valid email format (e.g., example@example.com). Must be unconfirmed.<br /><br /><br />
+        /// **Authentication is not required.**
+        /// </remarks>
+        /// <param name="command">**The resend confirmation email command.**</param>
+        /// <response code="204">Successfully sent a new confirmation email.</response>
+        /// <response code="400">***Bad request.*** The provided email is invalid or missing.</response>
+        /// <response code="404">***Not Found.*** The user with the provided email is not found.</response>
+        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        [HttpPost("resend-confirmation-email")]
+        [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ResendConfirmationEmail(
+            [FromBody] ResendConfirmationEmailCommand command)
         {
             var commandResult = await _sender.Send(command);
 

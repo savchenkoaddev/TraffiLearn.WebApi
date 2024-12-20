@@ -47,6 +47,11 @@ namespace TraffiLearn.Application.UseCases.Auth.Commands.ResendConfirmationEmail
                 return UserErrors.NotFound;
             }
 
+            if (user.IsEmailConfirmed)
+            {
+                return UserErrors.EmailAlreadyConfirmed;
+            }
+
             var identityUser = await _identityService.GetByEmailAsync(email);
 
             if (identityUser is null)
