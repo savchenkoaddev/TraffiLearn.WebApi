@@ -6,25 +6,22 @@ using TraffiLearn.Domain.Transactions;
 using TraffiLearn.Domain.Transactions.Metadatas;
 using TraffiLearn.Domain.Users;
 
-namespace TraffiLearn.Application.Webhooks.Stripe.Events
+namespace TraffiLearn.Application.Webhooks.Stripe.Events.RenewSubscriptionCompleted
 {
-    internal sealed class CheckoutSessionCompletedEventHandler
-        : INotificationHandler<CheckoutSessionCompletedEvent>
+    internal sealed class RenewSubscriptionCompletedEventHandler
+        : INotificationHandler<RenewSubscriptionCompletedEvent>
     {
-        private readonly ISubscriptionPlanRepository _subscriptionPlanRepository;
         private readonly ITransactionRepository _transactionRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<CheckoutSessionCompletedEventHandler> _logger;
+        private readonly ILogger<RenewSubscriptionCompletedEventHandler> _logger;
 
-        public CheckoutSessionCompletedEventHandler(
-            ISubscriptionPlanRepository subscriptionPlanRepository,
+        public RenewSubscriptionCompletedEventHandler(
             ITransactionRepository transactionRepository,
             IUserRepository userRepository,
             IUnitOfWork unitOfWork,
-            ILogger<CheckoutSessionCompletedEventHandler> logger)
+            ILogger<RenewSubscriptionCompletedEventHandler> logger)
         {
-            _subscriptionPlanRepository = subscriptionPlanRepository;
             _transactionRepository = transactionRepository;
             _userRepository = userRepository;
             _unitOfWork = unitOfWork;
@@ -32,18 +29,14 @@ namespace TraffiLearn.Application.Webhooks.Stripe.Events
         }
 
         public async Task Handle(
-            CheckoutSessionCompletedEvent notification,
+            RenewSubscriptionCompletedEvent notification,
             CancellationToken cancellationToken)
         {
-            var subscriptionPlan = await GetSubscriptionPlanAsync(
-                notification.SubscriptionPlanId,
-                cancellationToken);
-
             var user = await GetUserAsync(
                 notification.UserId,
                 cancellationToken);
 
-            ChangeUserSubscriptionPlan(user, subscriptionPlan);
+            RenewUserSubscriptionPlan(user);
 
             Metadata? metadata = default;
 
@@ -62,9 +55,11 @@ namespace TraffiLearn.Application.Webhooks.Stripe.Events
                 }
             }
 
+            var userPlan = user.SubscriptionPlan;
+
             var transaction = CreateTransaction(
                 user,
-                subscriptionPlan,
+                userPlan,
                 metadata);
 
             await _transactionRepository.InsertAsync(
@@ -74,30 +69,15 @@ namespace TraffiLearn.Application.Webhooks.Stripe.Events
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation(
-                "Subscription plan for user {userId} successfully updated to {subscriptionPlanId}.",
-                user.Id.Value, subscriptionPlan.Id.Value);
-        }
-
-        private async Task<SubscriptionPlan> GetSubscriptionPlanAsync(
-            Guid subscriptionPlanId,
-            CancellationToken cancellationToken)
-        {
-            var planId = new SubscriptionPlanId(subscriptionPlanId);
-            var subscriptionPlan = await _subscriptionPlanRepository.GetByIdAsync(planId, cancellationToken);
-
-            if (subscriptionPlan is null)
-            {
-                throw new InvalidOperationException($"Subscription plan with ID {planId.Value} not found.");
-            }
-
-            return subscriptionPlan;
+                "Subscription plan for user {userId} successfully renewed.",
+                user.Id.Value);
         }
 
         private async Task<User> GetUserAsync(
             Guid userId,
             CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByIdAsync(new UserId(userId), cancellationToken);
+            var user = await _userRepository.GetByIdWithPlanAsync(new UserId(userId), cancellationToken);
 
             if (user is null)
             {
@@ -107,16 +87,14 @@ namespace TraffiLearn.Application.Webhooks.Stripe.Events
             return user;
         }
 
-        private void ChangeUserSubscriptionPlan(
-            User user,
-            SubscriptionPlan subscriptionPlan)
+        private void RenewUserSubscriptionPlan(User user)
         {
-            var changeResult = user.ChangeSubscriptionPlan(subscriptionPlan);
+            var renewResult = user.RenewPlan();
 
-            if (changeResult.IsFailure)
+            if (renewResult.IsFailure)
             {
                 throw new InvalidOperationException(
-                    $"Failed to change subscription plan for user with ID {user.Id.Value}. Error description: {changeResult.Error.Description}");
+                    $"Failed to renew subscription plan for user with ID {user.Id.Value}. Error description: {renewResult.Error.Description}");
             }
         }
 
