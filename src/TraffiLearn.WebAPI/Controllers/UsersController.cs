@@ -1,16 +1,20 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
+using TraffiLearn.Application.UseCases.CanceledSubscriptions.DTO;
 using TraffiLearn.Application.UseCases.Comments.DTO;
 using TraffiLearn.Application.UseCases.Questions.DTO;
+using TraffiLearn.Application.UseCases.Transactions.DTO;
 using TraffiLearn.Application.UseCases.Users.Commands.CancelSubscription;
-using TraffiLearn.Application.UseCases.Users.Commands.RequestChangeSubscriptionPlan;
 using TraffiLearn.Application.UseCases.Users.Commands.DowngradeAccount;
-using TraffiLearn.Application.UseCases.Users.Commands.RenewSubscriptionPlan;
+using TraffiLearn.Application.UseCases.Users.Commands.RequestChangeSubscriptionPlan;
+using TraffiLearn.Application.UseCases.Users.Commands.RequestRenewSubscriptionPlan;
 using TraffiLearn.Application.UseCases.Users.DTO;
 using TraffiLearn.Application.UseCases.Users.Queries.GetAllAdmins;
 using TraffiLearn.Application.UseCases.Users.Queries.GetAllUsers;
+using TraffiLearn.Application.UseCases.Users.Queries.GetCurrentUserCanceledSubscriptions;
 using TraffiLearn.Application.UseCases.Users.Queries.GetCurrentUserInfo;
+using TraffiLearn.Application.UseCases.Users.Queries.GetCurrentUserTransactions;
 using TraffiLearn.Application.UseCases.Users.Queries.GetLoggedInUserComments;
 using TraffiLearn.Application.UseCases.Users.Queries.GetUserComments;
 using TraffiLearn.Application.UseCases.Users.Queries.GetUserDislikedQuestions;
@@ -18,10 +22,6 @@ using TraffiLearn.Application.UseCases.Users.Queries.GetUserLikedQuestions;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
 using TraffiLearn.WebAPI.Swagger;
-using TraffiLearn.Application.UseCases.Users.Queries.GetCurrentUserTransactions;
-using TraffiLearn.Application.UseCases.Transactions.DTO;
-using TraffiLearn.Application.UseCases.Users.Queries.GetCurrentUserCanceledSubscriptions;
-using TraffiLearn.Application.UseCases.CanceledSubscriptions.DTO;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
@@ -311,7 +311,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// The user must be authenticated using a JWT token.<br /><br />
         /// </remarks>
         /// <param name="planId">**The ID of a subscription plan.**</param>
-        /// <response code="204">Successfully changed a subscription plan.</response>
+        /// <response code="200">Successfully requested a subscription plan change. Returns Uri for payment process.</response>
         /// <response code="400">***Bad request.*** The user has the same subscription plan.</response>
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="404">***Not found.*** No subscription plan exists with the provided ID.</response>
@@ -328,13 +328,13 @@ namespace TraffiLearn.WebAPI.Controllers
             var commandResult = await _sender.Send(
                 new RequestChangeSubscriptionPlanCommand(planId));
 
-            return commandResult.IsSuccess 
-                ? Ok(commandResult.Value.ToString()) 
+            return commandResult.IsSuccess
+                ? Ok(commandResult.Value.ToString())
                 : commandResult.ToProblemDetails();
         }
 
         /// <summary>
-        /// Renews a subscription of an authenticated user.
+        /// Requests a renew for a subscription plan of an authenticated user.
         /// </summary>
         /// <remarks>
         /// **If a user does not have any subscription plan**, an error will be returned.<br /><br />
@@ -342,12 +342,12 @@ namespace TraffiLearn.WebAPI.Controllers
         /// **Authentication Required:**<br />
         /// The user must be authenticated using a JWT token.<br /><br />
         /// </remarks>
-        /// <response code="200">***OK.*** Successfully renewed a subscription. Returns the new expiration date.</response>
+        /// <response code="200">***OK.*** Successfully requested a subscription plan renew. Returns Uri for payment process.</response>
         /// <response code="400">***Bad request.*** Violation of some business rules.</response>
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
         [HasPermission(Permission.AccessData)]
-        [HttpPut("renew-subscription")]
+        [HttpPut("request-renew-subscription")]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(DateTime), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
@@ -355,10 +355,10 @@ namespace TraffiLearn.WebAPI.Controllers
         public async Task<IActionResult> RenewSubscription()
         {
             var commandResult = await _sender.Send(
-                new RenewSubscriptionPlanCommand());
+                new RequestRenewSubscriptionPlanCommand());
 
-            return commandResult.IsSuccess 
-                ? Ok(new { ExpirationDate = commandResult.Value }) 
+            return commandResult.IsSuccess
+                ? Ok(commandResult.Value.ToString())
                 : commandResult.ToProblemDetails();
         }
 
