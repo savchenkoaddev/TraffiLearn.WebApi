@@ -77,7 +77,8 @@ namespace TraffiLearn.Application.UseCases.Users.Commands.RequestChangeSubscript
                 Amount: plan.Price.Amount,
                 Currency: plan.Price.Currency.ToString(),
                 Quantity: 1,
-                PaymentMode: "payment");
+                PaymentMode: "payment",
+                Action: CheckoutSessionAction.ChangePlan);
         }
     }
 }

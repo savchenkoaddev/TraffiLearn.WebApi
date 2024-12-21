@@ -91,11 +91,11 @@ namespace TraffiLearn.Domain.Users
 
         public Result ChangeSubscriptionPlan(SubscriptionPlan plan)
         {
-            var result = CanChangeSubscriptionPlan(plan);
+            var validationResult = CanChangeSubscriptionPlan(plan);
 
-            if (result.IsFailure)
+            if (validationResult.IsFailure)
             {
-                return result.Error;
+                return validationResult.Error;
             }
 
             SubscriptionPlan = plan;
@@ -121,11 +121,23 @@ namespace TraffiLearn.Domain.Users
             return Result.Success();
         }
 
-        public Result RenewPlan()
+        public Result CanRenewPlan()
         {
             if (SubscriptionPlan is null)
             {
                 return UserErrors.NoSubscription;
+            }
+
+            return Result.Success();
+        }
+
+        public Result RenewPlan()
+        {
+            var validationResult = CanRenewPlan();
+
+            if (validationResult.IsFailure)
+            {
+                return validationResult.Error;
             }
 
             if (PlanExpiresOn > DateTime.UtcNow)

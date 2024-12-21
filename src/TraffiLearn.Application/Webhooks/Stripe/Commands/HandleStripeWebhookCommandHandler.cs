@@ -1,10 +1,9 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Stripe;
 using Stripe.Checkout;
 using TraffiLearn.Application.Abstractions.Payments;
-using TraffiLearn.Application.Webhooks.Stripe.Events;
+using TraffiLearn.Application.Webhooks.Stripe.Events.ChangeSubscriptionCompleted;
+using TraffiLearn.Application.Webhooks.Stripe.Events.RenewSubscriptionCompleted;
 using TraffiLearn.Application.Webhooks.Stripe.Extensions;
 using TraffiLearn.SharedKernel.Shared;
 
@@ -15,16 +14,13 @@ namespace TraffiLearn.Application.Webhooks.Stripe.Commands
     {
         private readonly IStripeWebhookService _stripeWebhookService;
         private readonly IPublisher _publisher;
-        private readonly ILogger<HandleStripeWebhookCommandHandler> _logger;
 
         public HandleStripeWebhookCommandHandler(
             IStripeWebhookService stripeWebhookService,
-            IPublisher publisher,
-            ILogger<HandleStripeWebhookCommandHandler> logger)
+            IPublisher publisher)
         {
             _stripeWebhookService = stripeWebhookService;
             _publisher = publisher;
-            _logger = logger;
         }
 
         public async Task<Result> Handle(
@@ -47,35 +43,89 @@ namespace TraffiLearn.Application.Webhooks.Stripe.Commands
                         "Session is null in Stripe webhook event");
                 }
 
-                (Guid SubscriptionPlanId, Guid UserId) = ExtractIds(session);
+                INotification? notification;
 
-                var metadata = JsonConvert.SerializeObject(session.Metadata);
+                notification = GetNotification(session);
 
-                var checkoutSessionCompletedEvent = new CheckoutSessionCompletedEvent(
-                    SubscriptionPlanId: SubscriptionPlanId,
-                    UserId: UserId,
-                    Metadata: metadata);
-
-                await _publisher.Publish(checkoutSessionCompletedEvent, cancellationToken);
+                await _publisher.Publish(notification, cancellationToken);
             }
 
             return Result.Success();
         }
 
-        private static (Guid SubscriptionPlanId, Guid UserId) ExtractIds(
-            Session session)
+        private static INotification? GetNotification(Session session)
         {
-            var subscriptionPlanIdString = session.Metadata["subscriptionPlanId"];
-            var userIdString = session.Metadata["userId"];
+            var action = ExtractAction(session);
 
-            if (Guid.TryParse(subscriptionPlanIdString, out var subscriptionPlanId) &&
-                Guid.TryParse(userIdString, out var userId))
+            return action switch
             {
-                return (subscriptionPlanId, userId);
+                CheckoutSessionAction.ChangePlan => GetChangeSubscriptionCompletedEvent(session),
+                CheckoutSessionAction.RenewPlan => GetRenewSubscriptionCompletedEvent(session),
+
+                _ => null
+            };
+        }
+
+        private static CheckoutSessionAction ExtractAction(Session session)
+        {
+            var actionString = session.Metadata["action"];
+
+            if (Enum.TryParse<CheckoutSessionAction>(actionString, out var action))
+            {
+                return action;
             }
 
             throw new InvalidOperationException(
-                "Ids from the metadata are not of type Guid.");
+                $"Action from the metadata is not of type {nameof(CheckoutSessionAction)}.");
+        }
+
+        private static ChangeSubscriptionCompletedEvent? GetChangeSubscriptionCompletedEvent(
+            Session session)
+        {
+            var ids = ExtractIds(session, "subscriptionPlanId", "userId");
+
+            var subscriptionPlanId = ids["subscriptionPlanId"];
+            var userId = ids["userId"];
+
+            var metadata = JsonConvert.SerializeObject(session.Metadata);
+
+            return new ChangeSubscriptionCompletedEvent(
+                SubscriptionPlanId: subscriptionPlanId,
+                UserId: userId,
+                Metadata: metadata);
+        }
+
+        private static RenewSubscriptionCompletedEvent? GetRenewSubscriptionCompletedEvent(
+            Session session)
+        {
+            var ids = ExtractIds(session, "userId");
+
+            var userId = ids["userId"];
+
+            var metadata = JsonConvert.SerializeObject(session.Metadata);
+
+            return new RenewSubscriptionCompletedEvent(
+                UserId: userId,
+                Metadata: metadata);
+        }
+
+        private static Dictionary<string, Guid> ExtractIds(
+            Session session, params string[] idNames)
+        {
+            var result = new Dictionary<string, Guid>();
+
+            foreach (var idName in idNames)
+            {
+                if (!Guid.TryParse(session.Metadata[idName], out var id))
+                {
+                    throw new InvalidOperationException(
+                        "Ids from the metadata are not of type Guid.");
+                }
+
+                result.Add(idName, id);
+            }
+
+            return result;
         }
     }
 }
