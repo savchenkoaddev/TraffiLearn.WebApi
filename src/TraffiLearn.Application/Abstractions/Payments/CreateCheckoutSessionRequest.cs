@@ -5,5 +5,6 @@
         decimal Amount,
         string Currency,
         int Quantity,
-        string PaymentMode);
+        string PaymentMode,
+        CheckoutSessionAction Action);
 }

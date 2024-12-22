@@ -29,6 +29,8 @@ namespace TraffiLearn.Infrastructure.Services.Payments
             CreateCheckoutSessionRequest request,
             Dictionary<string, string>? metadata)
         {
+            metadata?.Add("action", request.Action.ToString());
+
             return new SessionCreateOptions
             {
                 PaymentMethodTypes = new List<string> { "card" },

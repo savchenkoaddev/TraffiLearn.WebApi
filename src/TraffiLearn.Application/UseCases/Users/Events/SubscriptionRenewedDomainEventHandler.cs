@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using TraffiLearn.Application.Abstractions.Emails;
 using TraffiLearn.Domain.Users;
 using TraffiLearn.Domain.Users.DomainEvents;
