@@ -34,7 +34,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
-    [HasPermission(Permission.AccessData)]
+    [HasPermission(Permission.AuthenticatedUser)]
     [Route("api/questions")]
     [ApiController]
     public sealed class QuestionsController : ControllerBase
@@ -382,8 +382,8 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
         /// <response code="404">***Not found.*** Topics with the provided topic IDs are not found.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.ModifyData)]
         [HttpPost]
+        [HasPermission(Permission.ModifyApplicationData)]
         [Consumes(Multipart.FormData)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
@@ -437,8 +437,8 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
         /// <response code="404">***Not found.*** Question with the ID is not found or topics with the provided topic IDs are not found.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.ModifyData)]
         [HttpPut]
+        [HasPermission(Permission.ModifyApplicationData)]
         [Consumes(Multipart.FormData)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
@@ -468,8 +468,8 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
         /// <response code="404">***Not found.*** Question with the provided id is not found.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.ModifyData)]
         [HttpDelete("{questionId:guid}")]
+        [HasPermission(Permission.ModifyApplicationData)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
@@ -498,7 +498,6 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="404">***Not found.*** Question with the provided id is not found.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.ModifyNonSensitiveData)]
         [HttpPost("add-comment")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
@@ -530,7 +529,6 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="404">***Not found.*** Question with the provided id is not found.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.ModifyNonSensitiveData)]
         [HttpPut("{questionId:guid}/mark")]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
@@ -561,7 +559,6 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="404">***Not found.*** Question with the provided id is not found.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.ModifyNonSensitiveData)]
         [HttpPut("{questionId:guid}/unmark")]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
@@ -592,7 +589,6 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="404">***Not found.*** Question with the provided id is not found.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.ModifyNonSensitiveData)]
         [HttpPut("{questionId:guid}/like")]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
@@ -623,7 +619,6 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="404">***Not found.*** Question with the provided id is not found.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.ModifyNonSensitiveData)]
         [HttpPut("{questionId:guid}/dislike")]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
@@ -654,7 +649,6 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="404">***Not found.*** Question with the provided id is not found.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.ModifyNonSensitiveData)]
         [HttpPut("{questionId:guid}/remove-like")]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
@@ -685,7 +679,6 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="404">***Not found.*** Question with the provided id is not found.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.ModifyNonSensitiveData)]
         [HttpPut("{questionId:guid}/remove-dislike")]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]

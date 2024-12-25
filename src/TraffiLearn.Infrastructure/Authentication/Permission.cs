@@ -2,14 +2,12 @@
 {
     public enum Permission
     {
-        AccessSpecificUserData,
-        AccessSpecificAdminData,
-        AccessData,
-        DowngradeAccounts,
-        RegisterAdmins,
-        RemoveAdmins,
-        ModifyData,
-        ModifyNonSensitiveData,
-        ModifySubscriptionPlans,
+        AuthenticatedUser,
+        ViewUsersData,
+        ModifyApplicationData,
+        ViewAdminsData,
+        ManageAdmins,
+        ManageSubscriptionPlans,
+        ManageAccountStatuses,
     }
 }

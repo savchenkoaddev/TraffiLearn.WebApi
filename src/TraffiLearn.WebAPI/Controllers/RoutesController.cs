@@ -14,7 +14,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
-    [HasPermission(Permission.AccessData)]
+    [HasPermission(Permission.AuthenticatedUser)]
     [ApiController]
     [Route("api/routes")]
     public class RoutesController : ControllerBase
@@ -115,8 +115,8 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
         /// <response code="404">***Not found.*** Service center with the provided service center ID is not found.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.ModifyData)]
         [HttpPost]
+        [HasPermission(Permission.ModifyApplicationData)]
         [Consumes(Multipart.FormData)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
@@ -164,8 +164,8 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
         /// <response code="404">***Not found.*** Route or Service Center with the provided IDs are not found.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.ModifyData)]
         [HttpPut]
+        [HasPermission(Permission.ModifyApplicationData)]
         [Consumes(Multipart.FormData)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
@@ -196,8 +196,8 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
         /// <response code="404">***Not found.*** Route with the provided ID is not found.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.ModifyData)]
         [HttpDelete("{routeId:guid}")]
+        [HasPermission(Permission.ModifyApplicationData)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
