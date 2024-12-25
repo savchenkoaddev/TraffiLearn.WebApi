@@ -232,8 +232,8 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="400">***Bad request.*** The provided email is invalid, missing or already taken.</response>
         /// <response code="401">***Unauthorized***. The user is not authenticated.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.AccessData)]
         [HttpPost("change-email")]
+        [HasPermission(Permission.AuthenticatedUser)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
@@ -358,7 +358,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="401">***Unauthorized***. The user is not authenticated.</response>
         /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
         /// <response code="500">***Internal Server Error***. An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.RegisterAdmins)]
+        [HasPermission(Permission.ManageAdmins)]
         [HttpPost("register-admin")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
@@ -388,7 +388,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="403">***Forbidden.*** The user is not authorized to perform this action.</response>
         /// <response code="404">***Not Found.*** The admin with the provided ID is not found.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.RemoveAdmins)]
+        [HasPermission(Permission.ManageAdmins)]
         [HttpDelete("remove-admin/{adminId:guid}")]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]

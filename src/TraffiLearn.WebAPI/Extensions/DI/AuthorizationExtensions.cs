@@ -11,14 +11,7 @@ namespace TraffiLearn.WebAPI.Extensions.DI
             services.AddAuthorization(options =>
             {
                 options.ConfigurePolicy(
-                    name: Permission.AccessSpecificUserData.ToString(),
-                    roles: [
-                        Role.Admin.ToString(),
-                        Role.Owner.ToString()
-                    ]);
-
-                options.ConfigurePolicy(
-                    name: Permission.AccessData.ToString(),
+                    name: Permission.AuthenticatedUser.ToString(),
                     roles: [
                         Role.RegularUser.ToString(),
                         Role.Admin.ToString(),
@@ -26,38 +19,33 @@ namespace TraffiLearn.WebAPI.Extensions.DI
                     ]);
 
                 options.ConfigurePolicy(
-                    name: Permission.ModifyNonSensitiveData.ToString(),
-                    roles: [
-                        Role.RegularUser.ToString(),
-                        Role.Admin.ToString(),
-                        Role.Owner.ToString(),
-                    ]);
-
-                options.ConfigurePolicy(
-                    name: Permission.DowngradeAccounts.ToString(),
-                    roles: Role.Owner.ToString());
-
-                options.ConfigurePolicy(
-                    name: Permission.RegisterAdmins.ToString(),
-                    roles: Role.Owner.ToString());
-
-                options.ConfigurePolicy(
-                    name: Permission.RemoveAdmins.ToString(),
-                    roles: Role.Owner.ToString());
-
-                options.ConfigurePolicy(
-                    name: Permission.ModifyData.ToString(),
+                    name: Permission.ViewUsersData.ToString(),
                     roles: [
                         Role.Admin.ToString(),
                         Role.Owner.ToString()
                     ]);
 
                 options.ConfigurePolicy(
-                    name: Permission.AccessSpecificAdminData.ToString(),
+                    name: Permission.ManageAccountStatuses.ToString(),
                     roles: Role.Owner.ToString());
 
                 options.ConfigurePolicy(
-                    name: Permission.ModifySubscriptionPlans.ToString(),
+                    name: Permission.ModifyApplicationData.ToString(),
+                    roles: [
+                        Role.Admin.ToString(),
+                        Role.Owner.ToString()
+                    ]);
+
+                options.ConfigurePolicy(
+                    name: Permission.ManageAdmins.ToString(),
+                    roles: Role.Owner.ToString());
+
+                options.ConfigurePolicy(
+                    name: Permission.ViewAdminsData.ToString(),
+                    roles: Role.Owner.ToString());
+
+                options.ConfigurePolicy(
+                    name: Permission.ManageSubscriptionPlans.ToString(),
                     roles: Role.Owner.ToString());
             });
 

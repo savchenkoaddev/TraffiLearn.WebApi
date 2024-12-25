@@ -13,7 +13,7 @@ using TraffiLearn.WebAPI.Swagger;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
-    [HasPermission(Permission.AccessData)]
+    [HasPermission(Permission.AuthenticatedUser)]
     [Route("api/regions")]
     [ApiController]
     public sealed class RegionsController : ControllerBase
@@ -98,8 +98,8 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.ModifyData)]
         [HttpPost]
+        [HasPermission(Permission.ModifyApplicationData)]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
@@ -138,8 +138,8 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
         /// <response code="404">***Not found.*** Region with the ID is not found.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.ModifyData)]
         [HttpPut]
+        [HasPermission(Permission.ModifyApplicationData)]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
@@ -169,8 +169,8 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
         /// <response code="404">***Not found.*** Region with the provided ID is not found.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.ModifyData)]
         [HttpDelete("{regionId:guid}")]
+        [HasPermission(Permission.ModifyApplicationData)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]

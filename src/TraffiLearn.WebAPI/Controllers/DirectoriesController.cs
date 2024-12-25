@@ -13,7 +13,7 @@ using TraffiLearn.WebAPI.Swagger;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
-    [HasPermission(Permission.AccessData)]
+    [HasPermission(Permission.AuthenticatedUser)]
     [Route("api/directories")]
     [ApiController]
     public class DirectoriesController : ControllerBase
@@ -101,7 +101,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
         [HttpPost]
-        [HasPermission(Permission.ModifyData)]
+        [HasPermission(Permission.ModifyApplicationData)]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
@@ -141,8 +141,8 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
         /// <response code="404">***Not found.*** Directory with the ID is not found.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.ModifyData)]
         [HttpPut]
+        [HasPermission(Permission.ModifyApplicationData)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
@@ -171,8 +171,8 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
         /// <response code="404">***Not found.*** Directory with the provided id is not found.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.ModifyData)]
         [HttpDelete("{directoryId:guid}")]
+        [HasPermission(Permission.ModifyApplicationData)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]

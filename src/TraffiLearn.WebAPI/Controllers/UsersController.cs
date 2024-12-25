@@ -49,8 +49,8 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="200">Successfully retrieved logged in user comments. Returns logged in user comments.</response>
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.AccessData)]
         [HttpGet("current")]
+        [HasPermission(Permission.AuthenticatedUser)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(CurrentUserResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
@@ -72,8 +72,8 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.AccessSpecificUserData)]
         [HttpGet]
+        [HasPermission(Permission.ViewUsersData)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(IEnumerable<UserResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
@@ -95,8 +95,8 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.AccessSpecificAdminData)]
         [HttpGet("admins")]
+        [HasPermission(Permission.ViewAdminsData)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(IEnumerable<UserResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
@@ -123,8 +123,8 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
         /// <response code="404">***Not found.*** No user exists with the provided ID.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.AccessSpecificUserData)]
         [HttpGet("{userId:guid}/comments")]
+        [HasPermission(Permission.ViewUsersData)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(IEnumerable<CommentResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
@@ -153,8 +153,8 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
         /// <response code="404">***Not found.*** No user exists with the provided ID.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.AccessSpecificUserData)]
         [HttpGet("{userId:guid}/liked-questions")]
+        [HasPermission(Permission.ViewUsersData)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(IEnumerable<QuestionResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
@@ -183,8 +183,8 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
         /// <response code="404">***Not found.*** No user exists with the provided ID.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.AccessSpecificUserData)]
         [HttpGet("{userId:guid}/disliked-questions")]
+        [HasPermission(Permission.ViewUsersData)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(IEnumerable<QuestionResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
@@ -207,8 +207,8 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="200">Successfully retrieved logged in user comments. Returns logged in user comments.</response>
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.AccessData)]
         [HttpGet("current/comments")]
+        [HasPermission(Permission.AuthenticatedUser)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(IEnumerable<CommentResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
@@ -229,8 +229,8 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="200">Successfully retrieved the current user's transactions. Returns list of transactions.</response>
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.AccessData)]
         [HttpGet("current/transactions")]
+        [HasPermission(Permission.AuthenticatedUser)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(IEnumerable<TransactionResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
@@ -251,8 +251,8 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="200">Successfully retrieved the current user's canceled subscriptions. Returns list of canceled subscriptions.</response>
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.AccessData)]
         [HttpGet("current/canceled-subscriptions")]
+        [HasPermission(Permission.AuthenticatedUser)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(IEnumerable<CanceledSubscriptionResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
@@ -287,7 +287,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
         /// <response code="404">***Not found.*** No user exists with the provided ID.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.DowngradeAccounts)]
+        [HasPermission(Permission.ManageAccountStatuses)]
         [HttpPut("{userId:guid}/downgrade")]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status404NotFound)]
@@ -316,7 +316,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="404">***Not found.*** No subscription plan exists with the provided ID.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.AccessData)]
+        [HasPermission(Permission.AuthenticatedUser)]
         [HttpPut("request-change-subscription/{planId:guid}")]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
@@ -346,7 +346,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="400">***Bad request.*** Violation of some business rules.</response>
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.AccessData)]
+        [HasPermission(Permission.AuthenticatedUser)]
         [HttpPut("request-renew-subscription")]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(DateTime), StatusCodes.Status200OK)]
@@ -375,7 +375,7 @@ namespace TraffiLearn.WebAPI.Controllers
         /// <response code="400">***Bad request.*** Violation of some business rules.</response>
         /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
         /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
-        [HasPermission(Permission.AccessData)]
+        [HasPermission(Permission.AuthenticatedUser)]
         [HttpPut("cancel-subscription")]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
         [ProducesResponseType(typeof(ClientErrorResponseExample), StatusCodes.Status400BadRequest)]
