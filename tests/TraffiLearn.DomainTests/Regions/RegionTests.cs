@@ -14,7 +14,7 @@ namespace TraffiLearn.DomainTests.Regions
             {
                 Region.Create(
                     new RegionId(Guid.NewGuid()),
-                    null);
+                    null!);
             };
 
             action.Should().Throw<ArgumentNullException>();

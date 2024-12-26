@@ -31,7 +31,7 @@ namespace TraffiLearn.Application.UseCases.Users.Commands.RequestChangeSubscript
             var user = await _authenticatedUserService
                 .GetAuthenticatedUserAsync(cancellationToken);
 
-            var planId = new SubscriptionPlanId(request.SubscriptionPlanId.Value);
+            var planId = new SubscriptionPlanId(request.SubscriptionPlanId);
 
             var plan = await _subscriptionPlanRepository
                 .GetByIdAsync(planId, cancellationToken);

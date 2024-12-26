@@ -38,14 +38,14 @@ namespace TraffiLearn.Application.UseCases.Users.Commands.RequestRenewSubscripti
                 throw new InvalidOperationException("Authenticated user is not found.");
             }
 
-            var result = user.CanRenewPlan();
+            var canUserRenewPlan = user.CanRenewPlan();
 
-            if (result.IsFailure)
+            if (canUserRenewPlan.IsFailure)
             {
-                return Result.Failure<Uri>(result.Error);
+                return Result.Failure<Uri>(canUserRenewPlan.Error);
             }
 
-            var createCheckoutSessionRequest = GetCreateCheckoutSessionRequest(user.SubscriptionPlan);
+            var createCheckoutSessionRequest = GetCreateCheckoutSessionRequest(user.SubscriptionPlan!);
 
             var metadata = GetMetadataForRequest(user.Id);
 
@@ -56,7 +56,7 @@ namespace TraffiLearn.Application.UseCases.Users.Commands.RequestRenewSubscripti
         }
 
         private static Dictionary<string, string> GetMetadataForRequest(
-           UserId userId)
+            UserId userId)
         {
             return new Dictionary<string, string>
             {

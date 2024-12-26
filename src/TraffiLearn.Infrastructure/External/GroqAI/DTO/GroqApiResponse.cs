@@ -2,7 +2,4 @@
 {
     public sealed record GroqApiResponse(
         List<GroqApiChoice> Choices);
-
-    public sealed record GroqApiChoice(
-        GroqApiMessage Message);
 }

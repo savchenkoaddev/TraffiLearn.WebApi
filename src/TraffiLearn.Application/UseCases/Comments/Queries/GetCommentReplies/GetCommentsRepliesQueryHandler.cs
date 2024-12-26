@@ -24,7 +24,7 @@ namespace TraffiLearn.Application.UseCases.Comments.Queries.GetCommentReplies
             GetCommentsRepliesQuery request,
             CancellationToken cancellationToken)
         {
-            var commentId = new CommentId(request.CommentId.Value);
+            var commentId = new CommentId(request.CommentId);
 
             var commentExists = await _commentRepository.ExistsAsync(
                 commentId,

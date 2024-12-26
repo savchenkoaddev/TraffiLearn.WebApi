@@ -36,8 +36,8 @@ namespace TraffiLearn.Application.UseCases.SubscriptionPlans.Mappers
             var description = descriptionResult.Value;
 
             var priceResult = Price.Create(
-                amount: source.Price.Amount.Value,
-                currency: source.Price.Currency.Value);
+                amount: source.Price.Amount,
+                currency: source.Price.Currency);
 
             if (priceResult.IsFailure)
             {
@@ -47,8 +47,8 @@ namespace TraffiLearn.Application.UseCases.SubscriptionPlans.Mappers
             var price = priceResult.Value;
 
             var renewalPeriodResult = RenewalPeriod.Create(
-                interval: source.RenewalPeriod.Interval.Value,
-                type: source.RenewalPeriod.Type.Value);
+                interval: source.RenewalPeriod.Interval,
+                type: source.RenewalPeriod.Type);
 
             if (renewalPeriodResult.IsFailure)
             {

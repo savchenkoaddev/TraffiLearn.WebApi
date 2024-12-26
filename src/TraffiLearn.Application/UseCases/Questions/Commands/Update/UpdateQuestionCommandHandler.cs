@@ -40,7 +40,7 @@ namespace TraffiLearn.Application.UseCases.Questions.Commands.Update
             CancellationToken cancellationToken)
         {
             var question = await _questionRepository.GetByIdWithTopicsAsync(
-                questionId: new QuestionId(request.QuestionId.Value),
+                questionId: new QuestionId(request.QuestionId),
                 cancellationToken);
 
             if (question is null)
@@ -101,7 +101,7 @@ namespace TraffiLearn.Application.UseCases.Questions.Commands.Update
         }
 
         private async Task<Result> UpdateTopics(
-            List<Guid>? topicIds,
+            List<Guid> topicIds,
             Question question,
             CancellationToken cancellationToken = default)
         {

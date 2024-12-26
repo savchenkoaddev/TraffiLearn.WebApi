@@ -43,7 +43,7 @@ namespace TraffiLearn.Application.UseCases.Users.Commands.RemoveQuestionDislike
             }
 
             var question = await _questionRepository.GetByIdAsync(
-                questionId: new QuestionId(request.QuestionId.Value),
+                questionId: new QuestionId(request.QuestionId),
                 cancellationToken);
 
             if (question is null)

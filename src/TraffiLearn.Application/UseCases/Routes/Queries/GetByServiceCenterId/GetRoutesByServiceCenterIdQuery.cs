@@ -5,5 +5,5 @@ using TraffiLearn.SharedKernel.Shared;
 namespace TraffiLearn.Application.UseCases.Routes.Queries.GetByServiceCenterId
 {
     public sealed record GetRoutesByServiceCenterIdQuery(
-        Guid? ServiceCenterId) : IRequest<Result<IEnumerable<RouteResponse>>>;
+        Guid ServiceCenterId) : IRequest<Result<IEnumerable<RouteResponse>>>;
 }

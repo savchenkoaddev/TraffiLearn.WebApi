@@ -27,7 +27,7 @@ namespace TraffiLearn.Application.UseCases.Topics.Commands.AddQuestionToTopic
             CancellationToken cancellationToken)
         {
             var topic = await _topicRepository.GetByIdWithQuestionsAsync(
-                topicId: new TopicId(request.TopicId.Value),
+                topicId: new TopicId(request.TopicId),
                 cancellationToken);
 
             if (topic is null)
@@ -36,7 +36,7 @@ namespace TraffiLearn.Application.UseCases.Topics.Commands.AddQuestionToTopic
             }
 
             var question = await _questionRepository.GetByIdAsync(
-                questionId: new QuestionId(request.QuestionId.Value),
+                questionId: new QuestionId(request.QuestionId),
                 cancellationToken);
 
             if (question is null)

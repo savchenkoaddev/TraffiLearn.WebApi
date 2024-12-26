@@ -5,7 +5,7 @@ namespace TraffiLearn.Application.Validators
 {
     internal sealed class ImageValidator : AbstractValidator<IFormFile?>
     {
-        private const long MAX_SIZE_IN_BYTES = 500_000;
+        private const long MaxSizeInBytes = 500_000;
 
         public ImageValidator()
         {
@@ -32,7 +32,7 @@ namespace TraffiLearn.Application.Validators
 
         private bool BeValidSize(IFormFile file)
         {
-            return file.Length <= MAX_SIZE_IN_BYTES;
+            return file.Length <= MaxSizeInBytes;
         }
     }
 }

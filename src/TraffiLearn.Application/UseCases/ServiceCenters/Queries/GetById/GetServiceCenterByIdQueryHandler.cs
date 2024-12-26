@@ -24,7 +24,7 @@ namespace TraffiLearn.Application.UseCases.ServiceCenters.Queries.GetById
             GetServiceCenterByIdQuery request,
             CancellationToken cancellationToken)
         {
-            var serviceCenterId = new ServiceCenterId(request.ServiceCenterId.Value);
+            var serviceCenterId = new ServiceCenterId(request.ServiceCenterId);
 
             var serviceCenter = await _serviceCenterRepository.GetByIdAsync(
                 serviceCenterId,

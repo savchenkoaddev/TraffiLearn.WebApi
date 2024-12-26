@@ -8,13 +8,13 @@ namespace TraffiLearn.Infrastructure.External.Blobs.Options
 
         [Required]
         [StringLength(50)]
-        public string? ContainerName { get; set; }
+        public required string ContainerName { get; init; }
 
         [Required]
-        public string? ConnectionString { get; set; }
+        public required string ConnectionString { get; init; }
 
         [Required]
         [Url]
-        public string? ImagesContainerUri { get; set; }
+        public required string ImagesContainerUri { get; init; }
     }
 }

@@ -68,7 +68,7 @@ namespace TraffiLearn.UnitTests.Services
                     nameof(HttpClient.SendAsync),
                     ItExpr.Is<HttpRequestMessage>(req =>
                         req.Method == HttpMethod.Post &&
-                        req.RequestUri.ToString() == requestUri),
+                        req.RequestUri!.ToString() == requestUri),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(response);
 

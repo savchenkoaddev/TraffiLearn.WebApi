@@ -5,5 +5,5 @@ using TraffiLearn.SharedKernel.Shared;
 namespace TraffiLearn.Application.UseCases.Users.Queries.GetUserDislikedQuestions
 {
     public sealed record GetUserDislikedQuestionsQuery(
-        Guid? UserId) : IRequest<Result<IEnumerable<QuestionResponse>>>;
+        Guid UserId) : IRequest<Result<IEnumerable<QuestionResponse>>>;
 }

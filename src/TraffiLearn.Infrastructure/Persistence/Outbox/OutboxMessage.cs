@@ -4,9 +4,9 @@
     {
         public Guid Id { get; init; }
 
-        public string Type { get; init; } = string.Empty;
+        public required string Type { get; init; }
 
-        public string Content { get; init; } = string.Empty;
+        public required string Content { get; init; }
 
         public DateTime OccurredOnUtc { get; init; }
 

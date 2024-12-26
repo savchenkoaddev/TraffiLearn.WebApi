@@ -44,7 +44,8 @@ namespace TraffiLearn.UnitTests.Repositories
 
             // Act
             var insertedUser = await _repository.GetByIdAsync(user.Id);
-            await _repository.DeleteAsync(insertedUser);
+
+            await _repository.DeleteAsync(insertedUser!);
             await DbContext.SaveChangesAsync();
 
             // Assert

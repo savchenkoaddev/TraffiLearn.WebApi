@@ -4,5 +4,6 @@ using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.UseCases.Questions.Queries.GetQuestionsForTheoryTest
 {
-    public sealed record GetQuestionsForTheoryTestQuery : IRequest<Result<IEnumerable<QuestionResponse>>>;
+    public sealed record GetQuestionsForTheoryTestQuery 
+        : IRequest<Result<IEnumerable<QuestionResponse>>>;
 }

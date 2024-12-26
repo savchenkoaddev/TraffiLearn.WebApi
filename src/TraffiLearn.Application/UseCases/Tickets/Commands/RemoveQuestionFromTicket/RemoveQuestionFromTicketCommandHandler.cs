@@ -28,7 +28,7 @@ namespace TraffiLearn.Application.UseCases.Tickets.Commands.RemoveQuestionFromTi
             CancellationToken cancellationToken)
         {
             var ticket = await _ticketRepository.GetByIdWithQuestionsAsync(
-                ticketId: new TicketId(request.TicketId.Value),
+                ticketId: new TicketId(request.TicketId),
                 cancellationToken);
 
             if (ticket is null)
@@ -37,7 +37,7 @@ namespace TraffiLearn.Application.UseCases.Tickets.Commands.RemoveQuestionFromTi
             }
 
             var question = await _questionRepository.GetByIdAsync(
-                questionId: new QuestionId(request.QuestionId.Value),
+                questionId: new QuestionId(request.QuestionId),
                 cancellationToken);
 
             if (question is null)

@@ -5,5 +5,5 @@ using TraffiLearn.SharedKernel.Shared;
 namespace TraffiLearn.Application.UseCases.SubscriptionPlans.Queries.GetById
 {
     public sealed record GetSubscriptionPlanByIdQuery(
-        Guid? SubscriptionPlanId) : IRequest<Result<SubscriptionPlanResponse>>;
+        Guid SubscriptionPlanId) : IRequest<Result<SubscriptionPlanResponse>>;
 }

@@ -6,10 +6,10 @@ using TraffiLearn.SharedKernel.Shared;
 namespace TraffiLearn.Application.UseCases.SubscriptionPlans.Commands.Update
 {
     public sealed record UpdateSubscriptionPlanCommand(
-        Guid? SubscriptionPlanId,
-        string? Tier,
-        string? Description,
-        PriceRequest? Price,
-        RenewalPeriodRequest? RenewalPeriod,
-        List<string>? Features) : IRequest<Result>;
+        Guid SubscriptionPlanId,
+        string Tier,
+        string Description,
+        PriceRequest Price,
+        RenewalPeriodRequest RenewalPeriod,
+        List<string> Features) : IRequest<Result>;
 }

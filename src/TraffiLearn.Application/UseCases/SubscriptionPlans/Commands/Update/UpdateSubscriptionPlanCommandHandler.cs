@@ -34,7 +34,7 @@ namespace TraffiLearn.Application.UseCases.SubscriptionPlans.Commands.Update
             }
 
             var subscriptionPlanId = new SubscriptionPlanId(
-                request.SubscriptionPlanId.Value);
+                request.SubscriptionPlanId);
 
             var subscriptionPlan = await _subscriptionPlanRepository
                 .GetByIdAsync(

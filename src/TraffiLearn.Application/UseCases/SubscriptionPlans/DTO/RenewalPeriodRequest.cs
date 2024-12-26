@@ -3,6 +3,6 @@
 namespace TraffiLearn.Application.UseCases.SubscriptionPlans.DTO
 {
     public sealed record RenewalPeriodRequest(
-        int? Interval,
-        RenewalPeriodType? Type);
+        int Interval,
+        RenewalPeriodType Type);
 }

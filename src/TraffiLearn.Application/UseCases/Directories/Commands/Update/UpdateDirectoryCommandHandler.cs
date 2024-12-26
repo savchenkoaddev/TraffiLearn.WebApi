@@ -28,7 +28,7 @@ namespace TraffiLearn.Application.UseCases.Directories.Commands.Update
             CancellationToken cancellationToken)
         {
             var directory = await _directoryRepository.GetByIdAsync(
-                directoryId: new(request.Id.Value),
+                directoryId: new(request.Id),
                 cancellationToken);
 
             if (directory is null)

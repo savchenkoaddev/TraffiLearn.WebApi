@@ -38,7 +38,7 @@ namespace TraffiLearn.Application.UseCases.Directories.Mappers
                 sections);
         }
 
-        private Result<List<DirectorySection>> ParseSections(IEnumerable<DirectorySectionRequest?> requestSections)
+        private Result<List<DirectorySection>> ParseSections(IEnumerable<DirectorySectionRequest> requestSections)
         {
             List<DirectorySection> sections = [];
 

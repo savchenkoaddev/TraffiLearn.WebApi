@@ -36,8 +36,6 @@ namespace TraffiLearn.Infrastructure.Persistence
 
         public DbSet<Comment> Comments { get; init; }
 
-        public DbSet<User> Users { get; init; }
-
         public DbSet<Region> Regions { get; init; }
 
         public DbSet<ServiceCenter> ServiceCenters { get; init; }
@@ -51,6 +49,8 @@ namespace TraffiLearn.Infrastructure.Persistence
         public DbSet<CanceledSubscription> CanceledSubscriptions { get; init; }
 
         public DbSet<Transaction> Transactions { get; init; }
+
+        public new DbSet<User> Users { get; init; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

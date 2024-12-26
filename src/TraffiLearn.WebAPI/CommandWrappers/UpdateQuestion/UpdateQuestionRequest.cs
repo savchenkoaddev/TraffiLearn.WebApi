@@ -3,11 +3,11 @@
 namespace TraffiLearn.WebAPI.CommandWrappers.UpdateQuestion
 {
     public sealed record UpdateQuestionRequest(
-        Guid? QuestionId,
-        string? Content,
+        Guid QuestionId,
+        string Content,
+        int QuestionNumber,
+        List<AnswerRequest> Answers,
+        List<Guid> TopicIds,
         string? Explanation,
-        int? QuestionNumber,
-        List<AnswerRequest>? Answers,
-        List<Guid>? TopicIds,
         bool? RemoveOldImageIfNewMissing);
 }

@@ -8,10 +8,10 @@ namespace TraffiLearn.Infrastructure.BackgroundJobs.Options
 
         [Required]
         [Range(0, 23)]
-        public int Hours { get; set; }
+        public int Hours { get; init; }
 
         [Required]
         [Range(0, 59)]
-        public int Minutes { get; set; }
+        public int Minutes { get; init; }
     }
 }

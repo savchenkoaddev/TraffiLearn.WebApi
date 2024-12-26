@@ -5,5 +5,5 @@ using TraffiLearn.SharedKernel.Shared;
 namespace TraffiLearn.Application.UseCases.Comments.Queries.GetCommentReplies
 {
     public sealed record GetCommentsRepliesQuery(
-        Guid? CommentId) : IRequest<Result<IEnumerable<CommentResponse>>>;
+        Guid CommentId) : IRequest<Result<IEnumerable<CommentResponse>>>;
 }

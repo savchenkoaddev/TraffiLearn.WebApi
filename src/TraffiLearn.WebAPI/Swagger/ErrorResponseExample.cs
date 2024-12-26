@@ -5,8 +5,8 @@
         private ErrorResponseExample()
         { }
 
-        public string? Code { get; set; }
+        public string? Code { get; init; }
 
-        public string? Description { get; set; }
+        public string? Description { get; init; }
     }
 }

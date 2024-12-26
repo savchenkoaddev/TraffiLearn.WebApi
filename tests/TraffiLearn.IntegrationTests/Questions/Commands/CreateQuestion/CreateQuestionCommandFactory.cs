@@ -49,7 +49,7 @@ namespace TraffiLearn.IntegrationTests.Questions.Commands.CreateQuestion
 
             return [
                 new CreateQuestionCommand(
-                    Content: null,
+                    Content: null!,
                     Explanation: QuestionFixtureFactory.CreateExplanation().Value,
                     QuestionNumber: QuestionFixtureFactory.CreateNumber().Value,
                     TopicIds: [Guid.NewGuid()],
@@ -83,14 +83,6 @@ namespace TraffiLearn.IntegrationTests.Questions.Commands.CreateQuestion
                 new CreateQuestionCommand(
                     Content: QuestionFixtureFactory.CreateContent().Value,
                     Explanation: QuestionFixtureFactory.CreateExplanation().Value,
-                    QuestionNumber: null,
-                    TopicIds: [Guid.NewGuid()],
-                    Answers: answers,
-                    Image: null),
-
-                new CreateQuestionCommand(
-                    Content: QuestionFixtureFactory.CreateContent().Value,
-                    Explanation: QuestionFixtureFactory.CreateExplanation().Value,
                     QuestionNumber: -1,
                     TopicIds: [Guid.NewGuid()],
                     Answers: answers,
@@ -100,7 +92,7 @@ namespace TraffiLearn.IntegrationTests.Questions.Commands.CreateQuestion
                     Content: QuestionFixtureFactory.CreateContent().Value,
                     Explanation: QuestionFixtureFactory.CreateExplanation().Value,
                     QuestionNumber: QuestionFixtureFactory.CreateNumber().Value,
-                    TopicIds: null,
+                    TopicIds: null!,
                     Answers: answers,
                     Image: null),
 
@@ -117,7 +109,7 @@ namespace TraffiLearn.IntegrationTests.Questions.Commands.CreateQuestion
                     Explanation: QuestionFixtureFactory.CreateExplanation().Value,
                     QuestionNumber: QuestionFixtureFactory.CreateNumber().Value,
                     TopicIds: [Guid.NewGuid()],
-                    Answers: null,
+                    Answers: null!,
                     Image: null),
 
                 new CreateQuestionCommand(

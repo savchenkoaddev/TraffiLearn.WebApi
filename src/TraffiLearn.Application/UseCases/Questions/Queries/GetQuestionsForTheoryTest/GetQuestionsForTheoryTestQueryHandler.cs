@@ -10,7 +10,8 @@ using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.UseCases.Questions.Queries.GetQuestionsForTheoryTest
 {
-    internal sealed class GetQuestionsForTheoryTestQueryHandler : IRequestHandler<GetQuestionsForTheoryTestQuery, Result<IEnumerable<QuestionResponse>>>
+    internal sealed class GetQuestionsForTheoryTestQueryHandler 
+        : IRequestHandler<GetQuestionsForTheoryTestQuery, Result<IEnumerable<QuestionResponse>>>
     {
         private readonly IQuestionRepository _questionRepository;
         private readonly QuestionsSettings _questionsSettings;
@@ -36,7 +37,8 @@ namespace TraffiLearn.Application.UseCases.Questions.Queries.GetQuestionsForTheo
             var neededQuestionsCount = _questionsSettings.TheoryTestQuestionsCount;
 
             var questions = await _questionRepository.GetRandomRecordsAsync(
-                amount: neededQuestionsCount);
+                amount: neededQuestionsCount,
+                cancellationToken);
 
             if (NotEnoughQuestions(questions))
             {

@@ -35,7 +35,7 @@ namespace TraffiLearn.Application.UseCases.Comments.Commands.Reply
                 .GetAuthenticatedUserAsync(cancellationToken);
 
             var comment = await _commentRepository.GetByIdAsync(
-                commentId: new CommentId(request.CommentId.Value),
+                commentId: new CommentId(request.CommentId),
                 cancellationToken);
 
             if (comment is null)

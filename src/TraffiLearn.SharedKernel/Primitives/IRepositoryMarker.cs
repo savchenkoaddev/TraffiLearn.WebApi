@@ -1,5 +1,4 @@
 ﻿namespace TraffiLearn.SharedKernel.Primitives
 {
-    public interface IRepositoryMarker
-    { }
+    public interface IRepositoryMarker;
 }

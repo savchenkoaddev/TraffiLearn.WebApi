@@ -38,7 +38,9 @@ namespace TraffiLearn.ArchitectureTests.Domain
                 "Id",
                 BindingFlags.Public | BindingFlags.Instance);
 
-            idProperty.PropertyType.Should().Be(
+
+            idProperty.Should().NotBeNull();
+            idProperty!.PropertyType.Should().Be(
                 typeof(Guid),
                 "Id should be of type Guid.");
         }
@@ -52,7 +54,8 @@ namespace TraffiLearn.ArchitectureTests.Domain
                 "Id",
                 BindingFlags.Public | BindingFlags.Instance);
 
-            idProperty.CanWrite.Should().BeFalse("Id should be read-only.");
+            idProperty.Should().NotBeNull();
+            idProperty!.CanWrite.Should().BeFalse("Id should be read-only.");
         }
 
         [Fact]

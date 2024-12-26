@@ -28,7 +28,7 @@ namespace TraffiLearn.Application.UseCases.Comments.Commands.DeleteComment
             CancellationToken cancellationToken)
         {
             var comment = await _commentRepository.GetByIdWithAllNestedRepliesAsync(
-                commentId: new CommentId(request.CommentId.Value),
+                commentId: new CommentId(request.CommentId),
                 cancellationToken);
 
             if (comment is null)
@@ -42,11 +42,11 @@ namespace TraffiLearn.Application.UseCases.Comments.Commands.DeleteComment
 
             if (changed > 0)
             {
-                _logger.LogInformation("Successfully deleted comment with ID {CommentId}.", request.CommentId.Value);
+                _logger.LogInformation("Successfully deleted comment with ID {CommentId}.", request.CommentId);
             }
             else
             {
-                _logger.LogWarning("No changes were made during deletion of comment with ID {CommentId}.", request.CommentId.Value);
+                _logger.LogWarning("No changes were made during deletion of comment with ID {CommentId}.", request.CommentId);
             }
 
             return Result.Success();

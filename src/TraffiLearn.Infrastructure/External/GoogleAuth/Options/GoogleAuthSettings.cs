@@ -7,6 +7,6 @@ namespace TraffiLearn.Infrastructure.External.GoogleAuth.Options
         public const string SectionName = nameof(GoogleAuthSettings);
 
         [Required]
-        public string? ClientId { get; init; }
+        public required string ClientId { get; init; }
     }
 }

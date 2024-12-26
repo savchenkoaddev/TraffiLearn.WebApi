@@ -11,7 +11,7 @@ namespace TraffiLearn.Application.UseCases.Tickets.Mappers
     {
         public override Result<Ticket> Map(CreateTicketCommand source)
         {
-            var numberCreateResult = TicketNumber.Create(source.TicketNumber.Value);
+            var numberCreateResult = TicketNumber.Create(source.TicketNumber);
 
             if (numberCreateResult.IsFailure)
             {

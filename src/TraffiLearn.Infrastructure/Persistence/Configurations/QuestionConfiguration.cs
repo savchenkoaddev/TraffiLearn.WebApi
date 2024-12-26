@@ -30,7 +30,7 @@ namespace TraffiLearn.Infrastructure.Persistence.Configurations
                 .IsRequired(false)
                 .HasMaxLength(QuestionExplanation.MaxLength)
                 .HasConversion(
-                    exp => exp.Value,
+                    exp => exp!.Value,
                     value => QuestionExplanation.Create(value).Value);
 
             builder.Property(q => q.QuestionNumber)
@@ -42,7 +42,7 @@ namespace TraffiLearn.Infrastructure.Persistence.Configurations
                 .IsRequired(false)
                 .HasMaxLength(ImageUri.MaxLength)
                 .HasConversion(
-                    uri => uri.Value,
+                    uri => uri!.Value,
                     value => ImageUri.Create(value).Value);
 
             builder.OwnsMany(q => q.Answers, answersBuilder =>

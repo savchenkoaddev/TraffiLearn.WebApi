@@ -50,7 +50,7 @@ namespace TraffiLearn.Application.UseCases.Auth.Commands.RemoveAdminAccount
             }
 
             var admin = await _userRepository.GetByIdAsync(
-                new UserId(request.AdminId.Value),
+                new UserId(request.AdminId),
                 cancellationToken);
 
             if (admin is null)

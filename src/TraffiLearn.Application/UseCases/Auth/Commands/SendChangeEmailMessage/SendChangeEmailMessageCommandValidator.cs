@@ -13,8 +13,7 @@ namespace TraffiLearn.Application.UseCases.Auth.Commands.SendChangeEmailMessage
 
             RuleFor(x => x.NewEmail)
                 .Matches(@"^[^@\s]+@[^@\s]+\.[^@\s]+$").WithMessage("Email is not in the proper format.")
-                .MaximumLength(Email.MaxLength)
-                .NotEmpty();
+                .MaximumLength(Email.MaxLength);
         }
     }
 }

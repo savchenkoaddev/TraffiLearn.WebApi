@@ -1,7 +1,6 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Stripe;
 using TraffiLearn.Application.Abstractions.AI;
 using TraffiLearn.Application.Abstractions.Identity;

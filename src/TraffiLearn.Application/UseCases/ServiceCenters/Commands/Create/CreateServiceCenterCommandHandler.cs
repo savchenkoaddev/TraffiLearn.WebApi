@@ -37,7 +37,7 @@ namespace TraffiLearn.Application.UseCases.ServiceCenters.Commands.Create
                 return Result.Failure<Guid>(mappingResult.Error);
             }
 
-            var regionId = new RegionId(request.RegionId.Value);
+            var regionId = new RegionId(request.RegionId);
 
             var region = await _regionRepository.GetByIdAsync(
                 regionId,

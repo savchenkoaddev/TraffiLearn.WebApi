@@ -8,24 +8,14 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.UpdateTopic
         {
             return [
                 new UpdateTopicCommand(
-                    TopicId: null,
-                    TopicNumber: 1,
-                    Title: "title"),
-
-                new UpdateTopicCommand(
                     TopicId: Guid.NewGuid(),
                     TopicNumber: -1,
                     Title: "title"),
 
                 new UpdateTopicCommand(
                     TopicId: Guid.NewGuid(),
-                    TopicNumber: null,
-                    Title: "title"),
-
-                new UpdateTopicCommand(
-                    TopicId: Guid.NewGuid(),
                     TopicNumber: 1,
-                    Title: null),
+                    Title: null!),
 
                 new UpdateTopicCommand(
                     TopicId: Guid.NewGuid(),

@@ -8,9 +8,6 @@ namespace TraffiLearn.IntegrationTests.Questions.Queries.GetRandomQuestions
         {
             return [
                 new GetRandomQuestionsQuery(
-                    Amount: null),
-
-                new GetRandomQuestionsQuery(
                     Amount: -1),
 
                 new GetRandomQuestionsQuery(

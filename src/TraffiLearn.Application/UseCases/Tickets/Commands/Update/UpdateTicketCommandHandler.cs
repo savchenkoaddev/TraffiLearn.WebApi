@@ -29,7 +29,7 @@ namespace TraffiLearn.Application.UseCases.Tickets.Commands.Update
             CancellationToken cancellationToken)
         {
             var ticket = await _ticketRepository.GetByIdWithQuestionsAsync(
-                ticketId: new TicketId(request.TicketId.Value),
+                ticketId: new TicketId(request.TicketId),
                 cancellationToken);
 
             if (ticket is null)
@@ -37,7 +37,7 @@ namespace TraffiLearn.Application.UseCases.Tickets.Commands.Update
                 return TicketErrors.NotFound;
             }
 
-            var numberCreateResult = TicketNumber.Create(request.TicketNumber.Value);
+            var numberCreateResult = TicketNumber.Create(request.TicketNumber);
 
             if (numberCreateResult.IsFailure)
             {
@@ -69,7 +69,7 @@ namespace TraffiLearn.Application.UseCases.Tickets.Commands.Update
 
         private async Task<Result> UpdateQuestions(
             Ticket ticket,
-            IEnumerable<Guid>? questionIds,
+            IEnumerable<Guid> questionIds,
             CancellationToken cancellationToken = default)
         {
             foreach (var questionId in questionIds)

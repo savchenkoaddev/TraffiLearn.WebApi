@@ -12,7 +12,7 @@ namespace TraffiLearn.Application.UseCases.Topics.Mappers
     {
         public override Result<Topic> Map(UpdateTopicCommand source)
         {
-            Result<TopicNumber> topicNumberResult = TopicNumber.Create(source.TopicNumber.Value);
+            Result<TopicNumber> topicNumberResult = TopicNumber.Create(source.TopicNumber);
 
             if (topicNumberResult.IsFailure)
             {

@@ -25,7 +25,7 @@ namespace TraffiLearn.Infrastructure.Persistence.Configurations
                 .IsRequired(false)
                 .HasMaxLength(Metadata.MaxLength)
                 .HasConversion(
-                    m => m.Value,
+                    m => m!.Value,
                     value => Metadata.Create(value).Value);
         }
     }

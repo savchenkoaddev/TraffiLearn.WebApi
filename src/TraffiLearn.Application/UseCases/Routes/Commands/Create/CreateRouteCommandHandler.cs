@@ -41,7 +41,7 @@ namespace TraffiLearn.Application.UseCases.Routes.Commands.Create
                 return Result.Failure<Guid>(mappingResult.Error);
             }
 
-            var serviceCenterId = new ServiceCenterId(request.ServiceCenterId.Value);
+            var serviceCenterId = new ServiceCenterId(request.ServiceCenterId);
 
             var serviceCenter = await _serviceCenterRepository.GetByIdAsync(
                 serviceCenterId,

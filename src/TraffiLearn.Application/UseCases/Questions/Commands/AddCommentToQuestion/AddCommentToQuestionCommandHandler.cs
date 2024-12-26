@@ -39,7 +39,7 @@ namespace TraffiLearn.Application.UseCases.Questions.Commands.AddCommentToQuesti
                 cancellationToken);
 
             var question = await _questionRepository.GetByIdAsync(
-                new QuestionId(request.QuestionId.Value),
+                new QuestionId(request.QuestionId),
                 cancellationToken);
 
             if (question is null)

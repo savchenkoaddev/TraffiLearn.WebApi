@@ -190,6 +190,8 @@ namespace TraffiLearn.IntegrationTests.Questions.Commands.CreateQuestion
                 command,
                 sentFromRole: eligibleRole);
 
+            var problem = await response.Content.ReadAsStringAsync();
+
             response.AssertNotFoundStatusCode();
         }
 

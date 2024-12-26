@@ -24,7 +24,7 @@ namespace TraffiLearn.Application.UseCases.SubscriptionPlans.Commands.Delete
             CancellationToken cancellationToken)
         {
             SubscriptionPlanId subscriptionPlanId = new(
-                request.SubscriptionPlanId.Value);
+                request.SubscriptionPlanId);
 
             var subscriptionPlan = await _subscriptionPlanRepository.GetByIdAsync(
                 subscriptionPlanId,

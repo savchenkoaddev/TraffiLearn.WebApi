@@ -47,7 +47,7 @@ namespace TraffiLearn.Application.UseCases.Questions.Mappers
                 explanation = explanationResult.Value;
             }
 
-            Result<QuestionNumber> questionNumberResult = QuestionNumber.Create(source.QuestionNumber.Value);
+            Result<QuestionNumber> questionNumberResult = QuestionNumber.Create(source.QuestionNumber);
 
             if (questionNumberResult.IsFailure)
             {
@@ -63,7 +63,7 @@ namespace TraffiLearn.Application.UseCases.Questions.Mappers
                 imageUri: null);
         }
 
-        private Result<List<Answer>> ParseAnswers(IEnumerable<AnswerRequest?> requestAnswers)
+        private Result<List<Answer>> ParseAnswers(IEnumerable<AnswerRequest> requestAnswers)
         {
             List<Answer> answers = [];
 
@@ -71,7 +71,7 @@ namespace TraffiLearn.Application.UseCases.Questions.Mappers
             {
                 var answerCreateResult = Answer.Create(
                     text: answer.Text,
-                    isCorrect: answer.IsCorrect.Value);
+                    isCorrect: answer.IsCorrect!.Value);
 
                 if (answerCreateResult.IsFailure)
                 {

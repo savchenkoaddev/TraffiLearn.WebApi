@@ -23,7 +23,7 @@ namespace TraffiLearn.Application.UseCases.Regions.Commands.Delete
             DeleteRegionCommand request,
             CancellationToken cancellationToken)
         {
-            var regionId = new RegionId(request.RegionId.Value);
+            var regionId = new RegionId(request.RegionId);
 
             var region = await _regionRepository.GetByIdAsync(
                 regionId,

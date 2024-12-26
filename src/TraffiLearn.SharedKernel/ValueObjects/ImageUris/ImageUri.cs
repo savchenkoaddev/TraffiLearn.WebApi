@@ -44,9 +44,10 @@ namespace TraffiLearn.SharedKernel.ValueObjects.ImageUris
 
         private static bool IsValidUri(string uriString)
         {
-            if (Uri.TryCreate(uriString, UriKind.Absolute, out Uri uriResult))
+            if (Uri.TryCreate(uriString, UriKind.Absolute, out Uri? uriResult))
             {
-                return uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps;
+                return uriResult.Scheme == Uri.UriSchemeHttp 
+                    || uriResult.Scheme == Uri.UriSchemeHttps;
             }
 
             return false;

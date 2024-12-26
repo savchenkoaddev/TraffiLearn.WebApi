@@ -43,11 +43,13 @@ namespace TraffiLearn.Application.Webhooks.Stripe.Commands
                         "Session is null in Stripe webhook event");
                 }
 
-                INotification? notification;
+                var notification = GetNotification(session);
 
-                notification = GetNotification(session);
-
-                await _publisher.Publish(notification, cancellationToken);
+                if (notification is not null)
+                {
+                    await _publisher.Publish(
+                        notification, cancellationToken);
+                }
             }
 
             return Result.Success();

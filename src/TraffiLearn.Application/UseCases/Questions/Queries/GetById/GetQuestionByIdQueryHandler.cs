@@ -6,7 +6,8 @@ using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.UseCases.Questions.Queries.GetById
 {
-    internal sealed class GetQuestionByIdQueryHandler : IRequestHandler<GetQuestionByIdQuery, Result<QuestionResponse>>
+    internal sealed class GetQuestionByIdQueryHandler 
+        : IRequestHandler<GetQuestionByIdQuery, Result<QuestionResponse>>
     {
         private readonly IQuestionRepository _questionRepository;
         private readonly Mapper<Question, QuestionResponse> _questionMapper;
@@ -24,7 +25,7 @@ namespace TraffiLearn.Application.UseCases.Questions.Queries.GetById
             CancellationToken cancellationToken)
         {
             var question = await _questionRepository.GetByIdAsync(
-                questionId: new QuestionId(request.QuestionId.Value),
+                questionId: new QuestionId(request.QuestionId),
                 cancellationToken);
 
             if (question is null)

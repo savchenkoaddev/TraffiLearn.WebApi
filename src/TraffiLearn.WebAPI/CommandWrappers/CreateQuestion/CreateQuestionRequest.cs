@@ -3,9 +3,9 @@
 namespace TraffiLearn.WebAPI.CommandWrappers.CreateQuestion
 {
     public sealed record CreateQuestionRequest(
-        string? Content,
-        string? Explanation,
-        int? QuestionNumber,
-        List<Guid>? TopicIds,
-        List<AnswerRequest>? Answers);
+        string Content,
+        string Explanation,
+        int QuestionNumber,
+        List<Guid> TopicIds,
+        List<AnswerRequest> Answers);
 }

@@ -263,7 +263,7 @@ namespace TraffiLearn.DomainTests.Questions
                 question.Content.Value + "1").Value;
 
             var explanation = QuestionExplanation.Create(
-                question.Explanation.Value + "1").Value;
+                question.Explanation!.Value + "1").Value;
 
             var number = QuestionNumber.Create(
                 question.QuestionNumber.Value + 1).Value;

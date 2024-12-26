@@ -27,9 +27,7 @@ namespace TraffiLearn.Infrastructure.BackgroundJobs
             _logger.LogDebug("Starting execution of NotifyUsersWithExpiringSubscriptionJob.");
 
             await NotifyUsersWithExpiringSubscription(7, context.CancellationToken);
-
             await NotifyUsersWithExpiringSubscription(3, context.CancellationToken);
-            
             await NotifyUsersWithExpiringSubscription(1, context.CancellationToken);
 
             _logger.LogDebug("Execution of NotifyUsersWithExpiringSubscriptionJob is finished.");
@@ -52,6 +50,12 @@ namespace TraffiLearn.Infrastructure.BackgroundJobs
 
             foreach (var user in users)
             {
+                if (user.PlanExpiresOn is null)
+                {
+                    throw new InvalidOperationException(
+                        $"Retrieved a user for reminder with PlanExpiresOn null. User ID: {user.Id.Value}");
+                }
+
                 await _emailService.PublishPlanExpiryReminderEmailAsync(
                     user.Email.Value, user.PlanExpiresOn.Value, days);
 

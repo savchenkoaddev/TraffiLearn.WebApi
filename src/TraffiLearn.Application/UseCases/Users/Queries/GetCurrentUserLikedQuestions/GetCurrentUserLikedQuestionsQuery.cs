@@ -4,5 +4,6 @@ using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.UseCases.Users.Queries.GetCurrentUserLikedQuestions
 {
-    public sealed record GetCurrentUserLikedQuestionsQuery : IRequest<Result<IEnumerable<QuestionResponse>>>;
+    public sealed record GetCurrentUserLikedQuestionsQuery 
+        : IRequest<Result<IEnumerable<QuestionResponse>>>;
 }

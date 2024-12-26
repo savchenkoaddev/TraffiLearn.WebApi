@@ -2,7 +2,8 @@
 
 namespace TraffiLearn.Application.UseCases.Questions.Queries.GetQuestionTopics
 {
-    internal sealed class GetQuestionTopicsQueryValidator : AbstractValidator<GetQuestionTopicsQuery>
+    internal sealed class GetQuestionTopicsQueryValidator 
+        : AbstractValidator<GetQuestionTopicsQuery>
     {
         public GetQuestionTopicsQueryValidator()
         {

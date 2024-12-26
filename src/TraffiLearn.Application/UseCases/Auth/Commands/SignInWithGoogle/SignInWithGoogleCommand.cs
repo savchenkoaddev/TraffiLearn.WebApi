@@ -5,6 +5,6 @@ using TraffiLearn.SharedKernel.Shared;
 namespace TraffiLearn.Application.UseCases.Auth.Commands.SignInWithGoogle
 {
     public sealed record SignInWithGoogleCommand(
-        string? GoogleIdToken,
-        string? FirstTimeSignInPassword) : IRequest<Result<LoginResponse>>;
+        string GoogleIdToken,
+        string FirstTimeSignInPassword) : IRequest<Result<LoginResponse>>;
 }

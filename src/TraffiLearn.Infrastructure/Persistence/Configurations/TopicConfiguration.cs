@@ -36,7 +36,7 @@ namespace TraffiLearn.Infrastructure.Persistence.Configurations
                 .IsRequired(false)
                 .HasMaxLength(ImageUri.MaxLength)
                 .HasConversion(
-                    uri => uri.Value,
+                    uri => uri!.Value,
                     value => ImageUri.Create(value).Value);
         }
     }
