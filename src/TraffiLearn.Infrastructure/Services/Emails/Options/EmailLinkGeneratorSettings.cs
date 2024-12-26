@@ -8,26 +8,26 @@ namespace TraffiLearn.Infrastructure.Services.Emails.Options
 
         [Required]
         [StringLength(200)]
-        public string? BaseConfirmationEndpointUri { get; set; }
+        public required string BaseConfirmationEndpointUri { get; init; }
 
         [Required]
         [StringLength(200)]
-        public string? BaseConfirmChangeEmailEndpointUri { get; set; }
+        public required string BaseConfirmChangeEmailEndpointUri { get; init; }
 
         [Required]
         [StringLength(200)]
-        public string? BaseResetPasswordEndpointUri { get; set; }
+        public required string BaseResetPasswordEndpointUri { get; init; }
 
         [Required]
         [StringLength(20)]
-        public string? UserIdParameterName { get; set; }
+        public required string UserIdParameterName { get; init; }
 
         [Required]
         [StringLength(20)]
-        public string? TokenParameterName { get; set; }
+        public required string TokenParameterName { get; init; }
 
         [Required]
         [StringLength(20)]
-        public string? NewEmailParameterName { get; set; }
+        public required string NewEmailParameterName { get; init; }
     }
 }

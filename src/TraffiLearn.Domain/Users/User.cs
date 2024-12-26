@@ -143,11 +143,11 @@ namespace TraffiLearn.Domain.Users
             if (PlanExpiresOn > DateTime.UtcNow)
             {
                 PlanExpiresOn = CalculateNextPlanExpiry(
-                    SubscriptionPlan, PlanExpiresOn);
+                    SubscriptionPlan!, PlanExpiresOn);
             }
             else
             {
-                PlanExpiresOn = CalculateNextPlanExpiry(SubscriptionPlan);
+                PlanExpiresOn = CalculateNextPlanExpiry(SubscriptionPlan!);
             }
 
             RaiseDomainEvent(new SubscriptionRenewedDomainEvent(

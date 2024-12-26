@@ -24,7 +24,7 @@ namespace TraffiLearn.Application.UseCases.SubscriptionPlans.Queries.GetById
             GetSubscriptionPlanByIdQuery request,
             CancellationToken cancellationToken)
         {
-            var id = new SubscriptionPlanId(request.SubscriptionPlanId.Value);
+            var id = new SubscriptionPlanId(request.SubscriptionPlanId);
 
             var subscriptionPlan = await _subscriptionPlanRepository.GetByIdAsync(
                 id, cancellationToken);

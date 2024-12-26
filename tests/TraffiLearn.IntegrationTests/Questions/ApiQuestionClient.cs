@@ -152,7 +152,7 @@ namespace TraffiLearn.IntegrationTests.Questions
 
         public Task<HttpResponseMessage> SendValidUpdateQuestionRequestAsync(
             Guid questionId,
-            List<Guid>? topicIds,
+            List<Guid> topicIds,
             IFormFile? image = null,
             bool? removeOldImageIfNewImageMissing = true,
             Role? sentFromRole = null)

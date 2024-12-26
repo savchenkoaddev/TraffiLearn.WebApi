@@ -60,7 +60,7 @@ namespace TraffiLearn.Application.UseCases.Questions.Commands.Create
 
             ImageUri? newImageUri = null;
 
-            if (ImageIsProvidedIn(request))
+            if (request.Image is not null)
             {
                 newImageUri = await _imageService.UploadImageAsync(
                     image: request.Image,
@@ -95,14 +95,9 @@ namespace TraffiLearn.Application.UseCases.Questions.Commands.Create
             return Result.Success(question.Id.Value);
         }
 
-        private bool ImageIsProvidedIn(CreateQuestionCommand request)
-        {
-            return request.Image is not null;
-        }
-
         private async Task<Result> HandleTopics(
             Question question,
-            List<Guid>? topicIds,
+            List<Guid> topicIds,
             CancellationToken cancellationToken = default)
         {
             foreach (var topicId in topicIds)

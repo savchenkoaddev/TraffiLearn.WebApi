@@ -15,7 +15,7 @@ using TraffiLearn.Application.UseCases.Users.Queries.GetAllUsers;
 using TraffiLearn.Application.UseCases.Users.Queries.GetCurrentUserCanceledSubscriptions;
 using TraffiLearn.Application.UseCases.Users.Queries.GetCurrentUserInfo;
 using TraffiLearn.Application.UseCases.Users.Queries.GetCurrentUserTransactions;
-using TraffiLearn.Application.UseCases.Users.Queries.GetLoggedInUserComments;
+using TraffiLearn.Application.UseCases.Users.Queries.GetCurrentUserComments;
 using TraffiLearn.Application.UseCases.Users.Queries.GetUserComments;
 using TraffiLearn.Application.UseCases.Users.Queries.GetUserDislikedQuestions;
 using TraffiLearn.Application.UseCases.Users.Queries.GetUserLikedQuestions;
@@ -212,9 +212,9 @@ namespace TraffiLearn.WebAPI.Controllers
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(IEnumerable<CommentResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServerErrorResponseExample), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetLoggedInUserComments()
+        public async Task<IActionResult> GetCurrentUserComments()
         {
-            var queryResult = await _sender.Send(new GetLoggedInUserCommentsQuery());
+            var queryResult = await _sender.Send(new GetCurrentUserCommentsQuery());
 
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }

@@ -27,7 +27,7 @@ namespace TraffiLearn.Application.UseCases.Questions.Commands.Delete
             CancellationToken cancellationToken)
         {
             var question = await _questionRepository.GetByIdAsync(
-                questionId: new QuestionId(request.QuestionId.Value),
+                questionId: new QuestionId(request.QuestionId),
                 cancellationToken);
 
             if (question is null)

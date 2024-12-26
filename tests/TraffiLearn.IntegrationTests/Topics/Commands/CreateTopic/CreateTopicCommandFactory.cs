@@ -8,10 +8,9 @@ namespace TraffiLearn.IntegrationTests.Topics.Commands.CreateTopic
         public List<CreateTopicCommand> GetInvalidCommands()
         {
             return [
-                new CreateTopicCommand(null, "title"),
                 new CreateTopicCommand(1, string.Empty),
                 new CreateTopicCommand(-1, "title"),
-                new CreateTopicCommand(1, null),
+                new CreateTopicCommand(1, null!),
                 new CreateTopicCommand(1, new string('1', TopicTitle.MaxLength + 1))
             ];
         }

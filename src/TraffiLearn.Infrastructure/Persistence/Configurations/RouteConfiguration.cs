@@ -27,13 +27,13 @@ namespace TraffiLearn.Infrastructure.Persistence.Configurations
                 .IsRequired(false)
                 .HasMaxLength(RouteDescription.MaxLength)
                 .HasConversion(
-                    description => description.Value,
+                    description => description!.Value,
                     value => RouteDescription.Create(value).Value);
 
             builder.Property(route => route.ImageUri)
                 .HasMaxLength(ImageUri.MaxLength)
                 .HasConversion(
-                    uri => uri.Value,
+                    uri => uri!.Value,
                     value => ImageUri.Create(value).Value);
 
             builder

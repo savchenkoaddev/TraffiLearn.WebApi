@@ -30,7 +30,7 @@ namespace TraffiLearn.Application.UseCases.Auth.Commands.RecoverPassword
             CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByIdAsync(
-                new UserId(request.UserId.Value),
+                new UserId(request.UserId),
                 cancellationToken);
 
             if (user is null)

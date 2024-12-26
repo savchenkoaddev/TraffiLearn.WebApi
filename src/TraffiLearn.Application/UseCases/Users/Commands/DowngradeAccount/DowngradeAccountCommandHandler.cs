@@ -37,7 +37,7 @@ namespace TraffiLearn.Application.UseCases.Users.Commands.DowngradeAccount
             DowngradeAccountCommand request,
             CancellationToken cancellationToken)
         {
-            UserId affectedUserId = new(request.UserId.Value);
+            UserId affectedUserId = new(request.UserId);
 
             var affectedUser = await _userRepository.GetByIdAsync(
                 userId: affectedUserId,

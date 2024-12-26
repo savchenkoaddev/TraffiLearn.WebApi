@@ -31,7 +31,7 @@ namespace TraffiLearn.Application.UseCases.Auth.Commands.ConfirmChangeEmail
             CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByIdAsync(
-                new UserId(request.UserId.Value),
+                new UserId(request.UserId),
                 cancellationToken);
 
             if (user is null)
@@ -70,7 +70,7 @@ namespace TraffiLearn.Application.UseCases.Auth.Commands.ConfirmChangeEmail
 
             user.ChangeEmail(newEmail);
 
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
         }

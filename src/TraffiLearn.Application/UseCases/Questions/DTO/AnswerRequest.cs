@@ -1,6 +1,6 @@
 ﻿namespace TraffiLearn.Application.UseCases.Questions.DTO
 {
     public sealed record AnswerRequest(
-        string? Text,
+        string Text,
         bool? IsCorrect);
 }

@@ -57,10 +57,13 @@ namespace TraffiLearn.Application.Webhooks.Stripe.Events.RenewSubscriptionComple
 
             var userPlan = user.SubscriptionPlan;
 
+            if (userPlan is null)
+            {
+                throw new InvalidOperationException($"Subscription plan is null. User ID: {user.Id.Value}");
+            }
+
             var transaction = CreateTransaction(
-                user,
-                userPlan,
-                metadata);
+                user, userPlan, metadata);
 
             await _transactionRepository.InsertAsync(
                 transaction,

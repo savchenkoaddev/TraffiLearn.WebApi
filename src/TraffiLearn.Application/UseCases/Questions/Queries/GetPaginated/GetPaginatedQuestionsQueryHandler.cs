@@ -7,7 +7,8 @@ using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.UseCases.Questions.Queries.GetPaginated
 {
-    internal sealed class GetPaginatedQuestionsQueryHandler : IRequestHandler<GetPaginatedQuestionsQuery, Result<PaginatedQuestionsResponse>>
+    internal sealed class GetPaginatedQuestionsQueryHandler 
+        : IRequestHandler<GetPaginatedQuestionsQuery, Result<PaginatedQuestionsResponse>>
     {
         private readonly IQuestionRepository _questionRepository;
         private readonly Mapper<Question, QuestionResponse> _questionMapper;

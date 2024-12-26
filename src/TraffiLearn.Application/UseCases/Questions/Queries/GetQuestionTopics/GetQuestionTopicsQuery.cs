@@ -5,5 +5,5 @@ using TraffiLearn.SharedKernel.Shared;
 namespace TraffiLearn.Application.UseCases.Questions.Queries.GetQuestionTopics
 {
     public sealed record GetQuestionTopicsQuery(
-        Guid? QuestionId) : IRequest<Result<IEnumerable<TopicResponse>>>;
+        Guid QuestionId) : IRequest<Result<IEnumerable<TopicResponse>>>;
 }

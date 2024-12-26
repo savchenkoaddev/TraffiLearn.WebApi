@@ -20,7 +20,7 @@ namespace TraffiLearn.Application.UseCases.Routes.Mappers
                 Id: source.Id.Value,
                 RouteNumber: source.RouteNumber.Value,
                 Description: description,
-                ImageUri: source.ImageUri.Value);
+                ImageUri: source.ImageUri?.Value);
         }
     }
 }

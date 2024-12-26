@@ -4,6 +4,6 @@ using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.UseCases.Regions.Queries.GetAll
 {
-    public sealed record GetAllRegionsQuery :
-        IRequest<Result<IEnumerable<RegionResponse>>>;
+    public sealed record GetAllRegionsQuery 
+        : IRequest<Result<IEnumerable<RegionResponse>>>;
 }

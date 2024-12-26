@@ -29,7 +29,7 @@ namespace TraffiLearn.Application.UseCases.ServiceCenters.Queries.GetByRegionId
             GetServiceCentersByRegionIdQuery request,
             CancellationToken cancellationToken)
         {
-            var regionId = new RegionId(request.RegionId.Value);
+            var regionId = new RegionId(request.RegionId);
 
             var regionExists = await _regionRepository.ExistsAsync(
                 regionId: regionId,

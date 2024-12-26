@@ -12,7 +12,7 @@ namespace TraffiLearn.Application.UseCases.Routes.Mappers
     {
         public override Result<Route> Map(UpdateRouteCommand source)
         {
-            var routeNumberResult = RouteNumber.Create(source.RouteNumber.Value);
+            var routeNumberResult = RouteNumber.Create(source.RouteNumber);
 
             if (routeNumberResult.IsFailure)
             {
@@ -33,7 +33,7 @@ namespace TraffiLearn.Application.UseCases.Routes.Mappers
                 description = descriptionResult.Value;
             }
 
-            var routeId = new RouteId(source.RouteId.Value);
+            var routeId = new RouteId(source.RouteId);
 
             var routeResult = Route.Create(
                 routeId,

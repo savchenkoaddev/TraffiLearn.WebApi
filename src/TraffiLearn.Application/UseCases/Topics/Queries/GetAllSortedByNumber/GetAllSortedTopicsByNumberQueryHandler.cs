@@ -6,7 +6,8 @@ using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.UseCases.Topics.Queries.GetAllSortedByNumber
 {
-    internal sealed class GetAllSortedTopicsByNumberQueryHandler : IRequestHandler<GetAllSortedTopicsByNumberQuery, Result<IEnumerable<TopicResponse>>>
+    internal sealed class GetAllSortedTopicsByNumberQueryHandler 
+        : IRequestHandler<GetAllSortedTopicsByNumberQuery, Result<IEnumerable<TopicResponse>>>
     {
         private readonly ITopicRepository _topicRepository;
         private readonly Mapper<Topic, TopicResponse> _topicMapper;

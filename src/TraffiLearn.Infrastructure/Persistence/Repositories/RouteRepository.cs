@@ -35,7 +35,8 @@ namespace TraffiLearn.Infrastructure.Persistence.Repositories
             CancellationToken cancellationToken = default)
         {
             return await _dbContext.Routes
-                .Where(route => route.ServiceCenter.Id == serviceCenterId)
+                .Where(route => route.ServiceCenter != null 
+                    && route.ServiceCenter.Id == serviceCenterId)
                 .ToListAsync(cancellationToken);
         }
 

@@ -41,11 +41,11 @@ namespace TraffiLearn.Infrastructure.Persistence
             {
                 await action();
 
-                await transaction.CommitAsync();
+                await transaction.CommitAsync(cancellationToken);
             }
             catch (Exception)
             {
-                await transaction.RollbackAsync();
+                await transaction.RollbackAsync(cancellationToken);
 
                 throw;
             }

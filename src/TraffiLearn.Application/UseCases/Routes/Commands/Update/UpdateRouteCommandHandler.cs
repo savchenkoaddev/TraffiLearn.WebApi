@@ -42,7 +42,7 @@ namespace TraffiLearn.Application.UseCases.Routes.Commands.Update
                 return mappingResult.Error;
             }
 
-            var routeId = new RouteId(request.RouteId.Value);
+            var routeId = new RouteId(request.RouteId);
 
             var route = await _routeRepository.GetByIdWithServiceCenterAsync(
                 routeId, cancellationToken);
@@ -52,7 +52,7 @@ namespace TraffiLearn.Application.UseCases.Routes.Commands.Update
                 return RouteErrors.NotFound;
             }
 
-            var serviceCenterId = new ServiceCenterId(request.ServiceCenterId.Value);
+            var serviceCenterId = new ServiceCenterId(request.ServiceCenterId);
 
             var serviceCenter = await _serviceCenterRepository.GetByIdAsync(
                 serviceCenterId, cancellationToken);

@@ -14,7 +14,7 @@ namespace TraffiLearn.Application.UseCases.Topics.Mappers
         {
             TopicId topicId = new(Guid.NewGuid());
 
-            Result<TopicNumber> numberCreateResult = TopicNumber.Create(source.TopicNumber.Value);
+            Result<TopicNumber> numberCreateResult = TopicNumber.Create(source.TopicNumber);
 
             if (numberCreateResult.IsFailure)
             {

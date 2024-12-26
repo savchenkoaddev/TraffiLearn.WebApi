@@ -27,7 +27,7 @@ namespace TraffiLearn.Application.UseCases.Routes.Commands.Delete
             DeleteRouteCommand request,
             CancellationToken cancellationToken)
         {
-            var routeId = new RouteId(request.RouteId.Value);
+            var routeId = new RouteId(request.RouteId);
 
             var route = await _routeRepository.GetByIdAsync(routeId, cancellationToken);
 

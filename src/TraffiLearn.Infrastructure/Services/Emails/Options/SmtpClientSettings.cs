@@ -8,19 +8,19 @@ namespace TraffiLearn.Infrastructure.Services.Emails.Options
 
         [Required]
         [Range(1, int.MaxValue)]
-        public int Port { get; set; }
+        public int Port { get; init; }
 
         [Required]
-        public bool EnableSsl { get; set; }
+        public bool EnableSsl { get; init; }
 
         [Required]
         [StringLength(100)]
-        public string? Host { get; set; }
+        public required string Host { get; init; }
 
         [StringLength(100)]
-        public string? Username { get; set; }
+        public string? Username { get; init; }
 
         [StringLength(100)]
-        public string? Password { get; set; }
+        public string? Password { get; init; }
     }
 }

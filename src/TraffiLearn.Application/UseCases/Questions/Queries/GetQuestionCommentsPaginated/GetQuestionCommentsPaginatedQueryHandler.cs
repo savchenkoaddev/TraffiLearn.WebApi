@@ -30,7 +30,7 @@ namespace TraffiLearn.Application.UseCases.Questions.Queries.GetQuestionComments
             GetQuestionCommentsPaginatedQuery request,
             CancellationToken cancellationToken)
         {
-            QuestionId questionId = new(request.QuestionId.Value);
+            QuestionId questionId = new(request.QuestionId);
 
             var exists = await _questionRepository.ExistsAsync(
                 questionId,

@@ -25,8 +25,8 @@ namespace TraffiLearn.Application.UseCases.Routes.Commands.Update
                 .When(x => x.Description is not null);
 
             RuleFor(x => x.Image)
-               .SetValidator(new ImageValidator())
-               .When(x => x.Image is not null);
+                .SetValidator(new ImageValidator())
+                .When(x => x.Image is not null);
         }
     }
 }

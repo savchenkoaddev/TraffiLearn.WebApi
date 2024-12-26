@@ -42,6 +42,15 @@ namespace TraffiLearn.Application.UseCases.Users.Events
             SubscriptionCanceledDomainEvent notification,
             CancellationToken cancellationToken)
         {
+            var user = await _userRepository.GetByIdAsync(
+                new UserId(notification.UserId), cancellationToken);
+
+            if (user is null)
+            {
+                throw new InvalidOperationException(
+                    "User with the canceled subscription could not be found.");
+            }
+
             var canceledSubscriptionResult = _mapper.Map(notification);
 
             if (canceledSubscriptionResult.IsFailure)
@@ -59,9 +68,6 @@ namespace TraffiLearn.Application.UseCases.Users.Events
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Succesfully inserted a CanceledSubscription Entity.");
-
-            var user = await _userRepository.GetByIdAsync(
-                new UserId(notification.UserId), cancellationToken);
 
             var userEmail = user.Email.Value;
 

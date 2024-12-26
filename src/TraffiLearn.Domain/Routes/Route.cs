@@ -10,7 +10,6 @@ namespace TraffiLearn.Domain.Routes
     public sealed class Route : AggregateRoot<RouteId>
     {
         private RouteNumber _routeNumber;
-        private ImageUri _imageUri;
 
         private Route()
             : base(new(Guid.Empty))

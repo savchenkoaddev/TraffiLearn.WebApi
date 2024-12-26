@@ -29,7 +29,7 @@ namespace TraffiLearn.Application.UseCases.Routes.Queries.GetByServiceCenterId
             GetRoutesByServiceCenterIdQuery request,
             CancellationToken cancellationToken)
         {
-            var serviceCenterId = new ServiceCenterId(request.ServiceCenterId.Value);
+            var serviceCenterId = new ServiceCenterId(request.ServiceCenterId);
 
             var serviceCenterExists = await _serviceCenterRepository.ExistsAsync(
                 serviceCenterId,

@@ -43,23 +43,13 @@ namespace TraffiLearn.IntegrationTests.Tickets.Commands.UpdateTicket
 
                 new UpdateTicketCommand(
                     TicketId: Guid.NewGuid(),
-                    TicketNumber: null,
-                    QuestionIds: [Guid.NewGuid()]),
-
-                new UpdateTicketCommand(
-                    TicketId: Guid.NewGuid(),
                     TicketNumber: 1,
                     QuestionIds: []),
 
                 new UpdateTicketCommand(
                     TicketId: Guid.NewGuid(),
                     TicketNumber: 1,
-                    QuestionIds: null),
-
-                new UpdateTicketCommand(
-                    TicketId: null,
-                    TicketNumber: 1,
-                    QuestionIds: [Guid.NewGuid()]),
+                    QuestionIds: null!),
             ];
         }
     }

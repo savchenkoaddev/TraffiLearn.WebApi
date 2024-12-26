@@ -6,12 +6,12 @@ using TraffiLearn.SharedKernel.Shared;
 namespace TraffiLearn.Application.UseCases.Questions.Commands.Update
 {
     public sealed record UpdateQuestionCommand(
-        Guid? QuestionId,
-        string? Content,
+        Guid QuestionId,
+        string Content,
+        int QuestionNumber,
+        List<AnswerRequest> Answers,
+        List<Guid> TopicIds,
         string? Explanation,
-        int? QuestionNumber,
-        List<AnswerRequest>? Answers,
-        List<Guid>? TopicIds,
         IFormFile? Image,
         bool RemoveOldImageIfNewMissing = true) : IRequest<Result>;
 }

@@ -5,5 +5,5 @@ using TraffiLearn.SharedKernel.Shared;
 namespace TraffiLearn.Application.UseCases.Questions.Queries.GetRandomQuestions
 {
     public sealed record GetRandomQuestionsQuery(
-        int? Amount) : IRequest<Result<IEnumerable<QuestionResponse>>>;
+        int Amount) : IRequest<Result<IEnumerable<QuestionResponse>>>;
 }

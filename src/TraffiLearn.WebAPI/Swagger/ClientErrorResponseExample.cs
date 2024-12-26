@@ -5,12 +5,12 @@
         private ClientErrorResponseExample()
         { }
 
-        public string? Type { get; set; }
+        public string? Type { get; init; }
 
-        public string? Title { get; set; }
+        public string? Title { get; init; }
 
-        public int Status { get; set; }
+        public int Status { get; init; }
 
-        public ErrorResponseExample[]? Errors { get; set; }
+        public ErrorResponseExample[]? Errors { get; init; }
     }
 }

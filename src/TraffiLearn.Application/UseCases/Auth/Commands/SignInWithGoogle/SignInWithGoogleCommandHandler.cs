@@ -60,10 +60,16 @@ namespace TraffiLearn.Application.UseCases.Auth.Commands.SignInWithGoogle
 
             if (user is null && emptyFirstTimeSignInPassword)
             {
-                return Result.Failure<LoginResponse>(UserErrors.FirstTimeUserSignInPasswordEmpty);
+                return Result.Failure<LoginResponse>(
+                    UserErrors.FirstTimeUserSignInPasswordEmpty);
             }
 
             var identityUser = await _identityService.GetByEmailAsync(email);
+
+            if (user is not null && identityUser is null)
+            {
+                throw new DataInconsistencyException();
+            }
 
             if (user is null)
             {
@@ -108,7 +114,7 @@ namespace TraffiLearn.Application.UseCases.Auth.Commands.SignInWithGoogle
             var accessToken = _tokenService.GenerateAccessToken(user);
 
             await _identityService.PopulateRefreshTokenAsync(
-                identityUser,
+                identityUser!,
                 refreshToken: refreshToken);
 
             return new LoginResponse(

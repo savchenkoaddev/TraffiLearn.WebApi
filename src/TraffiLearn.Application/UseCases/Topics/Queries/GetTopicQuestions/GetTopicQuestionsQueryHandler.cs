@@ -7,7 +7,8 @@ using TraffiLearn.SharedKernel.Shared;
 
 namespace TraffiLearn.Application.UseCases.Topics.Queries.GetTopicQuestions
 {
-    internal sealed class GetTopicQuestionsQueryHandler : IRequestHandler<GetTopicQuestionsQuery, Result<IEnumerable<QuestionResponse>>>
+    internal sealed class GetTopicQuestionsQueryHandler 
+        : IRequestHandler<GetTopicQuestionsQuery, Result<IEnumerable<QuestionResponse>>>
     {
         private readonly ITopicRepository _topicRepository;
         private readonly IQuestionRepository _questionRepository;
@@ -27,7 +28,7 @@ namespace TraffiLearn.Application.UseCases.Topics.Queries.GetTopicQuestions
             GetTopicQuestionsQuery request,
             CancellationToken cancellationToken)
         {
-            var topicId = new TopicId(request.TopicId.Value);
+            var topicId = new TopicId(request.TopicId);
 
             var topicExists = await _topicRepository.ExistsAsync(
                 topicId,

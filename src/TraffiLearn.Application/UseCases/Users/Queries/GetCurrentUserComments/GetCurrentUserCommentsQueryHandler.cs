@@ -7,23 +7,23 @@ using TraffiLearn.Domain.Comments;
 using TraffiLearn.Domain.Users;
 using TraffiLearn.SharedKernel.Shared;
 
-namespace TraffiLearn.Application.UseCases.Users.Queries.GetLoggedInUserComments
+namespace TraffiLearn.Application.UseCases.Users.Queries.GetCurrentUserComments
 {
-    internal sealed class GetLoggedInUserCommentsQueryHandler
-        : IRequestHandler<GetLoggedInUserCommentsQuery, Result<IEnumerable<CommentResponse>>>
+    internal sealed class GetCurrentUserCommentsQueryHandler
+        : IRequestHandler<GetCurrentUserCommentsQuery, Result<IEnumerable<CommentResponse>>>
     {
         private readonly IUserContextService<Guid> _userContextService;
         private readonly IUserRepository _userRepository;
         private readonly ICommentRepository _commentRepository;
         private readonly Mapper<Comment, CommentResponse> _commentMapper;
-        private readonly ILogger<GetLoggedInUserCommentsQueryHandler> _logger;
+        private readonly ILogger<GetCurrentUserCommentsQueryHandler> _logger;
 
-        public GetLoggedInUserCommentsQueryHandler(
+        public GetCurrentUserCommentsQueryHandler(
             IUserContextService<Guid> userContextService,
             IUserRepository userRepository,
             ICommentRepository commentRepository,
             Mapper<Comment, CommentResponse> commentMapper,
-            ILogger<GetLoggedInUserCommentsQueryHandler> logger)
+            ILogger<GetCurrentUserCommentsQueryHandler> logger)
         {
             _userContextService = userContextService;
             _userRepository = userRepository;
@@ -33,7 +33,7 @@ namespace TraffiLearn.Application.UseCases.Users.Queries.GetLoggedInUserComments
         }
 
         public async Task<Result<IEnumerable<CommentResponse>>> Handle(
-            GetLoggedInUserCommentsQuery request,
+            GetCurrentUserCommentsQuery request,
             CancellationToken cancellationToken)
         {
             var userId = new UserId(_userContextService.GetAuthenticatedUserId());

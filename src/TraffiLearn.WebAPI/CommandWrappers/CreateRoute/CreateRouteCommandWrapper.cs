@@ -5,7 +5,7 @@ namespace TraffiLearn.WebAPI.CommandWrappers.CreateRoute
 {
     public sealed class CreateRouteCommandWrapper
     {
-        public IFormFile? Image { get; init; }
+        public required IFormFile Image { get; init; }
 
         [FromJson]
         public required CreateRouteRequest Request { get; init; }

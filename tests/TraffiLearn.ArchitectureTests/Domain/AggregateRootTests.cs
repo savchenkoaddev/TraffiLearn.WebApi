@@ -25,7 +25,7 @@ namespace TraffiLearn.ArchitectureTests.Domain
 
             // Check if the method exists and is protected
             methodInfo.Should().NotBeNull("AggregateRoot should have a protected method named RaiseDomainEvent.");
-            methodInfo.IsFamily.Should().BeTrue("RaiseDomainEvent should be a protected method.");
+            methodInfo?.IsFamily.Should().BeTrue("RaiseDomainEvent should be a protected method.");
         }
 
         [Fact]

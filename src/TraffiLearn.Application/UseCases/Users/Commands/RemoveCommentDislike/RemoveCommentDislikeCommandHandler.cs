@@ -43,7 +43,7 @@ namespace TraffiLearn.Application.UseCases.Users.Commands.RemoveCommentDislike
             }
 
             var comment = await _commentRepository.GetByIdAsync(
-                commentId: new CommentId(request.CommentId.Value),
+                commentId: new CommentId(request.CommentId),
                 cancellationToken);
 
             if (comment is null)

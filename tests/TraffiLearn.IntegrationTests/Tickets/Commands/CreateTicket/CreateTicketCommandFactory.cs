@@ -37,16 +37,12 @@ namespace TraffiLearn.IntegrationTests.Tickets.Commands.CreateTicket
                     QuestionIds: [Guid.NewGuid()]),
 
                 new CreateTicketCommand(
-                    TicketNumber: null,
-                    QuestionIds: [Guid.NewGuid()]),
-
-                new CreateTicketCommand(
                     TicketNumber: 1,
                     QuestionIds: []),
 
                 new CreateTicketCommand(
                     TicketNumber: 1,
-                    QuestionIds: null),
+                    QuestionIds: null!),
             ];
         }
     }

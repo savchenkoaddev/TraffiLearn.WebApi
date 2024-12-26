@@ -9,17 +9,17 @@ namespace TraffiLearn.Infrastructure.Authentication.Options
 
         [Required]
         [StringLength(200)]
-        public string? Issuer { get; set; }
+        public required string Issuer { get; init; }
 
         [Required]
         [StringLength(200)]
-        public string? Audience { get; set; }
+        public required string Audience { get; init; }
 
         [Required]
-        public string? SecretKey { get; set; }
+        public required string SecretKey { get; init; }
 
         [Range(1, 1000)]
-        public int ExpirationTimeInMinutes { get; set; } = 20;
+        public int ExpirationTimeInMinutes { get; init; } = 20;
 
         public string SecurityAlgorithm = SecurityAlgorithms.HmacSha256;
     }

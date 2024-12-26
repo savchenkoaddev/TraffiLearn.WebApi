@@ -37,7 +37,7 @@ namespace TraffiLearn.Infrastructure.Persistence.Configurations
                 .IsRequired(false)
                 .HasMaxLength(CancelationReason.MaxLength)
                 .HasConversion(
-                    reason => reason.Value,
+                    reason => reason!.Value,
                     value => CancelationReason.Create(value).Value);
         }
     }

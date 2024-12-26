@@ -25,7 +25,7 @@ namespace TraffiLearn.Application.UseCases.Routes.Queries.GetById
             CancellationToken cancellationToken)
         {
             var route = await _routeRepository.GetByIdAsync(
-                routeId: new RouteId(request.RouteId.Value),
+                routeId: new RouteId(request.RouteId),
                 cancellationToken);
 
             if (route is null)

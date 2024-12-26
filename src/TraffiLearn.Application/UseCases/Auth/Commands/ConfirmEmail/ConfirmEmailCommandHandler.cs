@@ -33,7 +33,7 @@ namespace TraffiLearn.Application.UseCases.Auth.Commands.ConfirmEmail
             ConfirmEmailCommand request,
             CancellationToken cancellationToken)
         {
-            var userId = new UserId(request.UserId.Value);
+            var userId = new UserId(request.UserId);
 
             var user = await _userRepository.GetByIdAsync(
                 userId,

@@ -2,7 +2,8 @@
 
 namespace TraffiLearn.Application.UseCases.Topics.Queries.GetById
 {
-    internal sealed class GetTopicByIdQueryValidator : AbstractValidator<GetTopicByIdQuery>
+    internal sealed class GetTopicByIdQueryValidator 
+        : AbstractValidator<GetTopicByIdQuery>
     {
         public GetTopicByIdQueryValidator()
         {

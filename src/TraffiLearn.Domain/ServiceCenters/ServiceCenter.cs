@@ -12,7 +12,6 @@ namespace TraffiLearn.Domain.ServiceCenters
         private readonly HashSet<Route> _routes = [];
         private Address _address;
         private ServiceCenterNumber _number;
-        private Region _region;
 
         private ServiceCenter()
             : base(new(Guid.Empty))

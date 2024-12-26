@@ -2,8 +2,8 @@
 using TraffiLearn.Application.UseCases.Comments.DTO;
 using TraffiLearn.SharedKernel.Shared;
 
-namespace TraffiLearn.Application.UseCases.Users.Queries.GetLoggedInUserComments
+namespace TraffiLearn.Application.UseCases.Users.Queries.GetCurrentUserComments
 {
-    public sealed record GetLoggedInUserCommentsQuery
+    public sealed record GetCurrentUserCommentsQuery
         : IRequest<Result<IEnumerable<CommentResponse>>>;
 }

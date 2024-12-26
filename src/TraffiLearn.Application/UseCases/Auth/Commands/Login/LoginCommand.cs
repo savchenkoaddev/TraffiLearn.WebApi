@@ -5,6 +5,6 @@ using TraffiLearn.SharedKernel.Shared;
 namespace TraffiLearn.Application.UseCases.Auth.Commands.Login
 {
     public sealed record LoginCommand(
-        string? Email,
-        string? Password) : IRequest<Result<LoginResponse>>;
+        string Email,
+        string Password) : IRequest<Result<LoginResponse>>;
 }

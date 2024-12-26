@@ -7,13 +7,13 @@ namespace TraffiLearn.WebAPI.Options
         public const string SectionName = nameof(SuperUserSettings);
 
         [Required]
-        public string? Username { get; set; }
+        public required string Username { get; init; }
 
         [EmailAddress]
         [Required]
-        public string? Email { get; set; }
+        public required string Email { get; init; }
 
         [Required]
-        public string? Password { get; set; }
+        public required string Password { get; init; }
     }
 }

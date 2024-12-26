@@ -21,7 +21,7 @@ namespace TraffiLearn.UnitTests.Repositories
         {
             Func<Task> action = async () =>
             {
-                await _repository.InsertAsync(null);
+                await _repository.InsertAsync(null!);
             };
 
             await action.Should().ThrowAsync<ArgumentNullException>();
@@ -46,7 +46,7 @@ namespace TraffiLearn.UnitTests.Repositories
         {
             Func<Task> action = async () =>
             {
-                await _repository.DeleteAsync(null);
+                await _repository.DeleteAsync(null!);
             };
 
             await action.Should().ThrowAsync<ArgumentNullException>();
