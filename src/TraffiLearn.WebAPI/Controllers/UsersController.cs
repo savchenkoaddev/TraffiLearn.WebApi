@@ -39,16 +39,7 @@ namespace TraffiLearn.WebAPI.Controllers
         #region Queries
 
 
-        /// <summary>
-        /// Gets information about the authenticated user.
-        /// </summary>
-        /// <remarks>
-        /// **Authentication Required:**<br />
-        /// The user must be authenticated using a JWT token.
-        /// </remarks>
-        /// <response code="200">Successfully retrieved logged in user comments. Returns logged in user comments.</response>
-        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
-        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:GetCurrentUserInfo"]/*'/>
         [HttpGet("current")]
         [HasPermission(Permission.AuthenticatedUser)]
         [Produces(MediaTypeNames.Application.Json)]
@@ -61,17 +52,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
-        /// <summary>
-        /// Gets all users from the storage.
-        /// </summary>
-        /// <remarks>
-        ///  **Authentication Required:**<br />
-        /// The user must be authenticated using a JWT token. Only users with the `Owner` or `Admin` role can perform this action.<br /><br />
-        /// </remarks>
-        /// <response code="200">Successfully retrieved all users. Returns a list of users.</response>
-        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
-        /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
-        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:GetAllUsers"]/*'/>
         [HttpGet]
         [HasPermission(Permission.ViewUsersData)]
         [Produces(MediaTypeNames.Application.Json)]
@@ -84,17 +65,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
-        /// <summary>
-        /// Gets all admins from the storage.
-        /// </summary>
-        /// <remarks>
-        ///  **Authentication Required:**<br />
-        /// The user must be authenticated using a JWT token. Only users with the `Owner` role can perform this action.<br /><br />
-        /// </remarks>
-        /// <response code="200">Successfully retrieved all admins. Returns a list of admins.</response>
-        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
-        /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
-        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:GetAllAdmins"]/*'/>
         [HttpGet("admins")]
         [HasPermission(Permission.ViewAdminsData)]
         [Produces(MediaTypeNames.Application.Json)]
@@ -107,22 +78,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
-        /// <summary>
-        /// Gets all comments of a user with a specific ID.
-        /// </summary>
-        /// <remarks>
-        /// **The request must include an ID of a user.**<br /><br /><br />
-        /// ***Route parameters:***<br /><br />
-        /// `UserId` : Must be a valid GUID representing ID of a user.<br /><br /><br />
-        /// **Authentication Required:**<br />
-        /// The user must be authenticated using a JWT token. Only users with the `Owner` or `Admin` role can perform this action.<br /><br />
-        /// </remarks>
-        /// <param name="userId">**The ID of a user, whose comments are being retrieved.**</param>
-        /// <response code="200">Successfully retrieved user comments with the provided user ID. Returns user comments.</response>
-        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
-        /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
-        /// <response code="404">***Not found.*** No user exists with the provided ID.</response>
-        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:GetUserComments"]/*'/>
         [HttpGet("{userId:guid}/comments")]
         [HasPermission(Permission.ViewUsersData)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
@@ -137,22 +93,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
-        /// <summary>
-        /// Gets all liked questions of a user with a specific ID.
-        /// </summary>
-        /// <remarks>
-        /// **The request must include an ID of a user.**<br /><br /><br />
-        /// ***Route parameters:***<br /><br />
-        /// `UserId` : Must be a valid GUID representing ID of a user.<br /><br /><br />
-        /// **Authentication Required:**<br />
-        /// The user must be authenticated using a JWT token. Only users with the `Owner` or `Admin` role can perform this action.<br /><br />
-        /// </remarks>
-        /// <param name="userId">**The ID of a user, whose liked questions are being retrieved.**</param>
-        /// <response code="200">Successfully retrieved user liked questions with the provided user ID. Returns user liked questions.</response>
-        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
-        /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
-        /// <response code="404">***Not found.*** No user exists with the provided ID.</response>
-        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:GetUserLikedQuestions"]/*'/>
         [HttpGet("{userId:guid}/liked-questions")]
         [HasPermission(Permission.ViewUsersData)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
@@ -167,22 +108,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
-        /// <summary>
-        /// Gets all disliked questions of a user with a specific ID.
-        /// </summary>
-        /// <remarks>
-        /// **The request must include an ID of a user.**<br /><br /><br />
-        /// ***Route parameters:***<br /><br />
-        /// `UserId` : Must be a valid GUID representing ID of a user.<br /><br /><br />
-        /// **Authentication Required:**<br />
-        /// The user must be authenticated using a JWT token. Only users with the `Owner` or `Admin` role can perform this action.<br /><br />
-        /// </remarks>
-        /// <param name="userId">**The ID of a user, whose disliked questions are being retrieved.**</param>
-        /// <response code="200">Successfully retrieved user disliked questions with the provided user ID. Returns user disliked questions.</response>
-        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
-        /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
-        /// <response code="404">***Not found.*** No user exists with the provided ID.</response>
-        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:GetUserDislikedQuestions"]/*'/>
         [HttpGet("{userId:guid}/disliked-questions")]
         [HasPermission(Permission.ViewUsersData)]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
@@ -197,16 +123,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
-        /// <summary>
-        /// Gets all comments of the currently logged in user.
-        /// </summary>
-        /// <remarks>
-        /// **Authentication Required:**<br />
-        /// The user must be authenticated using a JWT token.
-        /// </remarks>
-        /// <response code="200">Successfully retrieved logged in user comments. Returns logged in user comments.</response>
-        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
-        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:GetCurrentUserComments"]/*'/>
         [HttpGet("current/comments")]
         [HasPermission(Permission.AuthenticatedUser)]
         [Produces(MediaTypeNames.Application.Json)]
@@ -219,16 +136,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
-        /// <summary>
-        /// Gets all transactions of the authenticated user.
-        /// </summary>
-        /// <remarks>
-        /// **Authentication Required:**<br />
-        /// The user must be authenticated using a JWT token.
-        /// </remarks>
-        /// <response code="200">Successfully retrieved the current user's transactions. Returns list of transactions.</response>
-        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
-        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:GetCurrentUserTransactions"]/*'/>
         [HttpGet("current/transactions")]
         [HasPermission(Permission.AuthenticatedUser)]
         [Produces(MediaTypeNames.Application.Json)]
@@ -241,16 +149,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
         }
 
-        /// <summary>
-        /// Gets all canceled subscriptions of the authenticated user.
-        /// </summary>
-        /// <remarks>
-        /// **Authentication Required:**<br />
-        /// The user must be authenticated using a JWT token.
-        /// </remarks>
-        /// <response code="200">Successfully retrieved the current user's canceled subscriptions. Returns list of canceled subscriptions.</response>
-        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
-        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:GetCurrentUserCanceledSubscriptions"]/*'/>
         [HttpGet("current/canceled-subscriptions")]
         [HasPermission(Permission.AuthenticatedUser)]
         [Produces(MediaTypeNames.Application.Json)]
@@ -269,24 +168,7 @@ namespace TraffiLearn.WebAPI.Controllers
         #region Commands
 
 
-        /// <summary>
-        /// Downgrades the account of a user with a specific ID.
-        /// </summary>
-        /// <remarks>
-        /// **If account getting downgraded has role `Admin`**, user will be downgraded to the role `RegularUser`.<br /><br />
-        /// **`RegularUser` and `Owner` roles cannot be downgraded.**<br /><br />
-        /// **The request must include an ID of a user.**<br /><br /><br />
-        /// ***Route parameters:***<br /><br />
-        /// `UserId` : Must be a valid GUID representing ID of a user.<br /><br /><br />
-        /// **Authentication Required:**<br />
-        /// The user must be authenticated using a JWT token. Only users with the `Owner` role can perform this action.<br /><br />
-        /// </remarks>
-        /// <param name="userId">**The ID of user, who is being downgraded.**</param>
-        /// <response code="204">Successfully downgraded the user with the provided ID.</response>
-        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
-        /// <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
-        /// <response code="404">***Not found.*** No user exists with the provided ID.</response>
-        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:DowngradeAccount"]/*'/>
         [HasPermission(Permission.ManageAccountStatuses)]
         [HttpPut("{userId:guid}/downgrade")]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
@@ -300,22 +182,7 @@ namespace TraffiLearn.WebAPI.Controllers
             return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
         }
 
-        /// <summary>
-        /// Requests a change for a subscription plan of an authenticated user.
-        /// </summary>
-        /// <remarks>
-        /// **If a user has the same subscription plan**, an error will be returned.<br /><br /><br />
-        /// ***Route parameters:***<br /><br />
-        /// `PlanId` : Must be a valid GUID representing ID of a subscription plan.<br /><br /><br />
-        /// **Authentication Required:**<br />
-        /// The user must be authenticated using a JWT token.<br /><br />
-        /// </remarks>
-        /// <param name="planId">**The ID of a subscription plan.**</param>
-        /// <response code="200">Successfully requested a subscription plan change. Returns Uri for payment process.</response>
-        /// <response code="400">***Bad request.*** The user has the same subscription plan.</response>
-        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
-        /// <response code="404">***Not found.*** No subscription plan exists with the provided ID.</response>
-        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:RequestChangeSubscriptionPlan"]/*'/>
         [HasPermission(Permission.AuthenticatedUser)]
         [HttpPut("request-change-subscription/{planId:guid}")]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
@@ -333,19 +200,7 @@ namespace TraffiLearn.WebAPI.Controllers
                 : commandResult.ToProblemDetails();
         }
 
-        /// <summary>
-        /// Requests a renew for a subscription plan of an authenticated user.
-        /// </summary>
-        /// <remarks>
-        /// **If a user does not have any subscription plan**, an error will be returned.<br /><br />
-        /// **If a user already has a subscription plan, which has not expired yet**, the new renewal extends from the current expiry date.<br /><br /><br />
-        /// **Authentication Required:**<br />
-        /// The user must be authenticated using a JWT token.<br /><br />
-        /// </remarks>
-        /// <response code="200">***OK.*** Successfully requested a subscription plan renew. Returns Uri for payment process.</response>
-        /// <response code="400">***Bad request.*** Violation of some business rules.</response>
-        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
-        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:RenewSubscription"]/*'/>
         [HasPermission(Permission.AuthenticatedUser)]
         [HttpPut("request-renew-subscription")]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
@@ -362,19 +217,7 @@ namespace TraffiLearn.WebAPI.Controllers
                 : commandResult.ToProblemDetails();
         }
 
-        /// <summary>
-        /// Cancels a subscription of an authenticated user.
-        /// </summary>
-        /// <remarks>
-        /// **If a user does not have any subscription plan**, an error will be returned.<br /><br /><br />
-        /// **Authentication Required:**<br />
-        /// The user must be authenticated using a JWT token.<br /><br />
-        /// </remarks>
-        /// <param name="command">**The cancel subscription command.**</param>
-        /// <response code="204">***No Content.*** Successfully canceled a subscription.</response>
-        /// <response code="400">***Bad request.*** Violation of some business rules.</response>
-        /// <response code="401">***Unauthorized.*** The user is not authenticated.</response>
-        /// <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
+        /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:CancelSubscription"]/*'/>
         [HasPermission(Permission.AuthenticatedUser)]
         [HttpPut("cancel-subscription")]
         [Produces(MediaTypeNames.Application.Json, MediaTypeNames.Application.ProblemJson)]
