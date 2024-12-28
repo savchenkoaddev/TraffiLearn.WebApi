@@ -9,6 +9,7 @@ using TraffiLearn.Infrastructure.External.GoogleAuth.Options;
 using TraffiLearn.Infrastructure.External.GroqAI.Options;
 using TraffiLearn.Infrastructure.MessageBroker;
 using TraffiLearn.Infrastructure.Persistence.Options;
+using TraffiLearn.Infrastructure.RateLimiting.Options;
 using TraffiLearn.Infrastructure.Services.Emails.Options;
 using TraffiLearn.Infrastructure.Services.Payments.Options;
 
@@ -45,6 +46,10 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
                 MessageBrokerSettings.SectionName);
             services.ConfigureValidatableOnStartOptions<PlanExpiryNotificationSettings>(
                 PlanExpiryNotificationSettings.SectionName);
+            services.ConfigureValidatableOnStartOptions<RateLimitingSettings>(
+                RateLimitingSettings.SectionName);
+            services.ConfigureValidatableOnStartOptions<DefaultRateLimitingPolicySettings>(
+                DefaultRateLimitingPolicySettings.SectionName);
 
             return services;
         }

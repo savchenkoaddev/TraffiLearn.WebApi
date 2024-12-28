@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Net.Mime;
 using TraffiLearn.Application.UseCases.Questions.DTO;
 using TraffiLearn.Application.UseCases.Tickets.Commands.AddQuestionToTicket;
@@ -13,12 +14,14 @@ using TraffiLearn.Application.UseCases.Tickets.Queries.GetById;
 using TraffiLearn.Application.UseCases.Tickets.Queries.GetRandomTicketWithQuestions;
 using TraffiLearn.Application.UseCases.Tickets.Queries.GetTicketQuestions;
 using TraffiLearn.Infrastructure.Authentication;
+using TraffiLearn.Infrastructure.Extensions.DI;
 using TraffiLearn.WebAPI.Extensions;
 using TraffiLearn.WebAPI.Swagger;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
     [HasPermission(Permission.AuthenticatedUser)]
+    [EnableRateLimiting(RateLimitingExtensions.DefaultPolicyName)]
     [Route("api/tickets")]
     [ApiController]
     public sealed class TicketsController : ControllerBase

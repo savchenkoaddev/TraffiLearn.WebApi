@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Net.Mime;
 using TraffiLearn.Application.UseCases.ServiceCenters.Commands.Create;
 using TraffiLearn.Application.UseCases.ServiceCenters.Commands.Delete;
@@ -9,12 +10,14 @@ using TraffiLearn.Application.UseCases.ServiceCenters.Queries.GetAll;
 using TraffiLearn.Application.UseCases.ServiceCenters.Queries.GetById;
 using TraffiLearn.Application.UseCases.ServiceCenters.Queries.GetByRegionId;
 using TraffiLearn.Infrastructure.Authentication;
+using TraffiLearn.Infrastructure.Extensions.DI;
 using TraffiLearn.WebAPI.Extensions;
 using TraffiLearn.WebAPI.Swagger;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
     [HasPermission(Permission.AuthenticatedUser)]
+    [EnableRateLimiting(RateLimitingExtensions.DefaultPolicyName)]
     [Route("api/service-centers")]
     [ApiController]
     public class ServiceCentersController : ControllerBase

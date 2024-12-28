@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TraffiLearn.Infrastructure.Extensions.DI;
 
@@ -6,7 +7,8 @@ namespace TraffiLearn.Infrastructure
     public static class DependencyInjection
     {
         public static IServiceCollection AddInfrastructure(
-            this IServiceCollection services)
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
             services.AddAppOptions();
 
@@ -25,6 +27,8 @@ namespace TraffiLearn.Infrastructure
             services.AddHttpClients();
 
             services.AddAppHealthChecks();
+
+            services.AddRateLimiting(configuration);
 
             return services;
         }

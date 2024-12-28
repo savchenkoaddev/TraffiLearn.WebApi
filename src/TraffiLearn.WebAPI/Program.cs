@@ -17,6 +17,7 @@ namespace TraffiLearn.WebAPI
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var config = builder.Configuration;
 
             builder.Services.AddControllers().AddJsonOptions(x =>
             {
@@ -29,8 +30,8 @@ namespace TraffiLearn.WebAPI
 
             builder.Services.ConfigureSwaggerGen();
 
-            builder.Services.AddApplication(builder.Configuration);
-            builder.Services.AddInfrastructure();
+            builder.Services.AddApplication(config);
+            builder.Services.AddInfrastructure(config);
 
             builder.Services.AddPresentationOptions();
 
@@ -62,6 +63,8 @@ namespace TraffiLearn.WebAPI
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseRateLimiter();
 
             app.MapControllers();
 

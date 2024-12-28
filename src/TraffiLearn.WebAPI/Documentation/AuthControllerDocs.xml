@@ -35,6 +35,7 @@
       <response code="200">Successfully authenticated. Returns an access and refresh token.</response>
       <response code="400">***Bad request.*** Either the email or password is in an incorrect format, or the provided credentials are invalid.</response>
       <response code="404">***Not found.*** No user exists with the provided credentials.</response>
+      <response code="429">***Too Many Requests.*** You have exceeded the allowed number of requests. Please try again later.</response>
       <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
     </member>
 
@@ -63,6 +64,7 @@
       <param name="command">**The sign in with google command containing email and password.**</param>
       <response code="200">Successfully authenticated. Returns an access and refresh token.</response>
       <response code="400">***Bad request.*** Either the user is not registered and the first time login password is not provided, or the password is in an incorrect format.</response>
+      <response code="429">***Too Many Requests.*** You have exceeded the allowed number of requests. Please try again later.</response>
       <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
     </member>
 
@@ -89,6 +91,7 @@
       <param name="command">**The register user command containing username, email, and password.**</param>
       <response code="201">Successfully registered. The user account has been created.</response>
       <response code="400">***Bad request.*** The provided data is invalid or missing, or a user with the same username or email already exists.</response>
+      <response code="429">***Too Many Requests.*** You have exceeded the allowed number of requests. Please try again later.</response>
       <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
     </member>
 
@@ -107,6 +110,7 @@
       <response code="204">Successfully confirmed the email.</response>
       <response code="400">***Bad request.*** The provided data is invalid or missing, or the token is invalid or expired.</response>
       <response code="404">***Not Found.*** The user with the provided ID is not found.</response>
+      <response code="429">***Too Many Requests.*** You have exceeded the allowed number of requests. Please try again later.</response>
       <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
     </member>
 
@@ -125,6 +129,7 @@
       <response code="204">Successfully sent a new confirmation email.</response>
       <response code="400">***Bad request.*** The provided email is invalid or missing.</response>
       <response code="404">***Not Found.*** The user with the provided email is not found.</response>
+      <response code="429">***Too Many Requests.*** You have exceeded the allowed number of requests. Please try again later.</response>
       <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
     </member>
 
@@ -143,6 +148,7 @@
       <response code="204">Successfully sent the change email message.</response>
       <response code="400">***Bad request.*** The provided email is invalid, missing or already taken.</response>
       <response code="401">***Unauthorized***. The user is not authenticated.</response>
+      <response code="429">***Too Many Requests.*** You have exceeded the allowed number of requests. Please try again later.</response>
       <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
     </member>
 
@@ -162,6 +168,7 @@
       <response code="204">Successfully confirmed the change email request.</response>
       <response code="400">***Bad request.*** The provided data is invalid or missing, or the token is invalid or expired.</response>
       <response code="404">***Not Found.*** The user with the provided ID is not found.</response>
+      <response code="429">***Too Many Requests.*** You have exceeded the allowed number of requests. Please try again later.</response>
       <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
     </member>
 
@@ -179,6 +186,7 @@
       <response code="204">Successfully sent the recover password message.</response>
       <response code="400">***Bad request.*** The provided email is invalid or missing.</response>
       <response code="404">***Not found.*** No user exists with the provided email.</response>
+      <response code="429">***Too Many Requests.*** You have exceeded the allowed number of requests. Please try again later.</response>
       <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
     </member>
 
@@ -197,6 +205,7 @@
       <response code="204">Successfully reset user's password</response>
       <response code="400">***Bad request***. The provided data is invalid or missing, or the token is invalid or expired.</response>
       <response code="404">***Not found***. The user with the provided ID is not found.</response>
+      <response code="429">***Too Many Requests.*** You have exceeded the allowed number of requests. Please try again later.</response>
       <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
     </member>
 
@@ -227,6 +236,7 @@
       <response code="400">***Bad request***. The provided data is invalid or missing, or a user with the same username or email already exists.</response>
       <response code="401">***Unauthorized***. The user is not authenticated.</response>
       <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
+      <response code="429">***Too Many Requests.*** You have exceeded the allowed number of requests. Please try again later.</response>
       <response code="500">***Internal Server Error***. An unexpected error occurred during the process.</response>
     </member>
 
@@ -246,6 +256,7 @@
       <response code="401">***Unauthorized.*** The user is not authenticated.</response>
       <response code="403">***Forbidden.*** The user is not authorized to perform this action.</response>
       <response code="404">***Not Found.*** The admin with the provided ID is not found.</response>
+      <response code="429">***Too Many Requests.*** You have exceeded the allowed number of requests. Please try again later.</response>
       <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
     </member>
 
@@ -264,6 +275,7 @@
       <response code="200">Successfully generated new access and refresh tokens.</response>
       <response code="400">***Bad request.*** The provided data is invalid or missing.</response>
       <response code="404">***Not found.*** No user exists with the provided credentials.</response>
+      <response code="429">***Too Many Requests.*** You have exceeded the allowed number of requests. Please try again later.</response>
       <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
     </member>
   </members>

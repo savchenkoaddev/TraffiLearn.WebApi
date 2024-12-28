@@ -11,6 +11,7 @@
       </remarks>
       <response code="200">Successfully retrieved all directories. Returns a list of directories.</response>
       <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+      <response code="429">***Too Many Requests.*** You have exceeded the allowed number of requests. Please try again later.</response>
       <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
     </member>
 
@@ -29,6 +30,7 @@
       <response code="200">Successfully retrieved the directory with the provided ID. Returns the found directory.</response>
       <response code="401">***Unauthorized.*** The user is not authenticated.</response>
       <response code="404">***Not found.*** No directory exists with the provided ID.</response>
+      <response code="429">***Too Many Requests.*** You have exceeded the allowed number of requests. Please try again later.</response>
       <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
     </member>
 
@@ -49,6 +51,7 @@
       <response code="400">***Bad request.*** The provided data is invalid or missing.</response>
       <response code="401">***Unauthorized.*** The user is not authenticated.</response>
       <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
+      <response code="429">***Too Many Requests.*** You have exceeded the allowed number of requests. Please try again later.</response>
       <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
     </member>
 
@@ -70,6 +73,7 @@
       <response code="401">***Unauthorized.*** The user is not authenticated.</response>
       <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
       <response code="404">***Not found.*** Directory with the ID is not found.</response>
+      <response code="429">***Too Many Requests.*** You have exceeded the allowed number of requests. Please try again later.</response>
       <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
     </member>
 
@@ -89,6 +93,7 @@
       <response code="401">***Unauthorized.*** The user is not authenticated.</response>
       <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
       <response code="404">***Not found.*** Directory with the provided id is not found.</response>
+      <response code="429">***Too Many Requests.*** You have exceeded the allowed number of requests. Please try again later.</response>
       <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
     </member>
   </members>

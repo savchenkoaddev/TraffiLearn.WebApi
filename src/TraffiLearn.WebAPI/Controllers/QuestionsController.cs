@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Net.Mime;
 using TraffiLearn.Application.AI.DTO;
 using TraffiLearn.Application.UseCases.Comments.DTO;
@@ -26,6 +27,7 @@ using TraffiLearn.Application.UseCases.Users.Queries.GetCurrentUserDislikedQuest
 using TraffiLearn.Application.UseCases.Users.Queries.GetCurrentUserLikedQuestions;
 using TraffiLearn.Application.UseCases.Users.Queries.GetMarkedQuestions;
 using TraffiLearn.Infrastructure.Authentication;
+using TraffiLearn.Infrastructure.Extensions.DI;
 using TraffiLearn.WebAPI.CommandWrappers.CreateQuestion;
 using TraffiLearn.WebAPI.CommandWrappers.UpdateQuestion;
 using TraffiLearn.WebAPI.Extensions;
@@ -35,6 +37,7 @@ using static System.Net.Mime.MediaTypeNames;
 namespace TraffiLearn.WebAPI.Controllers
 {
     [HasPermission(Permission.AuthenticatedUser)]
+    [EnableRateLimiting(RateLimitingExtensions.DefaultPolicyName)]
     [Route("api/questions")]
     [ApiController]
     public sealed class QuestionsController : ControllerBase
