@@ -1,11 +1,13 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Net.Mime;
 using TraffiLearn.Application.UseCases.Routes.Commands.Delete;
 using TraffiLearn.Application.UseCases.Routes.DTO;
 using TraffiLearn.Application.UseCases.Routes.Queries.GetById;
 using TraffiLearn.Application.UseCases.Routes.Queries.GetByServiceCenterId;
 using TraffiLearn.Infrastructure.Authentication;
+using TraffiLearn.Infrastructure.Extensions.DI;
 using TraffiLearn.WebAPI.CommandWrappers.CreateRoute;
 using TraffiLearn.WebAPI.CommandWrappers.UpdateRoute;
 using TraffiLearn.WebAPI.Extensions;
@@ -15,6 +17,7 @@ using static System.Net.Mime.MediaTypeNames;
 namespace TraffiLearn.WebAPI.Controllers
 {
     [HasPermission(Permission.AuthenticatedUser)]
+    [EnableRateLimiting(RateLimitingExtensions.DefaultPolicyName)]
     [ApiController]
     [Route("api/routes")]
     public class RoutesController : ControllerBase

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Net.Mime;
 using TraffiLearn.Application.UseCases.Questions.DTO;
 using TraffiLearn.Application.UseCases.Topics.Commands.AddQuestionToTopic;
@@ -11,6 +12,7 @@ using TraffiLearn.Application.UseCases.Topics.Queries.GetById;
 using TraffiLearn.Application.UseCases.Topics.Queries.GetRandomTopicWithQuestions;
 using TraffiLearn.Application.UseCases.Topics.Queries.GetTopicQuestions;
 using TraffiLearn.Infrastructure.Authentication;
+using TraffiLearn.Infrastructure.Extensions.DI;
 using TraffiLearn.WebAPI.CommandWrappers.CreateTopic;
 using TraffiLearn.WebAPI.CommandWrappers.UpdateTopic;
 using TraffiLearn.WebAPI.Extensions;
@@ -19,6 +21,7 @@ using TraffiLearn.WebAPI.Swagger;
 namespace TraffiLearn.WebAPI.Controllers
 {
     [HasPermission(Permission.AuthenticatedUser)]
+    [EnableRateLimiting(RateLimitingExtensions.DefaultPolicyName)]
     [Route("api/topics")]
     [ApiController]
     public sealed class TopicsController : ControllerBase

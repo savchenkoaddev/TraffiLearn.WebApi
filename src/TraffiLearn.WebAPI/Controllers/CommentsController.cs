@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Net.Mime;
 using TraffiLearn.Application.UseCases.Comments.Commands.DeleteComment;
 using TraffiLearn.Application.UseCases.Comments.Commands.Reply;
@@ -11,12 +12,14 @@ using TraffiLearn.Application.UseCases.Users.Commands.LikeComment;
 using TraffiLearn.Application.UseCases.Users.Commands.RemoveCommentDislike;
 using TraffiLearn.Application.UseCases.Users.Commands.RemoveCommentLike;
 using TraffiLearn.Infrastructure.Authentication;
+using TraffiLearn.Infrastructure.Extensions.DI;
 using TraffiLearn.WebAPI.Extensions;
 using TraffiLearn.WebAPI.Swagger;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
     [HasPermission(Permission.AuthenticatedUser)]
+    [EnableRateLimiting(RateLimitingExtensions.DefaultPolicyName)]
     [Route("api/comments")]
     [ApiController]
     public sealed class CommentsController : ControllerBase

@@ -96,6 +96,7 @@
       <response code="401">***Unauthorized.*** The user is not authenticated.</response>
       <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
       <response code="404">***Not found.*** No user exists with the provided ID.</response>
+      <response code="429">***Too Many Requests.*** You have exceeded the allowed number of requests. Please try again later.</response>
       <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
     </member>
 
@@ -109,6 +110,7 @@
       </remarks>
       <response code="200">Successfully retrieved logged in user comments. Returns logged in user comments.</response>
       <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+      <response code="429">***Too Many Requests.*** You have exceeded the allowed number of requests. Please try again later.</response>
       <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
     </member>
 
@@ -122,6 +124,7 @@
       </remarks>
       <response code="200">Successfully retrieved the current user's transactions. Returns list of transactions.</response>
       <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+      <response code="429">***Too Many Requests.*** You have exceeded the allowed number of requests. Please try again later.</response>
       <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
     </member>
 
@@ -135,6 +138,7 @@
       </remarks>
       <response code="200">Successfully retrieved the current user's canceled subscriptions. Returns list of canceled subscriptions.</response>
       <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+      <response code="429">***Too Many Requests.*** You have exceeded the allowed number of requests. Please try again later.</response>
       <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
     </member>
 
@@ -156,6 +160,7 @@
       <response code="401">***Unauthorized.*** The user is not authenticated.</response>
       <response code="403">***Forbidden***. The user is not authorized to perform this action.</response>
       <response code="404">***Not found.*** No user exists with the provided ID.</response>
+      <response code="429">***Too Many Requests.*** You have exceeded the allowed number of requests. Please try again later.</response>
       <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
     </member>
 
@@ -175,6 +180,7 @@
       <response code="400">***Bad request.*** The user has the same subscription plan.</response>
       <response code="401">***Unauthorized.*** The user is not authenticated.</response>
       <response code="404">***Not found.*** No subscription plan exists with the provided ID.</response>
+      <response code="429">***Too Many Requests.*** You have exceeded the allowed number of requests. Please try again later.</response>
       <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
     </member>
 
@@ -191,6 +197,7 @@
       <response code="200">***OK.*** Successfully requested a subscription plan renew. Returns Uri for payment process.</response>
       <response code="400">***Bad request.*** Violation of some business rules.</response>
       <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+      <response code="429">***Too Many Requests.*** You have exceeded the allowed number of requests. Please try again later.</response>
       <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
     </member>
 
@@ -207,6 +214,7 @@
       <response code="200">***OK.*** Successfully requested a subscription plan renew. Returns Uri for payment process.</response>
       <response code="400">***Bad request.*** Violation of some business rules.</response>
       <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+      <response code="429">***Too Many Requests.*** You have exceeded the allowed number of requests. Please try again later.</response>
       <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
     </member>
 
@@ -223,6 +231,7 @@
       <response code="204">***No Content.*** Successfully canceled a subscription.</response>
       <response code="400">***Bad request.*** Violation of some business rules.</response>
       <response code="401">***Unauthorized.*** The user is not authenticated.</response>
+      <response code="429">***Too Many Requests.*** You have exceeded the allowed number of requests. Please try again later.</response>
       <response code="500">***Internal Server Error.*** An unexpected error occurred during the process.</response>
     </member>
   </members>

@@ -22,10 +22,13 @@ using TraffiLearn.Application.UseCases.Users.Queries.GetUserLikedQuestions;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.WebAPI.Extensions;
 using TraffiLearn.WebAPI.Swagger;
+using Microsoft.AspNetCore.RateLimiting;
+using TraffiLearn.Infrastructure.Extensions.DI;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
     [Route("api/users")]
+    [EnableRateLimiting(RateLimitingExtensions.DefaultPolicyName)]
     [ApiController]
     public sealed class UsersController : ControllerBase
     {

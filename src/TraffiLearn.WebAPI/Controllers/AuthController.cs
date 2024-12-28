@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Net.Mime;
 using TraffiLearn.Application.UseCases.Auth.Commands.ConfirmChangeEmail;
 using TraffiLearn.Application.UseCases.Auth.Commands.ConfirmEmail;
@@ -16,12 +17,14 @@ using TraffiLearn.Application.UseCases.Auth.Commands.SignInWithGoogle;
 using TraffiLearn.Application.UseCases.Auth.DTO;
 using TraffiLearn.Domain.Directories;
 using TraffiLearn.Infrastructure.Authentication;
+using TraffiLearn.Infrastructure.Extensions.DI;
 using TraffiLearn.WebAPI.Extensions;
 using TraffiLearn.WebAPI.Swagger;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
     [Route("api")]
+    [EnableRateLimiting(RateLimitingExtensions.DefaultPolicyName)]
     [ApiController]
     public sealed class AuthController : ControllerBase
     {
