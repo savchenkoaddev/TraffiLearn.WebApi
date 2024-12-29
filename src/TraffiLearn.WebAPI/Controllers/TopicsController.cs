@@ -15,7 +15,7 @@ using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.Infrastructure.Extensions.DI;
 using TraffiLearn.WebAPI.CommandWrappers.CreateTopic;
 using TraffiLearn.WebAPI.CommandWrappers.UpdateTopic;
-using TraffiLearn.WebAPI.Extensions;
+using TraffiLearn.WebAPI.Factories;
 using TraffiLearn.WebAPI.Swagger;
 
 namespace TraffiLearn.WebAPI.Controllers
@@ -27,10 +27,14 @@ namespace TraffiLearn.WebAPI.Controllers
     public sealed class TopicsController : ControllerBase
     {
         private readonly ISender _sender;
+        private readonly ProblemDetailsFactory _problemDetailsFactory;
 
-        public TopicsController(ISender sender)
+        public TopicsController(
+            ISender sender,
+            ProblemDetailsFactory problemDetailsFactory)
         {
             _sender = sender;
+            _problemDetailsFactory = problemDetailsFactory;
         }
 
         #region Queries
@@ -45,7 +49,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetAllSortedTopicsByNumberQuery());
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/TopicsControllerDocs.xml' path='doc/members/member[@name="M:GetRandomTopicWithQuestions"]/*'/>
@@ -57,7 +61,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetRandomTopicWithQuestionsQuery());
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/TopicsControllerDocs.xml' path='doc/members/member[@name="M:GetTopicById"]/*'/>
@@ -71,7 +75,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetTopicByIdQuery(topicId));
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/TopicsControllerDocs.xml' path='doc/members/member[@name="M:GetTopicQuestions"]/*'/>
@@ -85,7 +89,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetTopicQuestionsQuery(topicId));
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
         }
 
 
@@ -115,7 +119,7 @@ namespace TraffiLearn.WebAPI.Controllers
                     value: commandResult.Value);
             }
 
-            return commandResult.ToProblemDetails();
+            return _problemDetailsFactory.ToProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/TopicsControllerDocs.xml' path='doc/members/member[@name="M:UpdateTopic"]/*'/>
@@ -131,7 +135,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command.ToCommand());
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.ToProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/TopicsControllerDocs.xml' path='doc/members/member[@name="M:AddQuestionToTopic"]/*'/>
@@ -149,7 +153,7 @@ namespace TraffiLearn.WebAPI.Controllers
                 QuestionId: questionId,
                 TopicId: topicId));
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.ToProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/TopicsControllerDocs.xml' path='doc/members/member[@name="M:RemoveQuestionFromTopic"]/*'/>
@@ -167,7 +171,7 @@ namespace TraffiLearn.WebAPI.Controllers
                 QuestionId: questionId,
                 TopicId: topicId));
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.ToProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/TopicsControllerDocs.xml' path='doc/members/member[@name="M:DeleteTopic"]/*'/>
@@ -181,7 +185,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(new DeleteTopicCommand(topicId));
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.ToProblemDetails(commandResult);
         }
 
 

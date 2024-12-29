@@ -30,7 +30,7 @@ using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.Infrastructure.Extensions.DI;
 using TraffiLearn.WebAPI.CommandWrappers.CreateQuestion;
 using TraffiLearn.WebAPI.CommandWrappers.UpdateQuestion;
-using TraffiLearn.WebAPI.Extensions;
+using TraffiLearn.WebAPI.Factories;
 using TraffiLearn.WebAPI.Swagger;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -43,10 +43,14 @@ namespace TraffiLearn.WebAPI.Controllers
     public sealed class QuestionsController : ControllerBase
     {
         private readonly ISender _sender;
+        private readonly ProblemDetailsFactory _problemDetailsFactory;
 
-        public QuestionsController(ISender sender)
+        public QuestionsController(
+            ISender sender,
+            ProblemDetailsFactory problemDetailsFactory)
         {
             _sender = sender;
+            _problemDetailsFactory = problemDetailsFactory;
         }
 
         #region Queries
@@ -66,7 +70,7 @@ namespace TraffiLearn.WebAPI.Controllers
                 Page: page,
                 PageSize: pageSize));
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/QuestionsControllerDocs.xml' path='doc/members/member[@name="M:GetRandomQuestions"]/*'/>
@@ -80,7 +84,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetRandomQuestionsQuery(amount));
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/QuestionsControllerDocs.xml' path='doc/members/member[@name="M:GetQuestionById"]/*'/>
@@ -94,7 +98,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetQuestionByIdQuery(questionId));
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/QuestionsControllerDocs.xml' path='doc/members/member[@name="M:GetQuestionTopics"]/*'/>
@@ -108,7 +112,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetQuestionTopicsQuery(questionId));
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/QuestionsControllerDocs.xml' path='doc/members/member[@name="M:GetQuestionTickets"]/*'/>
@@ -122,7 +126,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetQuestionTicketsQuery(questionId));
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/QuestionsControllerDocs.xml' path='doc/members/member[@name="M:GetQuestionsForTheoryTest"]/*'/>
@@ -134,7 +138,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetQuestionsForTheoryTestQuery());
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/QuestionsControllerDocs.xml' path='doc/members/member[@name="M:GetQuestionComments"]/*'/>
@@ -155,7 +159,7 @@ namespace TraffiLearn.WebAPI.Controllers
                     Page: page,
                     PageSize: pageSize));
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/QuestionsControllerDocs.xml' path='doc/members/member[@name="M:GetAIQuestionExplanation"]/*'/>
@@ -170,7 +174,7 @@ namespace TraffiLearn.WebAPI.Controllers
             var queryResult = await _sender.Send(
                 new GetAIQuestionExplanationQuery(questionId));
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/QuestionsControllerDocs.xml' path='doc/members/member[@name="M:GetMarkedQuestions"]/*'/>
@@ -182,7 +186,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetMarkedQuestionsQuery());
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/QuestionsControllerDocs.xml' path='doc/members/member[@name="M:GetLikedQuestions"]/*'/>
@@ -194,7 +198,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetCurrentUserLikedQuestionsQuery());
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/QuestionsControllerDocs.xml' path='doc/members/member[@name="M:GetDislikedQuestions"]/*'/>
@@ -206,7 +210,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetCurrentUserDislikedQuestionsQuery());
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
         }
 
 
@@ -237,7 +241,7 @@ namespace TraffiLearn.WebAPI.Controllers
                     value: commandResult.Value);
             }
 
-            return commandResult.ToProblemDetails();
+            return _problemDetailsFactory.ToProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/QuestionsControllerDocs.xml' path='doc/members/member[@name="M:UpdateQuestion"]/*'/>
@@ -253,7 +257,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command.ToCommand());
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.ToProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/QuestionsControllerDocs.xml' path='doc/members/member[@name="M:DeleteQuestion"]/*'/>
@@ -267,7 +271,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(new DeleteQuestionCommand(questionId));
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.ToProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/QuestionsControllerDocs.xml' path='doc/members/member[@name="M:AddComment"]/*'/>
@@ -282,7 +286,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command);
 
-            return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? Created() : _problemDetailsFactory.ToProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/QuestionsControllerDocs.xml' path='doc/members/member[@name="M:MarkQuestion"]/*'/>
@@ -296,7 +300,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(new MarkQuestionCommand(questionId));
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.ToProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/QuestionsControllerDocs.xml' path='doc/members/member[@name="M:UnmarkQuestion"]/*'/>
@@ -310,7 +314,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(new UnmarkQuestionCommand(questionId));
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.ToProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/QuestionsControllerDocs.xml' path='doc/members/member[@name="M:LikeQuestion"]/*'/>
@@ -324,7 +328,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(new LikeQuestionCommand(questionId));
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.ToProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/QuestionsControllerDocs.xml' path='doc/members/member[@name="M:DislikeQuestion"]/*'/>
@@ -338,7 +342,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(new DislikeQuestionCommand(questionId));
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.ToProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/QuestionsControllerDocs.xml' path='doc/members/member[@name="M:RemoveQuestionLike"]/*'/>
@@ -352,7 +356,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(new RemoveQuestionLikeCommand(questionId));
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.ToProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/QuestionsControllerDocs.xml' path='doc/members/member[@name="M:RemoveQuestionDislike"]/*'/>
@@ -366,7 +370,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(new RemoveQuestionDislikeCommand(questionId));
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.ToProblemDetails(commandResult);
         }
 
 

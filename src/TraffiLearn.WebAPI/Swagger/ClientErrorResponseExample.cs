@@ -11,6 +11,14 @@
 
         public int Status { get; init; }
 
+        public string? Detail { get; init; }
+
+        public string? Instance { get; init; }
+
+        public string? RequestId { get; init; }
+
+        public string? TraceId { get; init; }
+
         public ErrorResponseExample[]? Errors { get; init; }
     }
 }

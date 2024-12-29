@@ -11,6 +11,7 @@ using TraffiLearn.Application.UseCases.Directories.Queries.GetById;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.Infrastructure.Extensions.DI;
 using TraffiLearn.WebAPI.Extensions;
+using TraffiLearn.WebAPI.Factories;
 using TraffiLearn.WebAPI.Swagger;
 
 namespace TraffiLearn.WebAPI.Controllers
@@ -22,10 +23,14 @@ namespace TraffiLearn.WebAPI.Controllers
     public class DirectoriesController : ControllerBase
     {
         private readonly ISender _sender;
+        private readonly ProblemDetailsFactory _problemDetailsFactory;
 
-        public DirectoriesController(ISender sender)
+        public DirectoriesController(
+            ISender sender,
+            ProblemDetailsFactory problemDetailsFactory)
         {
             _sender = sender;
+            _problemDetailsFactory = problemDetailsFactory;
         }
 
         #region Queries
@@ -39,8 +44,8 @@ namespace TraffiLearn.WebAPI.Controllers
         public async Task<IActionResult> GetAllDirectories()
         {
             var queryResult = await _sender.Send(new GetAllDirectoriesQuery());
-            Console.WriteLine(HttpContext.Connection.RemoteIpAddress?.ToString());
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/DirectoriesControllerDocs.xml' path='doc/members/member[@name="M:GetDirectoryById"]/*'/>
@@ -54,7 +59,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetDirectoryByIdQuery(directoryId));
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
         }
 
 
@@ -84,7 +89,7 @@ namespace TraffiLearn.WebAPI.Controllers
                     value: commandResult.Value);
             }
 
-            return commandResult.ToProblemDetails();
+            return _problemDetailsFactory.ToProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/DirectoriesControllerDocs.xml' path='doc/members/member[@name="M:UpdateDirectory"]/*'/>
@@ -99,7 +104,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command);
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.ToProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/DirectoriesControllerDocs.xml' path='doc/members/member[@name="M:DeleteDirectory"]/*'/>
@@ -113,7 +118,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(new DeleteDirectoryCommand(directoryId));
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.ToProblemDetails(commandResult);
         }
 
 

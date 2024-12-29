@@ -8,6 +8,7 @@ using TraffiLearn.Infrastructure;
 using TraffiLearn.Infrastructure.Extensions;
 using TraffiLearn.WebAPI.Extensions;
 using TraffiLearn.WebAPI.Extensions.DI;
+using TraffiLearn.WebAPI.Factories;
 using TraffiLearn.WebAPI.Middleware;
 
 namespace TraffiLearn.WebAPI
@@ -32,6 +33,10 @@ namespace TraffiLearn.WebAPI
 
             builder.Services.AddApplication(config);
             builder.Services.AddInfrastructure(config);
+
+            builder.Services.AddHttpContextAccessor();
+
+            builder.Services.AddSingleton<ProblemDetailsFactory>();
 
             builder.Services.AddPresentationOptions();
 
