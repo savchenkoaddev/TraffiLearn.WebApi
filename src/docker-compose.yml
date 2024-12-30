@@ -49,27 +49,9 @@ services:
     networks:
       - traffilearn-network
 
-  traffilearn-rabbitmq:
-    image: rabbitmq:4.0.4-management
-    container_name: traffilearn.rabbitmq
-    hostname: traffilearn-queue
-    ports:
-        - "5672:5672"
-        - "15672:15672"
-    volumes:
-        - traffilearn_rabbitmq_data:/var/lib/rabbitmq
-        - traffilearn_rabbitmq_logs:/var/log/rabbitmq
-    environment:
-        RABBITMQ_DEFAULT_USER: guest
-        RABBITMQ_DEFAULT_PASSWORD: guest
-    networks:
-      - traffilearn-network
-
 volumes:
   traffilearn_postgresdb_data:
   traffilearn_blob_data:
-  traffilearn_rabbitmq_data:
-  traffilearn_rabbitmq_logs:
  
 networks:
   traffilearn-network: 

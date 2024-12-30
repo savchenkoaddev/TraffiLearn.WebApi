@@ -26,23 +26,19 @@ namespace TraffiLearn.Infrastructure.Extensions.DI
             {
                 busConfigurator.SetKebabCaseEndpointNameFormatter();
 
-                busConfigurator.UsingRabbitMq((context, configurator) =>
+                busConfigurator.UsingAzureServiceBus((context, configurator) =>
                 {
                     MessageBrokerSettings settings = context
                         .GetRequiredService<IOptions<MessageBrokerSettings>>().Value;
 
-                    configurator.Host(new Uri(settings.Host), h =>
-                    {
-                        h.Username(settings.Username);
-                        h.Password(settings.Password);
-                    });
+                    configurator.Host(settings.ConnectionString);
 
                     configurator.UseMessageRetry(r => r.Interval(
                         settings.RetryCount, settings.RetryIntervalMilliseconds));
 
                     configurator.Message<SendEmailRequestMessage>(m =>
                     {
-                        m.SetEntityName(settings.EmailExchangeName);
+                        m.SetEntityName(settings.EmailTopicName);
                     });
                 });
             });
