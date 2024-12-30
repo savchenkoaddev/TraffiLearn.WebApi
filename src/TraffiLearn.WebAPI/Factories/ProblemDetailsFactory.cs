@@ -15,7 +15,7 @@ namespace TraffiLearn.WebAPI.Factories
             _contextAccessor = contextAccessor;
         }
 
-        public IActionResult ToProblemDetails(Result result)
+        public IActionResult GetProblemDetails(Result result)
         {
             if (result.IsSuccess)
             {

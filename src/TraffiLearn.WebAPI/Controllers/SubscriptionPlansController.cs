@@ -45,7 +45,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetSubscriptionPlanByIdQuery(planId));
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/SubscriptionPlansControllerDocs.xml' path='doc/members/member[@name="M:GetAllSubscriptionPlans"]/*'/>
@@ -57,7 +57,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetAllSubscriptionPlansQuery());
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
 
@@ -87,7 +87,7 @@ namespace TraffiLearn.WebAPI.Controllers
                     value: commandResult.Value);
             }
 
-            return _problemDetailsFactory.ToProblemDetails(commandResult);
+            return _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/SubscriptionPlansControllerDocs.xml' path='doc/members/member[@name="M:DeleteSubscriptionPlan"]/*'/>
@@ -102,7 +102,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(new DeleteSubscriptionPlanCommand(planId));
 
-            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.ToProblemDetails(commandResult);
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/SubscriptionPlansControllerDocs.xml' path='doc/members/member[@name="M:UpdateSubscriptionPlan"]/*'/>
@@ -117,7 +117,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command);
 
-            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.ToProblemDetails(commandResult);
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
 

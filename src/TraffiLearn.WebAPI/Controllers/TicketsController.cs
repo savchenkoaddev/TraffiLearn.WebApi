@@ -49,7 +49,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetAllTicketsQuery());
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/TicketsControllerDocs.xml' path='doc/members/member[@name="M:GetRandomTicketWithQuestions"]/*'/>
@@ -61,7 +61,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetRandomTicketWithQuestionsQuery());
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/TicketsControllerDocs.xml' path='doc/members/member[@name="M:GetTicketById"]/*'/>
@@ -75,7 +75,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetTicketByIdQuery(ticketId));
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/TicketsControllerDocs.xml' path='doc/members/member[@name="M:GetTicketQuestions"]/*'/>
@@ -89,7 +89,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetTicketQuestionsQuery(ticketId));
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
 
@@ -118,7 +118,7 @@ namespace TraffiLearn.WebAPI.Controllers
                     value: commandResult.Value);
             }
 
-            return _problemDetailsFactory.ToProblemDetails(commandResult);
+            return _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/TicketsControllerDocs.xml' path='doc/members/member[@name="M:UpdateTicket"]/*'/>
@@ -133,7 +133,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command);
 
-            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.ToProblemDetails(commandResult);
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/TicketsControllerDocs.xml' path='doc/members/member[@name="M:AddQuestionToTicket"]/*'/>
@@ -151,7 +151,7 @@ namespace TraffiLearn.WebAPI.Controllers
                 QuestionId: questionId,
                 TicketId: ticketId));
 
-            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.ToProblemDetails(commandResult);
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/TicketsControllerDocs.xml' path='doc/members/member[@name="M:RemoveQuestionFromTicket"]/*'/>
@@ -169,7 +169,7 @@ namespace TraffiLearn.WebAPI.Controllers
                 QuestionId: questionId,
                 TicketId: ticketId));
 
-            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.ToProblemDetails(commandResult);
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/TicketsControllerDocs.xml' path='doc/members/member[@name="M:DeleteTicket"]/*'/>
@@ -183,7 +183,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(new DeleteTicketCommand(ticketId));
 
-            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.ToProblemDetails(commandResult);
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
 

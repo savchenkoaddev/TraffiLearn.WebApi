@@ -56,7 +56,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetCurrentUserInfoQuery());
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:GetAllUsers"]/*'/>
@@ -69,7 +69,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetAllUsersQuery());
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:GetAllAdmins"]/*'/>
@@ -82,7 +82,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetAllAdminsQuery());
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:GetUserComments"]/*'/>
@@ -97,7 +97,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetUserCommentsQuery(userId));
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:GetUserLikedQuestions"]/*'/>
@@ -112,7 +112,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetUserLikedQuestionsQuery(userId));
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:GetUserDislikedQuestions"]/*'/>
@@ -127,7 +127,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetUserDislikedQuestionsQuery(userId));
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:GetCurrentUserComments"]/*'/>
@@ -140,7 +140,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetCurrentUserCommentsQuery());
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:GetCurrentUserTransactions"]/*'/>
@@ -153,7 +153,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetCurrentUserTransactionsQuery());
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:GetCurrentUserCanceledSubscriptions"]/*'/>
@@ -166,7 +166,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetCurrentUserCanceledSubscriptionsQuery());
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.ToProblemDetails(queryResult);
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
 
@@ -186,7 +186,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(new DowngradeAccountCommand(userId));
 
-            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.ToProblemDetails(commandResult);
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:RequestChangeSubscriptionPlan"]/*'/>
@@ -204,7 +204,7 @@ namespace TraffiLearn.WebAPI.Controllers
 
             return commandResult.IsSuccess
                 ? Ok(commandResult.Value.ToString())
-                : _problemDetailsFactory.ToProblemDetails(commandResult);
+                : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:RenewSubscription"]/*'/>
@@ -221,7 +221,7 @@ namespace TraffiLearn.WebAPI.Controllers
 
             return commandResult.IsSuccess
                 ? Ok(commandResult.Value.ToString())
-                : _problemDetailsFactory.ToProblemDetails(commandResult);
+                : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:CancelSubscription"]/*'/>
@@ -235,7 +235,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command);
 
-            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.ToProblemDetails(commandResult);
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
 
