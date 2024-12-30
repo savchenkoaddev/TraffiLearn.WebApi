@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Net.Mime;
 using TraffiLearn.Application.UseCases.CanceledSubscriptions.DTO;
 using TraffiLearn.Application.UseCases.Comments.DTO;
@@ -13,17 +14,16 @@ using TraffiLearn.Application.UseCases.Users.DTO;
 using TraffiLearn.Application.UseCases.Users.Queries.GetAllAdmins;
 using TraffiLearn.Application.UseCases.Users.Queries.GetAllUsers;
 using TraffiLearn.Application.UseCases.Users.Queries.GetCurrentUserCanceledSubscriptions;
+using TraffiLearn.Application.UseCases.Users.Queries.GetCurrentUserComments;
 using TraffiLearn.Application.UseCases.Users.Queries.GetCurrentUserInfo;
 using TraffiLearn.Application.UseCases.Users.Queries.GetCurrentUserTransactions;
-using TraffiLearn.Application.UseCases.Users.Queries.GetCurrentUserComments;
 using TraffiLearn.Application.UseCases.Users.Queries.GetUserComments;
 using TraffiLearn.Application.UseCases.Users.Queries.GetUserDislikedQuestions;
 using TraffiLearn.Application.UseCases.Users.Queries.GetUserLikedQuestions;
 using TraffiLearn.Infrastructure.Authentication;
-using TraffiLearn.WebAPI.Extensions;
-using TraffiLearn.WebAPI.Swagger;
-using Microsoft.AspNetCore.RateLimiting;
 using TraffiLearn.Infrastructure.Extensions.DI;
+using TraffiLearn.WebAPI.Factories;
+using TraffiLearn.WebAPI.Swagger;
 
 namespace TraffiLearn.WebAPI.Controllers
 {
@@ -33,10 +33,14 @@ namespace TraffiLearn.WebAPI.Controllers
     public sealed class UsersController : ControllerBase
     {
         private readonly ISender _sender;
+        private readonly ProblemDetailsFactory _problemDetailsFactory;
 
-        public UsersController(ISender sender)
+        public UsersController(
+            ISender sender,
+            ProblemDetailsFactory problemDetailsFactory)
         {
             _sender = sender;
+            _problemDetailsFactory = problemDetailsFactory;
         }
 
         #region Queries
@@ -52,7 +56,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetCurrentUserInfoQuery());
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:GetAllUsers"]/*'/>
@@ -65,7 +69,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetAllUsersQuery());
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:GetAllAdmins"]/*'/>
@@ -78,7 +82,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetAllAdminsQuery());
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:GetUserComments"]/*'/>
@@ -93,7 +97,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetUserCommentsQuery(userId));
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:GetUserLikedQuestions"]/*'/>
@@ -108,7 +112,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetUserLikedQuestionsQuery(userId));
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:GetUserDislikedQuestions"]/*'/>
@@ -123,7 +127,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetUserDislikedQuestionsQuery(userId));
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:GetCurrentUserComments"]/*'/>
@@ -136,7 +140,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetCurrentUserCommentsQuery());
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:GetCurrentUserTransactions"]/*'/>
@@ -149,7 +153,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetCurrentUserTransactionsQuery());
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:GetCurrentUserCanceledSubscriptions"]/*'/>
@@ -162,7 +166,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetCurrentUserCanceledSubscriptionsQuery());
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
 
@@ -182,7 +186,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(new DowngradeAccountCommand(userId));
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:RequestChangeSubscriptionPlan"]/*'/>
@@ -200,7 +204,7 @@ namespace TraffiLearn.WebAPI.Controllers
 
             return commandResult.IsSuccess
                 ? Ok(commandResult.Value.ToString())
-                : commandResult.ToProblemDetails();
+                : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:RenewSubscription"]/*'/>
@@ -217,7 +221,7 @@ namespace TraffiLearn.WebAPI.Controllers
 
             return commandResult.IsSuccess
                 ? Ok(commandResult.Value.ToString())
-                : commandResult.ToProblemDetails();
+                : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/UsersControllerDocs.xml' path='doc/members/member[@name="M:CancelSubscription"]/*'/>
@@ -231,7 +235,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command);
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
 

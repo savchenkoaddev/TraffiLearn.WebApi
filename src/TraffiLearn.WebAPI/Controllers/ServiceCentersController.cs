@@ -11,7 +11,7 @@ using TraffiLearn.Application.UseCases.ServiceCenters.Queries.GetById;
 using TraffiLearn.Application.UseCases.ServiceCenters.Queries.GetByRegionId;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.Infrastructure.Extensions.DI;
-using TraffiLearn.WebAPI.Extensions;
+using TraffiLearn.WebAPI.Factories;
 using TraffiLearn.WebAPI.Swagger;
 
 namespace TraffiLearn.WebAPI.Controllers
@@ -23,10 +23,14 @@ namespace TraffiLearn.WebAPI.Controllers
     public class ServiceCentersController : ControllerBase
     {
         private readonly ISender _sender;
+        private readonly ProblemDetailsFactory _problemDetailsFactory;
 
-        public ServiceCentersController(ISender sender)
+        public ServiceCentersController(
+            ISender sender,
+            ProblemDetailsFactory problemDetailsFactory)
         {
             _sender = sender;
+            _problemDetailsFactory = problemDetailsFactory;
         }
 
         #region Queries
@@ -41,7 +45,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetAllServiceCentersQuery());
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/ServiceCentersControllerDocs.xml' path='doc/members/member[@name="M:GetServiceCenterById"]/*'/>
@@ -56,7 +60,7 @@ namespace TraffiLearn.WebAPI.Controllers
             var queryResult = await _sender.Send(
                 new GetServiceCenterByIdQuery(serviceCenterId));
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/ServiceCentersControllerDocs.xml' path='doc/members/member[@name="M:GetServiceCentersByRegionId"]/*'/>
@@ -71,7 +75,7 @@ namespace TraffiLearn.WebAPI.Controllers
             var queryResult = await _sender.Send(
                 new GetServiceCentersByRegionIdQuery(regionId));
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
 
@@ -102,7 +106,7 @@ namespace TraffiLearn.WebAPI.Controllers
                     value: commandResult.Value);
             }
 
-            return commandResult.ToProblemDetails();
+            return _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/ServiceCentersControllerDocs.xml' path='doc/members/member[@name="M:UpdateServiceCenter"]/*'/>
@@ -118,7 +122,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command);
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/ServiceCentersControllerDocs.xml' path='doc/members/member[@name="M:DeleteServiceCenter"]/*'/>
@@ -132,7 +136,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(new DeleteServiceCenterCommand(serviceCenterId));
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
 

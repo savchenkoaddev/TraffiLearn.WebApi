@@ -10,7 +10,7 @@ using TraffiLearn.Application.UseCases.Regions.Queries.GetAll;
 using TraffiLearn.Application.UseCases.Regions.Queries.GetById;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.Infrastructure.Extensions.DI;
-using TraffiLearn.WebAPI.Extensions;
+using TraffiLearn.WebAPI.Factories;
 using TraffiLearn.WebAPI.Swagger;
 
 namespace TraffiLearn.WebAPI.Controllers
@@ -22,10 +22,14 @@ namespace TraffiLearn.WebAPI.Controllers
     public sealed class RegionsController : ControllerBase
     {
         private readonly ISender _sender;
+        private readonly ProblemDetailsFactory _problemDetailsFactory;
 
-        public RegionsController(ISender sender)
+        public RegionsController(
+            ISender sender,
+            ProblemDetailsFactory problemDetailsFactory)
         {
             _sender = sender;
+            _problemDetailsFactory = problemDetailsFactory;
         }
 
         #region Queries
@@ -40,7 +44,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetAllRegionsQuery());
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/RegionsControllerDocs.xml' path='doc/members/member[@name="M:GetRegionById"]/*'/>
@@ -54,7 +58,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetRegionByIdQuery(regionId));
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
 
@@ -84,7 +88,7 @@ namespace TraffiLearn.WebAPI.Controllers
                     value: commandResult.Value);
             }
 
-            return commandResult.ToProblemDetails();
+            return _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/RegionsControllerDocs.xml' path='doc/members/member[@name="M:UpdateRegion"]/*'/>
@@ -100,7 +104,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command);
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/RegionsControllerDocs.xml' path='doc/members/member[@name="M:DeleteRegion"]/*'/>
@@ -114,7 +118,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(new DeleteRegionCommand(regionId));
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
 

@@ -10,7 +10,7 @@ using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.Infrastructure.Extensions.DI;
 using TraffiLearn.WebAPI.CommandWrappers.CreateRoute;
 using TraffiLearn.WebAPI.CommandWrappers.UpdateRoute;
-using TraffiLearn.WebAPI.Extensions;
+using TraffiLearn.WebAPI.Factories;
 using TraffiLearn.WebAPI.Swagger;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -23,10 +23,14 @@ namespace TraffiLearn.WebAPI.Controllers
     public class RoutesController : ControllerBase
     {
         private readonly ISender _sender;
+        private readonly ProblemDetailsFactory _problemDetailsFactory;
 
-        public RoutesController(ISender sender)
+        public RoutesController(
+            ISender sender,
+            ProblemDetailsFactory problemDetailsFactory)
         {
             _sender = sender;
+            _problemDetailsFactory = problemDetailsFactory;
         }
 
         #region Queries
@@ -43,7 +47,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var queryResult = await _sender.Send(new GetRouteByIdQuery(routeId));
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
         /// <include file='Documentation/RoutesControllerDocs.xml' path='doc/members/member[@name="M:GetRoutesByServiceCenterId"]/*'/>
@@ -58,7 +62,7 @@ namespace TraffiLearn.WebAPI.Controllers
             var queryResult = await _sender.Send(
                 new GetRoutesByServiceCenterIdQuery(serviceCenterId));
 
-            return queryResult.IsSuccess ? Ok(queryResult.Value) : queryResult.ToProblemDetails();
+            return queryResult.IsSuccess ? Ok(queryResult.Value) : _problemDetailsFactory.GetProblemDetails(queryResult);
         }
 
 
@@ -89,7 +93,7 @@ namespace TraffiLearn.WebAPI.Controllers
                     value: commandResult.Value);
             }
 
-            return commandResult.ToProblemDetails();
+            return _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/RoutesControllerDocs.xml' path='doc/members/member[@name="M:UpdateRoute"]/*'/>
@@ -105,7 +109,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command.ToCommand());
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/RoutesControllerDocs.xml' path='doc/members/member[@name="M:DeleteRoute"]/*'/>
@@ -119,7 +123,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(new DeleteRouteCommand(routeId));
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
 

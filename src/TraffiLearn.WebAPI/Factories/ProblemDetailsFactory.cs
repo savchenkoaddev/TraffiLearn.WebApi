@@ -1,16 +1,28 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using TraffiLearn.SharedKernel.Shared;
 
-namespace TraffiLearn.WebAPI.Extensions
+namespace TraffiLearn.WebAPI.Factories
 {
-    public static class ResultExtensions
+    public class ProblemDetailsFactory
     {
-        public static IActionResult ToProblemDetails(this Result result)
+        private readonly IHttpContextAccessor _contextAccessor;
+
+        public ProblemDetailsFactory(IHttpContextAccessor contextAccessor)
+        {
+            _contextAccessor = contextAccessor;
+        }
+
+        public IActionResult GetProblemDetails(Result result)
         {
             if (result.IsSuccess)
             {
                 throw new InvalidOperationException();
             }
+
+            Activity? activity = _contextAccessor.HttpContext?.Features.Get<IHttpActivityFeature>()?.Activity;
 
             var error = result.Error;
 
@@ -18,15 +30,19 @@ namespace TraffiLearn.WebAPI.Extensions
             {
                 Type = GetType(error.ErrorType),
                 Title = GetTitle(error.ErrorType),
-                Status = GetStatusCode(error.ErrorType)
+                Detail = error.Description,
+                Status = GetStatusCode(error.ErrorType),
+                Instance = $"{_contextAccessor.HttpContext?.Request.Method} {_contextAccessor.HttpContext?.Request.Path}",
+                Extensions = new Dictionary<string, object?>
+                {
+                    { "requestId", _contextAccessor.HttpContext?.TraceIdentifier },
+                    { "traceId", activity?.Id }
+                }
             };
 
             if (error.ErrorType != ErrorType.InternalFailure)
             {
-                problemDetails.Extensions = new Dictionary<string, object?>
-                {
-                    { "errors", new { code = error.Code, description = error.Description } }
-                };
+                problemDetails.Extensions.Add("errors", new { code = error.Code, description = error.Description });
 
                 if (result is IValidationResult validationResult)
                 {

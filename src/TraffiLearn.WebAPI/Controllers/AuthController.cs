@@ -15,10 +15,9 @@ using TraffiLearn.Application.UseCases.Auth.Commands.SendChangeEmailMessage;
 using TraffiLearn.Application.UseCases.Auth.Commands.SendRecoverPasswordMessage;
 using TraffiLearn.Application.UseCases.Auth.Commands.SignInWithGoogle;
 using TraffiLearn.Application.UseCases.Auth.DTO;
-using TraffiLearn.Domain.Directories;
 using TraffiLearn.Infrastructure.Authentication;
 using TraffiLearn.Infrastructure.Extensions.DI;
-using TraffiLearn.WebAPI.Extensions;
+using TraffiLearn.WebAPI.Factories;
 using TraffiLearn.WebAPI.Swagger;
 
 namespace TraffiLearn.WebAPI.Controllers
@@ -28,13 +27,15 @@ namespace TraffiLearn.WebAPI.Controllers
     [ApiController]
     public sealed class AuthController : ControllerBase
     {
-        private readonly IDirectoryRepository _directoryRepository;
         private readonly ISender _sender;
+        private readonly ProblemDetailsFactory _problemDetailsFactory;
 
-        public AuthController(ISender sender, IDirectoryRepository directoryRepository)
+        public AuthController(
+            ISender sender,
+            ProblemDetailsFactory problemDetailsFactory)
         {
             _sender = sender;
-            _directoryRepository = directoryRepository;
+            _problemDetailsFactory = problemDetailsFactory;
         }
 
         #region Commands
@@ -53,7 +54,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command);
 
-            return commandResult.IsSuccess ? Ok(commandResult.Value) : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? Ok(commandResult.Value) : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/AuthControllerDocs.xml' path='doc/members/member[@name="M:SignInWithGoogle"]/*'/>
@@ -68,7 +69,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command);
 
-            return commandResult.IsSuccess ? Ok(commandResult.Value) : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? Ok(commandResult.Value) : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/AuthControllerDocs.xml' path='doc/members/member[@name="M:Register"]/*'/>
@@ -82,7 +83,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command);
 
-            return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? Created() : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/AuthControllerDocs.xml' path='doc/members/member[@name="M:ConfirmEmail"]/*'/>
@@ -96,7 +97,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command);
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/AuthControllerDocs.xml' path='doc/members/member[@name="M:ResendConfirmationEmail"]/*'/>
@@ -110,7 +111,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command);
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/AuthControllerDocs.xml' path='doc/members/member[@name="M:SendChangeEmailMessage"]/*'/>
@@ -124,7 +125,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command);
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/AuthControllerDocs.xml' path='doc/members/member[@name="M:ConfirmChangeEmail"]/*'/>
@@ -138,7 +139,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command);
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/AuthControllerDocs.xml' path='doc/members/member[@name="M:SendRecoverPasswordMessage"]/*'/>
@@ -153,7 +154,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command);
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/AuthControllerDocs.xml' path='doc/members/member[@name="M:RecoverPassword"]/*'/>
@@ -168,7 +169,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command);
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/AuthControllerDocs.xml' path='doc/members/member[@name="M:RegisterAdmin"]/*'/>
@@ -183,7 +184,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command);
 
-            return commandResult.IsSuccess ? Created() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? Created() : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/AuthControllerDocs.xml' path='doc/members/member[@name="M:RemoveAdminAccount"]/*'/>
@@ -197,7 +198,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(new RemoveAdminAccountCommand(adminId));
 
-            return commandResult.IsSuccess ? NoContent() : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? NoContent() : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
         /// <include file='Documentation/AuthControllerDocs.xml' path='doc/members/member[@name="M:Refresh"]/*'/>
@@ -213,7 +214,7 @@ namespace TraffiLearn.WebAPI.Controllers
         {
             var commandResult = await _sender.Send(command);
 
-            return commandResult.IsSuccess ? Ok(commandResult.Value) : commandResult.ToProblemDetails();
+            return commandResult.IsSuccess ? Ok(commandResult.Value) : _problemDetailsFactory.GetProblemDetails(commandResult);
         }
 
 
