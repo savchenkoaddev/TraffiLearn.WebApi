@@ -7,19 +7,10 @@ namespace TraffiLearn.Infrastructure.MessageBroker
         public const string SectionName = nameof(MessageBrokerSettings);
 
         [Required]
-        public required string Host { get; init; }
-
-        [Required]
-        public required string Username { get; init; }
-
-        [Required]
-        public required string Password { get; init; }
-
-        [Required]
         public required string ConnectionString { get; init; }
 
         [Required]
-        public required string EmailExchangeName { get; init; }
+        public required string EmailTopicName { get; init; }
 
         [Range(1, 100)]
         [Required]
